@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1E02C3D00C60E857006F1752 /* Connect.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3CE0C60E857006F1752 /* Connect.nib */; };
+		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
+		1E02C3F00C60ED56006F1752 /* Debugger.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3EE0C60ED56006F1752 /* Debugger.nib */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -19,6 +21,9 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1E02C3CF0C60E857006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Connect.nib; sourceTree = "<group>"; };
+		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
+		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
+		1E02C3EF0C60ED56006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Debugger.nib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -90,6 +95,8 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* MacGDBp_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
+				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -101,6 +108,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 				1E02C3CE0C60E857006F1752 /* Connect.nib */,
+				1E02C3EE0C60ED56006F1752 /* Debugger.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -158,6 +166,7 @@
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1E02C3D00C60E857006F1752 /* Connect.nib in Resources */,
+				1E02C3F00C60ED56006F1752 /* Debugger.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +199,14 @@
 				1E02C3CF0C60E857006F1752 /* English */,
 			);
 			name = Connect.nib;
+			sourceTree = "<group>";
+		};
+		1E02C3EE0C60ED56006F1752 /* Debugger.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E02C3EF0C60ED56006F1752 /* English */,
+			);
+			name = Debugger.nib;
 			sourceTree = "<group>";
 		};
 		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
