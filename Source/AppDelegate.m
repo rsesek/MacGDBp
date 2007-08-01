@@ -24,7 +24,7 @@
  */
 - (void)applicationDidFinishLaunching: (NSNotification *)notif
 {
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
+	[self showConnectionWindow: self];
 }
 
 /**
