@@ -48,4 +48,28 @@
 	[super dealloc];
 }
 
+/**
+ * Gets the hostname
+ */
+- (NSString *)host
+{
+	return _host;
+}
+
+/**
+ * Gets the port number
+ */
+- (int)port
+{
+	return _port;
+}
+
+/**
+ * Gets the session name
+ */
+- (NSString *)session
+{
+	return _session;
+}
+
 @end

@@ -26,6 +26,12 @@
 	DebuggerWindowController *_windowController;
 }
 
+// initializer
 - (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session;
+
+// getter
+- (NSString *)host;
+- (int)port;
+- (NSString *)session;
 
 @end

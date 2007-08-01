@@ -27,6 +27,7 @@
 	if (self = [super initWithWindowNibName: @"Debugger"])
 	{
 		_connection = [cnx retain];
+		[[self window] setTitle: [NSString stringWithFormat: @"GDBp @ %@:%d/%@", [_connection host], [_connection port], [_connection session]]];
 	}
 	return self;
 }
