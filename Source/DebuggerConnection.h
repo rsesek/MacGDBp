@@ -27,6 +27,8 @@
 	
 	NSInputStream *_input;
 	NSOutputStream *_output;
+	
+	NSMutableData *_data;
 }
 
 // initializer

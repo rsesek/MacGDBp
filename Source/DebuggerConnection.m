@@ -46,6 +46,9 @@
 		[_input scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		[_output scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		
+		[_input open];
+		[_output open];
+		
 		// clean up after ourselves
 		[[NSNotificationCenter defaultCenter] addObserver: self
 												 selector: @selector(applicationWillTerminate:)
@@ -100,6 +103,54 @@
 - (NSString *)session
 {
 	return _session;
+}
+
+/**
+ * Handles stream events. This is the delegate method implemented for NSStream and it
+ * merely calls other methods to do it's bidding
+ */
+- (void)stream: (NSStream *)stream handleEvent: (NSStreamEvent)event
+{
+	NSLog(@"hi");
+	if (event == NSStreamEventHasBytesAvailable)
+	{
+		if (!_data)
+		{
+			_data = [[NSMutableData data] retain];
+		}
+		uint8_t buf[1024];
+		unsigned int len = 0;
+		len = [(NSInputStream *)stream read: buf maxLength: 1024];
+		if (len)
+		{
+			[_data appendBytes: (const void *)buf length: len];
+		}
+		else
+		{
+			[self _readFromStream: _data];
+			[_data release];
+			_data = nil;
+		}
+	}
+	else if (event == NSStreamEventEndEncountered)
+	{
+		NSLog(@"we need to close and die right now");
+	}
+	else if (event == NSStreamEventErrorOccurred)
+	{
+		NSLog(@"error = %@", [stream streamError]);
+	}
+	NSLog(@"status = %d", [stream streamStatus]);
+}
+
+/**
+ * Called when the stream event handler has finished reading all of the data and
+ * passes it a data object
+ */
+- (void)_readFromStream: (NSData *)data
+{
+	[data retain];
+	NSLog(@"data = %@", data);
 }
 
 @end
