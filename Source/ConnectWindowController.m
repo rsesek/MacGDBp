@@ -14,17 +14,37 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
 #import "ConnectWindowController.h"
 
-@implementation AppDelegate
+
+@implementation ConnectWindowController
 
 /**
- * When the application has finished loading, show the connection dialog
+ * Creates a shared controller that can be accessed statically
  */
-- (void)applicationDidFinishLaunching: (NSNotification *)notif
++ (id)sharedController
 {
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
+	static id instance = nil;
+	if (!instance)
+	{
+		instance = [[ConnectWindowController alloc] initWithWindowNibName: @"Connect"];
+		[instance window];
+		
+		[[NSNotificationCenter defaultCenter] addObserver: instance
+												 selector: @selector(applicationWillTerminate:)
+													 name: NSApplicationWillTerminateNotification
+												   object: NSApp];
+		 
+	}
+	return instance;
+}
+
+/**
+ * Called when the applicaion is about to terminate so we can release itself
+ */
+- (void)applicationWillTerminate: (NSNotification *)notif
+{
+	[self release];
 }
 
 @end

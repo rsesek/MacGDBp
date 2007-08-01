@@ -10,6 +10,7 @@
 		1E02C3D00C60E857006F1752 /* Connect.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3CE0C60E857006F1752 /* Connect.nib */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C3F00C60ED56006F1752 /* Debugger.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3EE0C60ED56006F1752 /* Debugger.nib */; };
+		1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -24,6 +25,8 @@
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
 		1E02C3EF0C60ED56006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Debugger.nib; sourceTree = "<group>"; };
+		1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConnectWindowController.h; path = Source/ConnectWindowController.h; sourceTree = "<group>"; };
+		1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConnectWindowController.m; path = Source/ConnectWindowController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -97,6 +100,8 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
+				1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */,
+				1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */,
+				1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

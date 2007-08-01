@@ -14,17 +14,12 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
-#import "ConnectWindowController.h"
+#import <Cocoa/Cocoa.h>
 
-@implementation AppDelegate
 
-/**
- * When the application has finished loading, show the connection dialog
- */
-- (void)applicationDidFinishLaunching: (NSNotification *)notif
-{
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
-}
+@interface ConnectWindowController : NSWindowController
+{}
+
++ (id)sharedController;
 
 @end
