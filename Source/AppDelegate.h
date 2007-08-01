@@ -20,4 +20,6 @@
 @interface AppDelegate : NSObject
 {}
 
+- (IBAction)showConnectionWindow: (id)sender;
+
 @end

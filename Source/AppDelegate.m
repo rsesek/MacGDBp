@@ -27,4 +27,12 @@
 	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
 }
 
+/**
+ * Shows the connection window
+ */
+- (IBAction)showConnectionWindow: (id)sender
+{
+	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
+}
+
 @end
