@@ -16,16 +16,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DebuggerConnection;
 
-@interface ConnectWindowController : NSWindowController
+@interface DebuggerWindowController : NSWindowController
 {
-	IBOutlet NSTextField *_host;
-	IBOutlet NSTextField *_port;
-	IBOutlet NSTextField *_session;
+	DebuggerConnection *_connection;
 }
 
-+ (id)sharedController;
-
-- (IBAction)connect: (id)sender;
+- (id)initWithConnection: (DebuggerConnection *)cnx;
 
 @end

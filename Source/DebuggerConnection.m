@@ -14,18 +14,38 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
+#import "DebuggerConnection.h"
 
 
-@interface ConnectWindowController : NSWindowController
+@implementation DebuggerConnection
+
+/**
+ * Creates a new DebuggerConnection and initializes the socket from the given connection
+ * paramters.
+ */
+- (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session
 {
-	IBOutlet NSTextField *_host;
-	IBOutlet NSTextField *_port;
-	IBOutlet NSTextField *_session;
+	NSLog(@"initWithHost");
+	if (self = [super init])
+	{
+		_host = [host retain];
+		_port = port;
+		_session = [session retain];
+		_windowController = [[DebuggerWindowController alloc] initWithConnection: self];
+		[[_windowController window] makeKeyAndOrderFront: self];
+	}
+	return self;
 }
 
-+ (id)sharedController;
-
-- (IBAction)connect: (id)sender;
+/**
+ * Deallocates all of the object's data members
+ */
+- (void)dealloc
+{
+	[_host release];
+	[_session release];
+	
+	[super dealloc];
+}
 
 @end

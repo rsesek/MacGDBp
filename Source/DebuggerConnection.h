@@ -15,17 +15,17 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "DebuggerWindowController.h"
 
-
-@interface ConnectWindowController : NSWindowController
+@interface DebuggerConnection : NSObject
 {
-	IBOutlet NSTextField *_host;
-	IBOutlet NSTextField *_port;
-	IBOutlet NSTextField *_session;
+	NSString *_host;
+	int _port;
+	NSString *_session;
+	
+	DebuggerWindowController *_windowController;
 }
 
-+ (id)sharedController;
-
-- (IBAction)connect: (id)sender;
+- (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session;
 
 @end

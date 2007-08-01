@@ -14,18 +14,31 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
+#import "DebuggerWindowController.h"
+#import "DebuggerConnection.h"
 
+@implementation DebuggerWindowController
 
-@interface ConnectWindowController : NSWindowController
+/**
+ * Initializes the window controller and sets the connection
+ */
+- (id)initWithConnection: (DebuggerConnection *)cnx
 {
-	IBOutlet NSTextField *_host;
-	IBOutlet NSTextField *_port;
-	IBOutlet NSTextField *_session;
+	if (self = [super initWithWindowNibName: @"Debugger"])
+	{
+		_connection = [cnx retain];
+	}
+	return self;
 }
 
-+ (id)sharedController;
-
-- (IBAction)connect: (id)sender;
+/**
+ * Release object members
+ */
+- (void)dealloc
+{
+	[_connection release];
+	
+	[super dealloc];
+}
 
 @end

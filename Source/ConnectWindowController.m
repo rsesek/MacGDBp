@@ -15,7 +15,7 @@
  */
 
 #import "ConnectWindowController.h"
-
+#import "DebuggerConnection.h"
 
 @implementation ConnectWindowController
 
@@ -45,6 +45,15 @@
 - (void)applicationWillTerminate: (NSNotification *)notif
 {
 	[self release];
+}
+
+/**
+ * Creates a new DebuggerConnection object (and then completely forgets about it) and then close the window
+ */
+- (IBAction)connect: (id)sender
+{
+	[[DebuggerConnection alloc] initWithHost: [_host stringValue] port: [_port intValue] session: [_session stringValue]];
+	[[self window] orderOut: self];
 }
 
 @end
