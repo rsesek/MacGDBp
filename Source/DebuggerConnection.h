@@ -24,6 +24,9 @@
 	NSString *_session;
 	
 	DebuggerWindowController *_windowController;
+	
+	NSInputStream *_input;
+	NSOutputStream *_output;
 }
 
 // initializer
