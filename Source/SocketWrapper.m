@@ -19,6 +19,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 @implementation SocketWrapper
 
@@ -142,7 +143,17 @@
  */
 - (void)send: (NSString *)data
 {
-	// TODO - implement me
+	data = [NSString stringWithFormat: @"%@\0", data];
+	int sent = send(_socket, [data UTF8String], [data length], 0);
+	if (sent < 0)
+	{
+		NSLog(@"error in sending");
+	}
+	if (sent < [data length])
+	{
+		// TODO - do we really need to worry about partial sends with the lenght of our commands?
+		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
+	}
 }
 
 @end
