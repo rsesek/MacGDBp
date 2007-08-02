@@ -88,4 +88,54 @@
 	[super dealloc];
 }
 
+/**
+ * Reads from the socket and returns the result as a NSString (because it's always going to be XML). Be aware
+ * that the underlying socket recv() call will *wait* for the server to send a message, so be sure that this
+ * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
+ * will return something (which we almost always do).
+ *
+ * This function can only read a set amount of bytes (1024 to be exact). If anything is larger, then partial
+ * data will be returned. Don't shoot the messenger... even if it is our fault.
+ *
+ * Data string returned is autorelease'd
+ */
+- (NSString *)receive
+{
+	// create a buffer
+	char buffer[1024];
+	
+	// do our initial recv() call to get (hopefully) all the data and the lengh of the packet
+	int recvd = recv(_socket, &buffer, sizeof(buffer), 0);
+	
+	// the length of the packet
+	// packet is formatted in len<null>packet
+	int length = atoi(buffer);
+	
+	// check if we have a partial packet
+	if (length + sizeof(length) > sizeof(buffer))
+	{
+		// TODO - another recv() call to get the rest of the packet
+		NSLog(@"TODO: implement incomplete packet fetching");
+	}
+	
+	// strip the length from the packet, and clear the null byte
+	for (int i = recvd - length - 2; i >= 0; i--)
+	{
+		buffer[i] = ' ';
+	}
+	
+	// take our buffer read it into NSString!
+	NSLog(@"data = %@", [[NSString alloc] initWithBytes: buffer length: recvd encoding: NSUTF8StringEncoding]);
+	
+	return nil;
+}
+
+/**
+ * Sends a given NSString over the socket
+ */
+- (void)send: (NSString *)data
+{
+	// TODO - implement me
+}
+
 @end

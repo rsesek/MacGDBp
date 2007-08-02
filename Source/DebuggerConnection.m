@@ -35,6 +35,13 @@
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithPort: port];
+		if (socket == nil)
+		{
+			// TODO - kill us somehow
+			NSLog(@"can't proceed further... SocketWrapper is nil");
+		}
+		
+		[socket receive];
 		
 		// clean up after ourselves
 		[[NSNotificationCenter defaultCenter] addObserver: self

@@ -24,4 +24,7 @@
 
 - (id)initWithPort: (int)port;
 
+- (NSString *)receive;
+- (void)send: (NSString *)data;
+
 @end
