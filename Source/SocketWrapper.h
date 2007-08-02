@@ -15,28 +15,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerWindowController.h"
-#import "SocketWrapper.h"
 
-@interface DebuggerConnection : NSObject
+
+@interface SocketWrapper : NSObject
 {
-	NSString *_host;
-	int _port;
-	NSString *_session;
-	
-	DebuggerWindowController *_windowController;
-	
-	SocketWrapper *socket;
-	
-	NSMutableData *_data;
+	int _socket;
 }
 
-// initializer
-- (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session;
-
-// getter
-- (NSString *)host;
-- (int)port;
-- (NSString *)session;
+- (id)initWithPort: (int)port;
 
 @end
