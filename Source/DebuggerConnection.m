@@ -23,12 +23,10 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session
+- (id)initWithPort: (int)port session: (NSString *)session
 {
-	NSLog(@"initWithHost");
 	if (self = [super init])
 	{
-		_host = [host retain];
 		_port = port;
 		_session = [session retain];
 		
@@ -60,19 +58,10 @@
  */
 - (void)dealloc
 {
-	[_host release];
 	[_session release];
 	[socket release];
 	
 	[super dealloc];
-}
-
-/**
- * Gets the hostname
- */
-- (NSString *)host
-{
-	return _host;
 }
 
 /**

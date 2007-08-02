@@ -4,7 +4,7 @@
             ACTIONS = {connect = id; }; 
             CLASS = ConnectWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_host" = NSTextField; "_port" = NSTextField; "_session" = NSTextField; }; 
+            OUTLETS = {"_port" = NSTextField; "_session" = NSTextField; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

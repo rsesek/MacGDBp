@@ -52,7 +52,7 @@
  */
 - (IBAction)connect: (id)sender
 {
-	[[DebuggerConnection alloc] initWithHost: [_host stringValue] port: [_port intValue] session: [_session stringValue]];
+	[[DebuggerConnection alloc] initWithPort: [_port intValue] session: [_session stringValue]];
 	[[self window] orderOut: self];
 }
 

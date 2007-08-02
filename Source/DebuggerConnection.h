@@ -20,7 +20,6 @@
 
 @interface DebuggerConnection : NSObject
 {
-	NSString *_host;
 	int _port;
 	NSString *_session;
 	
@@ -32,10 +31,9 @@
 }
 
 // initializer
-- (id)initWithHost: (NSString *)host port: (int)port session: (NSString *)session;
+- (id)initWithPort: (int)port session: (NSString *)session;
 
 // getter
-- (NSString *)host;
 - (int)port;
 - (NSString *)session;
 
