@@ -94,9 +94,6 @@
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
  * will return something (which we almost always do).
  *
- * This function can only read a set amount of bytes (1024 to be exact). If anything is larger, then partial
- * data will be returned. Don't shoot the messenger... even if it is our fault.
- *
  * Data string returned is autorelease'd
  */
 - (NSString *)receive
