@@ -147,6 +147,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				1E78FD670C6155EB00D6D005 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -186,6 +187,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1E78FD670C6155EB00D6D005 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/ruby;
+			shellScript = "require \"ftools\"\nrequire \"Time\"\n\nhash = %x{/usr/local/bin/git log -1 --pretty=format:%h}\ntimestamp = %x{/usr/local/bin/git log -1 --pretty=format:%ct}\ntime = Time.at(timestamp.to_i)\n\nbuild = (\"%02d\" % time.year) + (\"%02d\" % time.month) + (\"%02d\" % time.day) + \".\" + hash\n\ninfopath = ENV[\"CONFIGURATION_BUILD_DIR\"] + \"/\" + ENV[\"INFOPLIST_PATH\"]\n\nputs infopath\n\nfile = \"\"\nio = File.new(infopath)\nlastline = \"\"\nwhile line = io.gets do\n\tif lastline.match(\"CFBundleVersion\")\n\t\tfile += \"\\t<string>#{build}</string>\\n\"\n\telse\n\t\tfile += line\n\tend\n\tlastline = line\nend\nio.close\n\nio = File.new(infopath, \"w\")\nio.write(file)\nio.close";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
