@@ -111,23 +111,33 @@
 	// packet is formatted in len<null>packet
 	int length = atoi(buffer);
 	
-	// check if we have a partial packet
-	if (length + sizeof(length) > sizeof(buffer))
-	{
-		// TODO - another recv() call to get the rest of the packet
-		NSLog(@"TODO: implement incomplete packet fetching");
-	}
+	// take the received data and put it into an NSData
+	NSMutableData *data = [NSMutableData data];
 	
-	// strip the length from the packet, and clear the null byte
-	for (int i = recvd - length - 2; i >= 0; i--)
+	// strip the length from the packet, and clear the null byte then add it to the NSData
+	for (int i = sizeof(length) - 1; i >= 0; i--)
 	{
 		buffer[i] = ' ';
 	}
+	[data appendBytes: buffer length: recvd];
 	
-	// take our buffer read it into NSString!
-	NSLog(@"data = %@", [[NSString alloc] initWithBytes: buffer length: recvd encoding: NSUTF8StringEncoding]);
+	// check if we have a partial packet
+	if (length + sizeof(length) > sizeof(buffer))
+	{
+		while (recvd < length)
+		{
+			int latest = recv(_socket, &buffer, sizeof(buffer), 0);
+			if (latest < 1)
+			{
+				NSLog(@"socket closed or error");
+			}
+			[data appendBytes: buffer length: latest];
+			recvd += latest;
+		}
+	}
 	
-	return nil;
+	// convert the NSData into a NSString
+	return [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
 }
 
 /**
