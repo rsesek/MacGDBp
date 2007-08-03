@@ -22,6 +22,7 @@
 {
 	int _port;
 	NSString *_session;
+	BOOL _connected;
 	
 	DebuggerWindowController *_windowController;
 	
@@ -34,6 +35,7 @@
 // getter
 - (int)port;
 - (NSString *)session;
+- (NSString *)remoteHost;
 
 // communication
 - (void)run;

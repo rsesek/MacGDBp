@@ -33,6 +33,8 @@
 - (void)receive: (SEL)selector;
 - (void)send: (NSString *)data;
 
+- (NSString *)remoteHost;
+
 // ============== internal functions for threading
 - (void)_connect: (id)obj;
 - (void)_postNotification: (NSString *)name withObject: (id)obj;

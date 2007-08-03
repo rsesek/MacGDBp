@@ -28,6 +28,7 @@
 	{
 		_port = port;
 		_session = [session retain];
+		_connected = NO;
 		
 		_windowController = [[DebuggerWindowController alloc] initWithConnection: self];
 		[[_windowController window] makeKeyAndOrderFront: self];
@@ -83,6 +84,18 @@
 }
 
 /**
+ * Returns the name of the remote host
+ */
+- (NSString *)remoteHost
+{
+	if (!_connected)
+	{
+		return @"(DISCONNECTED)";
+	}
+	return [_socket remoteHost];
+}
+
+/**
  * SocketWrapper delegate method that is called whenever new data is received
  */
 - (void)dataReceived: (NSString *)response deliverTo: (SEL)selector
@@ -110,6 +123,7 @@
  */
 - (void)socketDidAccept
 {
+	_connected = YES;
 	[_socket receive: @selector(_handshake:)];
 }
 

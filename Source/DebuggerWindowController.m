@@ -27,8 +27,6 @@
 	if (self = [super initWithWindowNibName: @"Debugger"])
 	{
 		_connection = [cnx retain];
-		// TODO - get the host from SocketWrapper and use that in the title
-		[[self window] setTitle: [NSString stringWithFormat: @"GDBp @ localhost:%d/%@", [_connection port], [_connection session]]];
 	}
 	return self;
 }
@@ -50,6 +48,7 @@
 {
 	[_error setHidden: YES];
 	[_status setStringValue: status];
+	[[self window] setTitle: [NSString stringWithFormat: @"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
 }
 
 /**

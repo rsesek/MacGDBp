@@ -74,6 +74,24 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 }
 
 /**
+ * Returns the name of the host to whom we are currently connected.
+ */
+- (NSString *)remoteHost
+{
+	struct sockaddr_in addr;
+	socklen_t addrLength;
+	
+	if (getpeername(_socket, (struct sockaddr *)&addr, &addrLength) < 0)
+	{
+		[self _postNotification: NsockError withObject: [NSError errorWithDomain: @"Could not get remote hostname." code: -1 userInfo: nil]];
+	}
+	
+	char *name = inet_ntoa(addr.sin_addr);
+	
+	return [NSString stringWithUTF8String: name];
+}
+
+/**
  * This is the notification listener for all types of notifications. If the notifications are from a SocketWrapper
  * class, it checks that the value of _delegate in the NSNotification's userInfo matches that of this object. If it does,
  * then the notification was sent from the same object in another thread and it passes the message along to the object's
