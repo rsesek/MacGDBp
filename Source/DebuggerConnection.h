@@ -25,7 +25,7 @@
 	
 	DebuggerWindowController *_windowController;
 	
-	SocketWrapper *socket;
+	SocketWrapper *_socket;
 }
 
 // initializer
