@@ -18,7 +18,9 @@
 
 @interface SocketWrapper : NSObject
 {
+	int _port;
 	int _socket;
+	
 	id _delegate;
 }
 
@@ -27,6 +29,7 @@
 - (id)delegate;
 - (void)setDelegate: (id)delegate;
 
+- (void)connect;
 - (void)receive;
 - (void)send: (NSString *)data;
 
@@ -44,5 +47,8 @@
 // data handlers
 - (void)dataReceived: (NSString *)response;
 - (void)dataSent;
+
+// ============== internal functions for threading
+- (void)_connect: (id)obj;
 
 @end

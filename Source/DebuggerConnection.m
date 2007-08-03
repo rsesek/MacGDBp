@@ -35,16 +35,8 @@
 		
 		// now that we have our host information, open the socket
 		_socket = [[SocketWrapper alloc] initWithPort: port];
-		if (_socket == nil)
-		{
-			// TODO - kill us somehow
-			NSLog(@"can't proceed further... SocketWrapper is nil");
-		}
-		
 		[_socket setDelegate: self];
-		[_socket receive];
-		
-		[_socket release];
+		[_socket connect];
 		
 		// clean up after ourselves
 		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -105,6 +97,15 @@
 - (void)dataSent
 {
 	NSLog(@"data sent");
+}
+
+/**
+ * Called by SocketWrapper after the connection is successful. This immediately calls
+ * -[SocketWrapper receive] to clear the way for communication
+ */
+- (void)socketAccepted
+{
+	[_socket receive];
 }
 
 @end

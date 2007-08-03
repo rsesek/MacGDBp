@@ -30,53 +30,7 @@
 {
 	if (self = [super init])
 	{
-		// create an INET socket that we'll be listen()ing on
-		int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
-		
-		// create our address given the port
-		struct sockaddr_in address;
-		address.sin_family = AF_INET;
-		address.sin_port = htons(port);
-		address.sin_addr.s_addr = htonl(INADDR_ANY);
-		memset(address.sin_zero, '\0', sizeof(address.sin_zero));
-		
-		// bind the socket... and don't give up until we've tried for a while
-		int tries = 0;
-		while (bind(socketOpen, (struct sockaddr *)&address, sizeof(address)) < 0)
-		{
-			if (tries >= 5)
-			{
-				close(socketOpen);
-				[_delegate errorEncountered: nil];
-				return nil;
-			}
-			NSLog(@"couldn't bind to the socket... trying again in 5");
-			sleep(5);
-			tries++;
-		}
-		[_delegate socketDidAccept];
-		
-		// now we just have to keep our ears open
-		if (listen(socketOpen, 0) == -1)
-		{
-			[_delegate errorEncountered: nil];
-			return nil;
-		}
-		
-		// accept a connection
-		struct sockaddr_in remoteAddress;
-		socklen_t remoteAddressLen = sizeof(remoteAddress);
-		_socket = accept(socketOpen, (struct sockaddr *)&remoteAddress, &remoteAddressLen);
-		if (_socket < 0)
-		{
-			close(socketOpen);
-			[_delegate errorEncountered: nil];
-			return nil;
-		}
-		[_delegate socketDidAccept];
-		
-		// we're done listening now that we have a connection
-		close(socketOpen);
+		_port = port;
 	}
 	return self;
 }
@@ -105,6 +59,71 @@
 - (void)setDelegate: (id)delegate
 {	
 	_delegate = delegate;
+}
+
+/**
+ * Connects to a socket on the port specified during init. This will dispatch another thread to do the
+ * actual waiting. Delegate notifications are posted along the way to let the client know what is going on.
+ */
+- (void)connect
+{
+	[NSThread detachNewThreadSelector: @selector(_connect:) toTarget: self withObject: nil];
+}
+
+/**
+ * This does the actual dirty work (in a separate thread) of connecting to a socket
+ */
+- (void)_connect: (id)obj
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	// create an INET socket that we'll be listen()ing on
+	int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
+	
+	// create our address given the port
+	struct sockaddr_in address;
+	address.sin_family = AF_INET;
+	address.sin_port = htons(_port);
+	address.sin_addr.s_addr = htonl(INADDR_ANY);
+	memset(address.sin_zero, '\0', sizeof(address.sin_zero));
+	
+	// bind the socket... and don't give up until we've tried for a while
+	int tries = 0;
+	while (bind(socketOpen, (struct sockaddr *)&address, sizeof(address)) < 0)
+	{
+		if (tries >= 5)
+		{
+			close(socketOpen);
+			[_delegate errorEncountered: nil];
+		}
+		NSLog(@"couldn't bind to the socket... trying again in 5");
+		sleep(5);
+		tries++;
+	}
+	
+	// now we just have to keep our ears open
+	if (listen(socketOpen, 0) == -1)
+	{
+		[_delegate errorEncountered: nil];
+	}
+	
+	// accept a connection
+	struct sockaddr_in remoteAddress;
+	socklen_t remoteAddressLen = sizeof(remoteAddress);
+	_socket = accept(socketOpen, (struct sockaddr *)&remoteAddress, &remoteAddressLen);
+	if (_socket < 0)
+	{
+		close(socketOpen);
+		[_delegate errorEncountered: nil];
+	}
+	
+	// we're done listening now that we have a connection
+	close(socketOpen);
+	
+	[_delegate performSelectorOnMainThread: @selector(socketDidAccept:) withObject: nil waitUntilDone: NO];
+	//[_delegate socketDidAccept];
+	
+	[pool release];
 }
 
 /**
@@ -185,6 +204,14 @@
 	}
 	
 	[_delegate dataSent];
+}
+
+/**
+ * Helper method to simply post a notification to the default notification center with a given name and object
+ */
+- (void)_postNotification: (NSString *)name withObject: (id)obj
+{
+	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj];
 }
 
 @end
