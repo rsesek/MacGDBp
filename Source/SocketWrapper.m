@@ -21,8 +21,11 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-NSString *sockNotificationDebuggerConnection = @"debuggerconnection";
-NSString *sockDidAcceptNotification = @"socketdidaccept";
+NSString *sockNotificationDebuggerConnection = @"DebuggerConnection";
+NSString *NsockError = @"SocketWrapper_Error";
+NSString *NsockDidAccept = @"SocketWrapper_DidAccept";
+NSString *NsockDataReceived = @"SocketWrapper_DataReceived";
+NSString *NsockDataSent = @"SocketWrapper_DataSent";
 
 @implementation SocketWrapper
 
@@ -85,9 +88,21 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 	
 	NSString *name = [notif name];
 	
-	if (name == sockDidAcceptNotification)
+	if (name == NsockDidAccept)
 	{
 		[_delegate socketDidAccept];
+	}
+	else if (name == NsockDataReceived)
+	{
+		[_delegate dataReceived: [notif object]];
+	}
+	else if (name == NsockDataSent)
+	{
+		[_delegate dataSent];
+	}
+	else if (name == NsockError)
+	{
+		[_delegate errorEncountered: [NSError errorWithDomain: [notif object] code: -1 userInfo: nil]];
 	}
 }
 
@@ -124,7 +139,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 		if (tries >= 5)
 		{
 			close(socketOpen);
-			[_delegate errorEncountered: nil];
+			[self _postNotification: NsockError withObject: @"Could not bind to socket"];
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
 		sleep(5);
@@ -134,7 +149,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 	// now we just have to keep our ears open
 	if (listen(socketOpen, 0) == -1)
 	{
-		[_delegate errorEncountered: nil];
+		[self _postNotification: NsockError withObject: @"Could not use bound socket for listening"];
 	}
 	
 	// accept a connection
@@ -144,13 +159,13 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 	if (_socket < 0)
 	{
 		close(socketOpen);
-		[_delegate errorEncountered: nil];
+		[self _postNotification: NsockError withObject: @"Client failed to accept remote socket"];
 	}
 	
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[self _postNotification: sockDidAcceptNotification withObject: nil];
+	[self _postNotification: NsockDidAccept withObject: nil];
 	
 	[pool release];
 }
@@ -204,7 +219,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 			int latest = recv(_socket, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
 			{
-				NSLog(@"socket closed or error");
+				[self _postNotification: NsockError withObject: @"Socket closed or could not be read"];
 			}
 			[data appendBytes: buffer length: latest];
 			recvd += latest;
@@ -212,7 +227,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 	}
 	
 	// convert the NSData into a NSString
-	[_delegate dataReceived: [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]];
+	[self _postNotification: NsockDataReceived withObject: [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]];
 }
 
 /**
@@ -224,7 +239,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 	int sent = send(_socket, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
-		NSLog(@"error in sending");
+		[self _postNotification: NsockError withObject: @"Failed to write data to socket"];
 	}
 	if (sent < [data length])
 	{
@@ -232,7 +247,7 @@ NSString *sockDidAcceptNotification = @"socketdidaccept";
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
 	
-	[_delegate dataSent];
+	[self _postNotification: NsockDataSent withObject: nil];
 }
 
 /**

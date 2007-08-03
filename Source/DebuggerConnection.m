@@ -104,7 +104,16 @@
  */
 - (void)socketDidAccept
 {
-	NSLog(@"accepted :)");
+	NSLog(@"accepted connection");
+	[_socket receive];
+}
+
+/**
+ * Receives errors from the SocketWrapper and updates the display
+ */
+- (void)errorEncountered: (NSError *)error
+{
+	NSLog(@"error = %@", error);
 }
 
 @end
