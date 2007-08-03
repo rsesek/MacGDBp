@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {
+            ACTIONS = {run = id; }; 
             CLASS = DebuggerWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {"_error" = NSTextField; "_status" = NSTextField; }; 
