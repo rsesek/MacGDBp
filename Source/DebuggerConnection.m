@@ -137,7 +137,9 @@
  */
 - (void)updateStatus: (NSString *)packet
 {
-	[_windowController setStatus: packet];
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
+	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
+	[doc release];
 }
 
 @end
