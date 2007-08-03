@@ -41,14 +41,14 @@ extern NSString *SocketWrapperDataSentNotification;
 @interface NSObject (SocketWrapperDelegate)
 
 // error
-- (void)errorEncountered: (NSNotification *)notif;
+- (void)errorEncountered: (NSError *)error;
 
 // connection components
-- (void)socketDidBind: (NSNotification *)notif;
-- (void)socketDidAccept: (NSNotification *)notif;
+- (void)socketDidBind;
+- (void)socketDidAccept;
 
 // data handlers
-- (void)dataReceived: (NSNotification *)notif;
-- (void)dataSent: (NSNotification *)notif;
+- (void)dataReceived: (NSString *)response;
+- (void)dataSent;
 
 @end

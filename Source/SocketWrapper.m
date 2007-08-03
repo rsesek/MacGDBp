@@ -53,19 +53,19 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 			if (tries >= 5)
 			{
 				close(socketOpen);
-				[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"bind failed"];
+				[_delegate errorEncountered: nil];
 				return nil;
 			}
 			NSLog(@"couldn't bind to the socket... trying again in 5");
 			sleep(5);
 			tries++;
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperSocketDidBindNotification object: self];
+		[_delegate socketDidAccept];
 		
 		// now we just have to keep our ears open
 		if (listen(socketOpen, 0) == -1)
 		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"listen failed"];
+			[_delegate errorEncountered: nil];
 			return nil;
 		}
 		
@@ -76,10 +76,10 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 		if (_socket < 0)
 		{
 			close(socketOpen);
-			[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"accept failed"];
+			[_delegate errorEncountered: nil];
 			return nil;
 		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperSocketDidAcceptNotification object: self];
+		[_delegate socketDidAccept];
 		
 		// we're done listening now that we have a connection
 		close(socketOpen);
@@ -109,21 +109,8 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
  * Sets the delegate but does *not* retain it
  */
 - (void)setDelegate: (id)delegate
-{
-	if (_delegate != nil)
-	{
-		[[NSNotificationCenter defaultCenter] removeObserver: _delegate];
-	}
-	
+{	
 	_delegate = delegate;
-	
-	NSLog(@"responds to ? %d", [_delegate respondsToSelector: @selector(dataReceived:)]);
-	
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(errorEncountered:) name: SocketWrapperDidErrorNotification object: self];
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidBind:) name: SocketWrapperSocketDidBindNotification object: self];
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidAccept:) name: SocketWrapperSocketDidAcceptNotification object: self];
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(dataReceived:) name: nil object: self];
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(dataSent:) name: SocketWrapperDataSentNotification object: self];
 }
 
 /**
@@ -148,17 +135,19 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 	// strip the length from the packet, and clear the null byte then add it to the NSData
 	char packetLength[32];
 	int i = 0;
-	while (buffer[i] != '\0')
+	do
 	{
 		packetLength[i] = buffer[i];
 		i++;
-	}
+	} while (buffer[i] != '\0');
 	// the length of the packet
 	// packet is formatted in len<null>packet
 	int length = atoi(packetLength);
 	
 	// take our bytes and convert them to NSData
-	[data appendBytes: &buffer[i + 1] length: recvd];
+	char packet[sizeof(buffer)];
+	strcpy(packet, &buffer[i + 1]);
+	[data appendBytes: packet length: recvd];
 	
 	// check if we have a partial packet
 	if (length + sizeof(length) > sizeof(buffer))
@@ -176,9 +165,9 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 	}
 	
 	// convert the NSData into a NSString
-	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	NSString *string = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDataReceivedNotification object: string];
+	[_delegate dataReceived: string];
 	
 	//return string;
 }
@@ -200,7 +189,7 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDataSentNotification object: self];
+	[_delegate dataSent];
 }
 
 @end
