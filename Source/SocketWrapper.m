@@ -21,6 +21,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+NSString *SocketWrapperNotificationConnection = @"debuggerconnection";
+NSString *SocketDidAcceptNotification = @"socketdidaccept";
+
 @implementation SocketWrapper
 
 /**
@@ -57,8 +60,15 @@
  * Sets the delegate but does *not* retain it
  */
 - (void)setDelegate: (id)delegate
-{	
+{
+	if (_delegate != nil)
+	{
+		[[NSNotificationCenter defaultCenter] removeObserver: _delegate];
+	}
+	
 	_delegate = delegate;
+	
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidAccept:) name: SocketDidAcceptNotification object: nil];
 }
 
 /**
@@ -120,8 +130,7 @@
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[_delegate performSelectorOnMainThread: @selector(socketDidAccept:) withObject: nil waitUntilDone: NO];
-	//[_delegate socketDidAccept];
+	[self _postNotification: SocketDidAcceptNotification withObject: nil];
 	
 	[pool release];
 }
@@ -211,7 +220,9 @@
  */
 - (void)_postNotification: (NSString *)name withObject: (id)obj
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj];
+	NSDictionary *dict = [NSDictionary dictionaryWithObjects: [NSArray arrayWithObjects: _delegate, nil]
+													 forKeys: [NSArray arrayWithObjects: SocketWrapperNotificationConnection, nil]];
+	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj userInfo: dict];
 }
 
 @end

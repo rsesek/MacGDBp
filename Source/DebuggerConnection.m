@@ -16,7 +16,6 @@
 
 #import "DebuggerConnection.h"
 
-
 @implementation DebuggerConnection
 
 /**
@@ -103,9 +102,13 @@
  * Called by SocketWrapper after the connection is successful. This immediately calls
  * -[SocketWrapper receive] to clear the way for communication
  */
-- (void)socketAccepted
+- (void)socketDidAccept: (NSNotification *)notif
 {
-	[_socket receive];
+	NSLog(@"accepted %@", notif);
+	if ([[notif userInfo] objectForKey: SocketWrapperNotificationConnection] == self)
+	{
+		NSLog(@"accepted :)");
+	}
 }
 
 @end
