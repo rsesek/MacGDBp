@@ -16,9 +16,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SocketWrapperNotificationConnection; // fancy name for _delegate
-extern NSString *SocketDidAcceptNotification;
-
 @interface SocketWrapper : NSObject
 {
 	int _port;

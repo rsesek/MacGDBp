@@ -21,8 +21,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-NSString *SocketWrapperNotificationConnection = @"debuggerconnection";
-NSString *SocketDidAcceptNotification = @"socketdidaccept";
+NSString *sockNotificationDebuggerConnection = @"debuggerconnection";
+NSString *sockDidAcceptNotification = @"socketdidaccept";
 
 @implementation SocketWrapper
 
@@ -34,6 +34,11 @@ NSString *SocketDidAcceptNotification = @"socketdidaccept";
 	if (self = [super init])
 	{
 		_port = port;
+		
+		// the delegate notifications work funky because of threads. we register ourselves as the
+		// observer and then pass up the messages that are actually from this object (as we can't only observe self due to threads)
+		// to our delegate, and not to all delegates
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_sendMessageToDelegate:) name: nil object: nil];
 	}
 	return self;
 }
@@ -61,14 +66,29 @@ NSString *SocketDidAcceptNotification = @"socketdidaccept";
  */
 - (void)setDelegate: (id)delegate
 {
-	if (_delegate != nil)
+	_delegate = delegate;
+}
+
+/**
+ * This is the notification listener for all types of notifications. If the notifications are from a SocketWrapper
+ * class, it checks that the value of _delegate in the NSNotification's userInfo matches that of this object. If it does,
+ * then the notification was sent from the same object in another thread and it passes the message along to the object's
+ * delegate. Complicated enough?
+ */
+- (void)_sendMessageToDelegate: (NSNotification *)notif
+{
+	// this isn't us, so there's no point in continuing
+	if ([[notif userInfo] objectForKey: sockNotificationDebuggerConnection] != _delegate)
 	{
-		[[NSNotificationCenter defaultCenter] removeObserver: _delegate];
+		return;
 	}
 	
-	_delegate = delegate;
+	NSString *name = [notif name];
 	
-	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidAccept:) name: SocketDidAcceptNotification object: nil];
+	if (name == sockDidAcceptNotification)
+	{
+		[_delegate socketDidAccept];
+	}
 }
 
 /**
@@ -130,7 +150,7 @@ NSString *SocketDidAcceptNotification = @"socketdidaccept";
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[self _postNotification: SocketDidAcceptNotification withObject: nil];
+	[self _postNotification: sockDidAcceptNotification withObject: nil];
 	
 	[pool release];
 }
@@ -221,7 +241,7 @@ NSString *SocketDidAcceptNotification = @"socketdidaccept";
 - (void)_postNotification: (NSString *)name withObject: (id)obj
 {
 	NSDictionary *dict = [NSDictionary dictionaryWithObjects: [NSArray arrayWithObjects: _delegate, nil]
-													 forKeys: [NSArray arrayWithObjects: SocketWrapperNotificationConnection, nil]];
+													 forKeys: [NSArray arrayWithObjects: sockNotificationDebuggerConnection, nil]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj userInfo: dict];
 }
 

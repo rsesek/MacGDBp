@@ -102,13 +102,9 @@
  * Called by SocketWrapper after the connection is successful. This immediately calls
  * -[SocketWrapper receive] to clear the way for communication
  */
-- (void)socketDidAccept: (NSNotification *)notif
+- (void)socketDidAccept
 {
-	NSLog(@"accepted %@", notif);
-	if ([[notif userInfo] objectForKey: SocketWrapperNotificationConnection] == self)
-	{
-		NSLog(@"accepted :)");
-	}
+	NSLog(@"accepted :)");
 }
 
 @end
