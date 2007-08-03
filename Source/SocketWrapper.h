@@ -16,12 +16,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SocketWrapperDidErrorNotification;
-extern NSString *SocketWrapperSocketDidBindNotification;
-extern NSString *SocketWrapperSocketDidAcceptNotification;
-extern NSString *SocketWrapperDataReceivedNotification;
-extern NSString *SocketWrapperDataSentNotification;
-
 @interface SocketWrapper : NSObject
 {
 	int _socket;

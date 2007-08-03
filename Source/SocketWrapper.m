@@ -21,12 +21,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-NSString *SocketWrapperDidErrorNotification = @"errorOccurred";
-NSString *SocketWrapperSocketDidBindNotification = @"bindSuccess";
-NSString *SocketWrapperSocketDidAcceptNotification = @"acceptSuccess";
-NSString *SocketWrapperDataReceivedNotification = @"dataReceived";
-NSString *SocketWrapperDataSentNotification = @"dataSent";
-
 @implementation SocketWrapper
 
 /**
@@ -144,13 +138,14 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 	// we also want the null byte, so move us up 1
 	i++;
 	
-	// the length of the packet
-	// packet is formatted in len<null>packet
+	// the total length of the full transmission
 	int length = atoi(packetLength);
 	
-	// take our bytes and convert them to NSData
+	// move the packet part of the received data into it's own char[]
 	char packet[sizeof(buffer)];
 	memmove(packet, &buffer[i], recvd - i);
+	
+	// convert bytes to NSData
 	[data appendBytes: packet length: recvd];
 	
 	// check if we have a partial packet

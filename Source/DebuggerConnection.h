@@ -26,8 +26,6 @@
 	DebuggerWindowController *_windowController;
 	
 	SocketWrapper *socket;
-	
-	NSMutableData *_data;
 }
 
 // initializer

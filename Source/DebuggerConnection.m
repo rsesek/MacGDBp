@@ -34,26 +34,17 @@
 		[[_windowController window] makeKeyAndOrderFront: self];
 		
 		// now that we have our host information, open the socket
-		socket = [[SocketWrapper alloc] initWithPort: port];
-		if (socket == nil)
+		_socket = [[SocketWrapper alloc] initWithPort: port];
+		if (_socket == nil)
 		{
 			// TODO - kill us somehow
 			NSLog(@"can't proceed further... SocketWrapper is nil");
 		}
 		
-		[socket setDelegate: self];
-		/*
-		NSLog(@"data = %@", [socket receive]);
-		[socket send: @"status -i foo"];
-		NSLog(@"status = %@", [socket receive]);
-		[socket send: @"run -i foo"];
-		NSLog(@"status = %@", [socket receive]);
-		 */
+		[_socket setDelegate: self];
+		[_socket receive];
 		
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(dataReceived:) name: SocketWrapperDataReceivedNotification object: nil];
-		[socket receive];
-		
-		[socket release];
+		[_socket release];
 		
 		// clean up after ourselves
 		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -62,17 +53,6 @@
 												   object: NSApp];
 	}
 	return self;
-}
-
-- (void)dataReceived: (NSNotification *)notif
-{
-	NSLog(@"hi?");
-	NSLog(@"notif = %@", [notif object]);
-}
-
-- (void)dataSent: (NSNotification *)notif
-{
-	NSLog(@"data sent");
 }
 
 /**
@@ -89,7 +69,7 @@
 - (void)dealloc
 {
 	[_session release];
-	[socket release];
+	[_socket release];
 	
 	[super dealloc];
 }
@@ -108,6 +88,23 @@
 - (NSString *)session
 {
 	return _session;
+}
+
+/**
+ * SocketWrapper delegate method that is called whenever new data is received
+ */
+- (void)dataReceived: (NSString *)response
+{
+	NSLog(@"response = %@", response);
+}
+
+/**
+ * SocketWrapper delegate method that is called after data is sent. This really
+ * isn't useful for much.
+ */
+- (void)dataSent
+{
+	NSLog(@"data sent");
 }
 
 @end
