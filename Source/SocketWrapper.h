@@ -16,15 +16,39 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SocketWrapperDidErrorNotification;
+extern NSString *SocketWrapperSocketDidBindNotification;
+extern NSString *SocketWrapperSocketDidAcceptNotification;
+extern NSString *SocketWrapperDataReceivedNotification;
+extern NSString *SocketWrapperDataSentNotification;
 
 @interface SocketWrapper : NSObject
 {
 	int _socket;
+	id _delegate;
 }
 
 - (id)initWithPort: (int)port;
 
-- (NSString *)receive;
+- (id)delegate;
+- (void)setDelegate: (id)delegate;
+
+- (void)receive;
 - (void)send: (NSString *)data;
+
+@end
+
+@interface NSObject (SocketWrapperDelegate)
+
+// error
+- (void)errorEncountered: (NSNotification *)notif;
+
+// connection components
+- (void)socketDidBind: (NSNotification *)notif;
+- (void)socketDidAccept: (NSNotification *)notif;
+
+// data handlers
+- (void)dataReceived: (NSNotification *)notif;
+- (void)dataSent: (NSNotification *)notif;
 
 @end

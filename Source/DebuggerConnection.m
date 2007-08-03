@@ -41,7 +41,19 @@
 			NSLog(@"can't proceed further... SocketWrapper is nil");
 		}
 		
+		[socket setDelegate: self];
+		/*
+		NSLog(@"data = %@", [socket receive]);
+		[socket send: @"status -i foo"];
+		NSLog(@"status = %@", [socket receive]);
+		[socket send: @"run -i foo"];
+		NSLog(@"status = %@", [socket receive]);
+		 */
+		
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(dataReceived:) name: SocketWrapperDataReceivedNotification object: nil];
 		[socket receive];
+		
+		[socket release];
 		
 		// clean up after ourselves
 		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -50,6 +62,17 @@
 												   object: NSApp];
 	}
 	return self;
+}
+
+- (void)dataReceived: (NSNotification *)notif
+{
+	NSLog(@"hi?");
+	NSLog(@"notif = %@", [notif object]);
+}
+
+- (void)dataSent: (NSNotification *)notif
+{
+	NSLog(@"data sent");
 }
 
 /**

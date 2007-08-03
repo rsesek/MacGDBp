@@ -21,6 +21,12 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+NSString *SocketWrapperDidErrorNotification = @"errorOccurred";
+NSString *SocketWrapperSocketDidBindNotification = @"bindSuccess";
+NSString *SocketWrapperSocketDidAcceptNotification = @"acceptSuccess";
+NSString *SocketWrapperDataReceivedNotification = @"dataReceived";
+NSString *SocketWrapperDataSentNotification = @"dataSent";
+
 @implementation SocketWrapper
 
 /**
@@ -47,18 +53,19 @@
 			if (tries >= 5)
 			{
 				close(socketOpen);
-				NSLog(@"giving up now");
+				[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"bind failed"];
 				return nil;
 			}
 			NSLog(@"couldn't bind to the socket... trying again in 5");
 			sleep(5);
 			tries++;
 		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperSocketDidBindNotification object: self];
 		
 		// now we just have to keep our ears open
 		if (listen(socketOpen, 0) == -1)
 		{
-			NSLog(@"listen failed");
+			[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"listen failed"];
 			return nil;
 		}
 		
@@ -69,9 +76,10 @@
 		if (_socket < 0)
 		{
 			close(socketOpen);
-			NSLog(@"could not accept() the socket");
+			[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDidErrorNotification object: @"accept failed"];
 			return nil;
 		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperSocketDidAcceptNotification object: self];
 		
 		// we're done listening now that we have a connection
 		close(socketOpen);
@@ -90,6 +98,35 @@
 }
 
 /**
+ * Returns the delegate
+ */
+- (id)delegate
+{
+	return _delegate;
+}
+
+/**
+ * Sets the delegate but does *not* retain it
+ */
+- (void)setDelegate: (id)delegate
+{
+	if (_delegate != nil)
+	{
+		[[NSNotificationCenter defaultCenter] removeObserver: _delegate];
+	}
+	
+	_delegate = delegate;
+	
+	NSLog(@"responds to ? %d", [_delegate respondsToSelector: @selector(dataReceived:)]);
+	
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(errorEncountered:) name: SocketWrapperDidErrorNotification object: self];
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidBind:) name: SocketWrapperSocketDidBindNotification object: self];
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(socketDidAccept:) name: SocketWrapperSocketDidAcceptNotification object: self];
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(dataReceived:) name: nil object: self];
+	[[NSNotificationCenter defaultCenter] addObserver: _delegate selector: @selector(dataSent:) name: SocketWrapperDataSentNotification object: self];
+}
+
+/**
  * Reads from the socket and returns the result as a NSString (because it's always going to be XML). Be aware
  * that the underlying socket recv() call will *wait* for the server to send a message, so be sure that this
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
@@ -97,7 +134,7 @@
  *
  * Data string returned is autorelease'd
  */
-- (NSString *)receive
+- (void)receive
 {
 	// create a buffer
 	char buffer[1024];
@@ -105,19 +142,23 @@
 	// do our initial recv() call to get (hopefully) all the data and the lengh of the packet
 	int recvd = recv(_socket, &buffer, sizeof(buffer), 0);
 	
-	// the length of the packet
-	// packet is formatted in len<null>packet
-	int length = atoi(buffer);
-	
 	// take the received data and put it into an NSData
 	NSMutableData *data = [NSMutableData data];
 	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
-	for (int i = sizeof(length) - 1; i >= 0; i--)
+	char packetLength[32];
+	int i = 0;
+	while (buffer[i] != '\0')
 	{
-		buffer[i] = ' ';
+		packetLength[i] = buffer[i];
+		i++;
 	}
-	[data appendBytes: buffer length: recvd];
+	// the length of the packet
+	// packet is formatted in len<null>packet
+	int length = atoi(packetLength);
+	
+	// take our bytes and convert them to NSData
+	[data appendBytes: &buffer[i + 1] length: recvd];
 	
 	// check if we have a partial packet
 	if (length + sizeof(length) > sizeof(buffer))
@@ -135,7 +176,11 @@
 	}
 	
 	// convert the NSData into a NSString
-	return [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDataReceivedNotification object: string];
+	
+	//return string;
 }
 
 /**
@@ -154,6 +199,8 @@
 		// TODO - do we really need to worry about partial sends with the lenght of our commands?
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: SocketWrapperDataSentNotification object: self];
 }
 
 @end
