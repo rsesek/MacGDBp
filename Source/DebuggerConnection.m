@@ -183,6 +183,26 @@
 	[_socket send: [self _createCommand: @"step_into"]];
 	[_socket receive: nil];
 	[self refreshStatus];
+	[self updateStackTraceAndRegisters];
+}
+
+/**
+ * This function queries the debug server for the current stacktrace and all the registers on
+ * level one. If a user then tries to expand past level one... TOOD: HOLY CRAP WHAT DO WE DO PAST LEVEL 1?
+ */
+- (void)updateStackTraceAndRegisters
+{
+	[_socket send: [self _createCommand: @"stack_get"]];
+	[_socket receive: @selector(_stackReceived:)];
+}
+
+/**
+ * Called by the dataReceived delivery delegate. This updates the window controller's data
+ * for the stack trace
+ */
+- (void)_stackReceived: (NSString *)packet
+{
+	NSLog(@"stacktrace = %@", packet);
 }
 
 /**

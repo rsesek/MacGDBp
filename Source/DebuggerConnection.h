@@ -41,6 +41,7 @@
 - (void)run;
 - (void)stepIn;
 - (void)refreshStatus;
+- (void)updateStackTraceAndRegisters;
 
 // ================= internal private
 - (NSString *)_createCommand: (NSString *)cmd;
