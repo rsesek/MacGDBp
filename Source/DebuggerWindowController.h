@@ -31,4 +31,6 @@
 - (void)setStatus: (NSString *)status;
 - (void)setError: (NSString *)error;
 
+- (IBAction)run: (id)sender;
+
 @end

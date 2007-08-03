@@ -62,4 +62,12 @@
 	[_error setHidden: NO];
 }
 
+/**
+ * Forwards the message to run script execution to the connection
+ */
+- (IBAction)run: (id)sender
+{
+	[_connection run];
+}
+
 @end

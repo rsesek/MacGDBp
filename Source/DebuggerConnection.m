@@ -110,7 +110,7 @@
  */
 - (void)socketDidAccept
 {
-	[_socket receive: @selector(handshake:)];
+	[_socket receive: @selector(_handshake:)];
 }
 
 /**
@@ -125,21 +125,47 @@
  * The initial packet handshake. This allows us to set things like the title of the window
  * and glean information about hte server we are debugging
  */
-- (void)handshake: (NSString *)packet
+- (void)_handshake: (NSString *)packet
 {
-	[_socket send: @"status -i foo"];
-	[_socket receive: @selector(updateStatus:)];
+	[self refreshStatus];
 }
 
 /**
  * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
  * the window controller's status text
  */
-- (void)updateStatus: (NSString *)packet
+- (void)_updateStatus: (NSString *)packet
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
 	[doc release];
+}
+
+/**
+ * Tells the debugger to continue running the script
+ */
+- (void)run
+{
+	[_socket send: [self _createCommand: @"run"]];
+	[self refreshStatus];
+}
+
+/**
+ * Method that runs tells the debugger to give us its status. This will call _updateStatus
+ * and will update the status text on the window
+ */
+- (void)refreshStatus
+{
+	[_socket send: [self _createCommand: @"status"]];
+	[_socket receive: @selector(_updateStatus:)];
+}
+
+/**
+ * Helper method to create a string command with the -i <session> automatically tacked on
+ */
+- (NSString *)_createCommand: (NSString *)cmd
+{
+	return [NSString stringWithFormat: @"%@ -i %@", cmd, _session];
 }
 
 @end

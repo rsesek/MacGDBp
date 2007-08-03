@@ -35,4 +35,11 @@
 - (int)port;
 - (NSString *)session;
 
+// communication
+- (void)run;
+- (void)refreshStatus;
+
+// ================= internal private
+- (NSString *)_createCommand: (NSString *)cmd;
+
 @end
