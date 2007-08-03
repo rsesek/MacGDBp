@@ -251,9 +251,16 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// convert the NSData into a NSString
 	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
 	
-	[self _postNotification: NsockDataReceived
-				 withObject: string
-				   withDict: [NSMutableDictionary dictionaryWithObject: NSStringFromSelector(selector) forKey: sockNotificationReceiver]];
+	if (selector != nil)
+	{
+		[self _postNotification: NsockDataReceived
+					 withObject: string
+					   withDict: [NSMutableDictionary dictionaryWithObject: NSStringFromSelector(selector) forKey: sockNotificationReceiver]];
+	}
+	else
+	{
+		[self _postNotification: NsockDataReceived withObject: string];
+	}
 }
 
 /**
