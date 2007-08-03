@@ -84,8 +84,13 @@
 /**
  * SocketWrapper delegate method that is called whenever new data is received
  */
-- (void)dataReceived: (NSString *)response
+- (void)dataReceived: (NSString *)response deliverTo: (SEL)selector
 {
+	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
+	if (selector != nil)
+	{
+		[self performSelector: selector withObject: response];
+	}
 	NSLog(@"response = %@", response);
 }
 
@@ -104,8 +109,7 @@
  */
 - (void)socketDidAccept
 {
-	NSLog(@"accepted connection");
-	[_socket receive];
+	[_socket receive: @selector(handshake:)];
 }
 
 /**
@@ -114,6 +118,15 @@
 - (void)errorEncountered: (NSError *)error
 {
 	NSLog(@"error = %@", error);
+}
+
+/**
+ * The initial packet handshake. This allows us to set things like the title of the window
+ * and glean information about hte server we are debugging
+ */
+- (void)handshake: (NSString *)packet
+{
+	NSLog(@"packet = %@", packet);
 }
 
 @end

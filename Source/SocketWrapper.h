@@ -30,7 +30,7 @@
 - (void)setDelegate: (id)delegate;
 
 - (void)connect;
-- (void)receive;
+- (void)receive: (SEL)selector;
 - (void)send: (NSString *)data;
 
 @end
@@ -45,11 +45,12 @@
 - (void)socketDidAccept;
 
 // data handlers
-- (void)dataReceived: (NSString *)response;
+- (void)dataReceived: (NSString *)response deliverTo: (SEL)selector;
 - (void)dataSent;
 
 // ============== internal functions for threading
 - (void)_connect: (id)obj;
 - (void)_postNotification: (NSString *)name withObject: (id)obj;
+- (void)_postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict;
 
 @end

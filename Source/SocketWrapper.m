@@ -22,6 +22,7 @@
 #include <unistd.h>
 
 NSString *sockNotificationDebuggerConnection = @"DebuggerConnection";
+NSString *sockNotificationReceiver = @"SEL-del-SocketWrapper_dataReceived";
 NSString *NsockError = @"SocketWrapper_Error";
 NSString *NsockDidAccept = @"SocketWrapper_DidAccept";
 NSString *NsockDataReceived = @"SocketWrapper_DataReceived";
@@ -94,7 +95,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	}
 	else if (name == NsockDataReceived)
 	{
-		[_delegate dataReceived: [notif object]];
+		[_delegate dataReceived: [notif object] deliverTo: NSSelectorFromString([[notif userInfo] objectForKey: sockNotificationReceiver])];
 	}
 	else if (name == NsockDataSent)
 	{
@@ -176,9 +177,9 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
  * will return something (which we almost always do).
  *
- * Data string returned is autorelease'd
+ * The paramater is an optional selector which the delegate method dataReceived:deliverTo: should forward to
  */
-- (void)receive
+- (void)receive: (SEL)selector
 {
 	// create a buffer
 	char buffer[1024];
@@ -227,7 +228,11 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	}
 	
 	// convert the NSData into a NSString
-	[self _postNotification: NsockDataReceived withObject: [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]];
+	NSString *string = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	
+	[self _postNotification: NsockDataReceived
+				 withObject: string
+				   withDict: [NSMutableDictionary dictionaryWithObject: NSStringFromSelector(selector) forKey: sockNotificationReceiver]];
 }
 
 /**
@@ -255,8 +260,16 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)_postNotification: (NSString *)name withObject: (id)obj
 {
-	NSDictionary *dict = [NSDictionary dictionaryWithObjects: [NSArray arrayWithObjects: _delegate, nil]
-													 forKeys: [NSArray arrayWithObjects: sockNotificationDebuggerConnection, nil]];
+	[self _postNotification: name withObject: obj withDict: [NSMutableDictionary dictionary]];
+}
+
+/**
+ * Another helper method to aid in the posting of notifications. This one should be used if you have additional
+ * things for the userInfo. This automatically adds the sockNotificationDebuggerConnection key.
+ */
+- (void)_postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict
+{
+	[dict setValue: _delegate forKey: sockNotificationDebuggerConnection];
 	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj userInfo: dict];
 }
 
