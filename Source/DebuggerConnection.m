@@ -35,6 +35,7 @@
 		// now that we have our host information, open the socket
 		_socket = [[SocketWrapper alloc] initWithPort: port];
 		[_socket setDelegate: self];
+		[_windowController setStatus: @"Connecting"];
 		[_socket connect];
 		
 		// clean up after ourselves
@@ -117,7 +118,7 @@
  */
 - (void)errorEncountered: (NSError *)error
 {
-	NSLog(@"error = %@", error);
+	[_windowController setError: [error domain]];
 }
 
 /**
@@ -126,7 +127,17 @@
  */
 - (void)handshake: (NSString *)packet
 {
-	NSLog(@"packet = %@", packet);
+	[_socket send: @"status -i foo"];
+	[_socket receive: @selector(updateStatus:)];
+}
+
+/**
+ * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
+ * the window controller's status text
+ */
+- (void)updateStatus: (NSString *)packet
+{
+	[_windowController setStatus: packet];
 }
 
 @end

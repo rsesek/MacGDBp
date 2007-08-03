@@ -43,4 +43,23 @@
 	[super dealloc];
 }
 
+/**
+ * Sets the status and clears any error message
+ */
+- (void)setStatus: (NSString *)status
+{
+	[_error setHidden: YES];
+	[_status setStringValue: status];
+}
+
+/**
+ * Sets the status to be "Error" and then displays the error message
+ */
+- (void)setError: (NSString *)error
+{
+	[_error setStringValue: error];
+	[self setStatus: @"Error"];
+	[_error setHidden: NO];
+}
+
 @end

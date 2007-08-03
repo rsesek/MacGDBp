@@ -3,6 +3,7 @@
         {
             CLASS = DebuggerWindowController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {"_error" = NSTextField; "_status" = NSTextField; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

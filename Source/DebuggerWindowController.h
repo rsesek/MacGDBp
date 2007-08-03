@@ -21,8 +21,14 @@
 @interface DebuggerWindowController : NSWindowController
 {
 	DebuggerConnection *_connection;
+	
+	IBOutlet NSTextField *_status;
+	IBOutlet NSTextField *_error;
 }
 
 - (id)initWithConnection: (DebuggerConnection *)cnx;
+
+- (void)setStatus: (NSString *)status;
+- (void)setError: (NSString *)error;
 
 @end
