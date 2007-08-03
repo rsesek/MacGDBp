@@ -141,6 +141,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		{
 			close(socketOpen);
 			[self _postNotification: NsockError withObject: @"Could not bind to socket"];
+			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
 		sleep(5);
@@ -161,6 +162,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	{
 		close(socketOpen);
 		[self _postNotification: NsockError withObject: @"Client failed to accept remote socket"];
+		return;
 	}
 	
 	// we're done listening now that we have a connection
@@ -221,6 +223,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			if (latest < 1)
 			{
 				[self _postNotification: NsockError withObject: @"Socket closed or could not be read"];
+				return;
 			}
 			[data appendBytes: buffer length: latest];
 			recvd += latest;
@@ -245,6 +248,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	if (sent < 0)
 	{
 		[self _postNotification: NsockError withObject: @"Failed to write data to socket"];
+		return;
 	}
 	if (sent < [data length])
 	{
