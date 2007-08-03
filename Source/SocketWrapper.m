@@ -133,24 +133,28 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 	NSMutableData *data = [NSMutableData data];
 	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
-	char packetLength[32];
+	char packetLength[8];
 	int i = 0;
-	do
+	while (buffer[i] != '\0')
 	{
 		packetLength[i] = buffer[i];
 		i++;
-	} while (buffer[i] != '\0');
+	}
+	
+	// we also want the null byte, so move us up 1
+	i++;
+	
 	// the length of the packet
 	// packet is formatted in len<null>packet
 	int length = atoi(packetLength);
 	
 	// take our bytes and convert them to NSData
 	char packet[sizeof(buffer)];
-	strcpy(packet, &buffer[i + 1]);
+	memmove(packet, &buffer[i], recvd - i);
 	[data appendBytes: packet length: recvd];
 	
 	// check if we have a partial packet
-	if (length + sizeof(length) > sizeof(buffer))
+	if (length + i > sizeof(buffer))
 	{
 		while (recvd < length)
 		{
@@ -165,11 +169,7 @@ NSString *SocketWrapperDataSentNotification = @"dataSent";
 	}
 	
 	// convert the NSData into a NSString
-	NSString *string = [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
-	
-	[_delegate dataReceived: string];
-	
-	//return string;
+	[_delegate dataReceived: [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]];
 }
 
 /**
