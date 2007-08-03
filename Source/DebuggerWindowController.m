@@ -69,4 +69,12 @@
 	[_connection run];
 }
 
+/**
+ * Forwards the message to "step in" to the connection
+ */
+- (IBAction)stepIn: (id)sender
+{
+	[_connection stepIn];
+}
+
 @end

@@ -175,6 +175,17 @@
 }
 
 /**
+ * Tells the debugger to step into the current command.
+ */
+// TODO: populate the stack trace and registers list
+- (void)stepIn
+{
+	[_socket send: [self _createCommand: @"step_into"]];
+	[_socket receive: nil];
+	[self refreshStatus];
+}
+
+/**
  * Helper method to create a string command with the -i <session> automatically tacked on
  */
 - (NSString *)_createCommand: (NSString *)cmd

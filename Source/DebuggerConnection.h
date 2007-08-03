@@ -39,6 +39,7 @@
 
 // communication
 - (void)run;
+- (void)stepIn;
 - (void)refreshStatus;
 
 // ================= internal private

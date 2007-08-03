@@ -32,5 +32,6 @@
 - (void)setError: (NSString *)error;
 
 - (IBAction)run: (id)sender;
+- (IBAction)stepIn: (id)sender;
 
 @end
