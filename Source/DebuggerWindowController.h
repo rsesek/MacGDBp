@@ -22,10 +22,14 @@
 {
 	DebuggerConnection *_connection;
 	
+	IBOutlet NSArrayController *_stackController;
 	NSArray *_stack;
 	
 	IBOutlet NSTextField *_status;
 	IBOutlet NSTextField *_error;
+	
+	IBOutlet NSTextView *_sourceViewer;
+	NSString *_currentFile;
 }
 
 - (id)initWithConnection: (DebuggerConnection *)cnx;

@@ -4,7 +4,12 @@
             ACTIONS = {run = id; stepIn = id; stepOut = id; stepOver = id; }; 
             CLASS = DebuggerWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_error" = NSTextField; "_status" = NSTextField; }; 
+            OUTLETS = {
+                "_error" = NSTextField; 
+                "_sourceViewer" = NSTextView; 
+                "_stackController" = NSArrayController; 
+                "_status" = NSTextField; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

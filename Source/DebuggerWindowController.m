@@ -17,6 +17,12 @@
 #import "DebuggerWindowController.h"
 #import "DebuggerConnection.h"
 
+@interface DebuggerWindowController (Private)
+
+- (void)updateSourceViewer;
+
+@end
+
 @implementation DebuggerWindowController
 
 /**
@@ -105,6 +111,37 @@
 - (IBAction)stepOver: (id)sender
 {
 	[_connection stepOver];
+}
+
+/**
+ * NSTableView delegate method that informs the controller that the stack selection did change and that
+ * we should update the source viewer
+ */
+- (void)tableViewSelectionDidChange: (NSNotification *)notif
+{
+	[self updateSourceViewer];
+}
+
+/**
+ * Does the actual updating of the source viewer by reading in the file
+ */
+- (void)updateSourceViewer
+{	
+	NSString *filename = [[_stackController selection] valueForKey: @"filename"];
+	if (filename == NSNoSelectionMarker)
+	{
+		_currentFile = nil;
+		return;
+	}
+	
+	filename = [[NSURL URLWithString: filename] path];
+	if (filename == _currentFile)
+	{
+		return;
+	}
+	
+	_currentFile = filename;
+	[_sourceViewer setString: [NSString stringWithContentsOfFile: _currentFile]];
 }
 
 @end
