@@ -22,6 +22,8 @@
 {
 	DebuggerConnection *_connection;
 	
+	NSArray *_stack;
+	
 	IBOutlet NSTextField *_status;
 	IBOutlet NSTextField *_error;
 }
@@ -30,6 +32,7 @@
 
 - (void)setStatus: (NSString *)status;
 - (void)setError: (NSString *)error;
+- (void)setStack: (NSArray *)node;
 
 - (IBAction)run: (id)sender;
 - (IBAction)stepIn: (id)sender;

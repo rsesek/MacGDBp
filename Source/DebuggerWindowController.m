@@ -62,6 +62,20 @@
 }
 
 /**
+ * Sets the root node element of the stacktrace
+ */
+- (void)setStack: (NSArray *)stack
+{
+	if (_stack != nil)
+	{
+		[_stack release];
+	}
+	
+	_stack = stack;
+	[_stack retain];
+}
+
+/**
  * Forwards the message to run script execution to the connection
  */
 - (IBAction)run: (id)sender

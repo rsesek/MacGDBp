@@ -202,7 +202,21 @@
  */
 - (void)_stackReceived: (NSString *)packet
 {
-	NSLog(@"stacktrace = %@", packet);
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
+	NSArray *children = [[doc rootElement] children];
+	NSMutableArray *stack = [NSMutableArray array];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	for (int i = 0; i < [children count]; i++)
+	{
+		NSArray *attrs = [[children objectAtIndex: i] attributes];
+		for (int j = 0; j < [attrs count]; j++)
+		{
+			[dict setValue: [[attrs objectAtIndex: j] stringValue] forKey: [[attrs objectAtIndex: j] name]];
+		}
+		[stack addObject: dict];
+		dict = [NSMutableDictionary dictionary];
+	}
+	[_windowController setStack: stack];
 }
 
 /**
