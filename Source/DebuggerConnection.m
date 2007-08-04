@@ -139,7 +139,7 @@
  * The initial packet handshake. This allows us to set things like the title of the window
  * and glean information about hte server we are debugging
  */
-- (void)_handshake: (NSString *)packet
+- (void)_handshake: (NSData *)packet
 {
 	[self refreshStatus];
 }
@@ -148,9 +148,9 @@
  * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
  * the window controller's status text
  */
-- (void)_updateStatus: (NSString *)packet
+- (void)_updateStatus: (NSData *)packet
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
 	[doc release];
 }
@@ -200,9 +200,9 @@
  * Called by the dataReceived delivery delegate. This updates the window controller's data
  * for the stack trace
  */
-- (void)_stackReceived: (NSString *)packet
+- (void)_stackReceived: (NSData *)packet
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	NSArray *children = [[doc rootElement] children];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];

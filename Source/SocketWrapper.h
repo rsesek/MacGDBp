@@ -52,7 +52,7 @@
 - (void)socketDidAccept;
 
 // data handlers
-- (void)dataReceived: (NSString *)response deliverTo: (SEL)selector;
+- (void)dataReceived: (NSData *)response deliverTo: (SEL)selector;
 - (void)dataSent: (NSString *)sent;
 
 @end
