@@ -165,7 +165,7 @@
  */
 - (void)run
 {
-	[_socket send: [self _createCommand: @"run"]];
+	[_socket send: [self createCommand: @"run"]];
 	[self refreshStatus];
 }
 
@@ -175,7 +175,7 @@
  */
 - (void)refreshStatus
 {
-	[_socket send: [self _createCommand: @"status"]];
+	[_socket send: [self createCommand: @"status"]];
 	[_socket receive: @selector(updateStatus:)];
 }
 
@@ -184,7 +184,7 @@
  */
 - (void)stepIn
 {
-	[_socket send: [self _createCommand: @"step_into"]];
+	[_socket send: [self createCommand: @"step_into"]];
 	[_socket receive: nil];
 	[self refreshStatus];
 	[self updateStackTraceAndRegisters];
@@ -195,7 +195,7 @@
  */
 - (void)stepOut
 {
-	[_socket send: [self _createCommand: @"step_out"]];
+	[_socket send: [self createCommand: @"step_out"]];
 	[_socket receive: nil];
 	[self refreshStatus];
 	[self updateStackTraceAndRegisters];
@@ -206,7 +206,7 @@
  */
 - (void)stepOver
 {
-	[_socket send: [self _createCommand: @"step_over"]];
+	[_socket send: [self createCommand: @"step_over"]];
 	[_socket receive: nil];
 	[self refreshStatus];
 	[self updateStackTraceAndRegisters];
@@ -218,7 +218,7 @@
  */
 - (void)updateStackTraceAndRegisters
 {
-	[_socket send: [self _createCommand: @"stack_get"]];
+	[_socket send: [self createCommand: @"stack_get"]];
 	[_socket receive: @selector(stackReceived:)];
 }
 
