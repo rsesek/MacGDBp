@@ -91,7 +91,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	if (getpeername(_socket, (struct sockaddr *)&addr, &addrLength) < 0)
 	{
-		[self _postNotification: NsockError withObject: [NSError errorWithDomain: @"Could not get remote hostname." code: -1 userInfo: nil]];
+		[self postNotification: NsockError withObject: [NSError errorWithDomain: @"Could not get remote hostname." code: -1 userInfo: nil]];
 	}
 	
 	char *name = inet_ntoa(addr.sin_addr);
@@ -166,7 +166,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		if (tries >= 5)
 		{
 			close(socketOpen);
-			[self _postNotification: NsockError withObject: @"Could not bind to socket"];
+			[self postNotification: NsockError withObject: @"Could not bind to socket"];
 			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
@@ -177,7 +177,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// now we just have to keep our ears open
 	if (listen(socketOpen, 0) == -1)
 	{
-		[self _postNotification: NsockError withObject: @"Could not use bound socket for listening"];
+		[self postNotification: NsockError withObject: @"Could not use bound socket for listening"];
 	}
 	
 	// accept a connection
@@ -187,14 +187,14 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	if (_socket < 0)
 	{
 		close(socketOpen);
-		[self _postNotification: NsockError withObject: @"Client failed to accept remote socket"];
+		[self postNotification: NsockError withObject: @"Client failed to accept remote socket"];
 		return;
 	}
 	
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[self _postNotification: NsockDidAccept withObject: nil];
+	[self postNotification: NsockDidAccept withObject: nil];
 	
 	[pool release];
 }
@@ -248,7 +248,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			int latest = recv(_socket, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
 			{
-				[self _postNotification: NsockError withObject: @"Socket closed or could not be read"];
+				[self postNotification: NsockError withObject: @"Socket closed or could not be read"];
 				return;
 			}
 			[data appendBytes: buffer length: latest];
@@ -258,13 +258,13 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	if (selector != nil)
 	{
-		[self _postNotification: NsockDataReceived
+		[self postNotification: NsockDataReceived
 					 withObject: data
 					   withDict: [NSMutableDictionary dictionaryWithObject: NSStringFromSelector(selector) forKey: sockNotificationReceiver]];
 	}
 	else
 	{
-		[self _postNotification: NsockDataReceived withObject: data];
+		[self postNotification: NsockDataReceived withObject: data];
 	}
 }
 
@@ -277,7 +277,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	int sent = send(_socket, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
-		[self _postNotification: NsockError withObject: @"Failed to write data to socket"];
+		[self postNotification: NsockError withObject: @"Failed to write data to socket"];
 		return;
 	}
 	if (sent < [data length])
@@ -286,7 +286,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
 	
-	[self _postNotification: NsockDataSent withObject: [data substringToIndex: sent]];
+	[self postNotification: NsockDataSent withObject: [data substringToIndex: sent]];
 }
 
 /**
@@ -294,7 +294,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)postNotification: (NSString *)name withObject: (id)obj
 {
-	[self _postNotification: name withObject: obj withDict: [NSMutableDictionary dictionary]];
+	[self postNotification: name withObject: obj withDict: [NSMutableDictionary dictionary]];
 }
 
 /**
