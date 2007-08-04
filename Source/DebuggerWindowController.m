@@ -140,27 +140,22 @@
  * Does the actual updating of the source viewer by reading in the file
  */
 - (void)updateSourceViewer
-{	
-	NSString *filename = [[_stackController selection] valueForKey: @"filename"];
-	if (filename == NSNoSelectionMarker)
+{
+	int selection = [_stackController selectionIndex];
+	if (selection == NSNotFound)
 	{
-		_currentFile = nil;
 		[_sourceViewer setString: @""];
 		return;
 	}
 	
+	// get the filename and then set the text
+	NSString *filename = [[_stack objectAtIndex: selection] valueForKey: @"filename"];
 	filename = [[NSURL URLWithString: filename] path];
-	if (filename == _currentFile)
-	{
-		return;
-	}
-	
-	_currentFile = filename;
-	NSString *text = [NSString stringWithContentsOfFile: _currentFile];
+	NSString *text = [NSString stringWithContentsOfFile: filename];
 	[_sourceViewer setString: text];
 	
 	// go through the document until we find the NSRange for the line we want
-	int destination = [[[_stackController selection] valueForKey: @"lineno"] intValue];
+	int destination = [[[_stack objectAtIndex: selection] valueForKey: @"lineno"] intValue];
 	int rangeIndex = 0;
 	for (int line = 0; line < destination; line++)
 	{

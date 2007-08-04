@@ -30,7 +30,6 @@
 	
 	IBOutlet NSTextView *_sourceViewer;
 	IBOutlet NSScrollView *_sourceViewerScroller;
-	NSString *_currentFile;
 }
 
 - (id)initWithConnection: (DebuggerConnection *)cnx;
