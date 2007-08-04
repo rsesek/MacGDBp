@@ -40,6 +40,8 @@
 // communication
 - (void)run;
 - (void)stepIn;
+- (void)stepOut;
+- (void)stepOver;
 - (void)refreshStatus;
 - (void)updateStackTraceAndRegisters;
 

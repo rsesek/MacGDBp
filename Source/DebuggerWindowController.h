@@ -36,5 +36,7 @@
 
 - (IBAction)run: (id)sender;
 - (IBAction)stepIn: (id)sender;
+- (IBAction)stepOut: (id)sender;
+- (IBAction)stepOver: (id)sender;
 
 @end

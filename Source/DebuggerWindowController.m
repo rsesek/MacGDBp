@@ -91,4 +91,20 @@
 	[_connection stepIn];
 }
 
+/**
+* Forwards the message to "step out" to the connection
+ */
+- (IBAction)stepOut: (id)sender
+{
+	[_connection stepOut];
+}
+
+/**
+* Forwards the message to "step over" to the connection
+ */
+- (IBAction)stepOver: (id)sender
+{
+	[_connection stepOver];
+}
+
 @end

@@ -176,10 +176,31 @@
 /**
  * Tells the debugger to step into the current command.
  */
-// TODO: populate the stack trace and registers list
 - (void)stepIn
 {
 	[_socket send: [self _createCommand: @"step_into"]];
+	[_socket receive: nil];
+	[self refreshStatus];
+	[self updateStackTraceAndRegisters];
+}
+
+/**
+ * Tells the debugger to step out of the current context
+ */
+- (void)stepOut
+{
+	[_socket send: [self _createCommand: @"step_out"]];
+	[_socket receive: nil];
+	[self refreshStatus];
+	[self updateStackTraceAndRegisters];
+}
+
+/**
+ * Tells the debugger to step over the current function
+ */
+- (void)stepOver
+{
+	[_socket send: [self _createCommand: @"step_over"]];
 	[_socket receive: nil];
 	[self refreshStatus];
 	[self updateStackTraceAndRegisters];
