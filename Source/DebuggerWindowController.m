@@ -156,7 +156,29 @@
 	}
 	
 	_currentFile = filename;
-	[_sourceViewer setString: [NSString stringWithContentsOfFile: _currentFile]];
+	NSString *text = [NSString stringWithContentsOfFile: _currentFile];
+	[_sourceViewer setString: text];
+	
+	// go through the document until we find the NSRange for the line we want
+	int destination = [[[_stackController selection] valueForKey: @"lineno"] intValue];
+	int rangeIndex = 0;
+	for (int line = 0; line < destination; line++)
+	{
+		rangeIndex = NSMaxRange([text lineRangeForRange: NSMakeRange(rangeIndex, 0)]);
+	}
+	
+	// now get the true start/end markers for it
+	unsigned lineStart, lineEnd;
+	[text getLineStart: &lineStart end: NULL contentsEnd: &lineEnd forRange: NSMakeRange(rangeIndex - 1, 0)];
+	NSRange lineRange = NSMakeRange(lineStart, lineEnd - lineStart);
+	
+	// colorize it so the user knows which line we're on in the stack
+	[[_sourceViewer textStorage] setAttributes: [NSDictionary dictionaryWithObjects: [NSArray arrayWithObjects: [NSColor redColor], [NSColor yellowColor], nil]
+																			 forKeys: [NSArray arrayWithObjects: NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
+										 range: lineRange];
+	[_sourceViewer scrollRangeToVisible: [text lineRangeForRange: NSMakeRange(lineStart, lineEnd - lineStart)]];
+	
+	// make sure the font stays Monaco
 	[_sourceViewer setFont: [NSFont fontWithName: @"Monaco" size: 10.0]];
 }
 
