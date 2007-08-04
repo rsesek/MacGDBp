@@ -105,16 +105,16 @@
 	{
 		[self performSelector: selector withObject: response];
 	}
-	NSLog(@"response = %@", response);
+	NSLog(@"receive = %@", response);
 }
 
 /**
  * SocketWrapper delegate method that is called after data is sent. This really
  * isn't useful for much.
  */
-- (void)dataSent
+- (void)dataSent: (NSString *)data
 {
-	NSLog(@"data sent");
+	NSLog(@"send = %@", data);
 }
 
 /**

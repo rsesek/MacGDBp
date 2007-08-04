@@ -53,6 +53,6 @@
 
 // data handlers
 - (void)dataReceived: (NSString *)response deliverTo: (SEL)selector;
-- (void)dataSent;
+- (void)dataSent: (NSString *)sent;
 
 @end

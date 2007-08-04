@@ -117,7 +117,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	}
 	else if (name == NsockDataSent)
 	{
-		[_delegate dataSent];
+		[_delegate dataSent: [notif object]];
 	}
 	else if (name == NsockError)
 	{
@@ -281,7 +281,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
 	
-	[self _postNotification: NsockDataSent withObject: nil];
+	[self _postNotification: NsockDataSent withObject: [data substringToIndex: sent]];
 }
 
 /**
