@@ -38,6 +38,20 @@
 }
 
 /**
+ * Before the display get's comfortable, set up the NSTextView to scroll horizontally
+ */
+- (void)awakeFromNib
+{
+	// set up the scroller for the source viewer
+	[_sourceViewer setMaxSize: NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[_sourceViewer textContainer] setContainerSize: NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[_sourceViewer textContainer] setWidthTracksTextView: NO];
+	[_sourceViewer setHorizontallyResizable: YES];
+	[_sourceViewerScroller setHasHorizontalScroller: YES];
+	[_sourceViewerScroller display];
+}
+
+/**
  * Release object members
  */
 - (void)dealloc
@@ -121,7 +135,6 @@
 {
 	[self updateSourceViewer];
 }
-
 /**
  * Does the actual updating of the source viewer by reading in the file
  */
@@ -131,6 +144,7 @@
 	if (filename == NSNoSelectionMarker)
 	{
 		_currentFile = nil;
+		[_sourceViewer setString: @""];
 		return;
 	}
 	
@@ -142,6 +156,7 @@
 	
 	_currentFile = filename;
 	[_sourceViewer setString: [NSString stringWithContentsOfFile: _currentFile]];
+	[_sourceViewer setFont: [NSFont fontWithName: @"Monaco" size: 10.0]];
 }
 
 @end
