@@ -100,12 +100,12 @@
  */
 - (void)dataReceived: (NSString *)response deliverTo: (SEL)selector
 {
+	NSLog(@"receive = %@", response);
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
 		[self performSelector: selector withObject: response];
 	}
-	NSLog(@"receive = %@", response);
 }
 
 /**
