@@ -93,6 +93,7 @@
 	
 	_stack = stack;
 	[_stack retain];
+	[self updateSourceViewer];
 }
 
 /**
