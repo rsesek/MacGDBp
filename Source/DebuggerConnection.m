@@ -192,7 +192,19 @@
  */
 - (void)updateStackTraceAndRegisters
 {
-	[_socket send: [self _createCommand: @"stack_get"]];
+	[_socket send: [self _createCommand: @"stack_depth"]];
+	[_socket receive: @selector(_stackDepthReceived:)];
+}
+
+/**
+ * Packet delivery method for when we have the stack depth. This just goes back and asks the
+ * debug server for the stack at that depth
+ */
+- (void)_stackDepthReceived: (NSString *)packet
+{
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString: packet options: NSXMLDocumentTidyXML error: nil];
+	int depth = [[[[doc rootElement] attributeForName: @"depth"] stringValue] intValue];
+	[_socket send: [self _createCommand: [NSString stringWithFormat: @"stack_get -d %d", (depth - 1)]]];
 	[_socket receive: @selector(_stackReceived:)];
 }
 
