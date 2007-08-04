@@ -28,6 +28,14 @@ NSString *NsockDidAccept = @"SocketWrapper_DidAccept";
 NSString *NsockDataReceived = @"SocketWrapper_DataReceived";
 NSString *NsockDataSent = @"SocketWrapper_DataSent";
 
+@interface SocketWrapper (Private)
+
+- (void)connect: (id)obj;
+- (void)postNotification: (NSString *)name withObject: (id)obj;
+- (void)postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict;
+
+@end
+
 @implementation SocketWrapper
 
 /**
@@ -42,7 +50,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		// the delegate notifications work funky because of threads. we register ourselves as the
 		// observer and then pass up the messages that are actually from this object (as we can't only observe self due to threads)
 		// to our delegate, and not to all delegates
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_sendMessageToDelegate:) name: nil object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(sendMessageToDelegate:) name: nil object: nil];
 	}
 	return self;
 }
@@ -97,7 +105,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  * then the notification was sent from the same object in another thread and it passes the message along to the object's
  * delegate. Complicated enough?
  */
-- (void)_sendMessageToDelegate: (NSNotification *)notif
+- (void)sendMessageToDelegate: (NSNotification *)notif
 {
 	// this isn't us, so there's no point in continuing
 	if ([[notif userInfo] objectForKey: sockNotificationDebuggerConnection] != _delegate)
@@ -131,13 +139,13 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)connect
 {
-	[NSThread detachNewThreadSelector: @selector(_connect:) toTarget: self withObject: nil];
+	[NSThread detachNewThreadSelector: @selector(connect:) toTarget: self withObject: nil];
 }
 
 /**
  * This does the actual dirty work (in a separate thread) of connecting to a socket
  */
-- (void)_connect: (id)obj
+- (void)connect: (id)obj
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -284,7 +292,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 /**
  * Helper method to simply post a notification to the default notification center with a given name and object
  */
-- (void)_postNotification: (NSString *)name withObject: (id)obj
+- (void)postNotification: (NSString *)name withObject: (id)obj
 {
 	[self _postNotification: name withObject: obj withDict: [NSMutableDictionary dictionary]];
 }
@@ -293,7 +301,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  * Another helper method to aid in the posting of notifications. This one should be used if you have additional
  * things for the userInfo. This automatically adds the sockNotificationDebuggerConnection key.
  */
-- (void)_postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict
+- (void)postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict
 {
 	[dict setValue: _delegate forKey: sockNotificationDebuggerConnection];
 	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj userInfo: dict];

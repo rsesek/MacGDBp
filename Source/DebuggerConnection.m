@@ -16,6 +16,12 @@
 
 #import "DebuggerConnection.h"
 
+@interface DebuggerConnection (Private)
+
+- (NSString *)createCommand: (NSString *)cmd;
+
+@end
+
 @implementation DebuggerConnection
 
 /**
@@ -123,7 +129,7 @@
 - (void)socketDidAccept
 {
 	_connected = YES;
-	[_socket receive: @selector(_handshake:)];
+	[_socket receive: @selector(handshake:)];
 }
 
 /**
@@ -138,7 +144,7 @@
  * The initial packet handshake. This allows us to set things like the title of the window
  * and glean information about hte server we are debugging
  */
-- (void)_handshake: (NSData *)packet
+- (void)handshake: (NSData *)packet
 {
 	[self refreshStatus];
 }
@@ -147,7 +153,7 @@
  * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
  * the window controller's status text
  */
-- (void)_updateStatus: (NSData *)packet
+- (void)updateStatus: (NSData *)packet
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
@@ -170,7 +176,7 @@
 - (void)refreshStatus
 {
 	[_socket send: [self _createCommand: @"status"]];
-	[_socket receive: @selector(_updateStatus:)];
+	[_socket receive: @selector(updateStatus:)];
 }
 
 /**
@@ -213,14 +219,14 @@
 - (void)updateStackTraceAndRegisters
 {
 	[_socket send: [self _createCommand: @"stack_get"]];
-	[_socket receive: @selector(_stackReceived:)];
+	[_socket receive: @selector(stackReceived:)];
 }
 
 /**
  * Called by the dataReceived delivery delegate. This updates the window controller's data
  * for the stack trace
  */
-- (void)_stackReceived: (NSData *)packet
+- (void)stackReceived: (NSData *)packet
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	NSArray *children = [[doc rootElement] children];
@@ -242,7 +248,7 @@
 /**
  * Helper method to create a string command with the -i <session> automatically tacked on
  */
-- (NSString *)_createCommand: (NSString *)cmd
+- (NSString *)createCommand: (NSString *)cmd
 {
 	return [NSString stringWithFormat: @"%@ -i %@", cmd, _session];
 }

@@ -35,11 +35,6 @@
 
 - (NSString *)remoteHost;
 
-// ============== internal functions for threading
-- (void)_connect: (id)obj;
-- (void)_postNotification: (NSString *)name withObject: (id)obj;
-- (void)_postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict;
-
 @end
 
 @interface NSObject (SocketWrapperDelegate)

@@ -45,7 +45,4 @@
 - (void)refreshStatus;
 - (void)updateStackTraceAndRegisters;
 
-// ================= internal private
-- (NSString *)_createCommand: (NSString *)cmd;
-
 @end
