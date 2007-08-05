@@ -27,6 +27,8 @@
 	DebuggerWindowController *_windowController;
 	
 	SocketWrapper *_socket;
+	
+	NSXMLElement *_depthFetchElement;
 }
 
 // initializer
@@ -44,5 +46,8 @@
 - (void)stepOver;
 - (void)refreshStatus;
 - (void)updateStackTraceAndRegisters;
+
+// helpers
+- (void)getProperty: (NSString *)property forElement: (NSXMLElement *)elm;
 
 @end

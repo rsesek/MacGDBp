@@ -106,7 +106,6 @@
  */
 - (void)dataReceived: (NSData *)response deliverTo: (SEL)selector
 {
-	NSLog(@"received = %@", [[[NSString alloc] initWithData: response encoding: NSUTF8StringEncoding] autorelease]);
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
@@ -257,6 +256,35 @@
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setRegister: [doc rootElement]];
+	[doc release];
+}
+
+/**
+ * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
+ * that requested it so that the child can be attached in the delivery.
+ */
+- (void)getProperty: (NSString *)property forElement: (NSXMLElement *)elm
+{
+	[_socket send: [self createCommand: [NSString stringWithFormat: @"property_get -n \"%@\"", property, depth]]];
+	_depthFetchElement = elm;
+	[_socket receive: @selector(propertyReceived:)];
+}
+
+/**
+ * Called when a property is received. This then adds the result as children to the passed object
+ */
+- (void)propertyReceived: (NSData *)packet
+{
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
+	/*
+	 <response>
+		<property> <!-- this is the one we requested -->
+			<property ... /> <!-- these are what we want -->
+		</property>
+	</repsonse>
+	 */
+	[_depthFetchElement setChildren: [[[doc rootElement] nextSibling] children]];
+	_depthFetchElement = nil;
 	[doc release];
 }
 

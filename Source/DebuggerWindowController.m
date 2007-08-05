@@ -203,19 +203,10 @@
 	//		we damn well need it, so f!ck the rules and we're using it.
 	NSXMLElement *obj = [[[notif userInfo] objectForKey: @"NSObject"] observedObject];
 	
-	// hmm... we're not a leaf but have no children. this must be beyond our depth, so go make us
-	// deeper
+	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![obj isLeaf] && [[obj children] count] < 1)
 	{
-		// count upwards to see how deep we should go
-		int depth = 0;
-		NSXMLElement *elm = obj;
-		while (elm != nil)
-		{
-			depth++;
-			elm = (NSXMLElement *)[elm parent];
-		}
-		NSLog(@"let's go to depth %d for %@", depth, obj);
+		[_connection getProperty: [[obj attributeForName: @"fullname"] stringValue] forElement: obj];
 	}
 }
 
