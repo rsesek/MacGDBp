@@ -200,7 +200,7 @@
 {
 	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
 	//		which is presumably private, and thus this is not a reliable method for getting the object. But
-	//		we damn well need it, so f!ck the rules and we're using it.
+	//		we damn well need it, so f!ck the rules and we're using it. <rdar://problem/5387001>
 	id notifObj = [[notif userInfo] objectForKey: @"NSObject"];
 	NSXMLElement *obj = [notifObj observedObject];
 	
@@ -216,6 +216,7 @@
  */
 - (void)addChildren: (NSArray *)children toNode: (id)node
 {
+	// XXX: this may break like in outlineViewItemDidExpand: <rdar://problem/5387001>
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
 	{
