@@ -56,6 +56,19 @@
  */
 - (NSString *)value
 {
+	// not a leaf, so don't display any value
+	if (![self isLeaf])
+	{
+		return @"...";
+	}
+	
+	// base64 encoded data
+	if ([[[self attributeForName: @"encoding"] stringValue] isEqualToString: @"base64"])
+	{
+		NSLog(@"base64 encoded %@", [self variable]);
+	}
+	
+	// just a normal string
 	return [self stringValue];
 }
 
