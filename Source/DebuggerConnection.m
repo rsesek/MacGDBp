@@ -265,7 +265,7 @@
  */
 - (void)getProperty: (NSString *)property forElement: (NSXMLElement *)elm
 {
-	[_socket send: [self createCommand: [NSString stringWithFormat: @"property_get -n \"%@\"", property, depth]]];
+	[_socket send: [self createCommand: [NSString stringWithFormat: @"property_get -n \"%@\"", property]]];
 	_depthFetchElement = elm;
 	[_socket receive: @selector(propertyReceived:)];
 }
