@@ -258,7 +258,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		}
 	}
 	
-	NSLog(@"data = %@", [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]);
+	//NSLog(@"data = %@", [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]);
 	
 	if (selector != nil)
 	{
