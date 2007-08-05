@@ -43,7 +43,7 @@
 		while (elm != nil)
 		{
 			depth++;
-			elm = [elm parent];
+			elm = (NSXMLElement *)[elm parent];
 		}
 		NSLog(@"let's go to depth %d for %@", depth, self);
 	}
