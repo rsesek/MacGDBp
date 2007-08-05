@@ -25,7 +25,6 @@
 	IBOutlet NSArrayController *_stackController;
 	NSArray *_stack;
 	
-	NSXMLElement *_register;
 	IBOutlet NSTreeController *_registerController;
 	
 	IBOutlet NSTextField *_status;
@@ -45,7 +44,7 @@
 - (void)setStatus: (NSString *)status;
 - (void)setError: (NSString *)error;
 - (void)setStack: (NSArray *)node;
-- (void)setRegister: (NSXMLElement *)reg;
+- (void)setRegister: (NSXMLDocument *)reg;
 
 - (void)addChildren: (NSArray *)children toNode: (id)node;
 

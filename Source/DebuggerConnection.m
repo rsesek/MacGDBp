@@ -263,7 +263,7 @@
 - (void)registerReceived: (NSData *)packet
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
-	[_windowController setRegister: [doc rootElement]];
+	[_windowController setRegister: doc];
 	[doc release];
 }
 

@@ -123,15 +123,23 @@
 /**
  * Sets the stack root element so that the NSOutlineView can display it
  */
-- (void)setRegister: (NSXMLElement *)elm
+- (void)setRegister: (NSXMLDocument *)elm
 {
-	if (_register != nil)
-	{
-		[_register release];
-	}
-	
-	_register = elm;
-	[_register retain];
+	/*
+	[_registerController willChangeValueForKey: @"rootElement.children"];
+	[_registerController unbind: @"contentArray"];
+	[_registerController bind: @"contentArray" toObject: elm withKeyPath: @"rootElement.children" options: nil];
+	[_registerController didChangeValueForKey: @"rootElement.children"];
+	*/
+	// XXX: Doing anything short of this will cause bindings to crash spectacularly for no reason whatsoever, and
+	//		in seemingly arbitrary places. The class that crashes is _NSKeyValueObservationInfoCreateByRemoving.
+	//		http://boredzo.org/blog/archives/2006-01-29/have-you-seen-this-crash says that this means nothing is
+	//		being observed, but I doubt that he was using an NSOutlineView which seems to be one f!cking piece of
+	//		sh!t when used with NSTreeController. http://www.cocoadev.com/index.pl?NSTreeControllerBugOrDeveloperError
+	//		was the inspiration for this fix (below) but the author says that inserting does not work too well, but
+	//		that's okay for us as we just need to replace the entire thing.
+	[_registerController setContent: nil];
+	[_registerController setContent: [[elm rootElement] children]];
 }
 
 /**
