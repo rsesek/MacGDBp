@@ -293,7 +293,7 @@
 	 */
 	
 	// we now have to detach all the children so we can insert them into another document
-	NSXMLElement *parent = [[doc rootElement] childAtIndex: 0];
+	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex: 0];
 	NSArray *children = [parent children];
 	[parent setChildren: nil];
 	[_windowController addChildren: children toNode: _depthFetchElement];
