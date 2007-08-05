@@ -220,6 +220,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
 	char packetLength[8];
+	memset(packetLength, '\0', sizeof(packetLength));
 	int i = 0;
 	while (buffer[i] != '\0')
 	{
@@ -235,10 +236,11 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	// move the packet part of the received data into it's own char[]
 	char packet[sizeof(buffer)];
+	memset(packet, '\0', sizeof(packet));
 	memmove(packet, &buffer[i], recvd - i);
 	
 	// convert bytes to NSData
-	[data appendBytes: packet length: recvd];
+	[data appendBytes: packet length: recvd - i];
 	
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
@@ -255,6 +257,8 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			recvd += latest;
 		}
 	}
+	
+	NSLog(@"data = %@", [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]);
 	
 	if (selector != nil)
 	{
