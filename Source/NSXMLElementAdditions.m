@@ -23,7 +23,6 @@
  */
 - (NSString *)variable
 {
-	NSLog(@"name = %@", [self attributes]);
 	return [[self attributeForName: @"name"] stringValue];
 }
 
@@ -32,8 +31,24 @@
  */
 - (BOOL)isLeaf
 {
-	NSLog(@"isleaf");
-	return ([[[self attributeForName: @"children"] stringValue] intValue] == 0);
+	BOOL leaf = ([[[self attributeForName: @"children"] stringValue] intValue] == 0);
+	
+	// hmm... we're not a leaf but have no children. this must be beyond our depth, so go make us
+	// deeper
+	if (!leaf && [[self children] count] < 1)
+	{
+		// count upwards to see how deep we should go
+		int depth = 0;
+		NSXMLElement *elm = self;
+		while (elm != nil)
+		{
+			depth++;
+			elm = [elm parent];
+		}
+		NSLog(@"let's go to depth %d for %@", depth, self);
+	}
+	
+	return leaf;
 }
 
 /**
