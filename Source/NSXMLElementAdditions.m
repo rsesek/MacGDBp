@@ -21,7 +21,7 @@
 /**
  * Return's the property's name from the attributes list
  */
-- (NSString *)varName
+- (NSString *)variable
 {
 	NSLog(@"name = %@", [self attributes]);
 	return [[self attributeForName: @"name"] stringValue];
@@ -42,6 +42,14 @@
 - (NSString *)value
 {
 	return [self stringValue];
+}
+
+/**
+ * Returns the type of variable this is
+ */
+- (NSString *)type
+{
+	return [[self attributeForName: @"type"] stringValue];
 }
 
 @end
