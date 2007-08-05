@@ -16,34 +16,32 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DebuggerConnection;
+@implementation NSXMLElement (NSXMLElementAdditions)
 
-@interface DebuggerWindowController : NSWindowController
+/**
+ * Return's the property's name from the attributes list
+ */
+- (NSString *)varName
 {
-	DebuggerConnection *_connection;
-	
-	IBOutlet NSArrayController *_stackController;
-	NSArray *_stack;
-	
-	NSXMLElement *_register;
-	
-	IBOutlet NSTextField *_status;
-	IBOutlet NSTextField *_error;
-	
-	IBOutlet NSTextView *_sourceViewer;
-	IBOutlet NSScrollView *_sourceViewerScroller;
+	NSLog(@"name = %@", [self attributes]);
+	return [[self attributeForName: @"name"] stringValue];
 }
 
-- (id)initWithConnection: (DebuggerConnection *)cnx;
+/**
+ * Returns whether or not this node has any children
+ */
+- (BOOL)isLeaf
+{
+	NSLog(@"isleaf");
+	return ([[[self attributeForName: @"children"] stringValue] intValue] == 0);
+}
 
-- (void)setStatus: (NSString *)status;
-- (void)setError: (NSString *)error;
-- (void)setStack: (NSArray *)node;
-- (void)setRegister: (NSXMLElement *)reg;
-
-- (IBAction)run: (id)sender;
-- (IBAction)stepIn: (id)sender;
-- (IBAction)stepOut: (id)sender;
-- (IBAction)stepOver: (id)sender;
+/**
+ * Returns the value of the property
+ */
+- (NSString *)value
+{
+	return [self stringValue];
+}
 
 @end

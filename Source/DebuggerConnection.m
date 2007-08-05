@@ -104,8 +104,9 @@
 /**
  * SocketWrapper delegate method that is called whenever new data is received
  */
-- (void)dataReceived: (NSString *)response deliverTo: (SEL)selector
+- (void)dataReceived: (NSData *)response deliverTo: (SEL)selector
 {
+	NSLog(@"received = %@", [[[NSString alloc] initWithData: response encoding: NSUTF8StringEncoding] autorelease]);
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
@@ -220,6 +221,9 @@
 {
 	[_socket send: [self createCommand: @"stack_get"]];
 	[_socket receive: @selector(stackReceived:)];
+	
+	[_socket send: [self createCommand: @"context_get"]];
+	[_socket receive: @selector(registerReceived:)];
 }
 
 /**
@@ -243,6 +247,17 @@
 		dict = [NSMutableDictionary dictionary];
 	}
 	[_windowController setStack: stack];
+	[doc release];
+}
+
+/**
+ * Called when we have a new register to display
+ */
+- (void)registerReceived: (NSData *)packet
+{
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
+	[_windowController setRegister: [doc rootElement]];
+	[doc release];
 }
 
 /**

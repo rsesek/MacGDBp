@@ -97,6 +97,20 @@
 }
 
 /**
+ * Sets the stack root element so that the NSOutlineView can display it
+ */
+- (void)setRegister: (NSXMLElement *)elm
+{
+	if (_register != nil)
+	{
+		[_register release];
+	}
+	
+	_register = elm;
+	[_register retain];
+}
+
+/**
  * Forwards the message to run script execution to the connection
  */
 - (IBAction)run: (id)sender
