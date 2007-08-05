@@ -39,6 +39,7 @@
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
 		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
 		1E35FEA00C6599040030F527 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Source/base64.c; sourceTree = "<group>"; };
+		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -75,6 +76,7 @@
 				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
 				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
+				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
 				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
 			);
 			name = Classes;

@@ -16,6 +16,7 @@
 
 #import "DebuggerWindowController.h"
 #import "DebuggerConnection.h"
+#import "NSXMLElementAdditions.h"
 
 @interface DebuggerWindowController (Private)
 
@@ -148,6 +149,7 @@
  */
 - (void)tableViewSelectionDidChange: (NSNotification *)notif
 {
+	NSLog(@"selection changed");
 	[self updateSourceViewer];
 }
 /**
@@ -189,6 +191,32 @@
 	
 	// make sure the font stays Monaco
 	[_sourceViewer setFont: [NSFont fontWithName: @"Monaco" size: 10.0]];
+}
+
+/**
+ * Called whenver an item is expanded. This allows us to determine if we need to fetch deeper
+ */
+- (void)outlineViewItemDidExpand: (NSNotification *)notif
+{
+	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
+	//		which is presumably private, and thus this is not a reliable method for getting the object. But
+	//		we damn well need it, so f!ck the rules and we're using it.
+	NSXMLElement *obj = [[[notif userInfo] objectForKey: @"NSObject"] observedObject];
+	
+	// hmm... we're not a leaf but have no children. this must be beyond our depth, so go make us
+	// deeper
+	if (![obj isLeaf] && [[obj children] count] < 1)
+	{
+		// count upwards to see how deep we should go
+		int depth = 0;
+		NSXMLElement *elm = obj;
+		while (elm != nil)
+		{
+			depth++;
+			elm = (NSXMLElement *)[elm parent];
+		}
+		NSLog(@"let's go to depth %d for %@", depth, obj);
+	}
 }
 
 @end
