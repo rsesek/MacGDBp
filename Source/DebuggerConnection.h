@@ -28,7 +28,7 @@
 	
 	SocketWrapper *_socket;
 	
-	NSXMLElement *_depthFetchElement;
+	id _depthFetchElement;
 }
 
 // initializer

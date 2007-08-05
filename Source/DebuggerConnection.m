@@ -283,7 +283,12 @@
 		</property>
 	</repsonse>
 	 */
-	[_depthFetchElement setChildren: [[[doc rootElement] nextSibling] children]];
+	
+	// we now have to detach all the children so we can insert them into another document
+	NSXMLElement *parent = [[doc rootElement] childAtIndex: 0];
+	NSArray *children = [parent children];
+	[parent setChildren: nil];
+	[_windowController addChildren: children toNode: _depthFetchElement];
 	_depthFetchElement = nil;
 	[doc release];
 }

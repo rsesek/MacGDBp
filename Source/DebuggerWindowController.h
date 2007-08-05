@@ -26,6 +26,7 @@
 	NSArray *_stack;
 	
 	NSXMLElement *_register;
+	IBOutlet NSTreeController *_registerController;
 	
 	IBOutlet NSTextField *_status;
 	IBOutlet NSTextField *_error;
@@ -40,6 +41,8 @@
 - (void)setError: (NSString *)error;
 - (void)setStack: (NSArray *)node;
 - (void)setRegister: (NSXMLElement *)reg;
+
+- (void)addChildren: (NSArray *)children toNode: (id)node;
 
 - (IBAction)run: (id)sender;
 - (IBAction)stepIn: (id)sender;

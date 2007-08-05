@@ -6,6 +6,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_error" = NSTextField; 
+                "_registerController" = NSTreeController; 
                 "_sourceViewer" = NSTextView; 
                 "_sourceViewerScroller" = NSScrollView; 
                 "_stackController" = NSArrayController; 

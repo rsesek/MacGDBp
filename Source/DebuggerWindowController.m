@@ -201,13 +201,28 @@
 	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
 	//		which is presumably private, and thus this is not a reliable method for getting the object. But
 	//		we damn well need it, so f!ck the rules and we're using it.
-	NSXMLElement *obj = [[[notif userInfo] objectForKey: @"NSObject"] observedObject];
+	id notifObj = [[notif userInfo] objectForKey: @"NSObject"];
+	NSXMLElement *obj = [notifObj observedObject];
 	
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![obj isLeaf] && [[obj children] count] < 1)
 	{
-		[_connection getProperty: [[obj attributeForName: @"fullname"] stringValue] forElement: obj];
+		[_connection getProperty: [[obj attributeForName: @"fullname"] stringValue] forElement: notifObj];
 	}
+}
+
+/**
+ * Updates the register view by reinserting a given node back into the outline view
+ */
+- (void)addChildren: (NSArray *)children toNode: (id)node
+{
+	NSIndexPath *masterPath = [node indexPath];
+	for (int i = 0; i < [children count]; i++)
+	{
+		[_registerController insertObject: [children objectAtIndex: i] atArrangedObjectIndexPath: [masterPath indexPathByAddingIndex: i]];
+	}
+	
+	[_registerController rearrangeObjects];
 }
 
 @end
