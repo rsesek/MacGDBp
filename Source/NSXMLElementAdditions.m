@@ -15,6 +15,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#include "base64.h"
 
 @implementation NSXMLElement (NSXMLElementAdditions)
 
@@ -65,7 +66,18 @@
 	// base64 encoded data
 	if ([[[self attributeForName: @"encoding"] stringValue] isEqualToString: @"base64"])
 	{
-		NSLog(@"base64 encoded %@", [self variable]);
+		char *str = (char *)[[self stringValue] cStringUsingEncoding: NSASCIIStringEncoding];
+		int strlen = [[self stringValue] lengthOfBytesUsingEncoding: NSASCIIStringEncoding];
+		
+		char *data;
+		size_t datalen;
+		
+		if (!base64_decode_alloc(str, strlen, &data, &datalen))
+		{
+			NSLog(@"error in converting %@ to base64", self);
+		}
+		
+		return [NSString stringWithCString: data length: datalen];
 	}
 	
 	// just a normal string
