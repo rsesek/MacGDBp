@@ -60,6 +60,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
+				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
+				1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */,
+				1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */,
+				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
+				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
+				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
+				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
+				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -107,16 +117,6 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* MacGDBp_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
-				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
-				1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */,
-				1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */,
-				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
-				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
-				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
-				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
