@@ -7,10 +7,14 @@
             OUTLETS = {
                 "_error" = NSTextField; 
                 "_registerController" = NSTreeController; 
+                "_runButton" = NSButton; 
                 "_sourceViewer" = NSTextView; 
                 "_sourceViewerScroller" = NSScrollView; 
                 "_stackController" = NSArrayController; 
                 "_status" = NSTextField; 
+                "_stepInButton" = NSButton; 
+                "_stepOutButton" = NSButton; 
+                "_stepOverButton" = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

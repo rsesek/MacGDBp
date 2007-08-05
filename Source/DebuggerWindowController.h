@@ -33,6 +33,11 @@
 	
 	IBOutlet NSTextView *_sourceViewer;
 	IBOutlet NSScrollView *_sourceViewerScroller;
+	
+	IBOutlet NSButton *_stepInButton;
+	IBOutlet NSButton *_stepOutButton;
+	IBOutlet NSButton *_stepOverButton;
+	IBOutlet NSButton *_runButton;
 }
 
 - (id)initWithConnection: (DebuggerConnection *)cnx;
