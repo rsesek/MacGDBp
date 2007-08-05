@@ -102,6 +102,14 @@
 }
 
 /**
+ * Returns whether or not we have an active connection
+ */
+- (BOOL)isConnected
+{
+	return _connected;
+}
+
+/**
  * SocketWrapper delegate method that is called whenever new data is received
  */
 - (void)dataReceived: (NSData *)response deliverTo: (SEL)selector

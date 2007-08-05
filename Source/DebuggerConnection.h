@@ -38,6 +38,7 @@
 - (int)port;
 - (NSString *)session;
 - (NSString *)remoteHost;
+- (BOOL)isConnected;
 
 // communication
 - (void)run;
