@@ -70,6 +70,20 @@
 	[_error setHidden: YES];
 	[_status setStringValue: status];
 	[[self window] setTitle: [NSString stringWithFormat: @"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
+	
+	[_stepInButton setEnabled: NO];
+	[_stepOutButton setEnabled: NO];
+	[_stepOverButton setEnabled: NO];
+	[_runButton setEnabled: NO];
+	
+	if ([_connection isConnected])
+	{
+		if ([status isEqualToString: @"Starting"])
+		{
+			[_stepInButton setEnabled: YES];
+			[_runButton setEnabled: YES];
+		}
+	}
 }
 
 /**
@@ -94,6 +108,15 @@
 	
 	_stack = stack;
 	[_stack retain];
+	
+	if ([_stack count] > 1)
+	{
+		[_stepOutButton setEnabled: YES];
+	}
+	[_stepInButton setEnabled: YES];
+	[_stepOverButton setEnabled: YES];
+	[_runButton setEnabled: YES];
+	
 	[self updateSourceViewer];
 }
 
