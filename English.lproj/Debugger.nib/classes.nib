@@ -7,6 +7,7 @@
             OUTLETS = {
                 "_error" = NSTextField; 
                 "_registerController" = NSTreeController; 
+                "_registerView" = NSOutlineView; 
                 "_runButton" = NSButton; 
                 "_sourceViewer" = NSTextView; 
                 "_sourceViewerScroller" = NSScrollView; 

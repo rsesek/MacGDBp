@@ -34,6 +34,7 @@
 	if (self = [super initWithWindowNibName: @"Debugger"])
 	{
 		_connection = [cnx retain];
+		_expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -58,6 +59,7 @@
 - (void)dealloc
 {
 	[_connection release];
+	[_expandedRegisters release];
 	
 	[super dealloc];
 }
@@ -140,6 +142,15 @@
 	//		that's okay for us as we just need to replace the entire thing.
 	[_registerController setContent: nil];
 	[_registerController setContent: [[elm rootElement] children]];
+	
+	for (int i = 0; i < [_registerView numberOfRows]; i++)
+	{
+		int index = [_expandedRegisters indexOfObject: [[[_registerView itemAtRow: i] observedObject] variable]];
+		if (index != NSNotFound)
+		{
+			[_registerView expandItem: [_registerView itemAtRow: i]];
+		}
+	}
 }
 
 /**
@@ -240,6 +251,16 @@
 	{
 		[_connection getProperty: [[obj attributeForName: @"fullname"] stringValue] forElement: notifObj];
 	}
+	
+	[_expandedRegisters addObject: [obj variable]];
+}
+
+/**
+ * Called when an item was collapsed. This allows us to remove it from the list of expanded items
+ */
+- (void)outlineViewItemDidCollapse: (NSNotification *)notif
+{
+	[_expandedRegisters removeObject: [[[[notif userInfo] objectForKey: @"NSObject"] observedObject] variable]];
 }
 
 /**
