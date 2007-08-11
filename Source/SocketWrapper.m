@@ -60,6 +60,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	close(_socket);
 	
 	[super dealloc];

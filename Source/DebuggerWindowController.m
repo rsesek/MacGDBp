@@ -17,6 +17,7 @@
 #import "DebuggerWindowController.h"
 #import "DebuggerConnection.h"
 #import "NSXMLElementAdditions.h"
+#import "AppDelegate.h"
 
 @interface DebuggerWindowController (Private)
 
@@ -33,7 +34,7 @@
 {
 	if (self = [super initWithWindowNibName: @"Debugger"])
 	{
-		_connection = [cnx retain];
+		_connection = cnx;
 		_expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
@@ -54,11 +55,18 @@
 }
 
 /**
+ * Called when the window is going to be closed so we can clean up all of our stuff
+ */
+- (void)windowWillClose: (NSNotification *)aNotification
+{
+	[_connection windowDidClose];
+}
+
+/**
  * Release object members
  */
 - (void)dealloc
 {
-	[_connection release];
 	[_expandedRegisters release];
 	
 	[super dealloc];

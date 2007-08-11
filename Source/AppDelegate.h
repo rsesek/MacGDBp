@@ -15,10 +15,16 @@
  */
 
 #import <Cocoa/Cocoa.h>
-
+#import "DebuggerConnection.h"
 
 @interface AppDelegate : NSObject
-{}
+{
+	NSMutableArray *connections;
+}
+
+
+- (void)registerConnection: (DebuggerConnection *)cnx;
+- (void)unregisterConnection: (DebuggerConnection *)cnx;
 
 - (IBAction)showConnectionWindow: (id)sender;
 

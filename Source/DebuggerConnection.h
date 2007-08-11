@@ -34,6 +34,8 @@
 // initializer
 - (id)initWithPort: (int)port session: (NSString *)session;
 
+- (void)windowDidClose;
+
 // getter
 - (int)port;
 - (NSString *)session;

@@ -15,6 +15,7 @@
  */
 
 #import "DebuggerConnection.h"
+#import "AppDelegate.h"
 
 @interface DebuggerConnection (Private)
 
@@ -44,22 +45,17 @@
 		[_socket setDelegate: self];
 		[_windowController setStatus: @"Connecting"];
 		[_socket connect];
-		
-		// clean up after ourselves
-		[[NSNotificationCenter defaultCenter] addObserver: self
-												 selector: @selector(applicationWillTerminate:)
-													 name: NSApplicationWillTerminateNotification
-												   object: NSApp];
 	}
 	return self;
 }
 
 /**
- * Release ourselves when we're about to die
+ * This is a forwarded message from DebuggerWindowController that tells the connection to prepare to
+ * close
  */
-- (void)applicationWillTerminate: (NSNotification *)notif
+- (void)windowDidClose
 {
-	[self release];
+	[[NSApp delegate] unregisterConnection: self];
 }
 
 /**
@@ -69,6 +65,7 @@
 {
 	[_session release];
 	[_socket release];
+	[_windowController release];
 	
 	[super dealloc];
 }
