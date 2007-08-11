@@ -160,6 +160,10 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	address.sin_addr.s_addr = htonl(INADDR_ANY);
 	memset(address.sin_zero, '\0', sizeof(address.sin_zero));
 	
+	// allow an already-opened socket to be reused
+	int yes = 1;
+	setsockopt(socketOpen, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+	
 	// bind the socket... and don't give up until we've tried for a while
 	int tries = 0;
 	while (bind(socketOpen, (struct sockaddr *)&address, sizeof(address)) < 0)
