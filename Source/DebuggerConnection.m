@@ -111,11 +111,15 @@
  */
 - (void)dataReceived: (NSData *)response deliverTo: (SEL)selector
 {
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: response options: NSXMLDocumentTidyXML error: nil];
+	
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
-		[self performSelector: selector withObject: response];
+		[self performSelector: selector withObject: doc];
 	}
+	
+	[doc release];
 }
 
 /**
@@ -149,7 +153,7 @@
  * The initial packet handshake. This allows us to set things like the title of the window
  * and glean information about hte server we are debugging
  */
-- (void)handshake: (NSData *)packet
+- (void)handshake: (NSXMLDocument *)doc
 {
 	[self refreshStatus];
 }
@@ -158,11 +162,9 @@
  * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
  * the window controller's status text
  */
-- (void)updateStatus: (NSData *)packet
+- (void)updateStatus: (NSXMLDocument *)doc
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
-	[doc release];
 }
 
 /**
@@ -234,9 +236,8 @@
  * Called by the dataReceived delivery delegate. This updates the window controller's data
  * for the stack trace
  */
-- (void)stackReceived: (NSData *)packet
+- (void)stackReceived: (NSXMLDocument *)doc
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	NSArray *children = [[doc rootElement] children];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -251,17 +252,14 @@
 		dict = [NSMutableDictionary dictionary];
 	}
 	[_windowController setStack: stack];
-	[doc release];
 }
 
 /**
  * Called when we have a new register to display
  */
-- (void)registerReceived: (NSData *)packet
+- (void)registerReceived: (NSXMLDocument *)doc
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	[_windowController setRegister: doc];
-	[doc release];
 }
 
 /**
@@ -278,9 +276,8 @@
 /**
  * Called when a property is received. This then adds the result as children to the passed object
  */
-- (void)propertyReceived: (NSData *)packet
+- (void)propertyReceived: (NSXMLDocument *)doc
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: packet options: NSXMLDocumentTidyXML error: nil];
 	/*
 	 <response>
 		<property> <!-- this is the one we requested -->
@@ -295,7 +292,6 @@
 	[parent setChildren: nil];
 	[_windowController addChildren: children toNode: _depthFetchElement];
 	_depthFetchElement = nil;
-	[doc release];
 }
 
 /**
