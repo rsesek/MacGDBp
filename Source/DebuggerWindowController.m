@@ -85,6 +85,7 @@
 	[_stepOutButton setEnabled: NO];
 	[_stepOverButton setEnabled: NO];
 	[_runButton setEnabled: NO];
+	[_reconnectButton setEnabled: NO];
 	
 	if ([_connection isConnected])
 	{
@@ -93,6 +94,10 @@
 			[_stepInButton setEnabled: YES];
 			[_runButton setEnabled: YES];
 		}
+	}
+	else
+	{
+		[_reconnectButton setEnabled: YES];
 	}
 }
 
@@ -167,6 +172,14 @@
 - (IBAction)run: (id)sender
 {
 	[_connection run];
+}
+
+/**
+ * Tells the connection to ask the server to reconnect
+ */
+- (IBAction)reconnect: (id)sender
+{
+	
 }
 
 /**

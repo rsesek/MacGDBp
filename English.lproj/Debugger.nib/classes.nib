@@ -1,11 +1,12 @@
 {
     IBClasses = (
         {
-            ACTIONS = {run = id; stepIn = id; stepOut = id; stepOver = id; }; 
+            ACTIONS = {reconnect = id; run = id; stepIn = id; stepOut = id; stepOver = id; }; 
             CLASS = DebuggerWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_error" = NSTextField; 
+                "_reconnectButton" = NSButton; 
                 "_registerController" = NSTreeController; 
                 "_registerView" = NSOutlineView; 
                 "_runButton" = NSButton; 

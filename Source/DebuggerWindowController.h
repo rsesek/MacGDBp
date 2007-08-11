@@ -39,6 +39,7 @@
 	IBOutlet NSButton *_stepOutButton;
 	IBOutlet NSButton *_stepOverButton;
 	IBOutlet NSButton *_runButton;
+	IBOutlet NSButton *_reconnectButton;
 }
 
 - (id)initWithConnection: (DebuggerConnection *)cnx;
@@ -54,5 +55,6 @@
 - (IBAction)stepIn: (id)sender;
 - (IBAction)stepOut: (id)sender;
 - (IBAction)stepOver: (id)sender;
+- (IBAction)reconnect: (id)sender;
 
 @end
