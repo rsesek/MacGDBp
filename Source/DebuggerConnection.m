@@ -113,6 +113,14 @@
 {
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: response options: NSXMLDocumentTidyXML error: nil];
 	
+	// check and see if there's an error
+	NSArray *error = [[doc rootElement] elementsForName: @"error"];
+	if ([error count] > 0)
+	{
+		[_windowController setError: [[[[error objectAtIndex: 0] children] objectAtIndex: 0] stringValue]];
+		return;
+	}
+	
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
