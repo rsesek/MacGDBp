@@ -170,7 +170,13 @@
  */
 - (void)updateStatus: (NSXMLDocument *)doc
 {
-	[_windowController setStatus: [[[[doc rootElement] attributeForName: @"status"] stringValue] capitalizedString]];
+	NSString *status = [[[doc rootElement] attributeForName: @"status"] stringValue];
+	[_windowController setStatus: [status capitalizedString]];
+	
+	if ([status isEqualToString: @"break"])
+	{
+		[self updateStackTraceAndRegisters];
+	}
 }
 
 /**
@@ -200,7 +206,6 @@
 	[_socket send: [self createCommand: @"step_into"]];
 	[_socket receive: nil];
 	[self refreshStatus];
-	[self updateStackTraceAndRegisters];
 }
 
 /**
@@ -211,7 +216,6 @@
 	[_socket send: [self createCommand: @"step_out"]];
 	[_socket receive: nil];
 	[self refreshStatus];
-	[self updateStackTraceAndRegisters];
 }
 
 /**
@@ -222,7 +226,6 @@
 	[_socket send: [self createCommand: @"step_over"]];
 	[_socket receive: nil];
 	[self refreshStatus];
-	[self updateStackTraceAndRegisters];
 }
 
 /**
