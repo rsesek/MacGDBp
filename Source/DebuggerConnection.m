@@ -135,9 +135,7 @@
  * isn't useful for much.
  */
 - (void)dataSent: (NSString *)data
-{
-	NSLog(@"send = %@", data);
-}
+{}
 
 /**
  * Called by SocketWrapper after the connection is successful. This immediately calls
