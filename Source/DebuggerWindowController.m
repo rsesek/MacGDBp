@@ -212,9 +212,9 @@
  */
 - (void)tableViewSelectionDidChange: (NSNotification *)notif
 {
-	NSLog(@"selection changed");
 	[self updateSourceViewer];
 }
+
 /**
  * Does the actual updating of the source viewer by reading in the file
  */
