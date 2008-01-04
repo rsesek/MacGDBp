@@ -261,6 +261,7 @@
  */
 - (void)outlineViewItemDidExpand: (NSNotification *)notif
 {
+	NSLog(@"notification expanded: %@", notif);
 	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
 	//		which is presumably private, and thus this is not a reliable method for getting the object. But
 	//		we damn well need it, so f!ck the rules and we're using it. <rdar://problem/5387001>
@@ -279,9 +280,10 @@
 /**
  * Called when an item was collapsed. This allows us to remove it from the list of expanded items
  */
-- (void)outlineViewItemDidCollapse: (NSNotification *)notif
+- (void)outlineViewItemDidCollapse: (id)notif
 {
 	[_expandedRegisters removeObject: [[[[notif userInfo] objectForKey: @"NSObject"] observedObject] variable]];
+	NSLog(@"outlineViewDidCollapse: %@", notif);
 }
 
 /**
@@ -289,6 +291,7 @@
  */
 - (void)addChildren: (NSArray *)children toNode: (id)node
 {
+	NSLog(@"addChildren node: %@", node);
 	// XXX: this may break like in outlineViewItemDidExpand: <rdar://problem/5387001>
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
