@@ -156,10 +156,11 @@
 	[registerController setContent:nil];
 	[registerController setContent:[[elm rootElement] children]];
 	
-	for (NSTreeNode *node in expandedRegisters)
+	/*for (NSTreeNode *node in expandedRegisters)
 	{
 		[registerView expandItem:node];
-	}
+	}*/
+	NSLog(@"expanded items = %@", expandedRegisters);
 }
 
 /**
@@ -265,7 +266,7 @@
 		[connection getProperty:[[[node representedObject] attributeForName:@"fullname"] stringValue] forNode:node];
 	}
 	
-	[expandedRegisters addObject:node];
+	[expandedRegisters addObject:[[node representedObject] variable]];
 }
 
 /**
@@ -273,7 +274,7 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
-	[expandedRegisters removeObject:[[notif userInfo] objectForKey:@"NSObject"]];
+	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] variable]];
 }
 
 /**
