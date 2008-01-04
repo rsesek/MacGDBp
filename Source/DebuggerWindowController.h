@@ -20,7 +20,7 @@
 
 @interface DebuggerWindowController : NSWindowController
 {
-	DebuggerConnection *_connection;
+	DebuggerConnection *connection;
 	
 	IBOutlet NSArrayController *_stackController;
 	NSArray *_stack;

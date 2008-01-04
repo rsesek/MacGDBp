@@ -34,7 +34,7 @@
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
-		_connection = cnx;
+		connection = cnx;
 		_expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
@@ -59,7 +59,7 @@
  */
 - (void)windowWillClose:(NSNotification *)aNotification
 {
-	[_connection windowDidClose];
+	[connection windowDidClose];
 }
 
 /**
@@ -79,7 +79,7 @@
 {
 	[_error setHidden:YES];
 	[_status setStringValue:status];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
 	[_stepInButton setEnabled:NO];
 	[_stepOutButton setEnabled:NO];
@@ -87,7 +87,7 @@
 	[_runButton setEnabled:NO];
 	[_reconnectButton setEnabled:NO];
 	
-	if ([_connection isConnected])
+	if ([connection isConnected])
 	{
 		if ([status isEqualToString:@"Starting"])
 		{
@@ -171,7 +171,7 @@
  */
 - (IBAction)run:(id)sender
 {
-	[_connection run];
+	[connection run];
 }
 
 /**
@@ -187,7 +187,7 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	[_connection stepIn];
+	[connection stepIn];
 }
 
 /**
@@ -195,7 +195,7 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	[_connection stepOut];
+	[connection stepOut];
 }
 
 /**
@@ -203,7 +203,7 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	[_connection stepOver];
+	[connection stepOver];
 }
 
 /**
@@ -271,7 +271,7 @@
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![obj isLeaf] && [[obj children] count] < 1)
 	{
-		[_connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
+		[connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
 	}
 	
 	[_expandedRegisters addObject:[obj variable]];
