@@ -29,7 +29,7 @@
 	IBOutlet NSOutlineView *registerView;
 	NSMutableArray *expandedRegisters;
 	
-	IBOutlet NSTextField *status;
+	IBOutlet NSTextField *statusmsg;
 	IBOutlet NSTextField *errormsg;
 	
 	IBOutlet NSTextView *sourceViewer;

@@ -6,14 +6,6 @@
 	<array>
 		<dict>
 			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>NSObject</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -54,7 +46,7 @@
 				<string>NSScrollView</string>
 				<key>stackController</key>
 				<string>NSArrayController</string>
-				<key>status</key>
+				<key>statusmsg</key>
 				<string>NSTextField</string>
 				<key>stepInButton</key>
 				<string>NSButton</string>
@@ -65,6 +57,14 @@
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 	</array>
 	<key>IBVersion</key>

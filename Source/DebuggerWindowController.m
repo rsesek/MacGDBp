@@ -78,7 +78,7 @@
 - (void)setStatus:(NSString *)aStatus
 {
 	[errormsg setHidden:YES];
-	[status setStringValue:aStatus];
+	[statusmsg setStringValue:aStatus];
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
 	[stepInButton setEnabled:NO];
