@@ -114,17 +114,17 @@
 /**
  * Sets the root node element of the stacktrace
  */
-- (void)setStack:(NSArray *)stack
+- (void)setStack:(NSArray *)node
 {
-	if (_stack != nil)
+	if (stack != nil)
 	{
-		[_stack release];
+		[stack release];
 	}
 	
-	_stack = stack;
-	[_stack retain];
+	stack = node;
+	[stack retain];
 	
-	if ([_stack count] > 1)
+	if ([stack count] > 1)
 	{
 		[_stepOutButton setEnabled:YES];
 	}
@@ -228,13 +228,13 @@
 	}
 	
 	// get the filename and then set the text
-	NSString *filename = [[_stack objectAtIndex:selection] valueForKey:@"filename"];
+	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
 	NSString *text = [NSString stringWithContentsOfFile:filename];
 	[_sourceViewer setString:text];
 	
 	// go through the document until we find the NSRange for the line we want
-	int destination = [[[_stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
+	int destination = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
 	int rangeIndex = 0;
 	for (int line = 0; line < destination; line++)
 	{
