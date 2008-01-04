@@ -77,7 +77,7 @@
  */
 - (void)setStatus:(NSString *)aStatus
 {
-	[_error setHidden:YES];
+	[errormsg setHidden:YES];
 	[status setStringValue:aStatus];
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
@@ -104,11 +104,11 @@
 /**
  * Sets the status to be "Error" and then displays the error message
  */
-- (void)setError:(NSString *)error
+- (void)setError:(NSString *)anError
 {
-	[_error setStringValue:error];
+	[errormsg setStringValue:anError];
 	[self setStatus:@"Error"];
-	[_error setHidden:NO];
+	[errormsg setHidden:NO];
 }
 
 /**

@@ -24,8 +24,6 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>_error</key>
-				<string>NSTextField</string>
 				<key>_reconnectButton</key>
 				<string>NSButton</string>
 				<key>_runButton</key>
@@ -40,6 +38,8 @@
 				<string>NSButton</string>
 				<key>_stepOverButton</key>
 				<string>NSButton</string>
+				<key>errormsg</key>
+				<string>NSTextField</string>
 				<key>registerController</key>
 				<string>NSTreeController</string>
 				<key>registerView</key>

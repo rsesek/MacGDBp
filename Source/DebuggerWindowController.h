@@ -30,7 +30,7 @@
 	NSMutableArray *expandedRegisters;
 	
 	IBOutlet NSTextField *status;
-	IBOutlet NSTextField *_error;
+	IBOutlet NSTextField *errormsg;
 	
 	IBOutlet NSTextView *_sourceViewer;
 	IBOutlet NSScrollView *_sourceViewerScroller;
@@ -45,7 +45,7 @@
 - (id)initWithConnection:(DebuggerConnection *)cnx;
 
 - (void)setStatus:(NSString *)aStatus;
-- (void)setError:(NSString *)error;
+- (void)setError:(NSString *)anError;
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
 
