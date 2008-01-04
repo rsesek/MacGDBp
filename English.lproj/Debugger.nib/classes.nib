@@ -28,8 +28,6 @@
 				<string>NSButton</string>
 				<key>_runButton</key>
 				<string>NSButton</string>
-				<key>_stepInButton</key>
-				<string>NSButton</string>
 				<key>_stepOutButton</key>
 				<string>NSButton</string>
 				<key>_stepOverButton</key>
@@ -48,6 +46,8 @@
 				<string>NSArrayController</string>
 				<key>status</key>
 				<string>NSTextField</string>
+				<key>stepInButton</key>
+				<string>NSButton</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>

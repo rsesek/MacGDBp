@@ -81,7 +81,7 @@
 	[status setStringValue:aStatus];
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
-	[_stepInButton setEnabled:NO];
+	[stepInButton setEnabled:NO];
 	[_stepOutButton setEnabled:NO];
 	[_stepOverButton setEnabled:NO];
 	[_runButton setEnabled:NO];
@@ -91,7 +91,7 @@
 	{
 		if ([aStatus isEqualToString:@"Starting"])
 		{
-			[_stepInButton setEnabled:YES];
+			[stepInButton setEnabled:YES];
 			[_runButton setEnabled:YES];
 		}
 	}
@@ -128,7 +128,7 @@
 	{
 		[_stepOutButton setEnabled:YES];
 	}
-	[_stepInButton setEnabled:YES];
+	[stepInButton setEnabled:YES];
 	[_stepOverButton setEnabled:YES];
 	[_runButton setEnabled:YES];
 	
