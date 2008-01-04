@@ -156,12 +156,12 @@
 	[registerController setContent:nil];
 	[registerController setContent:[[elm rootElement] children]];
 	
-	for (int i = 0; i < [_registerView numberOfRows]; i++)
+	for (int i = 0; i < [registerView numberOfRows]; i++)
 	{
-		int index = [_expandedRegisters indexOfObject:[[[_registerView itemAtRow:i] observedObject] variable]];
+		int index = [_expandedRegisters indexOfObject:[[[registerView itemAtRow:i] observedObject] variable]];
 		if (index != NSNotFound)
 		{
-			[_registerView expandItem:[_registerView itemAtRow:i]];
+			[registerView expandItem:[registerView itemAtRow:i]];
 		}
 	}
 }
