@@ -18,16 +18,16 @@
 
 @interface SocketWrapper : NSObject
 {
-	int _port;
-	int _socket;
+	int port;
+	int socket;
 	
-	id _delegate;
+	id delegate;
 }
 
-- (id)initWithPort:(int)port;
+- (id)initWithPort:(int)aPort;
 
 - (id)delegate;
-- (void)setDelegate:(id)delegate;
+- (void)setDelegate:(id)aDelegate;
 
 - (void)connect;
 - (void)receive:(SEL)selector;

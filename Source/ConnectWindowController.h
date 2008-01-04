@@ -19,8 +19,8 @@
 
 @interface ConnectWindowController : NSWindowController
 {
-	IBOutlet NSTextField *_port;
-	IBOutlet NSTextField *_session;
+	IBOutlet NSTextField *port;
+	IBOutlet NSTextField *session;
 }
 
 + (id)sharedController;

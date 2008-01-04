@@ -34,8 +34,8 @@
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
-		_connection = cnx;
-		_expandedRegisters = [[NSMutableArray alloc] init];
+		connection = cnx;
+		expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -46,12 +46,12 @@
 - (void)awakeFromNib
 {
 	// set up the scroller for the source viewer
-	[_sourceViewer setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[_sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[_sourceViewer textContainer] setWidthTracksTextView:NO];
-	[_sourceViewer setHorizontallyResizable:YES];
-	[_sourceViewerScroller setHasHorizontalScroller:YES];
-	[_sourceViewerScroller display];
+	[sourceViewer setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[sourceViewer textContainer] setWidthTracksTextView:NO];
+	[sourceViewer setHorizontallyResizable:YES];
+	[sourceViewerScroller setHasHorizontalScroller:YES];
+	[sourceViewerScroller display];
 }
 
 /**
@@ -59,7 +59,7 @@
  */
 - (void)windowWillClose:(NSNotification *)aNotification
 {
-	[_connection windowDidClose];
+	[connection windowDidClose];
 }
 
 /**
@@ -67,7 +67,7 @@
  */
 - (void)dealloc
 {
-	[_expandedRegisters release];
+	[expandedRegisters release];
 	
 	[super dealloc];
 }
@@ -75,62 +75,62 @@
 /**
  * Sets the status and clears any error message
  */
-- (void)setStatus:(NSString *)status
+- (void)setStatus:(NSString *)aStatus
 {
-	[_error setHidden:YES];
-	[_status setStringValue:status];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
+	[error setHidden:YES];
+	[status setStringValue:aStatus];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
-	[_stepInButton setEnabled:NO];
-	[_stepOutButton setEnabled:NO];
-	[_stepOverButton setEnabled:NO];
-	[_runButton setEnabled:NO];
-	[_reconnectButton setEnabled:NO];
+	[stepInButton setEnabled:NO];
+	[stepOutButton setEnabled:NO];
+	[stepOverButton setEnabled:NO];
+	[runButton setEnabled:NO];
+	[reconnectButton setEnabled:NO];
 	
-	if ([_connection isConnected])
+	if ([connection isConnected])
 	{
 		if ([status isEqualToString:@"Starting"])
 		{
-			[_stepInButton setEnabled:YES];
-			[_runButton setEnabled:YES];
+			[stepInButton setEnabled:YES];
+			[runButton setEnabled:YES];
 		}
 	}
 	else
 	{
-		[_reconnectButton setEnabled:YES];
+		[reconnectButton setEnabled:YES];
 	}
 }
 
 /**
  * Sets the status to be "Error" and then displays the error message
  */
-- (void)setError:(NSString *)error
+- (void)setError:(NSString *)anError
 {
-	[_error setStringValue:error];
+	[error setStringValue:anError];
 	[self setStatus:@"Error"];
-	[_error setHidden:NO];
+	[error setHidden:NO];
 }
 
 /**
  * Sets the root node element of the stacktrace
  */
-- (void)setStack:(NSArray *)stack
+- (void)setStack:(NSArray *)node
 {
-	if (_stack != nil)
+	if (stack != nil)
 	{
-		[_stack release];
+		[stack release];
 	}
 	
-	_stack = stack;
-	[_stack retain];
+	stack = stack;
+	[stack retain];
 	
-	if ([_stack count] > 1)
+	if ([stack count] > 1)
 	{
-		[_stepOutButton setEnabled:YES];
+		[stepOutButton setEnabled:YES];
 	}
-	[_stepInButton setEnabled:YES];
-	[_stepOverButton setEnabled:YES];
-	[_runButton setEnabled:YES];
+	[stepInButton setEnabled:YES];
+	[stepOverButton setEnabled:YES];
+	[runButton setEnabled:YES];
 	
 	[self updateSourceViewer];
 }
@@ -153,15 +153,15 @@
 	//		sh!t when used with NSTreeController. http://www.cocoadev.com/index.pl?NSTreeControllerBugOrDeveloperError
 	//		was the inspiration for this fix (below) but the author says that inserting does not work too well, but
 	//		that's okay for us as we just need to replace the entire thing.
-	[_registerController setContent:nil];
-	[_registerController setContent:[[elm rootElement] children]];
+	[registerController setContent:nil];
+	[registerController setContent:[[elm rootElement] children]];
 	
-	for (int i = 0; i < [_registerView numberOfRows]; i++)
+	for (int i = 0; i < [registerView numberOfRows]; i++)
 	{
-		int index = [_expandedRegisters indexOfObject:[[[_registerView itemAtRow:i] observedObject] variable]];
+		int index = [expandedRegisters indexOfObject:[[[registerView itemAtRow:i] observedObject] variable]];
 		if (index != NSNotFound)
 		{
-			[_registerView expandItem:[_registerView itemAtRow:i]];
+			[registerView expandItem:[registerView itemAtRow:i]];
 		}
 	}
 }
@@ -171,7 +171,7 @@
  */
 - (IBAction)run:(id)sender
 {
-	[_connection run];
+	[connection run];
 }
 
 /**
@@ -187,7 +187,7 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	[_connection stepIn];
+	[connection stepIn];
 }
 
 /**
@@ -195,7 +195,7 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	[_connection stepOut];
+	[connection stepOut];
 }
 
 /**
@@ -203,7 +203,7 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	[_connection stepOver];
+	[connection stepOver];
 }
 
 /**
@@ -220,21 +220,21 @@
  */
 - (void)updateSourceViewer
 {
-	int selection = [_stackController selectionIndex];
+	int selection = [stackController selectionIndex];
 	if (selection == NSNotFound)
 	{
-		[_sourceViewer setString:@""];
+		[sourceViewer setString:@""];
 		return;
 	}
 	
 	// get the filename and then set the text
-	NSString *filename = [[_stack objectAtIndex:selection] valueForKey:@"filename"];
+	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
 	NSString *text = [NSString stringWithContentsOfFile:filename];
-	[_sourceViewer setString:text];
+	[sourceViewer setString:text];
 	
 	// go through the document until we find the NSRange for the line we want
-	int destination = [[[_stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
+	int destination = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
 	int rangeIndex = 0;
 	for (int line = 0; line < destination; line++)
 	{
@@ -247,13 +247,13 @@
 	NSRange lineRange = NSMakeRange(lineStart, lineEnd - lineStart);
 	
 	// colorize it so the user knows which line we're on in the stack
-	[[_sourceViewer textStorage] setAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSColor redColor], [NSColor yellowColor], nil]
+	[[sourceViewer textStorage] setAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSColor redColor], [NSColor yellowColor], nil]
 																			 forKeys:[NSArray arrayWithObjects:NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
 										 range:lineRange];
-	[_sourceViewer scrollRangeToVisible:[text lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+	[sourceViewer scrollRangeToVisible:[text lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 	
 	// make sure the font stays Monaco
-	[_sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+	[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 }
 
 /**
@@ -271,10 +271,10 @@
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![obj isLeaf] && [[obj children] count] < 1)
 	{
-		[_connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
+		[connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
 	}
 	
-	[_expandedRegisters addObject:[obj variable]];
+	[expandedRegisters addObject:[obj variable]];
 }
 
 /**
@@ -282,7 +282,7 @@
  */
 - (void)outlineViewItemDidCollapse:(id)notif
 {
-	[_expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
+	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
 	NSLog(@"outlineViewDidCollapse:%@", notif);
 }
 
@@ -296,10 +296,10 @@
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
 	{
-		[_registerController insertObject:[children objectAtIndex:i] atArrangedObjectIndexPath:[masterPath indexPathByAddingIndex:i]];
+		[registerController insertObject:[children objectAtIndex:i] atArrangedObjectIndexPath:[masterPath indexPathByAddingIndex:i]];
 	}
 	
-	[_registerController rearrangeObjects];
+	[registerController rearrangeObjects];
 }
 
 @end

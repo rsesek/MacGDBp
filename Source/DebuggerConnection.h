@@ -20,19 +20,19 @@
 
 @interface DebuggerConnection : NSObject
 {
-	int _port;
-	NSString *_session;
-	BOOL _connected;
+	int port;
+	NSString *session;
+	BOOL connected;
 	
-	DebuggerWindowController *_windowController;
+	DebuggerWindowController *windowController;
 	
-	SocketWrapper *_socket;
+	SocketWrapper *socket;
 	
-	id _depthFetchElement;
+	id depthFetchElement;
 }
 
 // initializer
-- (id)initWithPort:(int)port session:(NSString *)session;
+- (id)initWithPort:(int)aPort session:(NSString *)session;
 
 - (void)windowDidClose;
 

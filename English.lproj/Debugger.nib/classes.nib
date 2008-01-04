@@ -1,26 +1,67 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {reconnect = id; run = id; stepIn = id; stepOut = id; stepOver = id; }; 
-            CLASS = DebuggerWindowController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                "_error" = NSTextField; 
-                "_reconnectButton" = NSButton; 
-                "_registerController" = NSTreeController; 
-                "_registerView" = NSOutlineView; 
-                "_runButton" = NSButton; 
-                "_sourceViewer" = NSTextView; 
-                "_sourceViewerScroller" = NSScrollView; 
-                "_stackController" = NSArrayController; 
-                "_status" = NSTextField; 
-                "_stepInButton" = NSButton; 
-                "_stepOutButton" = NSButton; 
-                "_stepOverButton" = NSButton; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>reconnect</key>
+				<string>id</string>
+				<key>run</key>
+				<string>id</string>
+				<key>stepIn</key>
+				<string>id</string>
+				<key>stepOut</key>
+				<string>id</string>
+				<key>stepOver</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DebuggerWindowController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>error</key>
+				<string>NSTextField</string>
+				<key>reconnectButton</key>
+				<string>NSButton</string>
+				<key>registerController</key>
+				<string>NSTreeController</string>
+				<key>registerView</key>
+				<string>NSOutlineView</string>
+				<key>runButton</key>
+				<string>NSButton</string>
+				<key>sourceViewer</key>
+				<string>NSTextView</string>
+				<key>sourceViewerScroller</key>
+				<string>NSScrollView</string>
+				<key>stackController</key>
+				<string>NSArrayController</string>
+				<key>status</key>
+				<string>NSTextField</string>
+				<key>stepInButton</key>
+				<string>NSButton</string>
+				<key>stepOutButton</key>
+				<string>NSButton</string>
+				<key>stepOverButton</key>
+				<string>NSButton</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

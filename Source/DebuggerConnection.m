@@ -29,22 +29,22 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)port session:(NSString *)session
+- (id)initWithPort:(int)aPort session:(NSString *)session
 {
 	if (self = [super init])
 	{
-		_port = port;
-		_session = [session retain];
-		_connected = NO;
+		port = aPort;
+		session = [session retain];
+		connected = NO;
 		
-		_windowController = [[DebuggerWindowController alloc] initWithConnection:self];
-		[[_windowController window] makeKeyAndOrderFront:self];
+		windowController = [[DebuggerWindowController alloc] initWithConnection:self];
+		[[windowController window] makeKeyAndOrderFront:self];
 		
 		// now that we have our host information, open the socket
-		_socket = [[SocketWrapper alloc] initWithPort:port];
-		[_socket setDelegate:self];
-		[_windowController setStatus:@"Connecting"];
-		[_socket connect];
+		socket = [[SocketWrapper alloc] initWithPort:port];
+		[socket setDelegate:self];
+		[windowController setStatus:@"Connecting"];
+		[socket connect];
 	}
 	return self;
 }
@@ -63,9 +63,9 @@
  */
 - (void)dealloc
 {
-	[_session release];
-	[_socket release];
-	[_windowController release];
+	[session release];
+	[socket release];
+	[windowController release];
 	
 	[super dealloc];
 }
@@ -75,7 +75,7 @@
  */
 - (int)port
 {
-	return _port;
+	return port;
 }
 
 /**
@@ -83,7 +83,7 @@
  */
 - (NSString *)session
 {
-	return _session;
+	return session;
 }
 
 /**
@@ -91,11 +91,11 @@
  */
 - (NSString *)remoteHost
 {
-	if (!_connected)
+	if (!connected)
 	{
 		return @"(DISCONNECTED)";
 	}
-	return [_socket remoteHost];
+	return [socket remoteHost];
 }
 
 /**
@@ -103,7 +103,7 @@
  */
 - (BOOL)isConnected
 {
-	return _connected;
+	return connected;
 }
 
 /**
@@ -117,7 +117,7 @@
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
-		[_windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+		[windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return;
 	}
 	
@@ -143,8 +143,8 @@
  */
 - (void)socketDidAccept
 {
-	_connected = YES;
-	[_socket receive:@selector(handshake:)];
+	connected = YES;
+	[socket receive:@selector(handshake:)];
 }
 
 /**
@@ -152,7 +152,7 @@
  */
 - (void)errorEncountered:(NSError *)error
 {
-	[_windowController setError:[error domain]];
+	[windowController setError:[error domain]];
 }
 
 /**
@@ -171,7 +171,7 @@
 - (void)updateStatus:(NSXMLDocument *)doc
 {
 	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
-	[_windowController setStatus:[status capitalizedString]];
+	[windowController setStatus:[status capitalizedString]];
 	
 	if ([status isEqualToString:@"break"])
 	{
@@ -184,7 +184,7 @@
  */
 - (void)run
 {
-	[_socket send:[self createCommand:@"run"]];
+	[socket send:[self createCommand:@"run"]];
 	[self refreshStatus];
 }
 
@@ -194,8 +194,8 @@
  */
 - (void)refreshStatus
 {
-	[_socket send:[self createCommand:@"status"]];
-	[_socket receive:@selector(updateStatus:)];
+	[socket send:[self createCommand:@"status"]];
+	[socket receive:@selector(updateStatus:)];
 }
 
 /**
@@ -203,8 +203,8 @@
  */
 - (void)stepIn
 {
-	[_socket send:[self createCommand:@"step_into"]];
-	[_socket receive:nil];
+	[socket send:[self createCommand:@"step_into"]];
+	[socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -213,8 +213,8 @@
  */
 - (void)stepOut
 {
-	[_socket send:[self createCommand:@"step_out"]];
-	[_socket receive:nil];
+	[socket send:[self createCommand:@"step_out"]];
+	[socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -223,8 +223,8 @@
  */
 - (void)stepOver
 {
-	[_socket send:[self createCommand:@"step_over"]];
-	[_socket receive:nil];
+	[socket send:[self createCommand:@"step_over"]];
+	[socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -234,11 +234,11 @@
  */
 - (void)updateStackTraceAndRegisters
 {
-	[_socket send:[self createCommand:@"stack_get"]];
-	[_socket receive:@selector(stackReceived:)];
+	[socket send:[self createCommand:@"stack_get"]];
+	[socket receive:@selector(stackReceived:)];
 	
-	[_socket send:[self createCommand:@"context_get"]];
-	[_socket receive:@selector(registerReceived:)];
+	[socket send:[self createCommand:@"context_get"]];
+	[socket receive:@selector(registerReceived:)];
 }
 
 /**
@@ -260,7 +260,7 @@
 		[stack addObject:dict];
 		dict = [NSMutableDictionary dictionary];
 	}
-	[_windowController setStack:stack];
+	[windowController setStack:stack];
 }
 
 /**
@@ -268,7 +268,7 @@
  */
 - (void)registerReceived:(NSXMLDocument *)doc
 {
-	[_windowController setRegister:doc];
+	[windowController setRegister:doc];
 }
 
 /**
@@ -277,9 +277,9 @@
  */
 - (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm
 {
-	[_socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
-	_depthFetchElement = elm;
-	[_socket receive:@selector(propertyReceived:)];
+	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
+	depthFetchElement = elm;
+	[socket receive:@selector(propertyReceived:)];
 }
 
 /**
@@ -299,8 +299,8 @@
 	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
 	NSArray *children = [parent children];
 	[parent setChildren:nil];
-	[_windowController addChildren:children toNode:_depthFetchElement];
-	_depthFetchElement = nil;
+	[windowController addChildren:children toNode:depthFetchElement];
+	depthFetchElement = nil;
 }
 
 /**
@@ -308,7 +308,7 @@
  */
 - (NSString *)createCommand:(NSString *)cmd
 {
-	return [NSString stringWithFormat:@"%@ -i %@", cmd, _session];
+	return [NSString stringWithFormat:@"%@ -i %@", cmd, session];
 }
 
 @end

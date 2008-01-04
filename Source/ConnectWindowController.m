@@ -53,7 +53,7 @@
  */
 - (IBAction)connect:(id)sender
 {
-	DebuggerConnection *cnx = [[DebuggerConnection alloc] initWithPort:[_port intValue] session:[_session stringValue]];
+	DebuggerConnection *cnx = [[DebuggerConnection alloc] initWithPort:[port intValue] session:[session stringValue]];
 	[[NSApp delegate] registerConnection:cnx];
 	[cnx release];
 	[[self window] orderOut:self];
