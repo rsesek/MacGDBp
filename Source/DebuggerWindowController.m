@@ -220,7 +220,7 @@
  */
 - (void)updateSourceViewer
 {
-	int selection = [_stackController selectionIndex];
+	int selection = [stackController selectionIndex];
 	if (selection == NSNotFound)
 	{
 		[_sourceViewer setString:@""];

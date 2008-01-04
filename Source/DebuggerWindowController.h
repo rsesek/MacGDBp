@@ -22,7 +22,7 @@
 {
 	DebuggerConnection *connection;
 	
-	IBOutlet NSArrayController *_stackController;
+	IBOutlet NSArrayController *stackController;
 	NSArray *_stack;
 	
 	IBOutlet NSTreeController *_registerController;
