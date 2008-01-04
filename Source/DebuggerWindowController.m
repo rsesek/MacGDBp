@@ -50,8 +50,8 @@
 	[[sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
 	[[sourceViewer textContainer] setWidthTracksTextView:NO];
 	[sourceViewer setHorizontallyResizable:YES];
-	[_sourceViewerScroller setHasHorizontalScroller:YES];
-	[_sourceViewerScroller display];
+	[sourceViewerScroller setHasHorizontalScroller:YES];
+	[sourceViewerScroller display];
 }
 
 /**

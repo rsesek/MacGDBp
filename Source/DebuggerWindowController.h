@@ -33,7 +33,7 @@
 	IBOutlet NSTextField *errormsg;
 	
 	IBOutlet NSTextView *sourceViewer;
-	IBOutlet NSScrollView *_sourceViewerScroller;
+	IBOutlet NSScrollView *sourceViewerScroller;
 	
 	IBOutlet NSButton *_stepInButton;
 	IBOutlet NSButton *_stepOutButton;
