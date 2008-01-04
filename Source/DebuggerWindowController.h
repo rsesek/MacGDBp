@@ -20,32 +20,32 @@
 
 @interface DebuggerWindowController : NSWindowController
 {
-	DebuggerConnection *connection;
+	DebuggerConnection *_connection;
 	
-	IBOutlet NSArrayController *stackController;
-	NSArray *stack;
+	IBOutlet NSArrayController *_stackController;
+	NSArray *_stack;
 	
-	IBOutlet NSTreeController *registerController;
-	IBOutlet NSOutlineView *registerView;
-	NSMutableArray *expandedRegisters;
+	IBOutlet NSTreeController *_registerController;
+	IBOutlet NSOutlineView *_registerView;
+	NSMutableArray *_expandedRegisters;
 	
-	IBOutlet NSTextField *status;
-	IBOutlet NSTextField *error;
+	IBOutlet NSTextField *_status;
+	IBOutlet NSTextField *_error;
 	
-	IBOutlet NSTextView *sourceViewer;
-	IBOutlet NSScrollView *sourceViewerScroller;
+	IBOutlet NSTextView *_sourceViewer;
+	IBOutlet NSScrollView *_sourceViewerScroller;
 	
-	IBOutlet NSButton *stepInButton;
-	IBOutlet NSButton *stepOutButton;
-	IBOutlet NSButton *stepOverButton;
-	IBOutlet NSButton *runButton;
-	IBOutlet NSButton *reconnectButton;
+	IBOutlet NSButton *_stepInButton;
+	IBOutlet NSButton *_stepOutButton;
+	IBOutlet NSButton *_stepOverButton;
+	IBOutlet NSButton *_runButton;
+	IBOutlet NSButton *_reconnectButton;
 }
 
 - (id)initWithConnection:(DebuggerConnection *)cnx;
 
-- (void)setStatus:(NSString *)aStatus;
-- (void)setError:(NSString *)anError;
+- (void)setStatus:(NSString *)status;
+- (void)setError:(NSString *)error;
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
 
