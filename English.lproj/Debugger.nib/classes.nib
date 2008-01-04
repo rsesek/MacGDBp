@@ -28,8 +28,6 @@
 				<string>NSTextField</string>
 				<key>_reconnectButton</key>
 				<string>NSButton</string>
-				<key>_registerController</key>
-				<string>NSTreeController</string>
 				<key>_registerView</key>
 				<string>NSOutlineView</string>
 				<key>_runButton</key>
@@ -46,6 +44,8 @@
 				<string>NSButton</string>
 				<key>_stepOverButton</key>
 				<string>NSButton</string>
+				<key>registerController</key>
+				<string>NSTreeController</string>
 				<key>stackController</key>
 				<string>NSArrayController</string>
 			</dict>

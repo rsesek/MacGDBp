@@ -153,8 +153,8 @@
 	//		sh!t when used with NSTreeController. http://www.cocoadev.com/index.pl?NSTreeControllerBugOrDeveloperError
 	//		was the inspiration for this fix (below) but the author says that inserting does not work too well, but
 	//		that's okay for us as we just need to replace the entire thing.
-	[_registerController setContent:nil];
-	[_registerController setContent:[[elm rootElement] children]];
+	[registerController setContent:nil];
+	[registerController setContent:[[elm rootElement] children]];
 	
 	for (int i = 0; i < [_registerView numberOfRows]; i++)
 	{
@@ -296,10 +296,10 @@
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
 	{
-		[_registerController insertObject:[children objectAtIndex:i] atArrangedObjectIndexPath:[masterPath indexPathByAddingIndex:i]];
+		[registerController insertObject:[children objectAtIndex:i] atArrangedObjectIndexPath:[masterPath indexPathByAddingIndex:i]];
 	}
 	
-	[_registerController rearrangeObjects];
+	[registerController rearrangeObjects];
 }
 
 @end
