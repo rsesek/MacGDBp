@@ -38,7 +38,7 @@
 	IBOutlet NSButton *stepInButton;
 	IBOutlet NSButton *stepOutButton;
 	IBOutlet NSButton *stepOverButton;
-	IBOutlet NSButton *_runButton;
+	IBOutlet NSButton *runButton;
 	IBOutlet NSButton *_reconnectButton;
 }
 

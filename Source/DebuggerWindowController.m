@@ -84,7 +84,7 @@
 	[stepInButton setEnabled:NO];
 	[stepOutButton setEnabled:NO];
 	[stepOverButton setEnabled:NO];
-	[_runButton setEnabled:NO];
+	[runButton setEnabled:NO];
 	[_reconnectButton setEnabled:NO];
 	
 	if ([connection isConnected])
@@ -92,7 +92,7 @@
 		if ([aStatus isEqualToString:@"Starting"])
 		{
 			[stepInButton setEnabled:YES];
-			[_runButton setEnabled:YES];
+			[runButton setEnabled:YES];
 		}
 	}
 	else
@@ -130,7 +130,7 @@
 	}
 	[stepInButton setEnabled:YES];
 	[stepOverButton setEnabled:YES];
-	[_runButton setEnabled:YES];
+	[runButton setEnabled:YES];
 	
 	[self updateSourceViewer];
 }

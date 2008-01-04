@@ -50,6 +50,8 @@
 				<string>NSTreeController</string>
 				<key>registerView</key>
 				<string>NSOutlineView</string>
+				<key>runButton</key>
+				<string>NSButton</string>
 				<key>sourceViewer</key>
 				<string>NSTextView</string>
 				<key>sourceViewerScroller</key>
