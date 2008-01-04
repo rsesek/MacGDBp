@@ -275,10 +275,10 @@
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached in the delivery.
  */
-- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm
+- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)node
 {
 	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
-	depthFetchElement = elm;
+	depthFetchNode = node;
 	[socket receive:@selector(propertyReceived:)];
 }
 
@@ -299,8 +299,8 @@
 	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
 	NSArray *children = [parent children];
 	[parent setChildren:nil];
-	[windowController addChildren:children toNode:depthFetchElement];
-	depthFetchElement = nil;
+	[windowController addChildren:children toNode:depthFetchNode];
+	depthFetchNode = nil;
 }
 
 /**

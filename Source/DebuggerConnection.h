@@ -28,7 +28,7 @@
 	
 	SocketWrapper *socket;
 	
-	id depthFetchElement;
+	id depthFetchNode;
 }
 
 // initializer
@@ -51,6 +51,6 @@
 - (void)updateStackTraceAndRegisters;
 
 // helpers
-- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm;
+- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)elm;
 
 @end

@@ -156,13 +156,9 @@
 	[registerController setContent:nil];
 	[registerController setContent:[[elm rootElement] children]];
 	
-	for (int i = 0; i < [registerView numberOfRows]; i++)
+	for (NSTreeNode *node in expandedRegisters)
 	{
-		int index = [expandedRegisters indexOfObject:[[[registerView itemAtRow:i] observedObject] variable]];
-		if (index != NSNotFound)
-		{
-			[registerView expandItem:[registerView itemAtRow:i]];
-		}
+		[registerView expandItem:node];
 	}
 }
 
@@ -261,38 +257,30 @@
  */
 - (void)outlineViewItemDidExpand:(NSNotification *)notif
 {
-	NSLog(@"notification expanded:%@", notif);
-	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
-	//		which is presumably private, and thus this is not a reliable method for getting the object. But
-	//		we damn well need it, so f!ck the rules and we're using it. <rdar://problem/5387001>
-	id notifObj = [[notif userInfo] objectForKey:@"NSObject"];
-	NSXMLElement *obj = [notifObj observedObject];
+	NSTreeNode *node = [[notif userInfo] objectForKey:@"NSObject"];
 	
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
-	if (![obj isLeaf] && [[obj children] count] < 1)
+	if (![node isLeaf] && [[node childNodes] count] < 1)
 	{
-		[connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
+		[connection getProperty:[[[node representedObject] attributeForName:@"fullname"] stringValue] forNode:node];
 	}
 	
-	[expandedRegisters addObject:[obj variable]];
+	[expandedRegisters addObject:node];
 }
 
 /**
  * Called when an item was collapsed. This allows us to remove it from the list of expanded items
  */
-- (void)outlineViewItemDidCollapse:(id)notif
+- (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
-	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
-	NSLog(@"outlineViewDidCollapse:%@", notif);
+	[expandedRegisters removeObject:[[notif userInfo] objectForKey:@"NSObject"]];
 }
 
 /**
  * Updates the register view by reinserting a given node back into the outline view
  */
-- (void)addChildren:(NSArray *)children toNode:(id)node
+- (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node
 {
-	NSLog(@"addChildren node:%@", node);
-	// XXX: this may break like in outlineViewItemDidExpand:<rdar://problem/5387001>
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
 	{
