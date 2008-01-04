@@ -292,7 +292,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	if (sent < [data length])
 	{
 		// TODO - do we really need to worry about partial sends with the lenght of our commands?
-		NSLog(@"FAIL:only partial packet was sent; sent %d bytes", sent);
+		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
 	}
 	
 	[self postNotification:NsockDataSent withObject:[data substringToIndex:sent]];
