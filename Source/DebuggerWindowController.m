@@ -83,7 +83,7 @@
 	
 	[stepInButton setEnabled:NO];
 	[_stepOutButton setEnabled:NO];
-	[_stepOverButton setEnabled:NO];
+	[stepOverButton setEnabled:NO];
 	[_runButton setEnabled:NO];
 	[_reconnectButton setEnabled:NO];
 	
@@ -129,7 +129,7 @@
 		[_stepOutButton setEnabled:YES];
 	}
 	[stepInButton setEnabled:YES];
-	[_stepOverButton setEnabled:YES];
+	[stepOverButton setEnabled:YES];
 	[_runButton setEnabled:YES];
 	
 	[self updateSourceViewer];
