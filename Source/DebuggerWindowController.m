@@ -89,7 +89,7 @@
 	
 	if ([connection isConnected])
 	{
-		if ([status isEqualToString:@"Starting"])
+		if ([aStatus isEqualToString:@"Starting"])
 		{
 			[stepInButton setEnabled:YES];
 			[runButton setEnabled:YES];

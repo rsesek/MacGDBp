@@ -32,7 +32,7 @@
 }
 
 // initializer
-- (id)initWithPort:(int)aPort session:(NSString *)session;
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
 - (void)windowDidClose;
 

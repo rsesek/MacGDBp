@@ -29,12 +29,12 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort session:(NSString *)session
+- (id)initWithPort:(int)aPort session:(NSString *)aSession
 {
 	if (self = [super init])
 	{
 		port = aPort;
-		session = [session retain];
+		session = [aSession retain];
 		connected = NO;
 		
 		windowController = [[DebuggerWindowController alloc] initWithConnection:self];
