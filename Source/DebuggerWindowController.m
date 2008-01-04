@@ -35,7 +35,7 @@
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
 		connection = cnx;
-		_expandedRegisters = [[NSMutableArray alloc] init];
+		expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -67,7 +67,7 @@
  */
 - (void)dealloc
 {
-	[_expandedRegisters release];
+	[expandedRegisters release];
 	
 	[super dealloc];
 }
@@ -158,7 +158,7 @@
 	
 	for (int i = 0; i < [registerView numberOfRows]; i++)
 	{
-		int index = [_expandedRegisters indexOfObject:[[[registerView itemAtRow:i] observedObject] variable]];
+		int index = [expandedRegisters indexOfObject:[[[registerView itemAtRow:i] observedObject] variable]];
 		if (index != NSNotFound)
 		{
 			[registerView expandItem:[registerView itemAtRow:i]];
@@ -274,7 +274,7 @@
 		[connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
 	}
 	
-	[_expandedRegisters addObject:[obj variable]];
+	[expandedRegisters addObject:[obj variable]];
 }
 
 /**
@@ -282,7 +282,7 @@
  */
 - (void)outlineViewItemDidCollapse:(id)notif
 {
-	[_expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
+	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
 	NSLog(@"outlineViewDidCollapse:%@", notif);
 }
 

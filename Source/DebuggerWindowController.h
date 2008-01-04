@@ -27,7 +27,7 @@
 	
 	IBOutlet NSTreeController *registerController;
 	IBOutlet NSOutlineView *registerView;
-	NSMutableArray *_expandedRegisters;
+	NSMutableArray *expandedRegisters;
 	
 	IBOutlet NSTextField *_status;
 	IBOutlet NSTextField *_error;
