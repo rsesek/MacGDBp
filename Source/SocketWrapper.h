@@ -19,7 +19,7 @@
 @interface SocketWrapper : NSObject
 {
 	int port;
-	int socket;
+	int sock;
 	
 	id delegate;
 }

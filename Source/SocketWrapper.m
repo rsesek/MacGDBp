@@ -61,7 +61,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	close(socket);
+	close(sock);
 	
 	[super dealloc];
 }
@@ -90,7 +90,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	struct sockaddr_in addr;
 	socklen_t addrLength;
 	
-	if (getpeername(socket, (struct sockaddr *)&addr, &addrLength) < 0)
+	if (getpeername(sock, (struct sockaddr *)&addr, &addrLength) < 0)
 	{
 		[self postNotification:NsockError withObject:[NSError errorWithDomain:@"Could not get remote hostname." code:-1 userInfo:nil]];
 	}
@@ -188,8 +188,8 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// accept a connection
 	struct sockaddr_in remoteAddress;
 	socklen_t remoteAddressLen = sizeof(remoteAddress);
-	socket = accept(socketOpen, (struct sockaddr *)&remoteAddress, &remoteAddressLen);
-	if (socket < 0)
+	sock = accept(socketOpen, (struct sockaddr *)&remoteAddress, &remoteAddressLen);
+	if (sock < 0)
 	{
 		close(socketOpen);
 		[self postNotification:NsockError withObject:@"Client failed to accept remote socket"];
@@ -218,7 +218,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	char buffer[1024];
 	
 	// do our initial recv() call to get (hopefully) all the data and the lengh of the packet
-	int recvd = recv(socket, &buffer, sizeof(buffer), 0);
+	int recvd = recv(sock, &buffer, sizeof(buffer), 0);
 	
 	// take the received data and put it into an NSData
 	NSMutableData *data = [NSMutableData data];
@@ -252,7 +252,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	{
 		while (recvd < length)
 		{
-			int latest = recv(socket, &buffer, sizeof(buffer), 0);
+			int latest = recv(sock, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
 			{
 				[self postNotification:NsockError withObject:@"Socket closed or could not be read"];
@@ -283,7 +283,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 - (void)send:(NSString *)data
 {
 	data = [NSString stringWithFormat:@"%@\0", data];
-	int sent = send(socket, [data UTF8String], [data length], 0);
+	int sent = send(sock, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
 		[self postNotification:NsockError withObject:@"Failed to write data to socket"];
