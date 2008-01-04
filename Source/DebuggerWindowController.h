@@ -42,19 +42,19 @@
 	IBOutlet NSButton *_reconnectButton;
 }
 
-- (id)initWithConnection: (DebuggerConnection *)cnx;
+- (id)initWithConnection:(DebuggerConnection *)cnx;
 
-- (void)setStatus: (NSString *)status;
-- (void)setError: (NSString *)error;
-- (void)setStack: (NSArray *)node;
-- (void)setRegister: (NSXMLDocument *)reg;
+- (void)setStatus:(NSString *)status;
+- (void)setError:(NSString *)error;
+- (void)setStack:(NSArray *)node;
+- (void)setRegister:(NSXMLDocument *)reg;
 
-- (void)addChildren: (NSArray *)children toNode: (id)node;
+- (void)addChildren:(NSArray *)children toNode:(id)node;
 
-- (IBAction)run: (id)sender;
-- (IBAction)stepIn: (id)sender;
-- (IBAction)stepOut: (id)sender;
-- (IBAction)stepOver: (id)sender;
-- (IBAction)reconnect: (id)sender;
+- (IBAction)run:(id)sender;
+- (IBAction)stepIn:(id)sender;
+- (IBAction)stepOut:(id)sender;
+- (IBAction)stepOver:(id)sender;
+- (IBAction)reconnect:(id)sender;
 
 @end

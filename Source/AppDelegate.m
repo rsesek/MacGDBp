@@ -34,7 +34,7 @@
 /**
  * Called when the application is going to go away
  */
-- (void)applicationWillTerminate: (NSNotification *)aNotification
+- (void)applicationWillTerminate:(NSNotification *)aNotification
 {
 	[connections release];
 }
@@ -42,33 +42,33 @@
 /**
  * When the application has finished loading, show the connection dialog
  */
-- (void)applicationDidFinishLaunching: (NSNotification *)notif
+- (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
-	[self showConnectionWindow: self];
+	[self showConnectionWindow:self];
 }
 
 /**
  * Adds an object to the connections array
  */
-- (void)registerConnection: (DebuggerConnection *)cnx
+- (void)registerConnection:(DebuggerConnection *)cnx
 {
-	[connections addObject: cnx];
+	[connections addObject:cnx];
 }
 
 /**
  * Removes a given connection from the connections array
  */
-- (void)unregisterConnection: (DebuggerConnection *)cnx
+- (void)unregisterConnection:(DebuggerConnection *)cnx
 {
-	[connections removeObject: cnx];
+	[connections removeObject:cnx];
 }
 
 /**
  * Shows the connection window
  */
-- (IBAction)showConnectionWindow: (id)sender
+- (IBAction)showConnectionWindow:(id)sender
 {
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront: self];
+	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
 }
 
 @end

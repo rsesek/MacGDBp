@@ -32,7 +32,7 @@
 }
 
 // initializer
-- (id)initWithPort: (int)port session: (NSString *)session;
+- (id)initWithPort:(int)port session:(NSString *)session;
 
 - (void)windowDidClose;
 
@@ -51,6 +51,6 @@
 - (void)updateStackTraceAndRegisters;
 
 // helpers
-- (void)getProperty: (NSString *)property forElement: (NSXMLElement *)elm;
+- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm;
 
 @end

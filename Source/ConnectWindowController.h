@@ -25,6 +25,6 @@
 
 + (id)sharedController;
 
-- (IBAction)connect: (id)sender;
+- (IBAction)connect:(id)sender;
 
 @end

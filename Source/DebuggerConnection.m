@@ -19,7 +19,7 @@
 
 @interface DebuggerConnection (Private)
 
-- (NSString *)createCommand: (NSString *)cmd;
+- (NSString *)createCommand:(NSString *)cmd;
 
 @end
 
@@ -29,7 +29,7 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort: (int)port session: (NSString *)session
+- (id)initWithPort:(int)port session:(NSString *)session
 {
 	if (self = [super init])
 	{
@@ -37,13 +37,13 @@
 		_session = [session retain];
 		_connected = NO;
 		
-		_windowController = [[DebuggerWindowController alloc] initWithConnection: self];
-		[[_windowController window] makeKeyAndOrderFront: self];
+		_windowController = [[DebuggerWindowController alloc] initWithConnection:self];
+		[[_windowController window] makeKeyAndOrderFront:self];
 		
 		// now that we have our host information, open the socket
-		_socket = [[SocketWrapper alloc] initWithPort: port];
-		[_socket setDelegate: self];
-		[_windowController setStatus: @"Connecting"];
+		_socket = [[SocketWrapper alloc] initWithPort:port];
+		[_socket setDelegate:self];
+		[_windowController setStatus:@"Connecting"];
 		[_socket connect];
 	}
 	return self;
@@ -55,7 +55,7 @@
  */
 - (void)windowDidClose
 {
-	[[NSApp delegate] unregisterConnection: self];
+	[[NSApp delegate] unregisterConnection:self];
 }
 
 /**
@@ -109,22 +109,22 @@
 /**
  * SocketWrapper delegate method that is called whenever new data is received
  */
-- (void)dataReceived: (NSData *)response deliverTo: (SEL)selector
+- (void)dataReceived:(NSData *)response deliverTo:(SEL)selector
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData: response options: NSXMLDocumentTidyXML error: nil];
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:response options:NSXMLDocumentTidyXML error:nil];
 	
 	// check and see if there's an error
-	NSArray *error = [[doc rootElement] elementsForName: @"error"];
+	NSArray *error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
-		[_windowController setError: [[[[error objectAtIndex: 0] children] objectAtIndex: 0] stringValue]];
+		[_windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return;
 	}
 	
 	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
 	if (selector != nil)
 	{
-		[self performSelector: selector withObject: doc];
+		[self performSelector:selector withObject:doc];
 	}
 	
 	[doc release];
@@ -134,7 +134,7 @@
  * SocketWrapper delegate method that is called after data is sent. This really
  * isn't useful for much.
  */
-- (void)dataSent: (NSString *)data
+- (void)dataSent:(NSString *)data
 {}
 
 /**
@@ -144,22 +144,22 @@
 - (void)socketDidAccept
 {
 	_connected = YES;
-	[_socket receive: @selector(handshake:)];
+	[_socket receive:@selector(handshake:)];
 }
 
 /**
  * Receives errors from the SocketWrapper and updates the display
  */
-- (void)errorEncountered: (NSError *)error
+- (void)errorEncountered:(NSError *)error
 {
-	[_windowController setError: [error domain]];
+	[_windowController setError:[error domain]];
 }
 
 /**
  * The initial packet handshake. This allows us to set things like the title of the window
  * and glean information about hte server we are debugging
  */
-- (void)handshake: (NSXMLDocument *)doc
+- (void)handshake:(NSXMLDocument *)doc
 {
 	[self refreshStatus];
 }
@@ -168,12 +168,12 @@
  * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
  * the window controller's status text
  */
-- (void)updateStatus: (NSXMLDocument *)doc
+- (void)updateStatus:(NSXMLDocument *)doc
 {
-	NSString *status = [[[doc rootElement] attributeForName: @"status"] stringValue];
-	[_windowController setStatus: [status capitalizedString]];
+	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
+	[_windowController setStatus:[status capitalizedString]];
 	
-	if ([status isEqualToString: @"break"])
+	if ([status isEqualToString:@"break"])
 	{
 		[self updateStackTraceAndRegisters];
 	}
@@ -184,7 +184,7 @@
  */
 - (void)run
 {
-	[_socket send: [self createCommand: @"run"]];
+	[_socket send:[self createCommand:@"run"]];
 	[self refreshStatus];
 }
 
@@ -194,8 +194,8 @@
  */
 - (void)refreshStatus
 {
-	[_socket send: [self createCommand: @"status"]];
-	[_socket receive: @selector(updateStatus:)];
+	[_socket send:[self createCommand:@"status"]];
+	[_socket receive:@selector(updateStatus:)];
 }
 
 /**
@@ -203,8 +203,8 @@
  */
 - (void)stepIn
 {
-	[_socket send: [self createCommand: @"step_into"]];
-	[_socket receive: nil];
+	[_socket send:[self createCommand:@"step_into"]];
+	[_socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -213,8 +213,8 @@
  */
 - (void)stepOut
 {
-	[_socket send: [self createCommand: @"step_out"]];
-	[_socket receive: nil];
+	[_socket send:[self createCommand:@"step_out"]];
+	[_socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -223,8 +223,8 @@
  */
 - (void)stepOver
 {
-	[_socket send: [self createCommand: @"step_over"]];
-	[_socket receive: nil];
+	[_socket send:[self createCommand:@"step_over"]];
+	[_socket receive:nil];
 	[self refreshStatus];
 }
 
@@ -234,58 +234,58 @@
  */
 - (void)updateStackTraceAndRegisters
 {
-	[_socket send: [self createCommand: @"stack_get"]];
-	[_socket receive: @selector(stackReceived:)];
+	[_socket send:[self createCommand:@"stack_get"]];
+	[_socket receive:@selector(stackReceived:)];
 	
-	[_socket send: [self createCommand: @"context_get"]];
-	[_socket receive: @selector(registerReceived:)];
+	[_socket send:[self createCommand:@"context_get"]];
+	[_socket receive:@selector(registerReceived:)];
 }
 
 /**
  * Called by the dataReceived delivery delegate. This updates the window controller's data
  * for the stack trace
  */
-- (void)stackReceived: (NSXMLDocument *)doc
+- (void)stackReceived:(NSXMLDocument *)doc
 {
 	NSArray *children = [[doc rootElement] children];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	for (int i = 0; i < [children count]; i++)
 	{
-		NSArray *attrs = [[children objectAtIndex: i] attributes];
+		NSArray *attrs = [[children objectAtIndex:i] attributes];
 		for (int j = 0; j < [attrs count]; j++)
 		{
-			[dict setValue: [[attrs objectAtIndex: j] stringValue] forKey: [[attrs objectAtIndex: j] name]];
+			[dict setValue:[[attrs objectAtIndex:j] stringValue] forKey:[[attrs objectAtIndex:j] name]];
 		}
-		[stack addObject: dict];
+		[stack addObject:dict];
 		dict = [NSMutableDictionary dictionary];
 	}
-	[_windowController setStack: stack];
+	[_windowController setStack:stack];
 }
 
 /**
  * Called when we have a new register to display
  */
-- (void)registerReceived: (NSXMLDocument *)doc
+- (void)registerReceived:(NSXMLDocument *)doc
 {
-	[_windowController setRegister: doc];
+	[_windowController setRegister:doc];
 }
 
 /**
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached in the delivery.
  */
-- (void)getProperty: (NSString *)property forElement: (NSXMLElement *)elm
+- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm
 {
-	[_socket send: [self createCommand: [NSString stringWithFormat: @"property_get -n \"%@\"", property]]];
+	[_socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
 	_depthFetchElement = elm;
-	[_socket receive: @selector(propertyReceived:)];
+	[_socket receive:@selector(propertyReceived:)];
 }
 
 /**
  * Called when a property is received. This then adds the result as children to the passed object
  */
-- (void)propertyReceived: (NSXMLDocument *)doc
+- (void)propertyReceived:(NSXMLDocument *)doc
 {
 	/*
 	 <response>
@@ -296,19 +296,19 @@
 	 */
 	
 	// we now have to detach all the children so we can insert them into another document
-	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex: 0];
+	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
 	NSArray *children = [parent children];
-	[parent setChildren: nil];
-	[_windowController addChildren: children toNode: _depthFetchElement];
+	[parent setChildren:nil];
+	[_windowController addChildren:children toNode:_depthFetchElement];
 	_depthFetchElement = nil;
 }
 
 /**
  * Helper method to create a string command with the -i <session> automatically tacked on
  */
-- (NSString *)createCommand: (NSString *)cmd
+- (NSString *)createCommand:(NSString *)cmd
 {
-	return [NSString stringWithFormat: @"%@ -i %@", cmd, _session];
+	return [NSString stringWithFormat:@"%@ -i %@", cmd, _session];
 }
 
 @end

@@ -28,13 +28,13 @@
 	static id instance = nil;
 	if (!instance)
 	{
-		instance = [[ConnectWindowController alloc] initWithWindowNibName: @"Connect"];
+		instance = [[ConnectWindowController alloc] initWithWindowNibName:@"Connect"];
 		[instance window];
 		
-		[[NSNotificationCenter defaultCenter] addObserver: instance
-												 selector: @selector(applicationWillTerminate:)
-													 name: NSApplicationWillTerminateNotification
-												   object: NSApp];
+		[[NSNotificationCenter defaultCenter] addObserver:instance
+												 selector:@selector(applicationWillTerminate:)
+													 name:NSApplicationWillTerminateNotification
+												   object:NSApp];
 		 
 	}
 	return instance;
@@ -43,7 +43,7 @@
 /**
  * Called when the applicaion is about to terminate so we can release itself
  */
-- (void)applicationWillTerminate: (NSNotification *)notif
+- (void)applicationWillTerminate:(NSNotification *)notif
 {
 	[self release];
 }
@@ -51,12 +51,12 @@
 /**
  * Creates a new DebuggerConnection object (and then completely forgets about it) and then close the window
  */
-- (IBAction)connect: (id)sender
+- (IBAction)connect:(id)sender
 {
-	DebuggerConnection *cnx = [[DebuggerConnection alloc] initWithPort: [_port intValue] session: [_session stringValue]];
-	[[NSApp delegate] registerConnection: cnx];
+	DebuggerConnection *cnx = [[DebuggerConnection alloc] initWithPort:[_port intValue] session:[_session stringValue]];
+	[[NSApp delegate] registerConnection:cnx];
 	[cnx release];
-	[[self window] orderOut: self];
+	[[self window] orderOut:self];
 }
 
 @end

@@ -23,9 +23,9 @@
 }
 
 
-- (void)registerConnection: (DebuggerConnection *)cnx;
-- (void)unregisterConnection: (DebuggerConnection *)cnx;
+- (void)registerConnection:(DebuggerConnection *)cnx;
+- (void)unregisterConnection:(DebuggerConnection *)cnx;
 
-- (IBAction)showConnectionWindow: (id)sender;
+- (IBAction)showConnectionWindow:(id)sender;
 
 @end

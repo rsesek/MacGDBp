@@ -30,9 +30,9 @@
 /**
  * Initializes the window controller and sets the connection
  */
-- (id)initWithConnection: (DebuggerConnection *)cnx
+- (id)initWithConnection:(DebuggerConnection *)cnx
 {
-	if (self = [super initWithWindowNibName: @"Debugger"])
+	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
 		_connection = cnx;
 		_expandedRegisters = [[NSMutableArray alloc] init];
@@ -46,18 +46,18 @@
 - (void)awakeFromNib
 {
 	// set up the scroller for the source viewer
-	[_sourceViewer setMaxSize: NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[_sourceViewer textContainer] setContainerSize: NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[_sourceViewer textContainer] setWidthTracksTextView: NO];
-	[_sourceViewer setHorizontallyResizable: YES];
-	[_sourceViewerScroller setHasHorizontalScroller: YES];
+	[_sourceViewer setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[_sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+	[[_sourceViewer textContainer] setWidthTracksTextView:NO];
+	[_sourceViewer setHorizontallyResizable:YES];
+	[_sourceViewerScroller setHasHorizontalScroller:YES];
 	[_sourceViewerScroller display];
 }
 
 /**
  * Called when the window is going to be closed so we can clean up all of our stuff
  */
-- (void)windowWillClose: (NSNotification *)aNotification
+- (void)windowWillClose:(NSNotification *)aNotification
 {
 	[_connection windowDidClose];
 }
@@ -75,46 +75,46 @@
 /**
  * Sets the status and clears any error message
  */
-- (void)setStatus: (NSString *)status
+- (void)setStatus:(NSString *)status
 {
-	[_error setHidden: YES];
-	[_status setStringValue: status];
-	[[self window] setTitle: [NSString stringWithFormat: @"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
+	[_error setHidden:YES];
+	[_status setStringValue:status];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [_connection remoteHost], [_connection port], [_connection session]]];
 	
-	[_stepInButton setEnabled: NO];
-	[_stepOutButton setEnabled: NO];
-	[_stepOverButton setEnabled: NO];
-	[_runButton setEnabled: NO];
-	[_reconnectButton setEnabled: NO];
+	[_stepInButton setEnabled:NO];
+	[_stepOutButton setEnabled:NO];
+	[_stepOverButton setEnabled:NO];
+	[_runButton setEnabled:NO];
+	[_reconnectButton setEnabled:NO];
 	
 	if ([_connection isConnected])
 	{
-		if ([status isEqualToString: @"Starting"])
+		if ([status isEqualToString:@"Starting"])
 		{
-			[_stepInButton setEnabled: YES];
-			[_runButton setEnabled: YES];
+			[_stepInButton setEnabled:YES];
+			[_runButton setEnabled:YES];
 		}
 	}
 	else
 	{
-		[_reconnectButton setEnabled: YES];
+		[_reconnectButton setEnabled:YES];
 	}
 }
 
 /**
  * Sets the status to be "Error" and then displays the error message
  */
-- (void)setError: (NSString *)error
+- (void)setError:(NSString *)error
 {
-	[_error setStringValue: error];
-	[self setStatus: @"Error"];
-	[_error setHidden: NO];
+	[_error setStringValue:error];
+	[self setStatus:@"Error"];
+	[_error setHidden:NO];
 }
 
 /**
  * Sets the root node element of the stacktrace
  */
-- (void)setStack: (NSArray *)stack
+- (void)setStack:(NSArray *)stack
 {
 	if (_stack != nil)
 	{
@@ -126,11 +126,11 @@
 	
 	if ([_stack count] > 1)
 	{
-		[_stepOutButton setEnabled: YES];
+		[_stepOutButton setEnabled:YES];
 	}
-	[_stepInButton setEnabled: YES];
-	[_stepOverButton setEnabled: YES];
-	[_runButton setEnabled: YES];
+	[_stepInButton setEnabled:YES];
+	[_stepOverButton setEnabled:YES];
+	[_runButton setEnabled:YES];
 	
 	[self updateSourceViewer];
 }
@@ -138,13 +138,13 @@
 /**
  * Sets the stack root element so that the NSOutlineView can display it
  */
-- (void)setRegister: (NSXMLDocument *)elm
+- (void)setRegister:(NSXMLDocument *)elm
 {
 	/*
-	[_registerController willChangeValueForKey: @"rootElement.children"];
-	[_registerController unbind: @"contentArray"];
-	[_registerController bind: @"contentArray" toObject: elm withKeyPath: @"rootElement.children" options: nil];
-	[_registerController didChangeValueForKey: @"rootElement.children"];
+	[_registerController willChangeValueForKey:@"rootElement.children"];
+	[_registerController unbind:@"contentArray"];
+	[_registerController bind:@"contentArray" toObject:elm withKeyPath:@"rootElement.children" options:nil];
+	[_registerController didChangeValueForKey:@"rootElement.children"];
 	*/
 	// XXX: Doing anything short of this will cause bindings to crash spectacularly for no reason whatsoever, and
 	//		in seemingly arbitrary places. The class that crashes is _NSKeyValueObservationInfoCreateByRemoving.
@@ -153,15 +153,15 @@
 	//		sh!t when used with NSTreeController. http://www.cocoadev.com/index.pl?NSTreeControllerBugOrDeveloperError
 	//		was the inspiration for this fix (below) but the author says that inserting does not work too well, but
 	//		that's okay for us as we just need to replace the entire thing.
-	[_registerController setContent: nil];
-	[_registerController setContent: [[elm rootElement] children]];
+	[_registerController setContent:nil];
+	[_registerController setContent:[[elm rootElement] children]];
 	
 	for (int i = 0; i < [_registerView numberOfRows]; i++)
 	{
-		int index = [_expandedRegisters indexOfObject: [[[_registerView itemAtRow: i] observedObject] variable]];
+		int index = [_expandedRegisters indexOfObject:[[[_registerView itemAtRow:i] observedObject] variable]];
 		if (index != NSNotFound)
 		{
-			[_registerView expandItem: [_registerView itemAtRow: i]];
+			[_registerView expandItem:[_registerView itemAtRow:i]];
 		}
 	}
 }
@@ -169,7 +169,7 @@
 /**
  * Forwards the message to run script execution to the connection
  */
-- (IBAction)run: (id)sender
+- (IBAction)run:(id)sender
 {
 	[_connection run];
 }
@@ -177,7 +177,7 @@
 /**
  * Tells the connection to ask the server to reconnect
  */
-- (IBAction)reconnect: (id)sender
+- (IBAction)reconnect:(id)sender
 {
 	
 }
@@ -185,7 +185,7 @@
 /**
  * Forwards the message to "step in" to the connection
  */
-- (IBAction)stepIn: (id)sender
+- (IBAction)stepIn:(id)sender
 {
 	[_connection stepIn];
 }
@@ -193,7 +193,7 @@
 /**
 * Forwards the message to "step out" to the connection
  */
-- (IBAction)stepOut: (id)sender
+- (IBAction)stepOut:(id)sender
 {
 	[_connection stepOut];
 }
@@ -201,7 +201,7 @@
 /**
 * Forwards the message to "step over" to the connection
  */
-- (IBAction)stepOver: (id)sender
+- (IBAction)stepOver:(id)sender
 {
 	[_connection stepOver];
 }
@@ -210,7 +210,7 @@
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
  */
-- (void)tableViewSelectionDidChange: (NSNotification *)notif
+- (void)tableViewSelectionDidChange:(NSNotification *)notif
 {
 	[self updateSourceViewer];
 }
@@ -223,80 +223,80 @@
 	int selection = [_stackController selectionIndex];
 	if (selection == NSNotFound)
 	{
-		[_sourceViewer setString: @""];
+		[_sourceViewer setString:@""];
 		return;
 	}
 	
 	// get the filename and then set the text
-	NSString *filename = [[_stack objectAtIndex: selection] valueForKey: @"filename"];
-	filename = [[NSURL URLWithString: filename] path];
-	NSString *text = [NSString stringWithContentsOfFile: filename];
-	[_sourceViewer setString: text];
+	NSString *filename = [[_stack objectAtIndex:selection] valueForKey:@"filename"];
+	filename = [[NSURL URLWithString:filename] path];
+	NSString *text = [NSString stringWithContentsOfFile:filename];
+	[_sourceViewer setString:text];
 	
 	// go through the document until we find the NSRange for the line we want
-	int destination = [[[_stack objectAtIndex: selection] valueForKey: @"lineno"] intValue];
+	int destination = [[[_stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
 	int rangeIndex = 0;
 	for (int line = 0; line < destination; line++)
 	{
-		rangeIndex = NSMaxRange([text lineRangeForRange: NSMakeRange(rangeIndex, 0)]);
+		rangeIndex = NSMaxRange([text lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
 	}
 	
 	// now get the true start/end markers for it
 	unsigned lineStart, lineEnd;
-	[text getLineStart: &lineStart end: NULL contentsEnd: &lineEnd forRange: NSMakeRange(rangeIndex - 1, 0)];
+	[text getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
 	NSRange lineRange = NSMakeRange(lineStart, lineEnd - lineStart);
 	
 	// colorize it so the user knows which line we're on in the stack
-	[[_sourceViewer textStorage] setAttributes: [NSDictionary dictionaryWithObjects: [NSArray arrayWithObjects: [NSColor redColor], [NSColor yellowColor], nil]
-																			 forKeys: [NSArray arrayWithObjects: NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
-										 range: lineRange];
-	[_sourceViewer scrollRangeToVisible: [text lineRangeForRange: NSMakeRange(lineStart, lineEnd - lineStart)]];
+	[[_sourceViewer textStorage] setAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSColor redColor], [NSColor yellowColor], nil]
+																			 forKeys:[NSArray arrayWithObjects:NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
+										 range:lineRange];
+	[_sourceViewer scrollRangeToVisible:[text lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 	
 	// make sure the font stays Monaco
-	[_sourceViewer setFont: [NSFont fontWithName: @"Monaco" size: 10.0]];
+	[_sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 }
 
 /**
  * Called whenver an item is expanded. This allows us to determine if we need to fetch deeper
  */
-- (void)outlineViewItemDidExpand: (NSNotification *)notif
+- (void)outlineViewItemDidExpand:(NSNotification *)notif
 {
-	NSLog(@"notification expanded: %@", notif);
+	NSLog(@"notification expanded:%@", notif);
 	// XXX: This very well may break because NSTreeController sends us a _NSArrayControllerTreeNode object
 	//		which is presumably private, and thus this is not a reliable method for getting the object. But
 	//		we damn well need it, so f!ck the rules and we're using it. <rdar://problem/5387001>
-	id notifObj = [[notif userInfo] objectForKey: @"NSObject"];
+	id notifObj = [[notif userInfo] objectForKey:@"NSObject"];
 	NSXMLElement *obj = [notifObj observedObject];
 	
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![obj isLeaf] && [[obj children] count] < 1)
 	{
-		[_connection getProperty: [[obj attributeForName: @"fullname"] stringValue] forElement: notifObj];
+		[_connection getProperty:[[obj attributeForName:@"fullname"] stringValue] forElement:notifObj];
 	}
 	
-	[_expandedRegisters addObject: [obj variable]];
+	[_expandedRegisters addObject:[obj variable]];
 }
 
 /**
  * Called when an item was collapsed. This allows us to remove it from the list of expanded items
  */
-- (void)outlineViewItemDidCollapse: (id)notif
+- (void)outlineViewItemDidCollapse:(id)notif
 {
-	[_expandedRegisters removeObject: [[[[notif userInfo] objectForKey: @"NSObject"] observedObject] variable]];
-	NSLog(@"outlineViewDidCollapse: %@", notif);
+	[_expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] observedObject] variable]];
+	NSLog(@"outlineViewDidCollapse:%@", notif);
 }
 
 /**
  * Updates the register view by reinserting a given node back into the outline view
  */
-- (void)addChildren: (NSArray *)children toNode: (id)node
+- (void)addChildren:(NSArray *)children toNode:(id)node
 {
-	NSLog(@"addChildren node: %@", node);
-	// XXX: this may break like in outlineViewItemDidExpand: <rdar://problem/5387001>
+	NSLog(@"addChildren node:%@", node);
+	// XXX: this may break like in outlineViewItemDidExpand:<rdar://problem/5387001>
 	NSIndexPath *masterPath = [node indexPath];
 	for (int i = 0; i < [children count]; i++)
 	{
-		[_registerController insertObject: [children objectAtIndex: i] atArrangedObjectIndexPath: [masterPath indexPathByAddingIndex: i]];
+		[_registerController insertObject:[children objectAtIndex:i] atArrangedObjectIndexPath:[masterPath indexPathByAddingIndex:i]];
 	}
 	
 	[_registerController rearrangeObjects];

@@ -24,14 +24,14 @@
 	id _delegate;
 }
 
-- (id)initWithPort: (int)port;
+- (id)initWithPort:(int)port;
 
 - (id)delegate;
-- (void)setDelegate: (id)delegate;
+- (void)setDelegate:(id)delegate;
 
 - (void)connect;
-- (void)receive: (SEL)selector;
-- (void)send: (NSString *)data;
+- (void)receive:(SEL)selector;
+- (void)send:(NSString *)data;
 
 - (NSString *)remoteHost;
 
@@ -40,14 +40,14 @@
 @interface NSObject (SocketWrapperDelegate)
 
 // error
-- (void)errorEncountered: (NSError *)error;
+- (void)errorEncountered:(NSError *)error;
 
 // connection components
 - (void)socketDidBind;
 - (void)socketDidAccept;
 
 // data handlers
-- (void)dataReceived: (NSData *)response deliverTo: (SEL)selector;
-- (void)dataSent: (NSString *)sent;
+- (void)dataReceived:(NSData *)response deliverTo:(SEL)selector;
+- (void)dataSent:(NSString *)sent;
 
 @end

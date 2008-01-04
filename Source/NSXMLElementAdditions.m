@@ -24,7 +24,7 @@
  */
 - (NSString *)variable
 {
-	return [[self attributeForName: @"name"] stringValue];
+	return [[self attributeForName:@"name"] stringValue];
 }
 
 /**
@@ -32,7 +32,7 @@
  */
 - (BOOL)isLeaf
 {
-	return ([[[self attributeForName: @"children"] stringValue] intValue] == 0);
+	return ([[[self attributeForName:@"children"] stringValue] intValue] == 0);
 }
 
 /**
@@ -47,10 +47,10 @@
 	}
 	
 	// base64 encoded data
-	if ([[[self attributeForName: @"encoding"] stringValue] isEqualToString: @"base64"])
+	if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
 	{
-		char *str = (char *)[[self stringValue] cStringUsingEncoding: NSASCIIStringEncoding];
-		int strlen = [[self stringValue] lengthOfBytesUsingEncoding: NSASCIIStringEncoding];
+		char *str = (char *)[[self stringValue] cStringUsingEncoding:NSASCIIStringEncoding];
+		int strlen = [[self stringValue] lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
 		
 		char *data;
 		size_t datalen;
@@ -60,7 +60,7 @@
 			NSLog(@"error in converting %@ to base64", self);
 		}
 		
-		return [NSString stringWithCString: data length: datalen];
+		return [NSString stringWithCString:data length:datalen];
 	}
 	
 	// just a normal string
@@ -72,7 +72,7 @@
  */
 - (NSString *)type
 {
-	return [[self attributeForName: @"type"] stringValue];
+	return [[self attributeForName:@"type"] stringValue];
 }
 
 @end

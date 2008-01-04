@@ -30,9 +30,9 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 
 @interface SocketWrapper (Private)
 
-- (void)connect: (id)obj;
-- (void)postNotification: (NSString *)name withObject: (id)obj;
-- (void)postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict;
+- (void)connect:(id)obj;
+- (void)postNotification:(NSString *)name withObject:(id)obj;
+- (void)postNotification:(NSString *)name withObject:(id)obj withDict:(NSMutableDictionary *)dict;
 
 @end
 
@@ -41,7 +41,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 /**
  * Initializes the socket wrapper with a host and port
  */
-- (id)initWithPort: (int)port
+- (id)initWithPort:(int)port
 {
 	if (self = [super init])
 	{
@@ -50,7 +50,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		// the delegate notifications work funky because of threads. we register ourselves as the
 		// observer and then pass up the messages that are actually from this object (as we can't only observe self due to threads)
 		// to our delegate, and not to all delegates
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(sendMessageToDelegate:) name: nil object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageToDelegate:) name:nil object:nil];
 	}
 	return self;
 }
@@ -60,7 +60,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	close(_socket);
 	
 	[super dealloc];
@@ -77,7 +77,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 /**
  * Sets the delegate but does *not* retain it
  */
-- (void)setDelegate: (id)delegate
+- (void)setDelegate:(id)delegate
 {
 	_delegate = delegate;
 }
@@ -92,12 +92,12 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	if (getpeername(_socket, (struct sockaddr *)&addr, &addrLength) < 0)
 	{
-		[self postNotification: NsockError withObject: [NSError errorWithDomain: @"Could not get remote hostname." code: -1 userInfo: nil]];
+		[self postNotification:NsockError withObject:[NSError errorWithDomain:@"Could not get remote hostname." code:-1 userInfo:nil]];
 	}
 	
 	char *name = inet_ntoa(addr.sin_addr);
 	
-	return [NSString stringWithUTF8String: name];
+	return [NSString stringWithUTF8String:name];
 }
 
 /**
@@ -106,10 +106,10 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  * then the notification was sent from the same object in another thread and it passes the message along to the object's
  * delegate. Complicated enough?
  */
-- (void)sendMessageToDelegate: (NSNotification *)notif
+- (void)sendMessageToDelegate:(NSNotification *)notif
 {
 	// this isn't us, so there's no point in continuing
-	if ([[notif userInfo] objectForKey: sockNotificationDebuggerConnection] != _delegate)
+	if ([[notif userInfo] objectForKey:sockNotificationDebuggerConnection] != _delegate)
 	{
 		return;
 	}
@@ -122,15 +122,15 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	}
 	else if (name == NsockDataReceived)
 	{
-		[_delegate dataReceived: [notif object] deliverTo: NSSelectorFromString([[notif userInfo] objectForKey: sockNotificationReceiver])];
+		[_delegate dataReceived:[notif object] deliverTo:NSSelectorFromString([[notif userInfo] objectForKey:sockNotificationReceiver])];
 	}
 	else if (name == NsockDataSent)
 	{
-		[_delegate dataSent: [notif object]];
+		[_delegate dataSent:[notif object]];
 	}
 	else if (name == NsockError)
 	{
-		[_delegate errorEncountered: [NSError errorWithDomain: [notif object] code: -1 userInfo: nil]];
+		[_delegate errorEncountered:[NSError errorWithDomain:[notif object] code:-1 userInfo:nil]];
 	}
 }
 
@@ -140,13 +140,13 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)connect
 {
-	[NSThread detachNewThreadSelector: @selector(connect:) toTarget: self withObject: nil];
+	[NSThread detachNewThreadSelector:@selector(connect:) toTarget:self withObject:nil];
 }
 
 /**
  * This does the actual dirty work (in a separate thread) of connecting to a socket
  */
-- (void)connect: (id)obj
+- (void)connect:(id)obj
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -171,7 +171,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		if (tries >= 5)
 		{
 			close(socketOpen);
-			[self postNotification: NsockError withObject: @"Could not bind to socket"];
+			[self postNotification:NsockError withObject:@"Could not bind to socket"];
 			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
@@ -182,7 +182,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// now we just have to keep our ears open
 	if (listen(socketOpen, 0) == -1)
 	{
-		[self postNotification: NsockError withObject: @"Could not use bound socket for listening"];
+		[self postNotification:NsockError withObject:@"Could not use bound socket for listening"];
 	}
 	
 	// accept a connection
@@ -192,14 +192,14 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	if (_socket < 0)
 	{
 		close(socketOpen);
-		[self postNotification: NsockError withObject: @"Client failed to accept remote socket"];
+		[self postNotification:NsockError withObject:@"Client failed to accept remote socket"];
 		return;
 	}
 	
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[self postNotification: NsockDidAccept withObject: nil];
+	[self postNotification:NsockDidAccept withObject:nil];
 	
 	[pool release];
 }
@@ -212,7 +212,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  *
  * The paramater is an optional selector which the delegate method dataReceived:deliverTo: should forward to
  */
-- (void)receive: (SEL)selector
+- (void)receive:(SEL)selector
 {
 	// create a buffer
 	char buffer[1024];
@@ -245,7 +245,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	memmove(packet, &buffer[i], recvd - i);
 	
 	// convert bytes to NSData
-	[data appendBytes: packet length: recvd - i];
+	[data appendBytes:packet length:recvd - i];
 	
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
@@ -255,65 +255,65 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			int latest = recv(_socket, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
 			{
-				[self postNotification: NsockError withObject: @"Socket closed or could not be read"];
+				[self postNotification:NsockError withObject:@"Socket closed or could not be read"];
 				return;
 			}
-			[data appendBytes: buffer length: latest];
+			[data appendBytes:buffer length:latest];
 			recvd += latest;
 		}
 	}
 	
-	//NSLog(@"data = %@", [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease]);
+	//NSLog(@"data = %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
 	
 	if (selector != nil)
 	{
-		[self postNotification: NsockDataReceived
-					 withObject: data
-					   withDict: [NSMutableDictionary dictionaryWithObject: NSStringFromSelector(selector) forKey: sockNotificationReceiver]];
+		[self postNotification:NsockDataReceived
+					 withObject:data
+					   withDict:[NSMutableDictionary dictionaryWithObject:NSStringFromSelector(selector) forKey:sockNotificationReceiver]];
 	}
 	else
 	{
-		[self postNotification: NsockDataReceived withObject: data];
+		[self postNotification:NsockDataReceived withObject:data];
 	}
 }
 
 /**
  * Sends a given NSString over the socket
  */
-- (void)send: (NSString *)data
+- (void)send:(NSString *)data
 {
-	data = [NSString stringWithFormat: @"%@\0", data];
+	data = [NSString stringWithFormat:@"%@\0", data];
 	int sent = send(_socket, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
-		[self postNotification: NsockError withObject: @"Failed to write data to socket"];
+		[self postNotification:NsockError withObject:@"Failed to write data to socket"];
 		return;
 	}
 	if (sent < [data length])
 	{
 		// TODO - do we really need to worry about partial sends with the lenght of our commands?
-		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
+		NSLog(@"FAIL:only partial packet was sent; sent %d bytes", sent);
 	}
 	
-	[self postNotification: NsockDataSent withObject: [data substringToIndex: sent]];
+	[self postNotification:NsockDataSent withObject:[data substringToIndex:sent]];
 }
 
 /**
  * Helper method to simply post a notification to the default notification center with a given name and object
  */
-- (void)postNotification: (NSString *)name withObject: (id)obj
+- (void)postNotification:(NSString *)name withObject:(id)obj
 {
-	[self postNotification: name withObject: obj withDict: [NSMutableDictionary dictionary]];
+	[self postNotification:name withObject:obj withDict:[NSMutableDictionary dictionary]];
 }
 
 /**
  * Another helper method to aid in the posting of notifications. This one should be used if you have additional
  * things for the userInfo. This automatically adds the sockNotificationDebuggerConnection key.
  */
-- (void)postNotification: (NSString *)name withObject: (id)obj withDict: (NSMutableDictionary *)dict
+- (void)postNotification:(NSString *)name withObject:(id)obj withDict:(NSMutableDictionary *)dict
 {
-	[dict setValue: _delegate forKey: sockNotificationDebuggerConnection];
-	[[NSNotificationCenter defaultCenter] postNotificationName: name object: obj userInfo: dict];
+	[dict setValue:_delegate forKey:sockNotificationDebuggerConnection];
+	[[NSNotificationCenter defaultCenter] postNotificationName:name object:obj userInfo:dict];
 }
 
 @end
