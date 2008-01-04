@@ -28,8 +28,6 @@
 				<string>NSButton</string>
 				<key>_runButton</key>
 				<string>NSButton</string>
-				<key>_sourceViewer</key>
-				<string>NSTextView</string>
 				<key>_sourceViewerScroller</key>
 				<string>NSScrollView</string>
 				<key>_stepInButton</key>
@@ -44,6 +42,8 @@
 				<string>NSTreeController</string>
 				<key>registerView</key>
 				<string>NSOutlineView</string>
+				<key>sourceViewer</key>
+				<string>NSTextView</string>
 				<key>stackController</key>
 				<string>NSArrayController</string>
 				<key>status</key>
