@@ -75,10 +75,10 @@
 /**
  * Sets the status and clears any error message
  */
-- (void)setStatus:(NSString *)status
+- (void)setStatus:(NSString *)aStatus
 {
 	[_error setHidden:YES];
-	[_status setStringValue:status];
+	[status setStringValue:aStatus];
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
 	[_stepInButton setEnabled:NO];
@@ -89,7 +89,7 @@
 	
 	if ([connection isConnected])
 	{
-		if ([status isEqualToString:@"Starting"])
+		if ([aStatus isEqualToString:@"Starting"])
 		{
 			[_stepInButton setEnabled:YES];
 			[_runButton setEnabled:YES];

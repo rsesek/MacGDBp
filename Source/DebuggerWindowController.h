@@ -29,7 +29,7 @@
 	IBOutlet NSOutlineView *registerView;
 	NSMutableArray *expandedRegisters;
 	
-	IBOutlet NSTextField *_status;
+	IBOutlet NSTextField *status;
 	IBOutlet NSTextField *_error;
 	
 	IBOutlet NSTextView *_sourceViewer;
@@ -44,7 +44,7 @@
 
 - (id)initWithConnection:(DebuggerConnection *)cnx;
 
-- (void)setStatus:(NSString *)status;
+- (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)error;
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;

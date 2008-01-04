@@ -34,8 +34,6 @@
 				<string>NSTextView</string>
 				<key>_sourceViewerScroller</key>
 				<string>NSScrollView</string>
-				<key>_status</key>
-				<string>NSTextField</string>
 				<key>_stepInButton</key>
 				<string>NSButton</string>
 				<key>_stepOutButton</key>
@@ -48,6 +46,8 @@
 				<string>NSOutlineView</string>
 				<key>stackController</key>
 				<string>NSArrayController</string>
+				<key>status</key>
+				<string>NSTextField</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>
