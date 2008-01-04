@@ -36,7 +36,7 @@
 	IBOutlet NSScrollView *sourceViewerScroller;
 	
 	IBOutlet NSButton *stepInButton;
-	IBOutlet NSButton *_stepOutButton;
+	IBOutlet NSButton *stepOutButton;
 	IBOutlet NSButton *stepOverButton;
 	IBOutlet NSButton *_runButton;
 	IBOutlet NSButton *_reconnectButton;

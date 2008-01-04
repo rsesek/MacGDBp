@@ -60,6 +60,8 @@
 				<string>NSTextField</string>
 				<key>stepInButton</key>
 				<string>NSButton</string>
+				<key>stepOutButton</key>
+				<string>NSButton</string>
 				<key>stepOverButton</key>
 				<string>NSButton</string>
 			</dict>

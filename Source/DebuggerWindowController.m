@@ -82,7 +82,7 @@
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	
 	[stepInButton setEnabled:NO];
-	[_stepOutButton setEnabled:NO];
+	[stepOutButton setEnabled:NO];
 	[stepOverButton setEnabled:NO];
 	[_runButton setEnabled:NO];
 	[_reconnectButton setEnabled:NO];
@@ -126,7 +126,7 @@
 	
 	if ([stack count] > 1)
 	{
-		[_stepOutButton setEnabled:YES];
+		[stepOutButton setEnabled:YES];
 	}
 	[stepInButton setEnabled:YES];
 	[stepOverButton setEnabled:YES];
