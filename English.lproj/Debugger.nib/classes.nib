@@ -38,14 +38,10 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>_reconnectButton</key>
-				<string>NSButton</string>
-				<key>_runButton</key>
-				<string>NSButton</string>
-				<key>_stepOutButton</key>
-				<string>NSButton</string>
 				<key>errormsg</key>
 				<string>NSTextField</string>
+				<key>reconnectButton</key>
+				<string>NSButton</string>
 				<key>registerController</key>
 				<string>NSTreeController</string>
 				<key>registerView</key>

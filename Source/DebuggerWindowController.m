@@ -85,7 +85,7 @@
 	[stepOutButton setEnabled:NO];
 	[stepOverButton setEnabled:NO];
 	[runButton setEnabled:NO];
-	[_reconnectButton setEnabled:NO];
+	[reconnectButton setEnabled:NO];
 	
 	if ([connection isConnected])
 	{
@@ -97,7 +97,7 @@
 	}
 	else
 	{
-		[_reconnectButton setEnabled:YES];
+		[reconnectButton setEnabled:YES];
 	}
 }
 
