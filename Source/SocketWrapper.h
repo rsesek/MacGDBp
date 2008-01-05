@@ -45,7 +45,7 @@
 @interface NSObject (SocketWrapperDelegate)
 
 // error
-- (void)errorEncountered:(NSError *)error;
+- (void)errorEncountered:(NSString *)error;
 
 // connection components
 - (void)socketDidBind;

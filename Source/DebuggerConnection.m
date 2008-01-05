@@ -127,9 +127,9 @@
 /**
  * Receives errors from the SocketWrapper and updates the display
  */
-- (void)errorEncountered:(NSError *)error
+- (void)errorEncountered:(NSString *)error
 {
-	[windowController setError:[error domain]];
+	[windowController setError:error];
 }
 
 /**

@@ -23,12 +23,13 @@
 
 NSString *sockNotificationDebuggerConnection = @"DebuggerConnection";
 NSString *sockNotificationReceiver = @"SEL-del-SocketWrapper_dataReceived";
-NSString *NsockError = @"SocketWrapper_Error";
 NSString *NsockDidAccept = @"SocketWrapper_DidAccept";
 NSString *NsockDataReceived = @"SocketWrapper_DataReceived";
 NSString *NsockDataSent = @"SocketWrapper_DataSent";
 
 @interface SocketWrapper (Private)
+
+- (void)error:(NSString *)msg;
 
 - (void)connect:(id)obj;
 - (void)postNotification:(NSString *)name withObject:(id)obj;
@@ -91,7 +92,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	
 	if (getpeername(sock, (struct sockaddr *)&addr, &addrLength) < 0)
 	{
-		[self postNotification:NsockError withObject:[NSError errorWithDomain:@"Could not get remote hostname." code:-1 userInfo:nil]];
+		[self error:@"Could not get remote hostname."];
 	}
 	
 	char *name = inet_ntoa(addr.sin_addr);
@@ -126,10 +127,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	else if (name == NsockDataSent)
 	{
 		[delegate dataSent:[notif object]];
-	}
-	else if (name == NsockError)
-	{
-		[delegate errorEncountered:[NSError errorWithDomain:[notif object] code:-1 userInfo:nil]];
 	}
 }
 
@@ -168,7 +165,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 		if (tries >= 5)
 		{
 			close(socketOpen);
-			[self postNotification:NsockError withObject:@"Could not bind to socket"];
+			[self error:@"Could not bind to socket"];
 			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
@@ -179,7 +176,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// now we just have to keep our ears open
 	if (listen(socketOpen, 0) == -1)
 	{
-		[self postNotification:NsockError withObject:@"Could not use bound socket for listening"];
+		[self error:@"Could not use bound socket for listening"];
 	}
 	
 	// accept a connection
@@ -189,7 +186,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	if (sock < 0)
 	{
 		close(socketOpen);
-		[self postNotification:NsockError withObject:@"Client failed to accept remote socket"];
+		[self error:@"Client failed to accept remote socket"];
 		return;
 	}
 	
@@ -250,7 +247,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			int latest = recv(sock, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
 			{
-				[self postNotification:NsockError withObject:@"Socket closed or could not be read"];
+				[self error:@"Socket closed or could not be read"];
 				return;
 			}
 			[data appendBytes:buffer length:latest];
@@ -281,7 +278,7 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	int sent = send(sock, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
-		[self postNotification:NsockError withObject:@"Failed to write data to socket"];
+		[self error:@"Failed to write data to socket"];
 		return;
 	}
 	if (sent < [data length])
@@ -309,6 +306,14 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 {
 	[dict setValue:delegate forKey:sockNotificationDebuggerConnection];
 	[[NSNotificationCenter defaultCenter] postNotificationName:name object:obj userInfo:dict];
+}
+
+/**
+ * Helper method that just calls -[DebuggerWindowController setError:] on the main thread
+ */
+- (void)error:(NSString *)msg
+{
+	[delegate performSelectorOnMainThread:@selector(errorEncountered:) withObject:msg waitUntilDone:NO];
 }
 
 @end
