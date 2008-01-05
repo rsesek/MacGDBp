@@ -35,8 +35,8 @@
 
 - (void)connect;
 - (void)close;
-- (void)receive:(SEL)selector;
-- (void)send:(NSString *)data;
+- (NSData *)receive;
+- (BOOL)send:(NSString *)data;
 
 - (NSString *)remoteHost;
 
@@ -48,11 +48,6 @@
 - (void)errorEncountered:(NSString *)error;
 
 // connection components
-- (void)socketDidBind;
-- (void)socketDidAccept;
-
-// data handlers
-- (void)dataReceived:(NSData *)response deliverTo:(SEL)selector;
-- (void)dataSent:(NSString *)sent;
+- (void)socketDidAccept:(id)obj;
 
 @end

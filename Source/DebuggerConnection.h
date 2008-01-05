@@ -27,8 +27,6 @@
 	DebuggerWindowController *windowController;
 	
 	SocketWrapper *socket;
-	
-	id depthFetchNode;
 }
 
 @property(readonly) SocketWrapper *socket;

@@ -21,19 +21,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-NSString *sockNotificationDebuggerConnection = @"DebuggerConnection";
-NSString *sockNotificationReceiver = @"SEL-del-SocketWrapper_dataReceived";
-NSString *NsockDidAccept = @"SocketWrapper_DidAccept";
-NSString *NsockDataReceived = @"SocketWrapper_DataReceived";
-NSString *NsockDataSent = @"SocketWrapper_DataSent";
-
 @interface SocketWrapper (Private)
 
 - (void)error:(NSString *)msg;
-
-- (void)connect:(id)obj;
-- (void)postNotification:(NSString *)name withObject:(id)obj;
-- (void)postNotification:(NSString *)name withObject:(id)obj withDict:(NSMutableDictionary *)dict;
 
 @end
 
@@ -48,11 +38,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	{
 		connection = cnx;
 		port = [connection port];
-		
-		// the delegate notifications work funky because of threads. we register ourselves as the
-		// observer and then pass up the messages that are actually from this object (as we can't only observe self due to threads)
-		// to our delegate, and not to all delegates
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageToDelegate:) name:nil object:nil];
 	}
 	return self;
 }
@@ -62,7 +47,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)close
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	close(sock);
 }
 
@@ -98,36 +82,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	char *name = inet_ntoa(addr.sin_addr);
 	
 	return [NSString stringWithUTF8String:name];
-}
-
-/**
- * This is the notification listener for all types of notifications. If the notifications are from a SocketWrapper
- * class, it checks that the value of _delegate in the NSNotification's userInfo matches that of this object. If it does,
- * then the notification was sent from the same object in another thread and it passes the message along to the object's
- * delegate. Complicated enough?
- */
-- (void)sendMessageToDelegate:(NSNotification *)notif
-{
-	// this isn't us, so there's no point in continuing
-	if ([[notif userInfo] objectForKey:sockNotificationDebuggerConnection] != delegate)
-	{
-		return;
-	}
-	
-	NSString *name = [notif name];
-	
-	if (name == NsockDidAccept)
-	{
-		[delegate socketDidAccept];
-	}
-	else if (name == NsockDataReceived)
-	{
-		[delegate dataReceived:[notif object] deliverTo:NSSelectorFromString([[notif userInfo] objectForKey:sockNotificationReceiver])];
-	}
-	else if (name == NsockDataSent)
-	{
-		[delegate dataSent:[notif object]];
-	}
 }
 
 /**
@@ -193,18 +147,16 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	// we're done listening now that we have a connection
 	close(socketOpen);
 	
-	[self postNotification:NsockDidAccept withObject:nil];
+	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
 }
 
 /**
  * Reads from the socket and returns the result as a NSString (because it's always going to be XML). Be aware
  * that the underlying socket recv() call will *wait* for the server to send a message, so be sure that this
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
- * will return something (which we almost always do).
- *
- * The paramater is an optional selector which the delegate method dataReceived:deliverTo: should forward to
+ * will return something (which we almost always do). Returns the data that was received from the socket.
  */
-- (void)receive:(SEL)selector
+- (NSData *)receive
 {
 	// create a buffer
 	char buffer[1024];
@@ -248,64 +200,36 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 			if (latest < 1)
 			{
 				[self error:@"Socket closed or could not be read"];
-				return;
+				return nil;
 			}
 			[data appendBytes:buffer length:latest];
 			recvd += latest;
 		}
 	}
 	
-	//NSLog(@"data = %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
-	
-	if (selector != nil)
-	{
-		[self postNotification:NsockDataReceived
-					 withObject:data
-					   withDict:[NSMutableDictionary dictionaryWithObject:NSStringFromSelector(selector) forKey:sockNotificationReceiver]];
-	}
-	else
-	{
-		[self postNotification:NsockDataReceived withObject:data];
-	}
+	return data;
 }
 
 /**
- * Sends a given NSString over the socket
+ * Sends a given NSString over the socket. Returns YES on complete submission.
  */
-- (void)send:(NSString *)data
+- (BOOL)send:(NSString *)data
 {
 	data = [NSString stringWithFormat:@"%@\0", data];
 	int sent = send(sock, [data UTF8String], [data length], 0);
 	if (sent < 0)
 	{
 		[self error:@"Failed to write data to socket"];
-		return;
+		return NO;
 	}
 	if (sent < [data length])
 	{
 		// TODO - do we really need to worry about partial sends with the lenght of our commands?
 		NSLog(@"FAIL: only partial packet was sent; sent %d bytes", sent);
+		return NO;
 	}
 	
-	[self postNotification:NsockDataSent withObject:[data substringToIndex:sent]];
-}
-
-/**
- * Helper method to simply post a notification to the default notification center with a given name and object
- */
-- (void)postNotification:(NSString *)name withObject:(id)obj
-{
-	[self postNotification:name withObject:obj withDict:[NSMutableDictionary dictionary]];
-}
-
-/**
- * Another helper method to aid in the posting of notifications. This one should be used if you have additional
- * things for the userInfo. This automatically adds the sockNotificationDebuggerConnection key.
- */
-- (void)postNotification:(NSString *)name withObject:(id)obj withDict:(NSMutableDictionary *)dict
-{
-	[dict setValue:delegate forKey:sockNotificationDebuggerConnection];
-	[[NSNotificationCenter defaultCenter] postNotificationName:name object:obj userInfo:dict];
+	return YES;
 }
 
 /**
