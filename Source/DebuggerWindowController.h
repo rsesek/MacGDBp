@@ -42,7 +42,7 @@
 	IBOutlet NSButton *reconnectButton;
 }
 
-- (id)initWithConnection:(DebuggerConnection *)cnx;
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
 - (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)anError;
