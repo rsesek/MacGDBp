@@ -34,8 +34,6 @@
 // initializer
 - (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 
-- (void)windowDidClose;
-
 // getter
 - (int)port;
 - (NSString *)session;

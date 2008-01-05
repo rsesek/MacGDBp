@@ -42,7 +42,6 @@
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithPort:port];
 		[socket setDelegate:self];
-		[windowController setStatus:@"Connecting"];
 		[socket connect];
 	}
 	return self;

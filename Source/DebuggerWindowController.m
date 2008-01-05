@@ -36,6 +36,7 @@
 	{
 		connection = [[DebuggerConnection alloc] initWithWindowController:self port:aPort session:aSession];
 		expandedRegisters = [[NSMutableArray alloc] init];
+		[[self window] makeKeyAndOrderFront:nil];
 	}
 	return self;
 }
@@ -52,14 +53,8 @@
 	[sourceViewer setHorizontallyResizable:YES];
 	[sourceViewerScroller setHasHorizontalScroller:YES];
 	[sourceViewerScroller display];
-}
-
-/**
- * Called when the window is going to be closed so we can clean up all of our stuff
- */
-- (void)windowWillClose:(NSNotification *)aNotification
-{
-	[connection windowDidClose];
+	
+	[self setStatus:@"Connecting"];
 }
 
 /**
