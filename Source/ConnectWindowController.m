@@ -15,7 +15,7 @@
  */
 
 #import "ConnectWindowController.h"
-#import "DebuggerConnection.h"
+#import "DebuggerWindowController.h"
 #import "AppDelegate.h"
 
 @implementation ConnectWindowController
@@ -53,9 +53,7 @@
  */
 - (IBAction)connect:(id)sender
 {
-	DebuggerConnection *cnx = [[DebuggerConnection alloc] initWithPort:[port intValue] session:[session stringValue]];
-	[[NSApp delegate] registerConnection:cnx];
-	[cnx release];
+	[[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]] release];
 	[[self window] orderOut:self];
 }
 

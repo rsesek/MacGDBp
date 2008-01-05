@@ -29,7 +29,7 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort session:(NSString *)aSession
+- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 {
 	if (self = [super init])
 	{
@@ -37,8 +37,7 @@
 		session = [aSession retain];
 		connected = NO;
 		
-		windowController = [[DebuggerWindowController alloc] initWithConnection:self];
-		[[windowController window] makeKeyAndOrderFront:self];
+		windowController = [wc retain];
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithPort:port];
@@ -47,15 +46,6 @@
 		[socket connect];
 	}
 	return self;
-}
-
-/**
- * This is a forwarded message from DebuggerWindowController that tells the connection to prepare to
- * close
- */
-- (void)windowDidClose
-{
-	[[NSApp delegate] unregisterConnection:self];
 }
 
 /**

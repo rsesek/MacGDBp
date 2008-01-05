@@ -32,7 +32,7 @@
 }
 
 // initializer
-- (id)initWithPort:(int)aPort session:(NSString *)aSession;
+- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 
 - (void)windowDidClose;
 

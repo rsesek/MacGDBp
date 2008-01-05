@@ -25,18 +25,8 @@
 - (id)init
 {
 	if (self = [super init])
-	{
-		connections = [[NSMutableArray alloc] init];
-	}
+	{}
 	return self;
-}
-
-/**
- * Called when the application is going to go away
- */
-- (void)applicationWillTerminate:(NSNotification *)aNotification
-{
-	[connections release];
 }
 
 /**
@@ -45,22 +35,6 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
 	[self showConnectionWindow:self];
-}
-
-/**
- * Adds an object to the connections array
- */
-- (void)registerConnection:(DebuggerConnection *)cnx
-{
-	[connections addObject:cnx];
-}
-
-/**
- * Removes a given connection from the connections array
- */
-- (void)unregisterConnection:(DebuggerConnection *)cnx
-{
-	[connections removeObject:cnx];
 }
 
 /**

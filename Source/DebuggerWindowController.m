@@ -30,11 +30,11 @@
 /**
  * Initializes the window controller and sets the connection
  */
-- (id)initWithConnection:(DebuggerConnection *)cnx
+- (id)initWithPort:(int)aPort session:(NSString *)aSession
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
-		connection = cnx;
+		connection = [[DebuggerConnection alloc] initWithWindowController:self port:aPort session:aSession];
 		expandedRegisters = [[NSMutableArray alloc] init];
 	}
 	return self;
