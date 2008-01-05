@@ -27,6 +27,8 @@
 
 @implementation DebuggerWindowController
 
+@synthesize connection;
+
 /**
  * Initializes the window controller and sets the connection
  */

@@ -32,6 +32,7 @@
 }
 
 @property(readonly) SocketWrapper *socket;
+@property(readonly) DebuggerWindowController *windowController;
 
 // initializer
 - (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;

@@ -25,7 +25,7 @@
 
 @implementation DebuggerConnection
 
-@synthesize socket;
+@synthesize socket, windowController;
 
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
@@ -42,7 +42,7 @@
 		windowController = wc;
 		
 		// now that we have our host information, open the socket
-		socket = [[SocketWrapper alloc] initWithPort:port];
+		socket = [[SocketWrapper alloc] initWithConnection:self];
 		[socket setDelegate:self];
 		[socket connect];
 	}

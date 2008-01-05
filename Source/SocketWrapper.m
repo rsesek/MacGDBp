@@ -41,11 +41,12 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 /**
  * Initializes the socket wrapper with a host and port
  */
-- (id)initWithPort:(int)aPort
+- (id)initWithConnection:(DebuggerConnection *)cnx
 {
 	if (self = [super init])
 	{
-		port = aPort;
+		connection = cnx;
+		port = [connection port];
 		
 		// the delegate notifications work funky because of threads. we register ourselves as the
 		// observer and then pass up the messages that are actually from this object (as we can't only observe self due to threads)

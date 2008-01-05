@@ -16,15 +16,19 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DebuggerConnection;
+
 @interface SocketWrapper : NSObject
 {
+	DebuggerConnection *connection;
+	
 	int port;
 	int sock;
 	
 	id delegate;
 }
 
-- (id)initWithPort:(int)aPort;
+- (id)initWithConnection:(DebuggerConnection *)cnx;
 
 - (id)delegate;
 - (void)setDelegate:(id)aDelegate;

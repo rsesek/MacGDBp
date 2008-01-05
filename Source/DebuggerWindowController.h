@@ -42,6 +42,8 @@
 	IBOutlet NSButton *reconnectButton;
 }
 
+@property(readonly) DebuggerConnection *connection;
+
 - (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
 - (void)setStatus:(NSString *)aStatus;
