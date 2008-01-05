@@ -30,6 +30,7 @@
 - (void)setDelegate:(id)aDelegate;
 
 - (void)connect;
+- (void)close;
 - (void)receive:(SEL)selector;
 - (void)send:(NSString *)data;
 

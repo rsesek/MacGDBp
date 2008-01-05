@@ -58,12 +58,10 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 /**
  * Close our socket and clean up anything else
  */
-- (void)dealloc
+- (void)close
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	close(sock);
-	
-	[super dealloc];
 }
 
 /**
@@ -148,8 +146,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
  */
 - (void)connect:(id)obj
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
 	// create an INET socket that we'll be listen()ing on
 	int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
 	
@@ -200,8 +196,6 @@ NSString *NsockDataSent = @"SocketWrapper_DataSent";
 	close(socketOpen);
 	
 	[self postNotification:NsockDidAccept withObject:nil];
-	
-	[pool release];
 }
 
 /**

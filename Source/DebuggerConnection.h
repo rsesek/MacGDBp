@@ -31,6 +31,8 @@
 	id depthFetchNode;
 }
 
+@property(readonly) SocketWrapper *socket;
+
 // initializer
 - (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 

@@ -30,22 +30,8 @@
 	{
 		instance = [[ConnectWindowController alloc] initWithWindowNibName:@"Connect"];
 		[instance window];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:instance
-												 selector:@selector(applicationWillTerminate:)
-													 name:NSApplicationWillTerminateNotification
-												   object:NSApp];
-		 
 	}
 	return instance;
-}
-
-/**
- * Called when the applicaion is about to terminate so we can release itself
- */
-- (void)applicationWillTerminate:(NSNotification *)notif
-{
-	[self release];
 }
 
 /**
@@ -53,7 +39,7 @@
  */
 - (IBAction)connect:(id)sender
 {
-	[[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]] release];
+	[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]];
 	[[self window] orderOut:self];
 }
 

@@ -25,6 +25,8 @@
 
 @implementation DebuggerConnection
 
+@synthesize socket;
+
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
@@ -34,10 +36,10 @@
 	if (self = [super init])
 	{
 		port = aPort;
-		session = [aSession retain];
+		session = aSession;
 		connected = NO;
 		
-		windowController = [wc retain];
+		windowController = wc;
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithPort:port];
@@ -45,18 +47,6 @@
 		[socket connect];
 	}
 	return self;
-}
-
-/**
- * Releases all of the object's data members and closes the streams
- */
-- (void)dealloc
-{
-	[session release];
-	[socket release];
-	[windowController release];
-	
-	[super dealloc];
 }
 
 /**
@@ -115,8 +105,6 @@
 	{
 		[self performSelector:selector withObject:doc];
 	}
-	
-	[doc release];
 }
 
 /**

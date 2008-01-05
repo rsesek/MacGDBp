@@ -58,13 +58,11 @@
 }
 
 /**
- * Release object members
+ * Called right before the window closes so that we can tell the socket to close down
  */
-- (void)dealloc
+- (void)windowWillClose:(NSNotification *)notif
 {
-	[expandedRegisters release];
-	
-	[super dealloc];
+	[[connection socket] close];
 }
 
 /**
@@ -111,13 +109,7 @@
  */
 - (void)setStack:(NSArray *)node
 {
-	if (stack != nil)
-	{
-		[stack release];
-	}
-	
 	stack = node;
-	[stack retain];
 	
 	if ([stack count] > 1)
 	{
