@@ -27,7 +27,7 @@
 	
 	IBOutlet NSTreeController *registerController;
 	IBOutlet NSOutlineView *registerView;
-	NSMutableArray *expandedRegisters;
+	NSMutableSet *expandedRegisters;
 	
 	IBOutlet NSTextField *statusmsg;
 	IBOutlet NSTextField *errormsg;
@@ -42,14 +42,16 @@
 	IBOutlet NSButton *reconnectButton;
 }
 
-- (id)initWithConnection:(DebuggerConnection *)cnx;
+@property(readonly) DebuggerConnection *connection;
+
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
 - (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)anError;
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
 
-- (void)addChildren:(NSArray *)children toNode:(id)node;
+- (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node;
 
 - (IBAction)run:(id)sender;
 - (IBAction)stepIn:(id)sender;

@@ -16,22 +16,27 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DebuggerConnection;
+
 @interface SocketWrapper : NSObject
 {
+	DebuggerConnection *connection;
+	
 	int port;
 	int sock;
 	
 	id delegate;
 }
 
-- (id)initWithPort:(int)aPort;
+- (id)initWithConnection:(DebuggerConnection *)cnx;
 
 - (id)delegate;
 - (void)setDelegate:(id)aDelegate;
 
 - (void)connect;
-- (void)receive:(SEL)selector;
-- (void)send:(NSString *)data;
+- (void)close;
+- (NSData *)receive;
+- (BOOL)send:(NSString *)data;
 
 - (NSString *)remoteHost;
 
@@ -40,14 +45,9 @@
 @interface NSObject (SocketWrapperDelegate)
 
 // error
-- (void)errorEncountered:(NSError *)error;
+- (void)errorEncountered:(NSString *)error;
 
 // connection components
-- (void)socketDidBind;
-- (void)socketDidAccept;
-
-// data handlers
-- (void)dataReceived:(NSData *)response deliverTo:(SEL)selector;
-- (void)dataSent:(NSString *)sent;
+- (void)socketDidAccept:(id)obj;
 
 @end

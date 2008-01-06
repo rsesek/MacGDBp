@@ -20,6 +20,14 @@
 @implementation NSXMLElement (NSXMLElementAdditions)
 
 /**
+ * Return's the property's full name
+ */
+- (NSString *)fullname
+{
+	return [[self attributeForName:@"fullname"] stringValue];
+}
+
+/**
  * Return's the property's name from the attributes list
  */
 - (NSString *)variable

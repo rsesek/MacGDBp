@@ -27,14 +27,13 @@
 	DebuggerWindowController *windowController;
 	
 	SocketWrapper *socket;
-	
-	id depthFetchElement;
 }
 
-// initializer
-- (id)initWithPort:(int)aPort session:(NSString *)aSession;
+@property(readonly) SocketWrapper *socket;
+@property(readonly) DebuggerWindowController *windowController;
 
-- (void)windowDidClose;
+// initializer
+- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 
 // getter
 - (int)port;
@@ -51,6 +50,6 @@
 - (void)updateStackTraceAndRegisters;
 
 // helpers
-- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm;
+- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)elm;
 
 @end

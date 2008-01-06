@@ -20,54 +20,34 @@
 @interface DebuggerConnection (Private)
 
 - (NSString *)createCommand:(NSString *)cmd;
+- (NSXMLDocument *)processData:(NSData *)data;
 
 @end
 
 @implementation DebuggerConnection
 
+@synthesize socket, windowController;
+
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort session:(NSString *)aSession
+- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
 {
 	if (self = [super init])
 	{
 		port = aPort;
-		session = [aSession retain];
+		session = aSession;
 		connected = NO;
 		
-		windowController = [[DebuggerWindowController alloc] initWithConnection:self];
-		[[windowController window] makeKeyAndOrderFront:self];
+		windowController = wc;
 		
 		// now that we have our host information, open the socket
-		socket = [[SocketWrapper alloc] initWithPort:port];
+		socket = [[SocketWrapper alloc] initWithConnection:self];
 		[socket setDelegate:self];
-		[windowController setStatus:@"Connecting"];
 		[socket connect];
 	}
 	return self;
-}
-
-/**
- * This is a forwarded message from DebuggerWindowController that tells the connection to prepare to
- * close
- */
-- (void)windowDidClose
-{
-	[[NSApp delegate] unregisterConnection:self];
-}
-
-/**
- * Releases all of the object's data members and closes the streams
- */
-- (void)dealloc
-{
-	[session release];
-	[socket release];
-	[windowController release];
-	
-	[super dealloc];
 }
 
 /**
@@ -107,76 +87,23 @@
 }
 
 /**
- * SocketWrapper delegate method that is called whenever new data is received
- */
-- (void)dataReceived:(NSData *)response deliverTo:(SEL)selector
-{
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:response options:NSXMLDocumentTidyXML error:nil];
-	
-	// check and see if there's an error
-	NSArray *error = [[doc rootElement] elementsForName:@"error"];
-	if ([error count] > 0)
-	{
-		[windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
-		return;
-	}
-	
-	// if the caller of [_socket receive:] specified a deliverTo, just forward the message to them
-	if (selector != nil)
-	{
-		[self performSelector:selector withObject:doc];
-	}
-	
-	[doc release];
-}
-
-/**
- * SocketWrapper delegate method that is called after data is sent. This really
- * isn't useful for much.
- */
-- (void)dataSent:(NSString *)data
-{}
-
-/**
  * Called by SocketWrapper after the connection is successful. This immediately calls
- * -[SocketWrapper receive] to clear the way for communication
+ * -[SocketWrapper receive] to clear the way for communication, though the information
+ * could be useful server information that we don't use right now.
  */
-- (void)socketDidAccept
+- (void)socketDidAccept:(id)obj
 {
 	connected = YES;
-	[socket receive:@selector(handshake:)];
+	[socket receive];
+	[self refreshStatus];
 }
 
 /**
  * Receives errors from the SocketWrapper and updates the display
  */
-- (void)errorEncountered:(NSError *)error
+- (void)errorEncountered:(NSString *)error
 {
-	[windowController setError:[error domain]];
-}
-
-/**
- * The initial packet handshake. This allows us to set things like the title of the window
- * and glean information about hte server we are debugging
- */
-- (void)handshake:(NSXMLDocument *)doc
-{
-	[self refreshStatus];
-}
-
-/**
- * Handler used by dataReceived:deliverTo: for anytime the status command is issued. It sets
- * the window controller's status text
- */
-- (void)updateStatus:(NSXMLDocument *)doc
-{
-	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
-	[windowController setStatus:[status capitalizedString]];
-	
-	if ([status isEqualToString:@"break"])
-	{
-		[self updateStackTraceAndRegisters];
-	}
+	[windowController setError:error];
 }
 
 /**
@@ -189,13 +116,20 @@
 }
 
 /**
- * Method that runs tells the debugger to give us its status. This will call _updateStatus
- * and will update the status text on the window
+ * Method that runs tells the debugger to give us its status and will update the status text on the window
  */
 - (void)refreshStatus
 {
 	[socket send:[self createCommand:@"status"]];
-	[socket receive:@selector(updateStatus:)];
+	
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
+	[windowController setStatus:[status capitalizedString]];
+	
+	if ([status isEqualToString:@"break"])
+	{
+		[self updateStackTraceAndRegisters];
+	}
 }
 
 /**
@@ -204,7 +138,7 @@
 - (void)stepIn
 {
 	[socket send:[self createCommand:@"step_into"]];
-	[socket receive:nil];
+	[socket receive];
 	[self refreshStatus];
 }
 
@@ -214,7 +148,7 @@
 - (void)stepOut
 {
 	[socket send:[self createCommand:@"step_out"]];
-	[socket receive:nil];
+	[socket receive];
 	[self refreshStatus];
 }
 
@@ -224,7 +158,7 @@
 - (void)stepOver
 {
 	[socket send:[self createCommand:@"step_over"]];
-	[socket receive:nil];
+	[socket receive];
 	[self refreshStatus];
 }
 
@@ -234,19 +168,9 @@
  */
 - (void)updateStackTraceAndRegisters
 {
+	// do the stack
 	[socket send:[self createCommand:@"stack_get"]];
-	[socket receive:@selector(stackReceived:)];
-	
-	[socket send:[self createCommand:@"context_get"]];
-	[socket receive:@selector(registerReceived:)];
-}
-
-/**
- * Called by the dataReceived delivery delegate. This updates the window controller's data
- * for the stack trace
- */
-- (void)stackReceived:(NSXMLDocument *)doc
-{
+	NSXMLDocument *doc = [self processData:[socket receive]];
 	NSArray *children = [[doc rootElement] children];
 	NSMutableArray *stack = [NSMutableArray array];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -261,46 +185,35 @@
 		dict = [NSMutableDictionary dictionary];
 	}
 	[windowController setStack:stack];
-}
-
-/**
- * Called when we have a new register to display
- */
-- (void)registerReceived:(NSXMLDocument *)doc
-{
-	[windowController setRegister:doc];
+	
+	// do the registers
+	[socket send:[self createCommand:@"context_get"]];
+	[windowController setRegister:[self processData:[socket receive]]];
 }
 
 /**
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
- * that requested it so that the child can be attached in the delivery.
+ * that requested it so that the child can be attached.
  */
-- (void)getProperty:(NSString *)property forElement:(NSXMLElement *)elm
+- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)node
 {
 	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
-	depthFetchElement = elm;
-	[socket receive:@selector(propertyReceived:)];
-}
-
-/**
- * Called when a property is received. This then adds the result as children to the passed object
- */
-- (void)propertyReceived:(NSXMLDocument *)doc
-{
+	
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	
 	/*
 	 <response>
 		<property> <!-- this is the one we requested -->
 			<property ... /> <!-- these are what we want -->
 		</property>
-	</repsonse>
+	 </repsonse>
 	 */
 	
 	// we now have to detach all the children so we can insert them into another document
 	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
 	NSArray *children = [parent children];
 	[parent setChildren:nil];
-	[windowController addChildren:children toNode:depthFetchElement];
-	depthFetchElement = nil;
+	[windowController addChildren:children toNode:node];
 }
 
 /**
@@ -309,6 +222,24 @@
 - (NSString *)createCommand:(NSString *)cmd
 {
 	return [NSString stringWithFormat:@"%@ -i %@", cmd, session];
+}
+
+/**
+ * Helper function to parse the NSData into an NSXMLDocument
+ */
+- (NSXMLDocument *)processData:(NSData *)data
+{
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:nil];
+	
+	// check and see if there's an error
+	NSArray *error = [[doc rootElement] elementsForName:@"error"];
+	if ([error count] > 0)
+	{
+		[windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+		return nil;
+	}
+	
+	return doc;
 }
 
 @end
