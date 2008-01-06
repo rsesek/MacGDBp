@@ -37,7 +37,7 @@
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
 		connection = [[DebuggerConnection alloc] initWithWindowController:self port:aPort session:aSession];
-		expandedRegisters = [[NSMutableArray alloc] init];
+		expandedRegisters = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 	}
 	return self;
@@ -129,12 +129,6 @@
  */
 - (void)setRegister:(NSXMLDocument *)elm
 {
-	/*
-	[_registerController willChangeValueForKey:@"rootElement.children"];
-	[_registerController unbind:@"contentArray"];
-	[_registerController bind:@"contentArray" toObject:elm withKeyPath:@"rootElement.children" options:nil];
-	[_registerController didChangeValueForKey:@"rootElement.children"];
-	*/
 	// XXX: Doing anything short of this will cause bindings to crash spectacularly for no reason whatsoever, and
 	//		in seemingly arbitrary places. The class that crashes is _NSKeyValueObservationInfoCreateByRemoving.
 	//		http://boredzo.org/blog/archives/2006-01-29/have-you-seen-this-crash says that this means nothing is
@@ -145,11 +139,14 @@
 	[registerController setContent:nil];
 	[registerController setContent:[[elm rootElement] children]];
 	
-	/*for (NSTreeNode *node in expandedRegisters)
+	for (int i = 0; i < [registerView numberOfRows]; i++)
 	{
-		[registerView expandItem:node];
-	}*/
-	NSLog(@"expanded items = %@", expandedRegisters);
+		NSTreeNode *node = [registerView itemAtRow:i];
+		if ([expandedRegisters containsObject:[[node representedObject] fullname]])
+		{
+			[registerView expandItem:node];
+		}
+	}
 }
 
 /**
@@ -252,10 +249,10 @@
 	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
 	if (![node isLeaf] && [[node childNodes] count] < 1)
 	{
-		[connection getProperty:[[[node representedObject] attributeForName:@"fullname"] stringValue] forNode:node];
+		[connection getProperty:[[node representedObject] fullname] forNode:node];
 	}
 	
-	[expandedRegisters addObject:[[node representedObject] variable]];
+	[expandedRegisters addObject:[[node representedObject] fullname]];
 }
 
 /**
@@ -263,7 +260,7 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
-	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] variable]];
+	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
 }
 
 /**

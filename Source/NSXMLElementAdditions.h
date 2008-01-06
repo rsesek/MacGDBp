@@ -18,6 +18,7 @@
 
 @interface NSXMLElement (NSXMLElementAdditions)
 
+- (NSString *)fullname;
 - (NSString *)variable;
 - (BOOL)isLeaf;
 - (NSString *)value;
