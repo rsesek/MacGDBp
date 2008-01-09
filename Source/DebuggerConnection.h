@@ -42,6 +42,7 @@
 - (BOOL)isConnected;
 
 // communication
+- (void)reconnect;
 - (void)run;
 - (void)stepIn;
 - (void)stepOut;

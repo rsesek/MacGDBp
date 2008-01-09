@@ -46,6 +46,8 @@
 
 - (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
+- (void)resetDisplays;
+
 - (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)anError;
 - (void)setStack:(NSArray *)node;

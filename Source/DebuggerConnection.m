@@ -107,6 +107,18 @@
 }
 
 /**
+ * Reestablishes communication with the remote debugger so that a new connection doesn't have to be
+ * created every time you want to debug a page
+ */
+- (void)reconnect
+{
+	[socket close];
+	[windowController setStatus:@"Connecting"];
+	[windowController resetDisplays];
+	[socket connect];
+}
+
+/**
  * Tells the debugger to continue running the script
  */
 - (void)run
@@ -129,6 +141,12 @@
 	if ([status isEqualToString:@"break"])
 	{
 		[self updateStackTraceAndRegisters];
+	}
+	else if ([status isEqualToString:@"stopped"])
+	{
+		connected = NO;
+		[socket close];
+		[windowController setStatus:[status capitalizedString]];
 	}
 }
 

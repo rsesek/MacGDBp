@@ -68,6 +68,16 @@
 }
 
 /**
+ * Resets all the displays to be empty
+ */
+- (void)resetDisplays
+{
+	[registerController setContent:nil];
+	[stackController setContent:nil];
+	[sourceViewer setString:@""];
+}
+
+/**
  * Sets the status and clears any error message
  */
 - (void)setStatus:(NSString *)aStatus
@@ -162,7 +172,7 @@
  */
 - (IBAction)reconnect:(id)sender
 {
-	
+	[connection reconnect];
 }
 
 /**
