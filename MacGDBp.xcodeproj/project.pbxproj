@@ -18,6 +18,7 @@
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
 		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
+		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -47,6 +48,7 @@
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
 		1EEBFD070D3599E8008F835B /* BSSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSplitView.m; path = Source/BSSplitView.m; sourceTree = "<group>"; };
 		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
+		1EEBFD110D359A9F008F835B /* dimple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dimple.png; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1EEBFD110D359A9F008F835B /* dimple.png */,
 				1EEBFC360D358F1B008F835B /* StepOut.png */,
 				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
 				1EEBFBE30D34C793008F835B /* Debugger.xib */,
@@ -213,6 +216,7 @@
 				1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */,
 				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
 				1EEBFC370D358F1B008F835B /* StepOut.png in Resources */,
+				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

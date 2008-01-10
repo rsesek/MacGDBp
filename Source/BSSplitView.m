@@ -38,6 +38,12 @@
 	[stroke setStroke];
 	[NSBezierPath setDefaultLineWidth:0.5];
 	[NSBezierPath strokeRect:rect];
+	
+	// draw the dimple
+	NSImage *dimple = [NSImage imageNamed:@"dimple.png"];
+	NSSize imgSize = [dimple size];
+	NSRect dimpleRect = NSMakeRect((rect.size.width / 2) - (imgSize.width / 2) + rect.origin.x, (rect.size.height / 2) - (imgSize.height / 2) + rect.origin.y, imgSize.width, imgSize.height);
+	[dimple drawInRect:dimpleRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
 }
 
 /**
