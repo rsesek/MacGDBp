@@ -17,6 +17,7 @@
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
+		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
 		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -44,6 +45,8 @@
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
+		1EEBFD070D3599E8008F835B /* BSSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSplitView.m; path = Source/BSSplitView.m; sourceTree = "<group>"; };
+		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -82,6 +85,8 @@
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
 				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
+				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
+				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -242,6 +247,7 @@
 				1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1E35FEA10C6599040030F527 /* base64.c in Sources */,
+				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
