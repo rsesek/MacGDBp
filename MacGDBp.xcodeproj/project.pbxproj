@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E027F0A0D36F23F00885DEE /* Run.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F080D36F23F00885DEE /* Run.png */; };
+		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
 		1E02C3D00C60E857006F1752 /* Connect.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3CE0C60E857006F1752 /* Connect.nib */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */; };
@@ -30,6 +32,8 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
+		1E027F090D36F23F00885DEE /* StepOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOver.png; path = Icons/StepOver.png; sourceTree = "<group>"; };
 		1E02C3CF0C60E857006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Connect.nib; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
@@ -119,6 +123,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1E027F0D0D36F24200885DEE /* Toolbar Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1E027F080D36F23F00885DEE /* Run.png */,
+				1E027F090D36F23F00885DEE /* StepOver.png */,
+				1EEBFC360D358F1B008F835B /* StepOut.png */,
+				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
+			);
+			name = "Toolbar Icons";
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
 			isa = PBXGroup;
 			children = (
@@ -145,12 +160,11 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1E027F0D0D36F24200885DEE /* Toolbar Icons */,
 				1EEBFD110D359A9F008F835B /* dimple.png */,
-				1EEBFC360D358F1B008F835B /* StepOut.png */,
-				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
-				1EEBFBE30D34C793008F835B /* Debugger.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1EEBFBE30D34C793008F835B /* Debugger.xib */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 				1E02C3CE0C60E857006F1752 /* Connect.nib */,
 			);
@@ -217,6 +231,8 @@
 				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
 				1EEBFC370D358F1B008F835B /* StepOut.png in Resources */,
 				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
+				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
+				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
