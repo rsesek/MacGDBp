@@ -49,6 +49,7 @@
 - (void)awakeFromNib
 {
 	// set up the scroller for the source viewer
+	[sourceViewer setEditable:NO];
 	[sourceViewer setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
 	[[sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
 	[[sourceViewer textContainer] setWidthTracksTextView:NO];
