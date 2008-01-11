@@ -7,14 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E027F0A0D36F23F00885DEE /* Run.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F080D36F23F00885DEE /* Run.png */; };
+		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
+		1E027F390D36F60800885DEE /* Reconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F380D36F60800885DEE /* Reconnect.png */; };
 		1E02C3D00C60E857006F1752 /* Connect.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3CE0C60E857006F1752 /* Connect.nib */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
-		1E02C3F00C60ED56006F1752 /* Debugger.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3EE0C60ED56006F1752 /* Debugger.nib */; };
 		1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */; };
 		1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerConnection.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerWindowController.m */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
 		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
+		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
+		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
+		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
+		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
+		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -26,10 +33,12 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
+		1E027F090D36F23F00885DEE /* StepOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOver.png; path = Icons/StepOver.png; sourceTree = "<group>"; };
+		1E027F380D36F60800885DEE /* Reconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Reconnect.png; path = Icons/Reconnect.png; sourceTree = "<group>"; };
 		1E02C3CF0C60E857006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Connect.nib; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
-		1E02C3EF0C60ED56006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Debugger.nib; sourceTree = "<group>"; };
 		1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConnectWindowController.h; path = Source/ConnectWindowController.h; sourceTree = "<group>"; };
 		1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConnectWindowController.m; path = Source/ConnectWindowController.m; sourceTree = "<group>"; };
 		1E02C56F0C610158006F1752 /* DebuggerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerConnection.h; path = Source/DebuggerConnection.h; sourceTree = "<group>"; };
@@ -40,6 +49,12 @@
 		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
 		1E35FEA00C6599040030F527 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Source/base64.c; sourceTree = "<group>"; };
 		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
+		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
+		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
+		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
+		1EEBFD070D3599E8008F835B /* BSSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSplitView.m; path = Source/BSSplitView.m; sourceTree = "<group>"; };
+		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
+		1EEBFD110D359A9F008F835B /* dimple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dimple.png; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -78,6 +93,8 @@
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
 				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
+				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
+				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -108,6 +125,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1E027F0D0D36F24200885DEE /* Toolbar Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1E027F380D36F60800885DEE /* Reconnect.png */,
+				1E027F080D36F23F00885DEE /* Run.png */,
+				1E027F090D36F23F00885DEE /* StepOver.png */,
+				1EEBFC360D358F1B008F835B /* StepOut.png */,
+				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
+			);
+			name = "Toolbar Icons";
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
 			isa = PBXGroup;
 			children = (
@@ -134,11 +163,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1E027F0D0D36F24200885DEE /* Toolbar Icons */,
+				1EEBFD110D359A9F008F835B /* dimple.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1EEBFBE30D34C793008F835B /* Debugger.xib */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 				1E02C3CE0C60E857006F1752 /* Connect.nib */,
-				1E02C3EE0C60ED56006F1752 /* Debugger.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -199,7 +230,13 @@
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1E02C3D00C60E857006F1752 /* Connect.nib in Resources */,
-				1E02C3F00C60ED56006F1752 /* Debugger.nib in Resources */,
+				1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */,
+				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
+				1EEBFC370D358F1B008F835B /* StepOut.png in Resources */,
+				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
+				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
+				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
+				1E027F390D36F60800885DEE /* Reconnect.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,6 +271,7 @@
 				1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1E35FEA10C6599040030F527 /* base64.c in Sources */,
+				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,12 +294,12 @@
 			name = Connect.nib;
 			sourceTree = "<group>";
 		};
-		1E02C3EE0C60ED56006F1752 /* Debugger.nib */ = {
+		1EEBFBE30D34C793008F835B /* Debugger.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E02C3EF0C60ED56006F1752 /* English */,
+				1EEBFBE40D34C793008F835B /* English */,
 			);
-			name = Debugger.nib;
+			name = Debugger.xib;
 			sourceTree = "<group>";
 		};
 		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {

@@ -35,11 +35,11 @@
 	IBOutlet NSTextView *sourceViewer;
 	IBOutlet NSScrollView *sourceViewerScroller;
 	
-	IBOutlet NSButton *stepInButton;
-	IBOutlet NSButton *stepOutButton;
-	IBOutlet NSButton *stepOverButton;
-	IBOutlet NSButton *runButton;
-	IBOutlet NSButton *reconnectButton;
+	IBOutlet NSToolbarItem *stepInButton;
+	IBOutlet NSToolbarItem *stepOutButton;
+	IBOutlet NSToolbarItem *stepOverButton;
+	IBOutlet NSToolbarItem *runButton;
+	IBOutlet NSToolbarItem *reconnectButton;
 }
 
 @property(readonly) DebuggerConnection *connection;
