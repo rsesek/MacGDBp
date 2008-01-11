@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1E027F0A0D36F23F00885DEE /* Run.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F080D36F23F00885DEE /* Run.png */; };
 		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
+		1E027F390D36F60800885DEE /* Reconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F380D36F60800885DEE /* Reconnect.png */; };
 		1E02C3D00C60E857006F1752 /* Connect.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1E02C3CE0C60E857006F1752 /* Connect.nib */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */; };
@@ -34,6 +35,7 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
 		1E027F090D36F23F00885DEE /* StepOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOver.png; path = Icons/StepOver.png; sourceTree = "<group>"; };
+		1E027F380D36F60800885DEE /* Reconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Reconnect.png; path = Icons/Reconnect.png; sourceTree = "<group>"; };
 		1E02C3CF0C60E857006F1752 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Connect.nib; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 		1E027F0D0D36F24200885DEE /* Toolbar Icons */ = {
 			isa = PBXGroup;
 			children = (
+				1E027F380D36F60800885DEE /* Reconnect.png */,
 				1E027F080D36F23F00885DEE /* Run.png */,
 				1E027F090D36F23F00885DEE /* StepOver.png */,
 				1EEBFC360D358F1B008F835B /* StepOut.png */,
@@ -233,6 +236,7 @@
 				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
 				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
 				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
+				1E027F390D36F60800885DEE /* Reconnect.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
