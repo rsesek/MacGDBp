@@ -214,12 +214,13 @@
  */
 - (void)updateSourceViewer
 {
-	int selection = [stackController selectionIndex];
-	if (selection == NSNotFound)
+	id selectedLevel = [[stackController selection] valueForKey:@"level"];
+	if (selectedLevel == NSNoSelectionMarker)
 	{
 		[sourceViewer setString:@""];
 		return;
 	}
+	int selection = [selectedLevel intValue];
 	
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
