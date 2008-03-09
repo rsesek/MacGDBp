@@ -15,6 +15,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "BSSourceView.h"
 
 @class DebuggerConnection;
 
@@ -32,8 +33,7 @@
 	IBOutlet NSTextField *statusmsg;
 	IBOutlet NSTextField *errormsg;
 	
-	IBOutlet NSTextView *sourceViewer;
-	IBOutlet NSScrollView *sourceViewerScroller;
+	IBOutlet BSSourceView *sourceViewer;
 	
 	IBOutlet NSToolbarItem *stepInButton;
 	IBOutlet NSToolbarItem *stepOutButton;

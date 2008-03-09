@@ -48,15 +48,6 @@
  */
 - (void)awakeFromNib
 {
-	// set up the scroller for the source viewer
-	[sourceViewer setEditable:NO];
-	[sourceViewer setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[sourceViewer textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[sourceViewer textContainer] setWidthTracksTextView:NO];
-	[sourceViewer setHorizontallyResizable:YES];
-	[sourceViewerScroller setHasHorizontalScroller:YES];
-	[sourceViewerScroller display];
-	
 	[self setStatus:@"Connecting"];
 }
 
@@ -75,7 +66,7 @@
 {
 	[registerController setContent:nil];
 	[stackController setContent:nil];
-	[sourceViewer setString:@""];
+	[[sourceViewer textView] setString:@""];
 }
 
 /**
@@ -217,7 +208,7 @@
 	id selectedLevel = [[stackController selection] valueForKey:@"level"];
 	if (selectedLevel == NSNoSelectionMarker)
 	{
-		[sourceViewer setString:@""];
+		[[sourceViewer textView] setString:@""];
 		return;
 	}
 	int selection = [selectedLevel intValue];
@@ -226,7 +217,7 @@
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
 	NSString *text = [NSString stringWithContentsOfFile:filename];
-	[sourceViewer setString:text];
+	[[sourceViewer textView] setString:text];
 	
 	// go through the document until we find the NSRange for the line we want
 	int destination = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
@@ -242,13 +233,13 @@
 	NSRange lineRange = NSMakeRange(lineStart, lineEnd - lineStart);
 	
 	// colorize it so the user knows which line we're on in the stack
-	[[sourceViewer textStorage] setAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSColor redColor], [NSColor yellowColor], nil]
-																			 forKeys:[NSArray arrayWithObjects:NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
-										 range:lineRange];
-	[sourceViewer scrollRangeToVisible:[text lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+	[[[sourceViewer textView] textStorage] setAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSColor redColor], [NSColor yellowColor], nil]
+																					 forKeys:[NSArray arrayWithObjects:NSForegroundColorAttributeName, NSBackgroundColorAttributeName, nil]]
+												   range:lineRange];
+	[[sourceViewer textView] scrollRangeToVisible:[text lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 	
 	// make sure the font stays Monaco
-	[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 }
 
 /**
