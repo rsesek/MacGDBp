@@ -23,11 +23,14 @@
 	BSLineNumberView *numberView;
 	BSSourceViewTextView *textView;
 	NSScrollView *scrollView;
+	
+	int markedLine;
 }
 
 @property(readwrite, assign) BSLineNumberView *numberView;
 @property(readwrite, assign) BSSourceViewTextView *textView;
 @property(readwrite, assign) NSScrollView *scrollView;
+@property(readwrite, assign) int markedLine;
 
 - (void)scrollToLine:(int)line;
 

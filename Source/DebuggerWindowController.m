@@ -219,7 +219,9 @@
 	NSString *text = [NSString stringWithContentsOfFile:filename];
 	[[sourceViewer textView] setString:text];
 	
-	[sourceViewer scrollToLine:[[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue]];
+	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
+	[sourceViewer setMarkedLine:line];
+	[sourceViewer scrollToLine:line];
 	
 	// make sure the font stays Monaco
 	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
