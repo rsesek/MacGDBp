@@ -457,7 +457,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						</object>
 						<object class="NSSplitView" id="489196675">
 							<reference key="NSNextResponder" ref="976098315"/>
-							<int key="NSvFlags">256</int>
+							<int key="NSvFlags">274</int>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSSplitView" id="1019729176">
@@ -1738,7 +1738,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>{{342, 237}, {769, 501}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="8"/>
-					<integer value="0"/>
+					<reference ref="8"/>
 					<string>{{342, 237}, {769, 501}}</string>
 					<reference ref="9"/>
 					<reference ref="9"/>
