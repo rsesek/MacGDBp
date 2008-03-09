@@ -50,6 +50,12 @@
 	[[NSColor colorWithDeviceRed:0.871 green:0.871 blue:0.871 alpha:1] set];
 	[NSBezierPath fillRect:rect];
 	
+	[[NSColor blackColor] set];
+	[NSBezierPath strokeLineFromPoint:NSMakePoint(rect.origin.x, rect.origin.y) toPoint:NSMakePoint(rect.origin.x + rect.size.width, rect.origin.y)];
+	
+	[[NSColor grayColor] set];
+	[NSBezierPath strokeLineFromPoint:NSMakePoint(rect.origin.x, rect.size.height) toPoint:NSMakePoint(rect.origin.x + rect.size.width, rect.size.height)];
+	
 	// font attributes for the line number
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:10.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
 	
