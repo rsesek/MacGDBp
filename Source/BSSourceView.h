@@ -29,4 +29,6 @@
 @property(readwrite, assign) BSSourceViewTextView *textView;
 @property(readwrite, assign) NSScrollView *scrollView;
 
+- (void)scrollToLine:(int)line;
+
 @end

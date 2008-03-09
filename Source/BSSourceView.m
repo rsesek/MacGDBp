@@ -45,6 +45,24 @@
 }
 
 /**
+ * Tells the text view to scroll to a certain line
+ */
+- (void)scrollToLine:(int)line
+{
+	// go through the document until we find the NSRange for the line we want
+	int rangeIndex = 0;
+	for (int i = 0; i < line; i++)
+	{
+		rangeIndex = NSMaxRange([[textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
+	}
+	
+	// now get the true start/end markers for it
+	unsigned lineStart, lineEnd;
+	[[textView string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
+	[textView scrollRangeToVisible:[[textView string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+}
+
+/**
  * Setup all the subviews for the source metaview
  */
 - (void)setupViews
