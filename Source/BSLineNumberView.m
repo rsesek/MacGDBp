@@ -57,7 +57,7 @@
 	[NSBezierPath strokeLineFromPoint:NSMakePoint(rect.origin.x, rect.size.height) toPoint:NSMakePoint(rect.origin.x + rect.size.width, rect.size.height)];
 	
 	// font attributes for the line number
-	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:10.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
+	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
 	
 	unsigned i = 0, line = 1;
 	while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
@@ -74,7 +74,7 @@
 		{
 			NSString *num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
-			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y) withAttributes:attrs];
+			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
 		}
 		
 		i += fragRange.length;
