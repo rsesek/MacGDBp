@@ -68,7 +68,10 @@
 			NSLog(@"error in converting %@ to base64", self);
 		}
 		
-		return [NSString stringWithCString:data length:datalen];
+		NSString *ret = [NSString stringWithCString:data length:datalen];
+		free(data);
+		
+		return ret;
 	}
 	
 	// just a normal string
