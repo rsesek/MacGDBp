@@ -25,12 +25,15 @@
 	NSScrollView *scrollView;
 	
 	int markedLine;
+	
+	id delegate;
 }
 
 @property(readwrite, assign) BSLineNumberView *numberView;
 @property(readwrite, assign) BSSourceViewTextView *textView;
 @property(readwrite, assign) NSScrollView *scrollView;
 @property(readwrite, assign) int markedLine;
+@property(readwrite, assign) id delegate;
 
 - (void)scrollToLine:(int)line;
 

@@ -81,5 +81,37 @@
 		line++;
 	}
 }
-	
+
+/**
+ * Handles the mouse down event (which is adding, deleting, and toggling breakpoints)
+ */
+- (void)mouseDown:(NSEvent *)event
+{
+	NSLog(@"mouse down!");
+	NSRange visible = [[[sourceView textView] layoutManager] glyphRangeForBoundingRect:[[sourceView scrollView] documentVisibleRect] inTextContainer:[[sourceView textView] textContainer]];
+	unsigned line = 1;
+	unsigned i = 0;
+	NSPoint p = [self convertPoint:[event locationInWindow] fromView:nil];
+	float adjust = (int)([[sourceView scrollView] documentVisibleRect].size.height + [[sourceView scrollView] documentVisibleRect].origin.y) % (int)[self bounds].size.height;
+	p.y += adjust;
+	while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
+	{
+		NSRange fragRange;
+		NSRect fragRect = [[[sourceView textView] layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange];
+		fragRect.size.width = [self bounds].size.width;
+		int hLV = [self bounds].size.height;
+		int hVR = [[sourceView scrollView] documentVisibleRect].size.height + [[sourceView scrollView] documentVisibleRect].origin.y;
+		fragRect.origin.y += hVR % hLV;
+		if (i >= visible.location && NSPointInRect(p, fragRect))
+		{
+			NSLog(@"clicked in %i", line);
+			break;
+		}
+		
+		i += fragRange.length;
+		//p.y += fragRect.size.height;
+		line++;
+	}
+}
+
 @end

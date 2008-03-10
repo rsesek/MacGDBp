@@ -22,7 +22,7 @@
 
 @implementation BSSourceView
 
-@synthesize numberView, textView, scrollView, markedLine;
+@synthesize numberView, textView, scrollView, markedLine, delegate;
 
 /**
  * Initializes the source view with the path of a file
