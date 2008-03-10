@@ -87,22 +87,26 @@
  */
 - (void)mouseDown:(NSEvent *)event
 {
-	NSLog(@"mouse down!");
-	NSRange visible = [[[sourceView textView] layoutManager] glyphRangeForBoundingRect:[[sourceView scrollView] documentVisibleRect] inTextContainer:[[sourceView textView] textContainer]];
+	// simplify our code a bit
+	NSScrollView *scrollView = [sourceView scrollView];
+	NSTextView *textView = [sourceView textView];
+	
+	NSPoint clickLoc = [self convertPoint:[event locationInWindow] fromView:nil];
+	
+	// calculate the relative difference between height of the line number view and the document view
+	float adjust = (int)([scrollView documentVisibleRect].size.height + [scrollView documentVisibleRect].origin.y) % (int)[self bounds].size.height;
+	adjust += [[textView layoutManager] lineFragmentRectForGlyphAtIndex:0 effectiveRange:NULL].size.height;
+	clickLoc.y += adjust; // apply that to the click location to make it seem like we're clicking in an unclipped region
+	
 	unsigned line = 1;
 	unsigned i = 0;
-	NSPoint p = [self convertPoint:[event locationInWindow] fromView:nil];
-	float adjust = (int)([[sourceView scrollView] documentVisibleRect].size.height + [[sourceView scrollView] documentVisibleRect].origin.y) % (int)[self bounds].size.height;
-	p.y += adjust;
-	while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
+	while (i < [[textView layoutManager] numberOfGlyphs])
 	{
 		NSRange fragRange;
-		NSRect fragRect = [[[sourceView textView] layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange];
+		NSRect fragRect = [[textView layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange];
 		fragRect.size.width = [self bounds].size.width;
-		int hLV = [self bounds].size.height;
-		int hVR = [[sourceView scrollView] documentVisibleRect].size.height + [[sourceView scrollView] documentVisibleRect].origin.y;
-		fragRect.origin.y += hVR % hLV;
-		if (i >= visible.location && NSPointInRect(p, fragRect))
+		//fragRect.origin.y += adjust;
+		if (NSPointInRect(clickLoc, fragRect))
 		{
 			NSLog(@"clicked in %i", line);
 			break;
