@@ -83,7 +83,13 @@
  */
 - (NSString *)type
 {
-	return [[self attributeForName:@"type"] stringValue];
+	NSXMLNode *className = [self attributeForName:@"classname"];
+	NSString *type = [[self attributeForName:@"type"] stringValue];
+	if (className != nil)
+	{
+		return [NSString stringWithFormat:@"%@ (%@)", [className stringValue], type];
+	}
+	return type;
 }
 
 @end
