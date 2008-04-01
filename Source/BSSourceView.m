@@ -22,7 +22,7 @@
 
 @implementation BSSourceView
 
-@synthesize numberView, textView, scrollView, markedLine, delegate;
+@synthesize numberView, textView, scrollView, markedLine, delegate, file;
 
 /**
  * Initializes the source view with the path of a file
@@ -34,6 +34,15 @@
 		[self setupViews];
 	}
 	return self;
+}
+
+/**
+ * Sets the file name as well as the text of the source view
+ */
+- (void)setFile:(NSString *)f
+{
+	file = f;
+	[textView setString:[NSString stringWithContentsOfFile:f]];
 }
 
 /**

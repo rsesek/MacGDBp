@@ -21,8 +21,10 @@
 @interface BSLineNumberView : NSView
 {
 	BSSourceView *sourceView;
+	NSRange lineNumberRange;
 }
 
 @property(readwrite, assign) BSSourceView *sourceView;
+@property(readonly) NSRange lineNumberRange;
 
 @end

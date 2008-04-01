@@ -19,7 +19,7 @@
 
 @implementation BSLineNumberView
 
-@synthesize sourceView;
+@synthesize sourceView, lineNumberRange;
 
 /**
  * Initializer for the line number view
@@ -28,7 +28,7 @@
 {
 	if (self = [super initWithFrame:frame])
 	{
-		
+		lineNumberRange = NSMakeRange(0, 0);
 	}
 	return self;
 }
@@ -59,6 +59,8 @@
 	// font attributes for the line number
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
 	
+	lineNumberRange = NSMakeRange(0, 0);
+	
 	unsigned i = 0, line = 1;
 	while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
 	{
@@ -72,6 +74,8 @@
 		testRect.size.height += fragRect.size.height - 1;
 		if (NSPointInRect(fragRect.origin, testRect))
 		{
+			lineNumberRange.location = (lineNumberRange.length == 0 ? line : lineNumberRange.location);
+			lineNumberRange.length++;
 			NSString *num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
@@ -87,16 +91,9 @@
  */
 - (void)mouseDown:(NSEvent *)event
 {
-	// simplify our code a bit
-	NSScrollView *scrollView = [sourceView scrollView];
 	NSTextView *textView = [sourceView textView];
 	
 	NSPoint clickLoc = [self convertPoint:[event locationInWindow] fromView:nil];
-	
-	// calculate the relative difference between height of the line number view and the document view
-	float adjust = (int)([scrollView documentVisibleRect].size.height + [scrollView documentVisibleRect].origin.y) % (int)[self bounds].size.height;
-	adjust += [[textView layoutManager] lineFragmentRectForGlyphAtIndex:0 effectiveRange:NULL].size.height;
-	clickLoc.y += adjust; // apply that to the click location to make it seem like we're clicking in an unclipped region
 	
 	unsigned line = 1;
 	unsigned i = 0;
@@ -105,15 +102,13 @@
 		NSRange fragRange;
 		NSRect fragRect = [[textView layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange];
 		fragRect.size.width = [self bounds].size.width;
-		//fragRect.origin.y += adjust;
 		if (NSPointInRect(clickLoc, fragRect))
 		{
-			NSLog(@"clicked in %i", line);
-			break;
+			[[sourceView delegate] gutterClickedAtLine:line forFile:[sourceView file]];
+			return;
 		}
 		
 		i += fragRange.length;
-		//p.y += fragRect.size.height;
 		line++;
 	}
 }

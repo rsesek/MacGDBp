@@ -216,8 +216,7 @@
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
-	NSString *text = [NSString stringWithContentsOfFile:filename];
-	[[sourceViewer textView] setString:text];
+	[sourceViewer setFile:filename];
 	
 	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
 	[sourceViewer setMarkedLine:line];
