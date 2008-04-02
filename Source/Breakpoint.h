@@ -15,17 +15,17 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerConnection.h"
-#import "Breakpoint.h"
 
-@interface AppDelegate : NSObject
+
+@interface Breakpoint : NSObject
 {
-	NSMutableDictionary *breakpoints;
+	NSString *file;
+	int line;
 }
 
-- (IBAction)showConnectionWindow:(id)sender;
+@property(readonly) NSString *file;
+@property(readonly) int line;
 
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (NSSet *)breakpointsForFile:(NSString *)file;
+- (id)initWithLine:(int)l inFile:(NSString *)f;
 
 @end

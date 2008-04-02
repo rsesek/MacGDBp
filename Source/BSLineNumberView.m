@@ -15,11 +15,12 @@
  */
 
 #import "BSLineNumberView.h"
-
+#import "Breakpoint.h"
+#import "BSSourceView.h"
 
 @implementation BSLineNumberView
 
-@synthesize sourceView, lineNumberRange;
+@synthesize sourceView, lineNumberRange, markers;
 
 /**
  * Initializer for the line number view
@@ -79,6 +80,10 @@
 			NSString *num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
+			if ([markers containsObject:[[Breakpoint alloc] initWithLine:line inFile:[sourceView file]]])
+			{
+				NSLog(@"marking %i", line);
+			}
 		}
 		
 		i += fragRange.length;

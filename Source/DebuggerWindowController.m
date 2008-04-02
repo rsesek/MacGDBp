@@ -18,6 +18,7 @@
 #import "DebuggerConnection.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
+#import "Breakpoint.h"
 
 @interface DebuggerWindowController (Private)
 
@@ -49,6 +50,7 @@
 - (void)awakeFromNib
 {
 	[self setStatus:@"Connecting"];
+	[sourceViewer setDelegate:self];
 }
 
 /**
@@ -262,6 +264,18 @@
 	}
 	
 	[registerController rearrangeObjects];
+}
+
+#pragma mark BSSourceView Delegate
+
+/**
+ * The gutter was clicked, which indicates that a breakpoint needs to be changed
+ */
+- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+{
+	[[NSApp delegate] addBreakpoint:[[Breakpoint alloc] initWithLine:line inFile:file]];
+	[[sourceViewer numberView] setMarkers:[[NSApp delegate] breakpointsForFile:file]];
+	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 
 @end

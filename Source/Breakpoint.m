@@ -14,18 +14,48 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
-#import "DebuggerConnection.h"
 #import "Breakpoint.h"
 
-@interface AppDelegate : NSObject
+
+@implementation Breakpoint
+
+@synthesize file, line;
+
+/**
+ * Initializes a breakpoint with a file and line
+ */
+- (id)initWithLine:(int)l inFile:(NSString *)f
 {
-	NSMutableDictionary *breakpoints;
+	if (self = [super init])
+	{
+		file = f;
+		line = l;
+	}
+	return self;
 }
 
-- (IBAction)showConnectionWindow:(id)sender;
+/**
+ * Determines if two breakpoints are equal
+ */
+- (BOOL)isEqual:(id)obj
+{
+	return ([[obj file] isEqualToString:file] && [obj line] == line);
+}
 
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (NSSet *)breakpointsForFile:(NSString *)file;
+/**
+ * Returns the hash value of a breakpoint
+ */
+- (NSUInteger)hash
+{
+	return ([file hash] << 8) + line;
+}
+
+/**
+ * Pretty-print
+ */
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"%@:%i", file, line];
+}
 
 @end

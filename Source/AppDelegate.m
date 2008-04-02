@@ -25,7 +25,9 @@
 - (id)init
 {
 	if (self = [super init])
-	{}
+	{
+		breakpoints = [NSMutableDictionary dictionary];
+	}
 	return self;
 }
 
@@ -43,6 +45,34 @@
 - (IBAction)showConnectionWindow:(id)sender
 {
 	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
+}
+
+#pragma mark Breakpoints
+
+/**
+ * Registers a breakpoint at a given line
+ */
+- (void)addBreakpoint:(Breakpoint *)bp;
+{
+	NSMutableSet *lines = [breakpoints valueForKey:[bp file]];
+	if (lines == nil)
+	{
+		lines = [NSMutableSet setWithObject:bp];
+		[breakpoints setValue:lines forKey:[bp file]];
+	}
+	else
+	{
+		[lines addObject:bp];
+	}
+	NSLog(@"breakpoints = %@", breakpoints);
+}
+
+/**
+ * Returns all the breakpoints for a given file
+ */
+- (NSSet *)breakpointsForFile:(NSString *)file
+{
+	return [breakpoints valueForKey:file];
 }
 
 @end

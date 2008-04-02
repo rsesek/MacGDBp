@@ -22,9 +22,11 @@
 {
 	BSSourceView *sourceView;
 	NSRange lineNumberRange;
+	NSSet *markers;
 }
 
 @property(readwrite, assign) BSSourceView *sourceView;
 @property(readonly) NSRange lineNumberRange;
+@property(readwrite, assign) NSSet *markers;
 
 @end
