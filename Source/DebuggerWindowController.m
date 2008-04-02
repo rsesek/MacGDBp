@@ -273,8 +273,18 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
 {
-	[[BreakpointManager sharedManager] addBreakpoint:[[Breakpoint alloc] initWithLine:line inFile:file]];
-	[[sourceViewer numberView] setMarkers:[[BreakpointManager sharedManager] breakpointsForFile:file]];
+	BreakpointManager *mngr = [BreakpointManager sharedManager];
+	
+	if ([mngr hasBreakpointAt:line inFile:file])
+	{
+		[mngr removeBreakpointAt:line inFile:file];
+	}
+	else
+	{
+		[mngr addBreakpoint:[[Breakpoint alloc] initWithLine:line inFile:file]];
+	}
+	
+	[[sourceViewer numberView] setMarkers:[mngr breakpointsForFile:file]];
 	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 

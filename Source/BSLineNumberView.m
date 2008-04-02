@@ -88,7 +88,6 @@
 			if ([markers containsObject:[[Breakpoint alloc] initWithLine:line inFile:[sourceView file]]])
 			{
 				[self drawMarkerInRect:fragRect];
-				NSLog(@"marking %i", line);
 			}
 		}
 		
