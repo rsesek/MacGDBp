@@ -24,7 +24,7 @@
 
 + (BreakpointManager *)sharedManager;
 - (void)addBreakpoint:(Breakpoint *)bp;
-- (void)removeBreakpointAt:(int)line inFile:(NSString *)file;
+- (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file;
 - (NSSet *)breakpointsForFile:(NSString *)file;
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file;
 

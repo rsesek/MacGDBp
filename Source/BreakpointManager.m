@@ -63,9 +63,9 @@
 }
 
 /**
- * Removes a breakpoint at a given line/file combination
+ * Removes a breakpoint at a given line/file combination, or nil if nothing was removed
  */
-- (void)removeBreakpointAt:(int)line inFile:(NSString *)file
+- (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file
 {
 	NSMutableSet *lines = [breakpoints valueForKey:file];
 	for (Breakpoint *b in lines)
@@ -73,9 +73,10 @@
 		if ([b line] == line)
 		{
 			[lines removeObject:b];
-			return;
+			return b;
 		}
 	}
+	return nil;
 }
 
 /**
