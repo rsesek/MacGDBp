@@ -135,15 +135,17 @@
 	
 	[path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
 	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right
-	[path curveToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)
-		 controlPoint1:NSMakePoint(rect.size.width - 1, rect.origin.y + (rect.size.height / 2) - 1)
-		 controlPoint2:NSMakePoint(rect.size.width - 1, rect.origin.y + (rect.size.height / 2) + 1)];
-	//[path lineToPoint:NSMakePoint(rect.size.width, rect.origin.y + rect.size.height)]; // lower right
+	[path lineToPoint:NSMakePoint(rect.size.width - 2, rect.origin.y + (rect.size.height / 2))]; // point
+	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)]; // lower right
 	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + rect.size.height - 2)]; // lower left
-	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // upper left
+	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 1)]; // upper left
 	
-	[[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:0.75] set];
+	[[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0] set];
 	[path fill];
+	
+	[[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0] set];
+	[path setLineWidth:2];
+	[path stroke];
 }
 
 @end
