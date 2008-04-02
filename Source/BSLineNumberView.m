@@ -18,6 +18,10 @@
 #import "Breakpoint.h"
 #import "BSSourceView.h"
 
+@interface BSLineNumberView (Private)
+- (void)drawMarkerInRect:(NSRect)rect;
+@end
+
 @implementation BSLineNumberView
 
 @synthesize sourceView, lineNumberRange, markers;
@@ -68,6 +72,7 @@
 		NSRange fragRange;
 		NSRect fragRect = [self convertRect:[[[sourceView textView] layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange] fromView:[sourceView textView]];
 		fragRect.origin.x = rect.origin.x; // horizontal scrolling matters not
+		fragRect.size.width = [self bounds].size.width;
 		
 		// we want to paint the top and bottom line number even if they're cut off
 		NSRect testRect = rect;
@@ -82,6 +87,7 @@
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
 			if ([markers containsObject:[[Breakpoint alloc] initWithLine:line inFile:[sourceView file]]])
 			{
+				[self drawMarkerInRect:fragRect];
 				NSLog(@"marking %i", line);
 			}
 		}
@@ -116,6 +122,28 @@
 		i += fragRange.length;
 		line++;
 	}
+}
+
+#pragma mark Private
+
+/**
+ * Draws a marker in a given rectangle
+ */
+- (void)drawMarkerInRect:(NSRect)rect
+{
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	
+	[path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
+	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right
+	[path curveToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)
+		 controlPoint1:NSMakePoint(rect.size.width - 1, rect.origin.y + (rect.size.height / 2) - 1)
+		 controlPoint2:NSMakePoint(rect.size.width - 1, rect.origin.y + (rect.size.height / 2) + 1)];
+	//[path lineToPoint:NSMakePoint(rect.size.width, rect.origin.y + rect.size.height)]; // lower right
+	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + rect.size.height - 2)]; // lower left
+	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // upper left
+	
+	[[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:0.75] set];
+	[path fill];
 }
 
 @end
