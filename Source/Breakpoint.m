@@ -19,7 +19,7 @@
 
 @implementation Breakpoint
 
-@synthesize file, line;
+@synthesize file, line, debuggerId;
 
 /**
  * Initializes a breakpoint with a file and line

@@ -21,10 +21,12 @@
 {
 	NSString *file;
 	int line;
+	int debuggerId;
 }
 
 @property(readonly) NSString *file;
 @property(readonly) int line;
+@property(readwrite, assign) int debuggerId;
 
 - (id)initWithLine:(int)l inFile:(NSString *)f;
 
