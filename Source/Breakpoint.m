@@ -14,36 +14,48 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
-#import "ConnectWindowController.h"
+#import "Breakpoint.h"
 
-@implementation AppDelegate
+
+@implementation Breakpoint
+
+@synthesize file, line, debuggerId;
 
 /**
- * Initializes
+ * Initializes a breakpoint with a file and line
  */
-- (id)init
+- (id)initWithLine:(int)l inFile:(NSString *)f
 {
 	if (self = [super init])
 	{
+		file = f;
+		line = l;
 	}
 	return self;
 }
 
 /**
- * When the application has finished loading, show the connection dialog
+ * Determines if two breakpoints are equal
  */
-- (void)applicationDidFinishLaunching:(NSNotification *)notif
+- (BOOL)isEqual:(id)obj
 {
-	[self showConnectionWindow:self];
+	return ([[obj file] isEqualToString:file] && [obj line] == line);
 }
 
 /**
- * Shows the connection window
+ * Returns the hash value of a breakpoint
  */
-- (IBAction)showConnectionWindow:(id)sender
+- (NSUInteger)hash
 {
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
+	return ([file hash] << 8) + line;
+}
+
+/**
+ * Pretty-print
+ */
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"%@:%i", file, line];
 }
 
 @end

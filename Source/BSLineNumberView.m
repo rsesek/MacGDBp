@@ -15,11 +15,16 @@
  */
 
 #import "BSLineNumberView.h"
+#import "Breakpoint.h"
+#import "BSSourceView.h"
 
+@interface BSLineNumberView (Private)
+- (void)drawMarkerInRect:(NSRect)rect;
+@end
 
 @implementation BSLineNumberView
 
-@synthesize sourceView;
+@synthesize sourceView, lineNumberRange, markers;
 
 /**
  * Initializer for the line number view
@@ -28,7 +33,7 @@
 {
 	if (self = [super initWithFrame:frame])
 	{
-		
+		lineNumberRange = NSMakeRange(0, 0);
 	}
 	return self;
 }
@@ -59,12 +64,15 @@
 	// font attributes for the line number
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
 	
+	lineNumberRange = NSMakeRange(0, 0);
+	
 	unsigned i = 0, line = 1;
 	while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
 	{
 		NSRange fragRange;
 		NSRect fragRect = [self convertRect:[[[sourceView textView] layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange] fromView:[sourceView textView]];
 		fragRect.origin.x = rect.origin.x; // horizontal scrolling matters not
+		fragRect.size.width = [self bounds].size.width;
 		
 		// we want to paint the top and bottom line number even if they're cut off
 		NSRect testRect = rect;
@@ -72,14 +80,71 @@
 		testRect.size.height += fragRect.size.height - 1;
 		if (NSPointInRect(fragRect.origin, testRect))
 		{
+			lineNumberRange.location = (lineNumberRange.length == 0 ? line : lineNumberRange.location);
+			lineNumberRange.length++;
 			NSString *num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
+			if ([markers containsObject:[[Breakpoint alloc] initWithLine:line inFile:[sourceView file]]])
+			{
+				[self drawMarkerInRect:fragRect];
+			}
 		}
 		
 		i += fragRange.length;
 		line++;
 	}
 }
+
+/**
+ * Handles the mouse down event (which is adding, deleting, and toggling breakpoints)
+ */
+- (void)mouseDown:(NSEvent *)event
+{
+	NSTextView *textView = [sourceView textView];
 	
+	NSPoint clickLoc = [self convertPoint:[event locationInWindow] fromView:nil];
+	
+	unsigned line = 1;
+	unsigned i = 0;
+	while (i < [[textView layoutManager] numberOfGlyphs])
+	{
+		NSRange fragRange;
+		NSRect fragRect = [[textView layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange];
+		fragRect.size.width = [self bounds].size.width;
+		if (NSPointInRect(clickLoc, fragRect))
+		{
+			[[sourceView delegate] gutterClickedAtLine:(line + lineNumberRange.location - 1) forFile:[sourceView file]];
+			return;
+		}
+		
+		i += fragRange.length;
+		line++;
+	}
+}
+
+#pragma mark Private
+
+/**
+ * Draws a marker in a given rectangle
+ */
+- (void)drawMarkerInRect:(NSRect)rect
+{
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	
+	[path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
+	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right
+	[path lineToPoint:NSMakePoint(rect.size.width - 2, rect.origin.y + (rect.size.height / 2))]; // point
+	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)]; // lower right
+	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + rect.size.height - 2)]; // lower left
+	[path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 1)]; // upper left
+	
+	[[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0] set];
+	[path fill];
+	
+	[[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0] set];
+	[path setLineWidth:2];
+	[path stroke];
+}
+
 @end

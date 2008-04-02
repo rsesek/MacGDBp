@@ -14,36 +14,20 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
-#import "ConnectWindowController.h"
+#import <Cocoa/Cocoa.h>
 
-@implementation AppDelegate
 
-/**
- * Initializes
- */
-- (id)init
+@interface Breakpoint : NSObject
 {
-	if (self = [super init])
-	{
-	}
-	return self;
+	NSString *file;
+	int line;
+	int debuggerId;
 }
 
-/**
- * When the application has finished loading, show the connection dialog
- */
-- (void)applicationDidFinishLaunching:(NSNotification *)notif
-{
-	[self showConnectionWindow:self];
-}
+@property(readonly) NSString *file;
+@property(readonly) int line;
+@property(readwrite, assign) int debuggerId;
 
-/**
- * Shows the connection window
- */
-- (IBAction)showConnectionWindow:(id)sender
-{
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
-}
+- (id)initWithLine:(int)l inFile:(NSString *)f;
 
 @end

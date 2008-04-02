@@ -17,6 +17,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DebuggerWindowController.h"
 #import "SocketWrapper.h"
+#import "Breakpoint.h"
 
 @interface DebuggerConnection : NSObject
 {
@@ -47,6 +48,8 @@
 - (void)stepIn;
 - (void)stepOut;
 - (void)stepOver;
+- (void)addBreakpoint:(Breakpoint *)bp;
+- (void)removeBreakpoint:(Breakpoint *)bp;
 - (void)refreshStatus;
 - (void)updateStackTraceAndRegisters;
 

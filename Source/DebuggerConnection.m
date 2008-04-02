@@ -234,6 +234,30 @@
 	[windowController addChildren:children toNode:node];
 }
 
+#pragma mark Breakpoints
+
+/**
+ * Send an add breakpoint command
+ */
+- (void)addBreakpoint:(Breakpoint *)bp
+{
+	NSString *cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", [bp file], [bp line]]];
+	[socket send:cmd];
+	NSXMLDocument *info = [self processData:[socket receive]];
+	[bp setDebuggerId:[[[[info rootElement] attributeForName:@"id"] stringValue] intValue]];
+}
+
+/**
+ * Removes a breakpoint
+ */
+- (void)removeBreakpoint:(Breakpoint *)bp
+{
+	[socket send:[self createCommand:[NSString stringWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]]]];
+	[socket receive];
+}
+
+#pragma mark Private
+
 /**
  * Helper method to create a string command with the -i <session> automatically tacked on
  */

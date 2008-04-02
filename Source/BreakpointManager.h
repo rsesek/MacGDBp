@@ -14,36 +14,18 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
-#import "ConnectWindowController.h"
+#import <Cocoa/Cocoa.h>
+#import "Breakpoint.h"
 
-@implementation AppDelegate
-
-/**
- * Initializes
- */
-- (id)init
+@interface BreakpointManager : NSObject
 {
-	if (self = [super init])
-	{
-	}
-	return self;
+	NSMutableDictionary *breakpoints;
 }
 
-/**
- * When the application has finished loading, show the connection dialog
- */
-- (void)applicationDidFinishLaunching:(NSNotification *)notif
-{
-	[self showConnectionWindow:self];
-}
-
-/**
- * Shows the connection window
- */
-- (IBAction)showConnectionWindow:(id)sender
-{
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
-}
++ (BreakpointManager *)sharedManager;
+- (void)addBreakpoint:(Breakpoint *)bp;
+- (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file;
+- (NSSet *)breakpointsForFile:(NSString *)file;
+- (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file;
 
 @end

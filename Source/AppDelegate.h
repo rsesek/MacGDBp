@@ -18,7 +18,8 @@
 #import "DebuggerConnection.h"
 
 @interface AppDelegate : NSObject
-{}
+{
+}
 
 - (IBAction)showConnectionWindow:(id)sender;
 

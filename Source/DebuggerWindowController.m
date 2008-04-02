@@ -18,6 +18,7 @@
 #import "DebuggerConnection.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
+#import "BreakpointManager.h"
 
 @interface DebuggerWindowController (Private)
 
@@ -49,6 +50,7 @@
 - (void)awakeFromNib
 {
 	[self setStatus:@"Connecting"];
+	[sourceViewer setDelegate:self];
 }
 
 /**
@@ -216,8 +218,7 @@
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
-	NSString *text = [NSString stringWithContentsOfFile:filename];
-	[[sourceViewer textView] setString:text];
+	[sourceViewer setFile:filename];
 	
 	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
 	[sourceViewer setMarkedLine:line];
@@ -263,6 +264,30 @@
 	}
 	
 	[registerController rearrangeObjects];
+}
+
+#pragma mark BSSourceView Delegate
+
+/**
+ * The gutter was clicked, which indicates that a breakpoint needs to be changed
+ */
+- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+{
+	BreakpointManager *mngr = [BreakpointManager sharedManager];
+	
+	if ([mngr hasBreakpointAt:line inFile:file])
+	{
+		[connection removeBreakpoint:[mngr removeBreakpointAt:line inFile:file]];
+	}
+	else
+	{
+		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+		[mngr addBreakpoint:bp];
+		[connection addBreakpoint:bp];
+	}
+	
+	[[sourceViewer numberView] setMarkers:[mngr breakpointsForFile:file]];
+	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 
 @end
