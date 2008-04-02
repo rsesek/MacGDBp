@@ -277,7 +277,7 @@
 	
 	if ([mngr hasBreakpointAt:line inFile:file])
 	{
-		[mngr removeBreakpointAt:line inFile:file];
+		[connection removeBreakpoint:[mngr removeBreakpointAt:line inFile:file]];
 	}
 	else
 	{
