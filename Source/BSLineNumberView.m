@@ -109,7 +109,7 @@
 		fragRect.size.width = [self bounds].size.width;
 		if (NSPointInRect(clickLoc, fragRect))
 		{
-			[[sourceView delegate] gutterClickedAtLine:line forFile:[sourceView file]];
+			[[sourceView delegate] gutterClickedAtLine:(line + lineNumberRange.location - 1) forFile:[sourceView file]];
 			return;
 		}
 		

@@ -18,6 +18,7 @@
 		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
 		1E416FF80D36F821009A53A2 /* Connect.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF40D36F821009A53A2 /* Connect.xib */; };
 		1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF60D36F821009A53A2 /* MainMenu.xib */; };
+		1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
 		1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.m */; };
 		1E7188690D839F6300969277 /* BSSourceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.m */; };
 		1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188670D839F6300969277 /* BSSourceViewTextView.m */; };
@@ -54,6 +55,8 @@
 		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
 		1E416FF50D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Connect.xib; sourceTree = "<group>"; };
 		1E416FF70D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointManager.h; path = Source/BreakpointManager.h; sourceTree = "<group>"; };
+		1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointManager.m; path = Source/BreakpointManager.m; sourceTree = "<group>"; };
 		1E7188620D839F6300969277 /* BSLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberView.h; path = Source/BSLineNumberView.h; sourceTree = "<group>"; };
 		1E7188630D839F6300969277 /* BSLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSLineNumberView.m; path = Source/BSLineNumberView.m; sourceTree = "<group>"; };
 		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 				1E822CDB0DA28AC30027A23F /* Breakpoint.h */,
 				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
+				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
+				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
 				1E71886C0D839F6C00969277 /* Source View */,
 			);
 			name = Classes;
@@ -312,6 +317,7 @@
 				1E7188690D839F6300969277 /* BSSourceView.m in Sources */,
 				1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
+				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

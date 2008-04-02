@@ -16,16 +16,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "DebuggerConnection.h"
-#import "Breakpoint.h"
 
 @interface AppDelegate : NSObject
 {
-	NSMutableDictionary *breakpoints;
 }
 
 - (IBAction)showConnectionWindow:(id)sender;
-
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (NSSet *)breakpointsForFile:(NSString *)file;
 
 @end

@@ -18,7 +18,7 @@
 #import "DebuggerConnection.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
-#import "Breakpoint.h"
+#import "BreakpointManager.h"
 
 @interface DebuggerWindowController (Private)
 
@@ -273,8 +273,8 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
 {
-	[[NSApp delegate] addBreakpoint:[[Breakpoint alloc] initWithLine:line inFile:file]];
-	[[sourceViewer numberView] setMarkers:[[NSApp delegate] breakpointsForFile:file]];
+	[[BreakpointManager sharedManager] addBreakpoint:[[Breakpoint alloc] initWithLine:line inFile:file]];
+	[[sourceViewer numberView] setMarkers:[[BreakpointManager sharedManager] breakpointsForFile:file]];
 	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 
