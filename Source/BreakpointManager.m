@@ -16,6 +16,7 @@
 
 #import "BreakpointManager.h"
 
+NSString *kdBreakpoints = @"breakpoints";
 
 @implementation BreakpointManager
 
@@ -26,7 +27,11 @@
 {
 	if (self = [super init])
 	{
-		breakpoints = [NSMutableDictionary dictionary];
+		breakpoints = (NSMutableDictionary *)[[NSUserDefaults standardUserDefaults] objectForKey:kdBreakpoints];
+		if (!breakpoints)
+		{
+			breakpoints = [NSMutableDictionary dictionary];
+		}
 	}
 	return self;
 }
@@ -59,6 +64,7 @@
 	{
 		[lines addObject:bp];
 	}
+	[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
 	NSLog(@"breakpoints = %@", breakpoints);
 }
 
@@ -73,6 +79,7 @@
 		if ([b line] == line)
 		{
 			[lines removeObject:b];
+			[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
 			return b;
 		}
 	}
