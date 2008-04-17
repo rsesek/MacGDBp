@@ -28,10 +28,19 @@
 {
 	if (self = [super init])
 	{
-		file = f;
+		file = [f retain];
 		line = l;
 	}
 	return self;
+}
+
+/**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	[file release];
+	[super dealloc];
 }
 
 /**

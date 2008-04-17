@@ -18,6 +18,8 @@
 #import "DebuggerWindowController.h"
 #import "AppDelegate.h"
 
+static id instance = nil;
+
 @implementation ConnectWindowController
 
 /**
@@ -25,7 +27,6 @@
  */
 + (id)sharedController
 {
-	static id instance = nil;
 	if (!instance)
 	{
 		instance = [[ConnectWindowController alloc] initWithWindowNibName:@"Connect"];
@@ -39,7 +40,7 @@
  */
 - (IBAction)connect:(id)sender
 {
-	[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]];
+	[[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]] autorelease];
 	[[self window] orderOut:self];
 }
 

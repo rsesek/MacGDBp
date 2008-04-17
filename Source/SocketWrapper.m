@@ -36,10 +36,19 @@
 {
 	if (self = [super init])
 	{
-		connection = cnx;
+		connection = [cnx retain];
 		port = [connection port];
 	}
 	return self;
+}
+
+/**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	[connection release];
+	[super dealloc];
 }
 
 /**

@@ -37,10 +37,10 @@
 	if (self = [super init])
 	{
 		port = aPort;
-		session = aSession;
+		session = [aSession retain];
 		connected = NO;
 		
-		windowController = wc;
+		windowController = [wc retain];
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithConnection:self];
@@ -48,6 +48,17 @@
 		[socket connect];
 	}
 	return self;
+}
+
+/**
+ * Deallocates the object
+ */
+- (void)dealloc
+{
+	[socket release];
+	[session release];
+	[windowController release];
+	[super dealloc];
 }
 
 /**

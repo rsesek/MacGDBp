@@ -37,11 +37,23 @@
 }
 
 /**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	if (file != nil)
+	{
+		[file release];
+	}
+}
+
+/**
  * Sets the file name as well as the text of the source view
  */
 - (void)setFile:(NSString *)f
 {
-	file = f;
+	[file release];
+	file = [f retain];
 	[textView setString:[NSString stringWithContentsOfFile:f]];
 }
 
