@@ -21,6 +21,4 @@
 {
 }
 
-- (IBAction)showConnectionWindow:(id)sender;
-
 @end

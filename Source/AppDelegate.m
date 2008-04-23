@@ -15,7 +15,6 @@
  */
 
 #import "AppDelegate.h"
-#import "ConnectWindowController.h"
 
 @implementation AppDelegate
 
@@ -35,15 +34,8 @@
  */
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
-	[self showConnectionWindow:self];
-}
-
-/**
- * Shows the connection window
- */
-- (IBAction)showConnectionWindow:(id)sender
-{
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
+	// TODO: use preference values
+	[[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
 }
 
 @end
