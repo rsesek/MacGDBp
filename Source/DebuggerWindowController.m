@@ -50,6 +50,7 @@
 - (void)awakeFromNib
 {
 	[self setStatus:@"Connecting"];
+	[[self window] setExcludedFromWindowsMenu:YES];
 	[sourceViewer setDelegate:self];
 }
 

@@ -15,10 +15,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerConnection.h"
+#import "DebuggerWindowController.h"
 
 @interface AppDelegate : NSObject
 {
+	DebuggerWindowController *debugger;
 }
+
+- (IBAction)showDebuggerWindow:(id)sender;
 
 @end

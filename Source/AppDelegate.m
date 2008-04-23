@@ -25,6 +25,7 @@
 {
 	if (self = [super init])
 	{
+		
 	}
 	return self;
 }
@@ -35,7 +36,15 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
 	// TODO: use preference values
-	[[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
+	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
+}
+
+/**
+ * Shows the debugger window
+ */
+- (IBAction)showDebuggerWindow:(id)sender
+{
+	[[debugger window] makeKeyAndOrderFront:self];
 }
 
 @end
