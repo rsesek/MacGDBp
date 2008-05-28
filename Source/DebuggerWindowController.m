@@ -216,6 +216,12 @@
 	}
 	int selection = [selectedLevel intValue];
 	
+	if ([stack count] < 1)
+	{
+		NSLog(@"huh... we don't have a stack");
+		return;
+	}
+	
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];

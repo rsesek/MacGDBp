@@ -271,7 +271,17 @@
  */
 - (NSXMLDocument *)processData:(NSData *)data
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:nil];
+	NSXMLDocument *doc;
+	
+	@try
+	{	
+		doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:nil];
+	}
+	@catch (NSException *e)
+	{
+		NSLog(@"Could not parse XML? --- %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+		return nil;
+	}
 	
 	// check and see if there's an error
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];
