@@ -219,6 +219,11 @@
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
+	if ([filename isEqualToString:@""])
+	{
+		return;
+	}
+	
 	[sourceViewer setFile:filename];
 	
 	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
