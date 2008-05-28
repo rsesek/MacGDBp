@@ -271,15 +271,13 @@
  */
 - (NSXMLDocument *)processData:(NSData *)data
 {
-	NSXMLDocument *doc;
-	
-	@try
-	{	
-		doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:nil];
-	}
-	@catch (NSException *e)
+	NSError *parseError = nil;
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:&parseError];
+	if (parseError)
 	{
-		NSLog(@"Could not parse XML? --- %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+		NSLog(@"Could not parse XML? --- %@", parseError);
+		NSLog(@"Error UserInfo: %@", [parseError userInfo]);
+		NSLog(@"This is the XML Document: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 		return nil;
 	}
 	
