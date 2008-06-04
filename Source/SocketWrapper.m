@@ -156,7 +156,7 @@
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
  * will return something (which we almost always do). Returns the data that was received from the socket.
  */
-- (NSData *)receive
+- (NSString *)receive
 {
 	// create a buffer
 	char buffer[1024];
@@ -166,6 +166,7 @@
 	
 	// take the received data and put it into an NSData
 	NSMutableData *data = [NSMutableData data];
+	NSMutableString *str = [NSMutableString string];
 	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
 	char packetLength[8];
@@ -188,8 +189,8 @@
 	memset(packet, '\0', sizeof(packet));
 	memmove(packet, &buffer[i], recvd - i);
 	
-	// convert bytes to NSData
-	[data appendBytes:packet length:recvd - i];
+	// convert bytes to NSString
+	[str appendString:[[NSString alloc] initWithCString:packet length:recvd - i]];
 	
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
@@ -202,12 +203,12 @@
 				[self error:@"Socket closed or could not be read"];
 				return nil;
 			}
-			[data appendBytes:buffer length:latest];
+			[str appendString:[[NSString alloc] initWithCString:buffer length:latest]];
 			recvd += latest;
 		}
 	}
 	
-	return data;
+	return [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 /**

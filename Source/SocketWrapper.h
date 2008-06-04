@@ -35,7 +35,7 @@
 
 - (void)connect;
 - (void)close;
-- (NSData *)receive;
+- (NSString *)receive;
 - (BOOL)send:(NSString *)data;
 
 - (NSString *)remoteHost;

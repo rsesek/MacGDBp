@@ -20,7 +20,7 @@
 @interface DebuggerConnection (Private)
 
 - (NSString *)createCommand:(NSString *)cmd;
-- (NSXMLDocument *)processData:(NSData *)data;
+- (NSXMLDocument *)processData:(NSString *)data;
 
 @end
 
@@ -269,15 +269,15 @@
 /**
  * Helper function to parse the NSData into an NSXMLDocument
  */
-- (NSXMLDocument *)processData:(NSData *)data
+- (NSXMLDocument *)processData:(NSString *)data
 {
 	NSError *parseError = nil;
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:&parseError];
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
 	if (parseError)
 	{
 		NSLog(@"Could not parse XML? --- %@", parseError);
 		NSLog(@"Error UserInfo: %@", [parseError userInfo]);
-		NSLog(@"This is the XML Document: %@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+		NSLog(@"This is the XML Document: %@", data);
 		return nil;
 	}
 	
