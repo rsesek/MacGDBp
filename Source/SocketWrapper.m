@@ -165,7 +165,6 @@
 	int recvd = recv(sock, &buffer, sizeof(buffer), 0);
 	
 	// take the received data and put it into an NSData
-	NSMutableData *data = [NSMutableData data];
 	NSMutableString *str = [NSMutableString string];
 	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
@@ -208,7 +207,8 @@
 		}
 	}
 	
-	return [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString *tmp = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; // strip whitespace
+	return [tmp substringToIndex:[tmp length] - 1]; // don't want the null byte
 }
 
 /**
