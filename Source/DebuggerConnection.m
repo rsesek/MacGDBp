@@ -124,6 +124,7 @@
 - (void)run
 {
 	[socket send:[self createCommand:@"run"]];
+	[socket receive];
 	[self refreshStatus];
 }
 
