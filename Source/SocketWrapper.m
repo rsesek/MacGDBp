@@ -71,17 +71,7 @@
  */
 - (NSString *)remoteHost
 {
-	struct sockaddr_in addr;
-	socklen_t addrLength;
-	
-	if (getpeername(sock, (struct sockaddr *)&addr, &addrLength) < 0)
-	{
-		[self error:@"Could not get remote hostname."];
-	}
-	
-	char *name = inet_ntoa(addr.sin_addr);
-	
-	return [NSString stringWithUTF8String:name];
+	return hostname;
 }
 
 /**
@@ -146,6 +136,15 @@
 	
 	// we're done listening now that we have a connection
 	close(socketOpen);
+	
+	struct sockaddr_in addr;
+	socklen_t addrLength;
+	if (getpeername(sock, (struct sockaddr *)&addr, &addrLength) < 0)
+	{
+		[self error:@"Could not get remote hostname."];
+	}
+	char *name = inet_ntoa(addr.sin_addr);
+	hostname = [NSString stringWithUTF8String:name];	
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
 }

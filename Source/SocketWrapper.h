@@ -24,6 +24,7 @@
 	
 	int port;
 	int sock;
+	NSString *hostname;
 	
 	id delegate;
 }
