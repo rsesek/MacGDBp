@@ -64,8 +64,9 @@ NSString *kdBreakpoints = @"breakpoints";
 	{
 		[lines addObject:bp];
 	}
-	[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
-	NSLog(@"breakpoints = %@", breakpoints);
+	// TODO: use NSDictionary to store breakoints because we can only archive defaults in NSUserDefaults
+	//[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
+	//NSLog(@"breakpoints = %@", breakpoints);
 }
 
 /**
@@ -79,7 +80,8 @@ NSString *kdBreakpoints = @"breakpoints";
 		if ([b line] == line)
 		{
 			[lines removeObject:b];
-			[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
+			// TODO: use NSDictionary
+			//[[NSUserDefaults standardUserDefaults] setObject:breakpoints forKey:kdBreakpoints];
 			return b;
 		}
 	}
