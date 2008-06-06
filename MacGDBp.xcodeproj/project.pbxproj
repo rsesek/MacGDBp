@@ -95,20 +95,8 @@
 			children = (
 				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
-				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
-				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
-				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
-				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
-				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
-				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
-				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
-				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
-				1E822CDB0DA28AC30027A23F /* Breakpoint.h */,
-				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
-				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
-				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
+				1E1E52C10DF9B1FB00D334F9 /* Connection */,
+				1E1E52C00DF9B1E700D334F9 /* Breakpoints */,
 				1E71886C0D839F6C00969277 /* Source View */,
 			);
 			name = Classes;
@@ -152,6 +140,32 @@
 			name = "Toolbar Icons";
 			sourceTree = "<group>";
 		};
+		1E1E52C00DF9B1E700D334F9 /* Breakpoints */ = {
+			isa = PBXGroup;
+			children = (
+				1E822CDB0DA28AC30027A23F /* Breakpoint.h */,
+				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
+				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
+				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
+			);
+			name = Breakpoints;
+			sourceTree = "<group>";
+		};
+		1E1E52C10DF9B1FB00D334F9 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
+				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
+				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
+				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
+				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
+				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
+				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
+			);
+			name = Connection;
+			sourceTree = "<group>";
+		};
 		1E416FFB0D36F827009A53A2 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +178,8 @@
 		1E71886C0D839F6C00969277 /* Source View */ = {
 			isa = PBXGroup;
 			children = (
+				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
+				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 				1E7188620D839F6300969277 /* BSLineNumberView.h */,
 				1E7188630D839F6300969277 /* BSLineNumberView.m */,
 				1E7188640D839F6300969277 /* BSSourceView.h */,
