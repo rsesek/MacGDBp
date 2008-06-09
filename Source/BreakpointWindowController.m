@@ -14,45 +14,9 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "AppDelegate.h"
+#import "BreakpointWindowController.h"
 
-@implementation AppDelegate
 
-/**
- * Initializes
- */
-- (id)init
-{
-	if (self = [super init])
-	{
-		
-	}
-	return self;
-}
-
-/**
- * When the application has finished loading, show the connection dialog
- */
-- (void)applicationDidFinishLaunching:(NSNotification *)notif
-{
-	// TODO: use preference values
-	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
-}
-
-/**
- * Shows the debugger window
- */
-- (IBAction)showDebuggerWindow:(id)sender
-{
-	[[debugger window] makeKeyAndOrderFront:self];
-}
-
-/**
- * Shows the breakpoints window
- */
-- (IBAction)showBreakpointWindow:(id)sender
-{
-	[[breakpoint window] makeKeyAndOrderFront:self];
-}
+@implementation BreakpointWindowController
 
 @end

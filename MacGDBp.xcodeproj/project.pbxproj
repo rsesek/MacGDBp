@@ -29,6 +29,7 @@
 		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
 		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
+		1EFF70C30DFDC018006B9D33 /* BreakpointWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -72,6 +73,8 @@
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
+		1EFF70C10DFDC018006B9D33 /* BreakpointWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointWindowController.h; path = Source/BreakpointWindowController.h; sourceTree = "<group>"; };
+		1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointWindowController.m; path = Source/BreakpointWindowController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -149,6 +152,8 @@
 				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
 				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
 				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
+				1EFF70C10DFDC018006B9D33 /* BreakpointWindowController.h */,
+				1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */,
 			);
 			name = Breakpoints;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
+				1EFF70C30DFDC018006B9D33 /* BreakpointWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
