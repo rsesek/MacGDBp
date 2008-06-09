@@ -60,6 +60,7 @@
 - (void)awakeFromNib
 {
 	[self setStatus:@"Connecting"];
+	[[self window] setExcludedFromWindowsMenu:YES];
 	[sourceViewer setDelegate:self];
 }
 
@@ -225,9 +226,20 @@
 	}
 	int selection = [selectedLevel intValue];
 	
+	if ([stack count] < 1)
+	{
+		NSLog(@"huh... we don't have a stack");
+		return;
+	}
+	
 	// get the filename and then set the text
 	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
+	if ([filename isEqualToString:@""])
+	{
+		return;
+	}
+	
 	[sourceViewer setFile:filename];
 	
 	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];

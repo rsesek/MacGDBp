@@ -17,14 +17,9 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface ConnectWindowController : NSWindowController
+@interface BreakpointWindowController : NSWindowController
 {
-	IBOutlet NSTextField *port;
-	IBOutlet NSTextField *session;
+
 }
-
-+ (id)sharedController;
-
-- (IBAction)connect:(id)sender;
 
 @end

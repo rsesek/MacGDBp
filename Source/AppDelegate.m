@@ -15,7 +15,6 @@
  */
 
 #import "AppDelegate.h"
-#import "ConnectWindowController.h"
 
 @implementation AppDelegate
 
@@ -26,6 +25,7 @@
 {
 	if (self = [super init])
 	{
+		
 	}
 	return self;
 }
@@ -35,15 +35,25 @@
  */
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
-	[self showConnectionWindow:self];
+	// TODO: use preference values
+	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
+	breakpoint = [[BreakpointWindowController alloc] init];
 }
 
 /**
- * Shows the connection window
+ * Shows the debugger window
  */
-- (IBAction)showConnectionWindow:(id)sender
+- (IBAction)showDebuggerWindow:(id)sender
 {
-	[[[ConnectWindowController sharedController] window] makeKeyAndOrderFront:self];
+	[[debugger window] makeKeyAndOrderFront:self];
+}
+
+/**
+ * Shows the breakpoints window
+ */
+- (IBAction)showBreakpointWindow:(id)sender
+{
+	[[breakpoint window] makeKeyAndOrderFront:self];
 }
 
 @end

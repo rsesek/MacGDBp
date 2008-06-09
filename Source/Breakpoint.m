@@ -44,6 +44,19 @@
 }
 
 /**
+ * Creates a Breakpoint from the values of an NSDictionary
+ */
+- (id)initWithDictionary:(NSDictionary *)dict
+{
+	if (self = [super init])
+	{
+		file = [dict valueForKey:@"file"];
+		line = [[dict valueForKey:@"line"] intValue];
+	}
+	return self;
+}
+
+/**
  * Determines if two breakpoints are equal
  */
 - (BOOL)isEqual:(id)obj
@@ -57,6 +70,14 @@
 - (NSUInteger)hash
 {
 	return ([file hash] << 8) + line;
+}
+
+/**
+ * Returns an NSDictionary of the data so it can be stored in NSUserDefaults
+ */
+- (NSDictionary *)dictionary
+{
+	return [NSDictionary dictionaryWithObjectsAndKeys:file, @"file", [NSNumber numberWithInt:line], @"line", nil];
 }
 
 /**

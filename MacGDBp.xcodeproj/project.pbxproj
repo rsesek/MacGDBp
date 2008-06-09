@@ -11,12 +11,11 @@
 		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
 		1E027F390D36F60800885DEE /* Reconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F380D36F60800885DEE /* Reconnect.png */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
-		1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */; };
 		1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerConnection.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerWindowController.m */; };
+		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
 		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
-		1E416FF80D36F821009A53A2 /* Connect.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF40D36F821009A53A2 /* Connect.xib */; };
 		1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF60D36F821009A53A2 /* MainMenu.xib */; };
 		1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
 		1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.m */; };
@@ -30,6 +29,7 @@
 		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
 		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
+		1EFF70C30DFDC018006B9D33 /* BreakpointWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -44,17 +44,15 @@
 		1E027F380D36F60800885DEE /* Reconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Reconnect.png; path = Icons/Reconnect.png; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
-		1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConnectWindowController.h; path = Source/ConnectWindowController.h; sourceTree = "<group>"; };
-		1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConnectWindowController.m; path = Source/ConnectWindowController.m; sourceTree = "<group>"; };
 		1E02C56F0C610158006F1752 /* DebuggerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerConnection.h; path = Source/DebuggerConnection.h; sourceTree = "<group>"; };
 		1E02C5700C610158006F1752 /* DebuggerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerConnection.m; path = Source/DebuggerConnection.m; sourceTree = "<group>"; };
 		1E02C5F40C610724006F1752 /* DebuggerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerWindowController.h; path = Source/DebuggerWindowController.h; sourceTree = "<group>"; };
 		1E02C5F50C610724006F1752 /* DebuggerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerWindowController.m; path = Source/DebuggerWindowController.m; sourceTree = "<group>"; };
+		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
 		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
 		1E35FEA00C6599040030F527 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Source/base64.c; sourceTree = "<group>"; };
 		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
-		1E416FF50D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Connect.xib; sourceTree = "<group>"; };
 		1E416FF70D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointManager.h; path = Source/BreakpointManager.h; sourceTree = "<group>"; };
 		1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointManager.m; path = Source/BreakpointManager.m; sourceTree = "<group>"; };
@@ -75,6 +73,8 @@
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
 		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
 		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
+		1EFF70C10DFDC018006B9D33 /* BreakpointWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointWindowController.h; path = Source/BreakpointWindowController.h; sourceTree = "<group>"; };
+		1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointWindowController.m; path = Source/BreakpointWindowController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -100,22 +100,8 @@
 			children = (
 				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
-				1E02C4060C60EF3F006F1752 /* ConnectWindowController.h */,
-				1E02C4070C60EF3F006F1752 /* ConnectWindowController.m */,
-				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
-				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
-				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
-				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
-				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
-				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
-				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
-				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
-				1E822CDB0DA28AC30027A23F /* Breakpoint.h */,
-				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
-				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
-				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
+				1E1E52C10DF9B1FB00D334F9 /* Connection */,
+				1E1E52C00DF9B1E700D334F9 /* Breakpoints */,
 				1E71886C0D839F6C00969277 /* Source View */,
 			);
 			name = Classes;
@@ -159,12 +145,40 @@
 			name = "Toolbar Icons";
 			sourceTree = "<group>";
 		};
+		1E1E52C00DF9B1E700D334F9 /* Breakpoints */ = {
+			isa = PBXGroup;
+			children = (
+				1E822CDB0DA28AC30027A23F /* Breakpoint.h */,
+				1E822CDC0DA28AC30027A23F /* Breakpoint.m */,
+				1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */,
+				1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */,
+				1EFF70C10DFDC018006B9D33 /* BreakpointWindowController.h */,
+				1EFF70C20DFDC018006B9D33 /* BreakpointWindowController.m */,
+			);
+			name = Breakpoints;
+			sourceTree = "<group>";
+		};
+		1E1E52C10DF9B1FB00D334F9 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
+				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
+				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
+				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
+				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
+				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
+				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
+			);
+			name = Connection;
+			sourceTree = "<group>";
+		};
 		1E416FFB0D36F827009A53A2 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
 				1EEBFBE30D34C793008F835B /* Debugger.xib */,
-				1E416FF40D36F821009A53A2 /* Connect.xib */,
 				1E416FF60D36F821009A53A2 /* MainMenu.xib */,
+				1E1E53010DF9B89800D334F9 /* Breakpoints.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -172,6 +186,8 @@
 		1E71886C0D839F6C00969277 /* Source View */ = {
 			isa = PBXGroup;
 			children = (
+				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
+				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 				1E7188620D839F6300969277 /* BSLineNumberView.h */,
 				1E7188630D839F6300969277 /* BSLineNumberView.m */,
 				1E7188640D839F6300969277 /* BSSourceView.h */,
@@ -279,9 +295,9 @@
 				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
 				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
 				1E027F390D36F60800885DEE /* Reconnect.png in Resources */,
-				1E416FF80D36F821009A53A2 /* Connect.xib in Resources */,
 				1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */,
 				1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */,
+				1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +326,6 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */,
-				1E02C4080C60EF3F006F1752 /* ConnectWindowController.m in Sources */,
 				1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */,
 				1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */,
 				1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */,
@@ -322,6 +337,7 @@
 				1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
+				1EFF70C30DFDC018006B9D33 /* BreakpointWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,12 +352,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		1E416FF40D36F821009A53A2 /* Connect.xib */ = {
+		1E1E53010DF9B89800D334F9 /* Breakpoints.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E416FF50D36F821009A53A2 /* English */,
+				1E1E53020DF9B89800D334F9 /* English */,
 			);
-			name = Connect.xib;
+			name = Breakpoints.xib;
 			sourceTree = "<group>";
 		};
 		1E416FF60D36F821009A53A2 /* MainMenu.xib */ = {
@@ -410,6 +426,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;

@@ -20,7 +20,7 @@
 @interface DebuggerConnection (Private)
 
 - (NSString *)createCommand:(NSString *)cmd;
-- (NSXMLDocument *)processData:(NSData *)data;
+- (NSXMLDocument *)processData:(NSString *)data;
 
 @end
 
@@ -135,6 +135,7 @@
 - (void)run
 {
 	[socket send:[self createCommand:@"run"]];
+	[socket receive];
 	[self refreshStatus];
 }
 
@@ -280,9 +281,17 @@
 /**
  * Helper function to parse the NSData into an NSXMLDocument
  */
-- (NSXMLDocument *)processData:(NSData *)data
+- (NSXMLDocument *)processData:(NSString *)data
 {
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:NSXMLDocumentTidyXML error:nil];
+	NSError *parseError = nil;
+	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
+	if (parseError)
+	{
+		NSLog(@"Could not parse XML? --- %@", parseError);
+		NSLog(@"Error UserInfo: %@", [parseError userInfo]);
+		NSLog(@"This is the XML Document: %@", data);
+		return nil;
+	}
 	
 	// check and see if there's an error
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];

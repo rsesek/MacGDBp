@@ -24,6 +24,7 @@
 	
 	int port;
 	int sock;
+	NSString *hostname;
 	
 	id delegate;
 }
@@ -35,7 +36,7 @@
 
 - (void)connect;
 - (void)close;
-- (NSData *)receive;
+- (NSString *)receive;
 - (BOOL)send:(NSString *)data;
 
 - (NSString *)remoteHost;

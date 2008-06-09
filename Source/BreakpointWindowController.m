@@ -14,34 +14,17 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "ConnectWindowController.h"
-#import "DebuggerWindowController.h"
-#import "AppDelegate.h"
+#import "BreakpointWindowController.h"
 
-static id instance = nil;
 
-@implementation ConnectWindowController
+@implementation BreakpointWindowController
 
-/**
- * Creates a shared controller that can be accessed statically
- */
-+ (id)sharedController
+- (id)init
 {
-	if (!instance)
+	if (self = [super initWithWindowNibName:@"Breakpoints"])
 	{
-		instance = [[ConnectWindowController alloc] initWithWindowNibName:@"Connect"];
-		[instance window];
 	}
-	return instance;
-}
-
-/**
- * Creates a new DebuggerConnection object (and then completely forgets about it) and then close the window
- */
-- (IBAction)connect:(id)sender
-{
-	[[[DebuggerWindowController alloc] initWithPort:[port intValue] session:[session stringValue]] autorelease];
-	[[self window] orderOut:self];
+	return self;
 }
 
 @end

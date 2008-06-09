@@ -15,12 +15,16 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerConnection.h"
+#import "DebuggerWindowController.h"
+#import "BreakpointWindowController.h"
 
 @interface AppDelegate : NSObject
 {
+	DebuggerWindowController *debugger;
+	BreakpointWindowController *breakpoint;
 }
 
-- (IBAction)showConnectionWindow:(id)sender;
+- (IBAction)showDebuggerWindow:(id)sender;
+- (IBAction)showBreakpointWindow:(id)sender;
 
 @end

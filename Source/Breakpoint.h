@@ -29,5 +29,8 @@
 @property(readwrite, assign) int debuggerId;
 
 - (id)initWithLine:(int)l inFile:(NSString *)f;
+- (id)initWithDictionary:(NSDictionary *)dict;
+
+- (NSDictionary *)dictionary;
 
 @end
