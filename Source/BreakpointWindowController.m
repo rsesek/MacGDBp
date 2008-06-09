@@ -19,4 +19,12 @@
 
 @implementation BreakpointWindowController
 
+- (id)init
+{
+	if (self = [super initWithWindowNibName:@"Breakpoints"])
+	{
+	}
+	return self;
+}
+
 @end

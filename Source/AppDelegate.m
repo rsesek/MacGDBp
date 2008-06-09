@@ -37,6 +37,7 @@
 {
 	// TODO: use preference values
 	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
+	breakpoint = [[BreakpointWindowController alloc] init];
 }
 
 /**
