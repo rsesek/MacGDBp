@@ -45,6 +45,7 @@
 	{
 		[file release];
 	}
+	[super dealloc];
 }
 
 /**
