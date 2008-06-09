@@ -13,6 +13,7 @@
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerConnection.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerWindowController.m */; };
+		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
 		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
 		1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF60D36F821009A53A2 /* MainMenu.xib */; };
@@ -46,6 +47,7 @@
 		1E02C5700C610158006F1752 /* DebuggerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerConnection.m; path = Source/DebuggerConnection.m; sourceTree = "<group>"; };
 		1E02C5F40C610724006F1752 /* DebuggerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerWindowController.h; path = Source/DebuggerWindowController.h; sourceTree = "<group>"; };
 		1E02C5F50C610724006F1752 /* DebuggerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerWindowController.m; path = Source/DebuggerWindowController.m; sourceTree = "<group>"; };
+		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
 		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
 		1E35FEA00C6599040030F527 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Source/base64.c; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			children = (
 				1EEBFBE30D34C793008F835B /* Debugger.xib */,
 				1E416FF60D36F821009A53A2 /* MainMenu.xib */,
+				1E1E53010DF9B89800D334F9 /* Breakpoints.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				1E027F390D36F60800885DEE /* Reconnect.png in Resources */,
 				1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */,
 				1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */,
+				1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +344,14 @@
 				089C165DFE840E0CC02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1E1E53010DF9B89800D334F9 /* Breakpoints.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E1E53020DF9B89800D334F9 /* English */,
+			);
+			name = Breakpoints.xib;
 			sourceTree = "<group>";
 		};
 		1E416FF60D36F821009A53A2 /* MainMenu.xib */ = {
