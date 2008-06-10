@@ -27,7 +27,7 @@
 	{
 		if (!breakpoints)
 		{
-			breakpoints = [[NSMutableDictionary alloc] init];
+			breakpoints = [[NSMutableArray alloc] init];
 		}
 	}
 	return self;
@@ -47,19 +47,21 @@
 }
 
 /**
+ * Returns an array of all the breakpoints
+ */
+- (NSArray *)breakpoints
+{
+	return breakpoints;
+}
+
+/**
  * Registers a breakpoint at a given line
  */
 - (void)addBreakpoint:(Breakpoint *)bp;
 {
-	NSMutableSet *lines = [breakpoints valueForKey:[bp file]];
-	if (lines == nil)
+	if (![breakpoints containsObject:bp])
 	{
-		lines = [NSMutableSet setWithObject:bp];
-		[breakpoints setValue:lines forKey:[bp file]];
-	}
-	else
-	{
-		[lines addObject:bp];
+		[breakpoints addObject:bp];
 	}
 }
 
@@ -68,12 +70,11 @@
  */
 - (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file
 {
-	NSMutableSet *lines = [breakpoints valueForKey:file];
-	for (Breakpoint *b in lines)
+	for (Breakpoint *b in breakpoints)
 	{
-		if ([b line] == line)
+		if ([b line] == line && [[b file] isEqualToString:file])
 		{
-			[lines removeObject:b];
+			[breakpoints removeObject:b];
 			return b;
 		}
 	}
@@ -83,9 +84,18 @@
 /**
  * Returns all the breakpoints for a given file
  */
-- (NSSet *)breakpointsForFile:(NSString *)file
+- (NSArray *)breakpointsForFile:(NSString *)file
 {
-	return [breakpoints valueForKey:file];
+	NSMutableArray *matches = [NSMutableArray array];
+	for (Breakpoint *b in breakpoints)
+	{
+		if ([[b file] isEqualToString:file])
+		{
+			[matches addObject:b];
+		}
+	}
+	
+	return matches;
 }
 
 /**
@@ -93,19 +103,7 @@
  */
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file
 {
-	NSSet *lines = [breakpoints valueForKey:file];
-	if (!lines)
-	{
-		return NO;
-	}
-	for (Breakpoint *b in lines)
-	{
-		if ([b line] == line)
-		{
-			return YES;
-		}
-	}
-	return NO;
+	return [breakpoints containsObject:[[Breakpoint alloc] initWithLine:line inFile:file]];
 }
 
 @end
