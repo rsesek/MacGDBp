@@ -26,6 +26,7 @@
 {
 	if (self = [super initWithWindowNibName:@"Breakpoints"])
 	{
+		manager = [BreakpointManager sharedManager];
 	}
 	return self;
 }

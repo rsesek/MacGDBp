@@ -15,11 +15,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-
+#import "BreakpointManager.h"
 
 @interface BreakpointWindowController : NSWindowController
 {
-
+	BreakpointManager *manager;
 }
 
 @end
