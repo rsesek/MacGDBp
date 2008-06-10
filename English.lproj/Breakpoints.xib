@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="17"/>
+			<integer value="4"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -70,26 +70,26 @@
 														<object class="NSTableView" id="648662165">
 															<reference key="NSNextResponder" ref="964101476"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{557, 206}</string>
+															<string key="NSFrameSize">{572, 221}</string>
 															<reference key="NSSuperview" ref="964101476"/>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTableHeaderView" key="NSHeaderView" id="16968523">
 																<reference key="NSNextResponder" ref="711703684"/>
 																<int key="NSvFlags">256</int>
-																<string key="NSFrameSize">{557, 17}</string>
+																<string key="NSFrameSize">{572, 17}</string>
 																<reference key="NSSuperview" ref="711703684"/>
 																<reference key="NSTableView" ref="648662165"/>
 															</object>
 															<object class="_NSCornerView" key="NSCornerView" id="805032486">
 																<reference key="NSNextResponder" ref="1032919841"/>
-																<int key="NSvFlags">256</int>
-																<string key="NSFrame">{{558, 0}, {16, 17}}</string>
+																<int key="NSvFlags">-2147483392</int>
+																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
 																<reference key="NSSuperview" ref="1032919841"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSTableColumn" id="933403931">
-																	<double key="NSWidth">4.400000e+02</double>
+																	<double key="NSWidth">4.480000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -147,7 +147,7 @@
 																	<reference key="NSTableView" ref="648662165"/>
 																</object>
 																<object class="NSTableColumn" id="655432044">
-																	<double key="NSWidth">1.110000e+02</double>
+																	<double key="NSWidth">1.180000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -196,16 +196,15 @@
 															<bool key="NSAllowsTypeSelect">YES</bool>
 														</object>
 													</object>
-													<string key="NSFrame">{{1, 17}, {557, 206}}</string>
+													<string key="NSFrame">{{1, 17}, {572, 221}}</string>
 													<reference key="NSSuperview" ref="1032919841"/>
-													<reference key="NSNextKeyView" ref="648662165"/>
 													<reference key="NSDocView" ref="648662165"/>
 													<reference key="NSBGColor" ref="748394096"/>
 													<int key="NScvFlags">4</int>
 												</object>
 												<object class="NSScroller" id="41705969">
 													<reference key="NSNextResponder" ref="1032919841"/>
-													<int key="NSvFlags">256</int>
+													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{558, 17}, {15, 206}}</string>
 													<reference key="NSSuperview" ref="1032919841"/>
 													<reference key="NSTarget" ref="1032919841"/>
@@ -215,7 +214,7 @@
 												</object>
 												<object class="NSScroller" id="482903220">
 													<reference key="NSNextResponder" ref="1032919841"/>
-													<int key="NSvFlags">256</int>
+													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{1, 223}, {557, 15}}</string>
 													<reference key="NSSuperview" ref="1032919841"/>
 													<int key="NSsFlags">1</int>
@@ -230,9 +229,8 @@
 														<bool key="EncodedWithXMLCoder">YES</bool>
 														<reference ref="16968523"/>
 													</object>
-													<string key="NSFrame">{{1, 0}, {557, 17}}</string>
+													<string key="NSFrame">{{1, 0}, {572, 17}}</string>
 													<reference key="NSSuperview" ref="1032919841"/>
-													<reference key="NSNextKeyView" ref="16968523"/>
 													<reference key="NSDocView" ref="16968523"/>
 													<reference key="NSBGColor" ref="748394096"/>
 													<int key="NScvFlags">4</int>
@@ -241,8 +239,7 @@
 											</object>
 											<string key="NSFrame">{{0, 19}, {574, 239}}</string>
 											<reference key="NSSuperview" ref="534597888"/>
-											<reference key="NSNextKeyView" ref="964101476"/>
-											<int key="NSsFlags">50</int>
+											<int key="NSsFlags">562</int>
 											<reference key="NSVScroller" ref="41705969"/>
 											<reference key="NSHScroller" ref="482903220"/>
 											<reference key="NSContentView" ref="964101476"/>
@@ -314,7 +311,7 @@
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
-			<object class="NSArrayController" id="157045375">
+			<object class="NSArrayController" id="304908911">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>file</string>
@@ -360,10 +357,10 @@
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">contentArray: manager.breakpoints</string>
-						<reference key="source" ref="157045375"/>
+						<reference key="source" ref="304908911"/>
 						<reference key="destination" ref="1001"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="157045375"/>
+							<reference key="NSSource" ref="304908911"/>
 							<reference key="NSDestination" ref="1001"/>
 							<string key="NSLabel">contentArray: manager.breakpoints</string>
 							<string key="NSBinding">contentArray</string>
@@ -376,7 +373,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">content</string>
-						<reference key="source" ref="157045375"/>
+						<reference key="source" ref="304908911"/>
 						<reference key="destination" ref="1001"/>
 					</object>
 					<int key="connectionID">34</int>
@@ -385,7 +382,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">arrayController</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="157045375"/>
+						<reference key="destination" ref="304908911"/>
 					</object>
 					<int key="connectionID">35</int>
 				</object>
@@ -393,10 +390,10 @@
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.file</string>
 						<reference key="source" ref="933403931"/>
-						<reference key="destination" ref="157045375"/>
+						<reference key="destination" ref="304908911"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="933403931"/>
-							<reference key="NSDestination" ref="157045375"/>
+							<reference key="NSDestination" ref="304908911"/>
 							<string key="NSLabel">value: arrangedObjects.file</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">arrangedObjects.file</string>
@@ -409,10 +406,10 @@
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.line</string>
 						<reference key="source" ref="655432044"/>
-						<reference key="destination" ref="157045375"/>
+						<reference key="destination" ref="304908911"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="655432044"/>
-							<reference key="NSDestination" ref="157045375"/>
+							<reference key="NSDestination" ref="304908911"/>
 							<string key="NSLabel">value: arrangedObjects.line</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">arrangedObjects.line</string>
@@ -601,7 +598,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">28</int>
-						<reference key="object" ref="157045375"/>
+						<reference key="object" ref="304908911"/>
 						<reference key="parent" ref="1002"/>
 					</object>
 				</object>
