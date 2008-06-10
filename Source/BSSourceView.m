@@ -94,9 +94,10 @@
 	scrollView = [[NSScrollView alloc] initWithFrame:scrollFrame];
 	[scrollView setHasHorizontalScroller:YES];
 	[scrollView setHasVerticalScroller:YES];
+	[scrollView setAutohidesScrollers:YES];
 	[scrollView setBorderType:NSBezelBorder];
 	[scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
-    [[scrollView contentView] setAutoresizesSubviews:YES];
+	[[scrollView contentView] setAutoresizesSubviews:YES];
 	[self addSubview:scrollView];
 	
 	// add the text view to the scroll view
