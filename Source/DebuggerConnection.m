@@ -18,10 +18,8 @@
 #import "AppDelegate.h"
 
 @interface DebuggerConnection (Private)
-
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
-
 @end
 
 @implementation DebuggerConnection
@@ -46,6 +44,8 @@
 		socket = [[SocketWrapper alloc] initWithConnection:self];
 		[socket setDelegate:self];
 		[socket connect];
+		
+		[[BreakpointManager sharedManager] setConnection:self];
 	}
 	return self;
 }
