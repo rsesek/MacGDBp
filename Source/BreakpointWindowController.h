@@ -20,6 +20,7 @@
 @interface BreakpointWindowController : NSWindowController
 {
 	BreakpointManager *manager;
+	IBOutlet NSArrayController *arrayController;
 }
 
 - (IBAction)addBreakpoint:(id)sender;
