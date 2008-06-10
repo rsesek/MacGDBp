@@ -18,6 +18,8 @@
 
 @implementation BreakpointManager
 
+@synthesize breakpoints, connection;
+
 /**
  * Initializer
  */
@@ -44,14 +46,6 @@
 		manager = [[BreakpointManager alloc] init];
 	}
 	return manager;
-}
-
-/**
- * Returns an array of all the breakpoints
- */
-- (NSArray *)breakpoints
-{
-	return breakpoints;
 }
 
 /**
