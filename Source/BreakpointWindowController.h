@@ -16,11 +16,14 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BreakpointManager.h"
+#import "BSSourceView.h"
 
 @interface BreakpointWindowController : NSWindowController
 {
 	BreakpointManager *manager;
+	
 	IBOutlet NSArrayController *arrayController;
+	IBOutlet BSSourceView *sourceView;
 }
 
 - (IBAction)addBreakpoint:(id)sender;

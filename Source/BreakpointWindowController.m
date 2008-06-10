@@ -38,7 +38,14 @@
  */
 - (IBAction)addBreakpoint:(id)sender
 {
+	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	
+	if ([panel runModal] != NSOKButton)
+	{
+		return;
+	}
+	
+	[sourceView setFile:[panel filename]];
 }
 
 /**
@@ -47,6 +54,27 @@
 - (IBAction)removeBreakpoint:(id)sender
 {
 	
+}
+
+#pragma mark BSSourceView Delegate
+
+/**
+ * The gutter was clicked, which indicates that a breakpoint needs to be changed
+ */
+- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+{
+	if ([manager hasBreakpointAt:line inFile:file])
+	{
+		[manager removeBreakpointAt:line inFile:file];
+	}
+	else
+	{
+		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+		[manager addBreakpoint:bp];
+	}
+	
+	[[sourceView numberView] setMarkers:[manager breakpointsForFile:file]];
+	[[sourceView numberView] setNeedsDisplay:YES];
 }
 
 @end

@@ -314,7 +314,7 @@
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 			</object>
-			<object class="NSArrayController" id="875896845">
+			<object class="NSArrayController" id="157045375">
 				<object class="NSMutableArray" key="NSDeclaredKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>file</string>
@@ -360,10 +360,10 @@
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">contentArray: manager.breakpoints</string>
-						<reference key="source" ref="875896845"/>
+						<reference key="source" ref="157045375"/>
 						<reference key="destination" ref="1001"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="875896845"/>
+							<reference key="NSSource" ref="157045375"/>
 							<reference key="NSDestination" ref="1001"/>
 							<string key="NSLabel">contentArray: manager.breakpoints</string>
 							<string key="NSBinding">contentArray</string>
@@ -376,7 +376,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">content</string>
-						<reference key="source" ref="875896845"/>
+						<reference key="source" ref="157045375"/>
 						<reference key="destination" ref="1001"/>
 					</object>
 					<int key="connectionID">34</int>
@@ -385,7 +385,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">arrayController</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="875896845"/>
+						<reference key="destination" ref="157045375"/>
 					</object>
 					<int key="connectionID">35</int>
 				</object>
@@ -393,10 +393,10 @@
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.file</string>
 						<reference key="source" ref="933403931"/>
-						<reference key="destination" ref="875896845"/>
+						<reference key="destination" ref="157045375"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="933403931"/>
-							<reference key="NSDestination" ref="875896845"/>
+							<reference key="NSDestination" ref="157045375"/>
 							<string key="NSLabel">value: arrangedObjects.file</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">arrangedObjects.file</string>
@@ -409,10 +409,10 @@
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: arrangedObjects.line</string>
 						<reference key="source" ref="655432044"/>
-						<reference key="destination" ref="875896845"/>
+						<reference key="destination" ref="157045375"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="655432044"/>
-							<reference key="NSDestination" ref="875896845"/>
+							<reference key="NSDestination" ref="157045375"/>
 							<string key="NSLabel">value: arrangedObjects.line</string>
 							<string key="NSBinding">value</string>
 							<string key="NSKeyPath">arrangedObjects.line</string>
@@ -420,6 +420,14 @@
 						</object>
 					</object>
 					<int key="connectionID">39</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sourceView</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="405295650"/>
+					</object>
+					<int key="connectionID">40</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -593,7 +601,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">28</int>
-						<reference key="object" ref="875896845"/>
+						<reference key="object" ref="157045375"/>
 						<reference key="parent" ref="1002"/>
 					</object>
 				</object>
@@ -683,7 +691,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">39</int>
+			<int key="maxID">40</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -725,8 +733,17 @@
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">arrayController</string>
-						<string key="NS.object.0">NSArrayController</string>
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSMutableArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>arrayController</string>
+							<string>sourceView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSArrayController</string>
+							<string>BSSourceView</string>
+						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
