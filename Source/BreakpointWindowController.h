@@ -22,4 +22,7 @@
 	BreakpointManager *manager;
 }
 
+- (IBAction)addBreakpoint:(id)sender;
+- (IBAction)removeBreakpoint:(id)sender;
+
 @end

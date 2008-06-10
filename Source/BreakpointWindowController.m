@@ -31,4 +31,22 @@
 	return self;
 }
 
+
+/**
+ * Adds a breakpoint by calling up a file chooser and selecting a file for
+ * breaking in
+ */
+- (IBAction)addBreakpoint:(id)sender
+{
+	
+}
+
+/**
+ * Removes a breakpoint
+ */
+- (IBAction)removeBreakpoint:(id)sender
+{
+	
+}
+
 @end
