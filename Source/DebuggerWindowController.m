@@ -276,7 +276,7 @@
 	for (NSXMLNode *child in children)
 	{
 		NSTreeNode *newChild = [[NSTreeNode alloc] initWithRepresentedObject:child];
-		[registerController insertObject:child atArrangedObjectIndexPath:[ip indexPathByAddingIndex:0]];
+		[registerController insertObject:child atArrangedObjectIndexPath:[ip indexPathByAddingIndex:i]];
 		i++;
 		[newChild release];
 	}
