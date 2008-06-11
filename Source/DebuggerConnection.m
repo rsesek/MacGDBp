@@ -242,6 +242,11 @@
  */
 - (void)addBreakpoint:(Breakpoint *)bp
 {
+	if (!connected)
+	{
+		return;
+	}
+	
 	NSString *cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", [bp file], [bp line]]];
 	[socket send:cmd];
 	NSXMLDocument *info = [self processData:[socket receive]];
@@ -253,6 +258,11 @@
  */
 - (void)removeBreakpoint:(Breakpoint *)bp
 {
+	if (!connected)
+	{
+		return;
+	}
+	
 	[socket send:[self createCommand:[NSString stringWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]]]];
 	[socket receive];
 }
