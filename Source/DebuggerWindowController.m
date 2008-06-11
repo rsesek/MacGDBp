@@ -297,7 +297,7 @@
 		[mngr addBreakpoint:bp];
 	}
 	
-	[[sourceViewer numberView] setMarkers:[mngr breakpointsForFile:file]];
+	[[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
 	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 
