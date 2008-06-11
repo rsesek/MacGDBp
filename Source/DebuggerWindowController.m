@@ -269,15 +269,13 @@
  */
 - (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node
 {
-	[[node mutableChildNodes] removeAllObjects];
-	NSIndexPath *ip = [node indexPath];
-	int i;
+	NSMutableArray *childNodes = [node mutableChildNodes];
+	[childNodes removeAllObjects];
 	
 	for (NSXMLNode *child in children)
 	{
 		NSTreeNode *newChild = [[NSTreeNode alloc] initWithRepresentedObject:child];
-		[registerController insertObject:child atArrangedObjectIndexPath:[ip indexPathByAddingIndex:i]];
-		i++;
+		[childNodes addObject:newChild];
 		[newChild release];
 	}
 	
