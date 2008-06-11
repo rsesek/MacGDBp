@@ -73,7 +73,7 @@
 		[manager addBreakpoint:bp];
 	}
 	
-	[[sourceView numberView] setMarkers:[manager breakpointsForFile:file]];
+	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
 	[[sourceView numberView] setNeedsDisplay:YES];
 }
 
