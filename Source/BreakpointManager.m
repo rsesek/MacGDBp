@@ -56,6 +56,7 @@
 	if (![breakpoints containsObject:bp])
 	{
 		[breakpoints addObject:bp];
+		[connection addBreakpoint:bp];
 	}
 }
 
@@ -69,6 +70,7 @@
 		if ([b line] == line && [[b file] isEqualToString:file])
 		{
 			[breakpoints removeObject:b];
+			[connection removeBreakpoint:b];
 			return b;
 		}
 	}

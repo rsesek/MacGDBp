@@ -289,13 +289,12 @@
 	
 	if ([mngr hasBreakpointAt:line inFile:file])
 	{
-		[connection removeBreakpoint:[mngr removeBreakpointAt:line inFile:file]];
+		[mngr removeBreakpointAt:line inFile:file];
 	}
 	else
 	{
 		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[mngr addBreakpoint:bp];
-		[connection addBreakpoint:bp];
 	}
 	
 	[[sourceViewer numberView] setMarkers:[mngr breakpointsForFile:file]];
