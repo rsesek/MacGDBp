@@ -24,6 +24,9 @@
 	BreakpointWindowController *breakpoint;
 }
 
+@property(readonly) DebuggerWindowController *debugger;
+@property(readonly) BreakpointWindowController *breakpoint;
+
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;
 

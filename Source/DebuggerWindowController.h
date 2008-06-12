@@ -53,8 +53,6 @@
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
 
-- (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node;
-
 - (IBAction)run:(id)sender;
 - (IBAction)stepIn:(id)sender;
 - (IBAction)stepOut:(id)sender;

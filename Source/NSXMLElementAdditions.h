@@ -23,5 +23,6 @@
 - (BOOL)isLeaf;
 - (NSString *)value;
 - (NSString *)type;
+- (NSArray *)subnodes;
 
 @end

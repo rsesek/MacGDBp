@@ -16,6 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 #include "base64.h"
+#import "AppDelegate.h"
 
 @implementation NSXMLElement (NSXMLElementAdditions)
 
@@ -41,6 +42,19 @@
 - (BOOL)isLeaf
 {
 	return ([[[self attributeForName:@"children"] stringValue] intValue] == 0);
+}
+
+/**
+ * Override children so we can fetch more depth as needed
+ */
+- (NSArray *)subnodes
+{
+	NSArray *children = [self children];
+	if (![self isLeaf] && [children count] < 1)
+	{
+		return [[[(AppDelegate *)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
+	}
+	return children;
 }
 
 /**

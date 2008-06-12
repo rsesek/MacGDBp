@@ -18,6 +18,8 @@
 
 @implementation AppDelegate
 
+@synthesize debugger, breakpoint;
+
 /**
  * Initializes
  */

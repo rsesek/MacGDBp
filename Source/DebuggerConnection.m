@@ -214,7 +214,7 @@
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */
-- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)node
+- (NSArray *)getProperty:(NSString *)property
 {
 	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
 	
@@ -232,7 +232,7 @@
 	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
 	NSArray *children = [parent children];
 	[parent setChildren:nil];
-	[windowController addChildren:children toNode:node];
+	return children;
 }
 
 #pragma mark Breakpoints
