@@ -96,6 +96,12 @@
 	connected = YES;
 	[socket receive];
 	[self refreshStatus];
+	
+	// register any breakpoints that exist offline
+	for (Breakpoint *bp in [[BreakpointManager sharedManager] breakpoints])
+	{
+		[self addBreakpoint:bp];
+	}
 }
 
 /**
