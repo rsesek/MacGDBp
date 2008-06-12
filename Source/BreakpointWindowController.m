@@ -55,7 +55,13 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
-	Breakpoint *bp = [[arrayController selectedObjects] objectAtIndex:0];
+	NSArray *selection = [arrayController selectedObjects];
+	if ([selection count] < 1)
+	{
+		return;
+	}
+	
+	Breakpoint *bp = [selection objectAtIndex:0];
 	[manager removeBreakpointAt:[bp line] inFile:[bp file]];
 }
 
