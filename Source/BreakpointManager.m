@@ -15,6 +15,11 @@
  */
 
 #import "BreakpointManager.h"
+#import "AppDelegate.h"
+
+@interface BreakpointManager (Private)
+- (void)updateDisplaysForFile:(NSString *)file;
+@end
 
 @implementation BreakpointManager
 
@@ -57,6 +62,8 @@
 	{
 		[breakpoints addObject:bp];
 		[connection addBreakpoint:bp];
+		
+		[self updateDisplaysForFile:[bp file]];
 	}
 }
 
@@ -71,6 +78,7 @@
 		{
 			[breakpoints removeObject:b];
 			[connection removeBreakpoint:b];
+			[self updateDisplaysForFile:file];
 			return b;
 		}
 	}
@@ -100,6 +108,22 @@
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file
 {
 	return [breakpoints containsObject:[[Breakpoint alloc] initWithLine:line inFile:file]];
+}
+
+#pragma mark Private
+
+/**
+ * This marks BSSourceView needsDisplay, rearranges the objects in the breakpoints controller,
+ * and sets the markers for the BSLineNumberView
+ */
+- (void)updateDisplaysForFile:(NSString *)file
+{
+	AppDelegate *appDel = [NSApp delegate];
+	[[[appDel breakpoint] arrayController] rearrangeObjects];
+	[[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
+	[[[[appDel breakpoint] sourceView] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+	[[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
+	[[[[appDel debugger] sourceViewer] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
 }
 
 @end

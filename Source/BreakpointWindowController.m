@@ -15,9 +15,12 @@
  */
 
 #import "BreakpointWindowController.h"
+#import "AppDelegate.h"
 
 
 @implementation BreakpointWindowController
+
+@synthesize sourceView, arrayController;
 
 /**
  * Constructor
@@ -30,7 +33,6 @@
 	}
 	return self;
 }
-
 
 /**
  * Adds a breakpoint by calling up a file chooser and selecting a file for
@@ -53,7 +55,28 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
+	Breakpoint *bp = [[arrayController selectedObjects] objectAtIndex:0];
+	[manager removeBreakpointAt:[bp line] inFile:[bp file]];
+}
+
+#pragma mark NSTableView Delegate
+
+/**
+ * NSTableView delegate method that informs the controller that the stack selection did change and that
+ * we should update the source viewer
+ */
+- (void)tableViewSelectionDidChange:(NSNotification *)notif
+{
+	NSArray *selection = [arrayController selectedObjects];
+	if ([selection count] < 1)
+	{
+		return;
+	}
 	
+	Breakpoint *bp = [selection objectAtIndex:0];
+	[sourceView setFile:[bp file]];
+	[sourceView scrollToLine:[bp line]];
+	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
 }
 
 #pragma mark BSSourceView Delegate

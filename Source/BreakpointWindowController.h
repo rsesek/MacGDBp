@@ -26,6 +26,9 @@
 	IBOutlet BSSourceView *sourceView;
 }
 
+@property(readonly) BSSourceView *sourceView;
+@property(readonly) NSArrayController *arrayController;
+
 - (IBAction)addBreakpoint:(id)sender;
 - (IBAction)removeBreakpoint:(id)sender;
 

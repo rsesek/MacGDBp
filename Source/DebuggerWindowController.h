@@ -43,6 +43,7 @@
 }
 
 @property(readonly) DebuggerConnection *connection;
+@property(readonly) BSSourceView *sourceViewer;
 
 - (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
