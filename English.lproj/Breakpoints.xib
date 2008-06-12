@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="10"/>
+			<integer value="13"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -83,13 +83,13 @@
 															<object class="_NSCornerView" key="NSCornerView" id="805032486">
 																<reference key="NSNextResponder" ref="1032919841"/>
 																<int key="NSvFlags">-2147483392</int>
-																<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
+																<string key="NSFrame">{{558, 0}, {16, 17}}</string>
 																<reference key="NSSuperview" ref="1032919841"/>
 															</object>
 															<object class="NSMutableArray" key="NSTableColumns">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSTableColumn" id="933403931">
-																	<double key="NSWidth">4.480000e+02</double>
+																	<double key="NSWidth">4.250000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -119,10 +119,10 @@
 																		<int key="NSCellFlags">337772096</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
-																		<object class="NSFont" key="NSSupport" id="682372239">
+																		<object class="NSFont" key="NSSupport" id="174258985">
 																			<string key="NSName">LucidaGrande</string>
-																			<double key="NSSize">1.300000e+01</double>
-																			<int key="NSfFlags">1044</int>
+																			<double key="NSSize">1.100000e+01</double>
+																			<int key="NSfFlags">16</int>
 																		</object>
 																		<reference key="NSControlView" ref="648662165"/>
 																		<object class="NSColor" key="NSBackgroundColor" id="748394096">
@@ -147,7 +147,7 @@
 																	<reference key="NSTableView" ref="648662165"/>
 																</object>
 																<object class="NSTableColumn" id="655432044">
-																	<double key="NSWidth">1.180000e+02</double>
+																	<double key="NSWidth">1.410000e+02</double>
 																	<double key="NSMinWidth">4.000000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -162,7 +162,7 @@
 																		<int key="NSCellFlags">337772096</int>
 																		<int key="NSCellFlags2">2048</int>
 																		<string key="NSContents">Text Cell</string>
-																		<reference key="NSSupport" ref="682372239"/>
+																		<reference key="NSSupport" ref="174258985"/>
 																		<reference key="NSControlView" ref="648662165"/>
 																		<reference key="NSBackgroundColor" ref="748394096"/>
 																		<reference key="NSTextColor" ref="988435446"/>
@@ -210,8 +210,7 @@
 													<reference key="NSSuperview" ref="1032919841"/>
 													<reference key="NSTarget" ref="1032919841"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">3.700000e+01</double>
-													<double key="NSPercent">1.947368e-01</double>
+													<double key="NSPercent">9.321267e-01</double>
 												</object>
 												<object class="NSScroller" id="482903220">
 													<reference key="NSNextResponder" ref="1032919841"/>
@@ -221,7 +220,7 @@
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="1032919841"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSPercent">9.982079e-01</double>
+													<double key="NSPercent">9.982548e-01</double>
 												</object>
 												<object class="NSClipView" id="711703684">
 													<reference key="NSNextResponder" ref="1032919841"/>
@@ -260,7 +259,11 @@
 												<int key="NSCellFlags">-2080244224</int>
 												<int key="NSCellFlags2">134217728</int>
 												<string key="NSContents"/>
-												<reference key="NSSupport" ref="682372239"/>
+												<object class="NSFont" key="NSSupport" id="682372239">
+													<string key="NSName">LucidaGrande</string>
+													<double key="NSSize">1.300000e+01</double>
+													<int key="NSfFlags">1044</int>
+												</object>
 												<reference key="NSControlView" ref="608710049"/>
 												<int key="NSButtonFlags">-2033434369</int>
 												<int key="NSButtonFlags2">162</int>
