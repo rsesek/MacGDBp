@@ -40,6 +40,7 @@
 	// TODO: use preference values
 	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
 	breakpoint = [[BreakpointWindowController alloc] init];
+	[NSThread detachNewThreadSelector:@selector(versionCheck:) toTarget:self withObject:self];
 }
 
 /**
@@ -56,6 +57,44 @@
 - (IBAction)showBreakpointWindow:(id)sender
 {
 	[[breakpoint window] makeKeyAndOrderFront:self];
+}
+
+#pragma mark Version Checking
+
+/**
+ * Checks and sees if the current version is the most up-to-date one
+ */
+- (void)versionCheck:(id)sender
+{
+	NSMutableString *version = [NSMutableString stringWithString:[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]];
+	[version replaceOccurrencesOfString:@" " withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [version length])];
+	
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.bluestatic.org/versioncheck.php?prod=macgdbp&ver=%@", version]];
+	NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
+	NSURLResponse *response;
+	NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+	
+	if (result == nil)
+	{
+		return;
+	}
+	
+	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithData:result options:0 error:nil];
+	NSXMLNode *comp = [[xml rootElement] childAtIndex:0];
+	if ([[comp name] isEqualToString:@"update"])
+	{
+		[updateString setStringValue:[NSString stringWithFormat:[updateString stringValue], [comp stringValue]]];
+		[updateWindow makeKeyAndOrderFront:self];
+	}
+}
+
+
+/**
+ * Opens the URL to the download page
+ */
+- (IBAction)openUpdateInformation:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/"]];
 }
 
 @end

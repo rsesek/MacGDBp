@@ -22,6 +22,9 @@
 {
 	DebuggerWindowController *debugger;
 	BreakpointWindowController *breakpoint;
+	
+	IBOutlet NSWindow *updateWindow;
+	IBOutlet NSTextField *updateString;
 }
 
 @property(readonly) DebuggerWindowController *debugger;
@@ -29,5 +32,7 @@
 
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;
+
+- (IBAction)openUpdateInformation:(id)sender;
 
 @end
