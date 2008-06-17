@@ -49,6 +49,7 @@
 {
 	[self setStatus:@"Connecting"];
 	[[self window] setExcludedFromWindowsMenu:YES];
+	[[self window] center];
 	[sourceViewer setDelegate:self];
 }
 

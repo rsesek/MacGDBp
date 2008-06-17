@@ -93,6 +93,7 @@
 	{
 		[updateString setStringValue:[NSString stringWithFormat:[updateString stringValue], [comp stringValue]]];
 		[updateWindow makeKeyAndOrderFront:self];
+		[updateWindow center];
 	}
 }
 
