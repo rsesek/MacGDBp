@@ -33,6 +33,8 @@
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;
 
+- (IBAction)openHelpPage:(id)sender;
+
 - (IBAction)openUpdateInformation:(id)sender;
 
 @end

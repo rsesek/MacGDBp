@@ -59,6 +59,14 @@
 	[[breakpoint window] makeKeyAndOrderFront:self];
 }
 
+/**
+ * Opens the URL to the help page
+ */
+- (IBAction)openHelpPage:(id)sender
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/help.php"]];
+}
+
 #pragma mark Version Checking
 
 /**
