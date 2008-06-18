@@ -204,7 +204,7 @@
 	memmove(packet, &buffer[i], recvd - i);
 	
 	// convert bytes to NSString
-	[str appendString:[[NSString alloc] initWithCString:packet length:recvd - i]];
+	[str appendString:[NSString stringWithCString:packet length:recvd - i]];
 	
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
@@ -217,7 +217,7 @@
 				[self error:@"Socket closed or could not be read"];
 				return nil;
 			}
-			[str appendString:[[NSString alloc] initWithCString:buffer length:latest]];
+			[str appendString:[NSString stringWithCString:buffer length:latest]];
 			recvd += latest;
 		}
 	}
