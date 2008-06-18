@@ -16,16 +16,22 @@
 
 #import <Cocoa/Cocoa.h>
 #import "Breakpoint.h"
+#import "DebuggerConnection.h"
 
 @interface BreakpointManager : NSObject
 {
-	NSMutableDictionary *breakpoints;
+	NSMutableArray *breakpoints;
+	
+	DebuggerConnection *connection;
 }
+
+@property(readwrite) DebuggerConnection *connection;
+@property(readonly) NSMutableArray *breakpoints;
 
 + (BreakpointManager *)sharedManager;
 - (void)addBreakpoint:(Breakpoint *)bp;
 - (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file;
-- (NSSet *)breakpointsForFile:(NSString *)file;
+- (NSArray *)breakpointsForFile:(NSString *)file;
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file;
 
 @end

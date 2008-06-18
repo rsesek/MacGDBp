@@ -54,6 +54,6 @@
 - (void)updateStackTraceAndRegisters;
 
 // helpers
-- (void)getProperty:(NSString *)property forNode:(NSTreeNode *)elm;
+- (NSArray *)getProperty:(NSString *)property;
 
 @end

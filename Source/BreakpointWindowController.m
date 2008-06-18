@@ -15,16 +15,95 @@
  */
 
 #import "BreakpointWindowController.h"
+#import "AppDelegate.h"
 
 
 @implementation BreakpointWindowController
 
+@synthesize sourceView, arrayController;
+
+/**
+ * Constructor
+ */
 - (id)init
 {
 	if (self = [super initWithWindowNibName:@"Breakpoints"])
 	{
+		manager = [BreakpointManager sharedManager];
 	}
 	return self;
+}
+
+/**
+ * Adds a breakpoint by calling up a file chooser and selecting a file for
+ * breaking in
+ */
+- (IBAction)addBreakpoint:(id)sender
+{
+	NSOpenPanel *panel = [NSOpenPanel openPanel];
+	
+	if ([panel runModal] != NSOKButton)
+	{
+		return;
+	}
+	
+	[sourceView setFile:[panel filename]];
+}
+
+/**
+ * Removes a breakpoint
+ */
+- (IBAction)removeBreakpoint:(id)sender
+{
+	NSArray *selection = [arrayController selectedObjects];
+	if ([selection count] < 1)
+	{
+		return;
+	}
+	
+	Breakpoint *bp = [selection objectAtIndex:0];
+	[manager removeBreakpointAt:[bp line] inFile:[bp file]];
+}
+
+#pragma mark NSTableView Delegate
+
+/**
+ * NSTableView delegate method that informs the controller that the stack selection did change and that
+ * we should update the source viewer
+ */
+- (void)tableViewSelectionDidChange:(NSNotification *)notif
+{
+	NSArray *selection = [arrayController selectedObjects];
+	if ([selection count] < 1)
+	{
+		return;
+	}
+	
+	Breakpoint *bp = [selection objectAtIndex:0];
+	[sourceView setFile:[bp file]];
+	[sourceView scrollToLine:[bp line]];
+	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+}
+
+#pragma mark BSSourceView Delegate
+
+/**
+ * The gutter was clicked, which indicates that a breakpoint needs to be changed
+ */
+- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+{
+	if ([manager hasBreakpointAt:line inFile:file])
+	{
+		[manager removeBreakpointAt:line inFile:file];
+	}
+	else
+	{
+		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+		[manager addBreakpoint:bp];
+	}
+	
+	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
+	[[sourceView numberView] setNeedsDisplay:YES];
 }
 
 @end

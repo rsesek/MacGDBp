@@ -700,7 +700,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 															<object class="NSMutableArray" key="NSTableColumns">
 																<bool key="EncodedWithXMLCoder">YES</bool>
 																<object class="NSTableColumn" id="716410640">
-																	<double key="NSWidth">3.000000e+01</double>
+																	<double key="NSWidth">1.000000e+01</double>
 																	<double key="NSMinWidth">1.000000e+01</double>
 																	<double key="NSMaxWidth">3.000000e+01</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -728,7 +728,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 																	<reference key="NSTableView" ref="439139003"/>
 																</object>
 																<object class="NSTableColumn" id="757190540">
-																	<double key="NSWidth">1.060000e+02</double>
+																	<double key="NSWidth">1.120000e+02</double>
 																	<double key="NSMinWidth">8.000000e+00</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -753,7 +753,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 																	<reference key="NSTableView" ref="439139003"/>
 																</object>
 																<object class="NSTableColumn" id="141823922">
-																	<double key="NSWidth">2.600000e+01</double>
+																	<double key="NSWidth">3.300000e+01</double>
 																	<double key="NSMinWidth">2.600000e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -778,7 +778,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 																	<reference key="NSTableView" ref="439139003"/>
 																</object>
 																<object class="NSTableColumn" id="215910442">
-																	<double key="NSWidth">2.080000e+02</double>
+																	<double key="NSWidth">2.150000e+02</double>
 																	<double key="NSMinWidth">5.006250e+01</double>
 																	<double key="NSMaxWidth">1.000000e+03</double>
 																	<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -922,7 +922,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
 				<bool key="NSSelectsInsertedObjects">YES</bool>
-				<string key="NSTreeContentChildrenKey">children</string>
+				<string key="NSTreeContentChildrenKey">subnodes</string>
 				<string key="NSTreeContentLeafKey">isLeaf</string>
 			</object>
 		</object>

@@ -21,14 +21,12 @@
 #import "BreakpointManager.h"
 
 @interface DebuggerWindowController (Private)
-
 - (void)updateSourceViewer;
-
 @end
 
 @implementation DebuggerWindowController
 
-@synthesize connection;
+@synthesize connection, sourceViewer;
 
 /**
  * Initializes the window controller and sets the connection
@@ -61,6 +59,7 @@
 {
 	[self setStatus:@"Connecting"];
 	[[self window] setExcludedFromWindowsMenu:YES];
+	[[self window] center];
 	[sourceViewer setDelegate:self];
 }
 
@@ -256,13 +255,6 @@
 - (void)outlineViewItemDidExpand:(NSNotification *)notif
 {
 	NSTreeNode *node = [[notif userInfo] objectForKey:@"NSObject"];
-	
-	// we're not a leaf but have no children. this must be beyond our depth, so go make us deeper
-	if (![node isLeaf] && [[node childNodes] count] < 1)
-	{
-		[connection getProperty:[[node representedObject] fullname] forNode:node];
-	}
-	
 	[expandedRegisters addObject:[[node representedObject] fullname]];
 }
 
@@ -272,20 +264,6 @@
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
 	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
-}
-
-/**
- * Updates the register view by reinserting a given node back into the outline view
- */
-- (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node
-{
-	NSXMLElement *parent = [node representedObject];
-	for (NSXMLNode *child in children)
-	{
-		[parent addChild:child];
-	}
-	
-	[registerController rearrangeObjects];
 }
 
 #pragma mark BSSourceView Delegate
@@ -299,16 +277,15 @@
 	
 	if ([mngr hasBreakpointAt:line inFile:file])
 	{
-		[connection removeBreakpoint:[mngr removeBreakpointAt:line inFile:file]];
+		[mngr removeBreakpointAt:line inFile:file];
 	}
 	else
 	{
 		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[mngr addBreakpoint:bp];
-		[connection addBreakpoint:bp];
 	}
 	
-	[[sourceViewer numberView] setMarkers:[mngr breakpointsForFile:file]];
+	[[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
 	[[sourceViewer numberView] setNeedsDisplay:YES];
 }
 

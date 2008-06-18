@@ -43,6 +43,7 @@
 }
 
 @property(readonly) DebuggerConnection *connection;
+@property(readonly) BSSourceView *sourceViewer;
 
 - (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
@@ -52,8 +53,6 @@
 - (void)setError:(NSString *)anError;
 - (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
-
-- (void)addChildren:(NSArray *)children toNode:(NSTreeNode *)node;
 
 - (IBAction)run:(id)sender;
 - (IBAction)stepIn:(id)sender;
