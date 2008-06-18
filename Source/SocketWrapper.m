@@ -48,6 +48,7 @@
 - (void)dealloc
 {
 	[connection release];
+	[hostname release];
 	[super dealloc];
 }
 
@@ -157,7 +158,7 @@
 		[self error:@"Could not get remote hostname."];
 	}
 	char *name = inet_ntoa(addr.sin_addr);
-	hostname = [NSString stringWithUTF8String:name];	
+	hostname = [[NSString alloc] initWithUTF8String:name];
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
 	
