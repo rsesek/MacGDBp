@@ -317,7 +317,7 @@
 		return nil;
 	}
 	
-	return doc;
+	return [doc autorelease];
 }
 
 @end
