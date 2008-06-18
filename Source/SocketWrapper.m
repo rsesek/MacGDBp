@@ -97,6 +97,8 @@
  */
 - (void)connect:(id)obj
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	// create an INET socket that we'll be listen()ing on
 	int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
 	
@@ -119,6 +121,7 @@
 		{
 			close(socketOpen);
 			[self error:@"Could not bind to socket"];
+			[pool release];
 			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
@@ -140,6 +143,7 @@
 	{
 		close(socketOpen);
 		[self error:@"Client failed to accept remote socket"];
+		[pool release];
 		return;
 	}
 	
@@ -156,6 +160,8 @@
 	hostname = [NSString stringWithUTF8String:name];	
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
+	
+	[pool release];
 }
 
 /**

@@ -25,7 +25,7 @@
 	DebuggerConnection *connection;
 }
 
-@property(readwrite) DebuggerConnection *connection;
+@property(readwrite, assign) DebuggerConnection *connection;
 @property(readonly) NSMutableArray *breakpoints;
 
 + (BreakpointManager *)sharedManager;
