@@ -99,6 +99,8 @@
 		[updateWindow center];
 	}
 	
+	[xml release];
+	
 	[pool release];
 }
 
