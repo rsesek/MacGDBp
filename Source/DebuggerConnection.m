@@ -160,7 +160,7 @@
 	{
 		[self updateStackTraceAndRegisters];
 	}
-	else if ([status isEqualToString:@"stopped"])
+	else if ([status isEqualToString:@"stopped"] || [status isEqualToString:@"stopping"])
 	{
 		connected = NO;
 		[socket close];
