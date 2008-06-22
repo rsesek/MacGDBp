@@ -42,7 +42,25 @@
 - (void)setFile:(NSString *)f
 {
 	file = f;
-	[textView setString:[NSString stringWithContentsOfFile:f]];
+
+	@try
+	{
+		// Attempt to use the PHP CLI to highlight the source file as HTML
+		NSPipe* pipe = [NSPipe pipe];
+		NSTask* task = [NSTask new];
+		[task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
+		[task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
+		[task setStandardOutput:pipe];
+		[task launch];
+		NSData* data               = [[pipe fileHandleForReading] readDataToEndOfFile];
+		NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
+		[[textView textStorage] setAttributedString:source];
+	}
+	@catch(NSException* exception)
+	{
+		// If the PHP executable is not available then the NSTask will throw an exception
+		[textView setString:[NSString stringWithContentsOfFile:f]];
+	}
 }
 
 /**
