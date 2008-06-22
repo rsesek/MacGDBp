@@ -85,10 +85,12 @@
 			NSString *num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
-			if ([markers containsObject:[[Breakpoint alloc] initWithLine:line inFile:[sourceView file]]])
+			Breakpoint *test = [[Breakpoint alloc] initWithLine:line inFile:[sourceView file]];
+			if ([markers containsObject:test])
 			{
 				[self drawMarkerInRect:fragRect];
 			}
+			[test release];
 		}
 		
 		i += fragRange.length;
