@@ -27,6 +27,6 @@
 
 @property(readwrite, assign) BSSourceView *sourceView;
 @property(readonly) NSRange lineNumberRange;
-@property(readwrite, assign) NSSet *markers;
+@property(readwrite, retain) NSSet *markers;
 
 @end

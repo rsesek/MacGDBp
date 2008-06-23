@@ -43,6 +43,16 @@
 }
 
 /**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	[connection release];
+	[expandedRegisters release];
+	[super dealloc];
+}
+
+/**
  * Before the display get's comfortable, set up the NSTextView to scroll horizontally
  */
 - (void)awakeFromNib

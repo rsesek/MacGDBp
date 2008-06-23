@@ -35,10 +35,10 @@
 	if (self = [super init])
 	{
 		port = aPort;
-		session = aSession;
+		session = [aSession retain];
 		connected = NO;
 		
-		windowController = wc;
+		windowController = [wc retain];
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithConnection:self];
@@ -48,6 +48,17 @@
 		[[BreakpointManager sharedManager] setConnection:self];
 	}
 	return self;
+}
+
+/**
+ * Deallocates the object
+ */
+- (void)dealloc
+{
+	[socket release];
+	[session release];
+	[windowController release];
+	[super dealloc];
 }
 
 /**
@@ -149,11 +160,11 @@
 	{
 		[self updateStackTraceAndRegisters];
 	}
-	else if ([status isEqualToString:@"stopped"])
+	else if ([status isEqualToString:@"stopped"] || [status isEqualToString:@"stopping"])
 	{
 		connected = NO;
 		[socket close];
-		[windowController setStatus:[status capitalizedString]];
+		[windowController setStatus:@"Stopped"];
 	}
 }
 
@@ -306,7 +317,7 @@
 		return nil;
 	}
 	
-	return doc;
+	return [doc autorelease];
 }
 
 @end

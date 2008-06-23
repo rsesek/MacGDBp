@@ -36,10 +36,20 @@
 {
 	if (self = [super init])
 	{
-		connection = cnx;
+		connection = [cnx retain];
 		port = [connection port];
 	}
 	return self;
+}
+
+/**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	[connection release];
+	[hostname release];
+	[super dealloc];
 }
 
 /**
@@ -88,6 +98,8 @@
  */
 - (void)connect:(id)obj
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	// create an INET socket that we'll be listen()ing on
 	int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
 	
@@ -110,6 +122,7 @@
 		{
 			close(socketOpen);
 			[self error:@"Could not bind to socket"];
+			[pool release];
 			return;
 		}
 		NSLog(@"couldn't bind to the socket... trying again in 5");
@@ -131,6 +144,7 @@
 	{
 		close(socketOpen);
 		[self error:@"Client failed to accept remote socket"];
+		[pool release];
 		return;
 	}
 	
@@ -144,9 +158,11 @@
 		[self error:@"Could not get remote hostname."];
 	}
 	char *name = inet_ntoa(addr.sin_addr);
-	hostname = [NSString stringWithUTF8String:name];	
+	hostname = [[NSString alloc] initWithUTF8String:name];
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
+	
+	[pool release];
 }
 
 /**
@@ -188,7 +204,7 @@
 	memmove(packet, &buffer[i], recvd - i);
 	
 	// convert bytes to NSString
-	[str appendString:[[NSString alloc] initWithCString:packet length:recvd - i]];
+	[str appendString:[NSString stringWithCString:packet length:recvd - i]];
 	
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
@@ -201,7 +217,7 @@
 				[self error:@"Socket closed or could not be read"];
 				return nil;
 			}
-			[str appendString:[[NSString alloc] initWithCString:buffer length:latest]];
+			[str appendString:[NSString stringWithCString:buffer length:latest]];
 			recvd += latest;
 		}
 	}

@@ -101,6 +101,7 @@
 	{
 		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[manager addBreakpoint:bp];
+		[bp release];
 	}
 	
 	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];

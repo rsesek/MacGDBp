@@ -74,6 +74,8 @@
  */
 - (void)versionCheck:(id)sender
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	NSMutableString *version = [NSMutableString stringWithString:[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]];
 	[version replaceOccurrencesOfString:@" " withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [version length])];
 	
@@ -84,6 +86,7 @@
 	
 	if (result == nil)
 	{
+		[pool release];
 		return;
 	}
 	
@@ -95,6 +98,10 @@
 		[updateWindow makeKeyAndOrderFront:self];
 		[updateWindow center];
 	}
+	
+	[xml release];
+	
+	[pool release];
 }
 
 

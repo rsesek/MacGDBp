@@ -37,11 +37,24 @@
 }
 
 /**
+ * Dealloc
+ */
+- (void)dealloc
+{
+	if (file != nil)
+	{
+		[file release];
+	}
+	[super dealloc];
+}
+
+/**
  * Sets the file name as well as the text of the source view
  */
 - (void)setFile:(NSString *)f
 {
-	file = f;
+	[file release];
+	file = [f retain];
 
 	@try
 	{
@@ -56,7 +69,7 @@
 		NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
 		[[textView textStorage] setAttributedString:source];
 	}
-	@catch(NSException* exception)
+	@catch (NSException* exception)
 	{
 		// If the PHP executable is not available then the NSTask will throw an exception
 		[textView setString:[NSString stringWithContentsOfFile:f]];
