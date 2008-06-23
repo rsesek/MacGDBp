@@ -164,7 +164,7 @@
 	{
 		connected = NO;
 		[socket close];
-		[windowController setStatus:[status capitalizedString]];
+		[windowController setStatus:@"Stopped"];
 	}
 }
 
