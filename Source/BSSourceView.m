@@ -50,8 +50,11 @@
  */
 - (void)setFile:(NSString *)f
 {
-	[file release];
-	file = [f retain];
+	if (file != f)
+	{
+		[file release];
+		file = [f retain];
+	}
 
 	@try
 	{
