@@ -41,10 +41,7 @@
  */
 - (void)dealloc
 {
-	if (file != nil)
-	{
-		[file release];
-	}
+	[file release];
 	[super dealloc];
 }
 
