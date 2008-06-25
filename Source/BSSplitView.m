@@ -31,6 +31,7 @@
 	NSColor *endColor = [NSColor colorWithDeviceRed:0.812 green:0.812 blue:0.812 alpha:1.0];
 	NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor];
 	[gradient drawInRect:rect angle:([self isVertical] ? 0.0 : 90.0)];
+	[gradient release];
 	
 	// draw the stroke
 	[[NSColor colorWithDeviceRed:0.667 green:0.667 blue:0.667 alpha:1.0] setStroke];

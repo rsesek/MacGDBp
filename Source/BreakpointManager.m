@@ -107,7 +107,7 @@
  */
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file
 {
-	return [breakpoints containsObject:[[Breakpoint alloc] initWithLine:line inFile:file]];
+	return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
 }
 
 #pragma mark Private

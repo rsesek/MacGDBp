@@ -50,7 +50,7 @@
 {
 	if (self = [super init])
 	{
-		file = [dict valueForKey:@"file"];
+		file = [[dict valueForKey:@"file"] retain];
 		line = [[dict valueForKey:@"line"] intValue];
 	}
 	return self;
