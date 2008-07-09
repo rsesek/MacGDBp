@@ -45,14 +45,6 @@
 }
 
 /**
- * When the application has finished loading, show the connection dialog
- */
-- (void)applicationDidFinishLaunching:(NSNotification *)notif
-{
-	[NSThread detachNewThreadSelector:@selector(versionCheck:) toTarget:self withObject:self];
-}
-
-/**
  * Shows the debugger window
  */
 - (IBAction)showDebuggerWindow:(id)sender
@@ -85,52 +77,6 @@
 - (IBAction)openHelpPage:(id)sender
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/help.php"]];
-}
-
-#pragma mark Version Checking
-
-/**
- * Checks and sees if the current version is the most up-to-date one
- */
-- (void)versionCheck:(id)sender
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSMutableString *version = [NSMutableString stringWithString:[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]];
-	[version replaceOccurrencesOfString:@" " withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [version length])];
-	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.bluestatic.org/versioncheck.php?prod=macgdbp&ver=%@", version]];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
-	NSURLResponse *response;
-	NSData *result = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-	
-	if (result == nil)
-	{
-		[pool release];
-		return;
-	}
-	
-	NSXMLDocument *xml = [[NSXMLDocument alloc] initWithData:result options:0 error:nil];
-	NSXMLNode *comp = [[xml rootElement] childAtIndex:0];
-	if ([[comp name] isEqualToString:@"update"])
-	{
-		[updateString setStringValue:[NSString stringWithFormat:[updateString stringValue], [comp stringValue]]];
-		[updateWindow makeKeyAndOrderFront:self];
-		[updateWindow center];
-	}
-	
-	[xml release];
-	
-	[pool release];
-}
-
-
-/**
- * Opens the URL to the download page
- */
-- (IBAction)openUpdateInformation:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/"]];
 }
 
 @end

@@ -24,9 +24,6 @@
 	DebuggerWindowController *debugger;
 	BreakpointWindowController *breakpoint;
 	PreferencesController *prefs;
-	
-	IBOutlet NSWindow *updateWindow;
-	IBOutlet NSTextField *updateString;
 }
 
 @property(readonly) DebuggerWindowController *debugger;
@@ -37,7 +34,5 @@
 - (IBAction)showPreferences:(id)sender;
 
 - (IBAction)openHelpPage:(id)sender;
-
-- (IBAction)openUpdateInformation:(id)sender;
 
 @end
