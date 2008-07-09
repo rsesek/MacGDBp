@@ -49,8 +49,7 @@
  */
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
-	// TODO: use preference values
-	debugger = [[DebuggerWindowController alloc] initWithPort:9000 session:@"macgdbp"];
+	debugger = [[DebuggerWindowController alloc] init];
 	breakpoint = [[BreakpointWindowController alloc] init];
 	[NSThread detachNewThreadSelector:@selector(versionCheck:) toTarget:self withObject:self];
 }

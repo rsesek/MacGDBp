@@ -29,13 +29,17 @@
 @synthesize connection, sourceViewer;
 
 /**
- * Initializes the window controller and sets the connection
+ * Initializes the window controller and sets the connection using preference
+ * values
  */
-- (id)initWithPort:(int)aPort session:(NSString *)aSession
+- (id)init
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
-		connection = [[DebuggerConnection alloc] initWithWindowController:self port:aPort session:aSession];
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		connection = [[DebuggerConnection alloc] initWithWindowController:self
+																	 port:[defaults integerForKey:@"Port"]
+																  session:[defaults stringForKey:@"IDEKey"]];
 		expandedRegisters = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 	}
