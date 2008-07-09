@@ -60,6 +60,17 @@
 }
 
 /**
+ * Shows the preferences window. Lazily loads the PreferencesController.
+ */
+- (IBAction)showPreferences:(id)sender
+{
+	if (!prefs)
+		prefs = [[PreferencesController alloc] init];
+	
+	[[prefs window] makeKeyAndOrderFront:self];
+}
+
+/**
  * Opens the URL to the help page
  */
 - (IBAction)openHelpPage:(id)sender

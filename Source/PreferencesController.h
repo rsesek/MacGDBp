@@ -15,29 +15,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerWindowController.h"
-#import "BreakpointWindowController.h"
-#import "PreferencesController.h"
 
-@interface AppDelegate : NSObject
+
+@interface PreferencesController : NSWindowController
 {
-	DebuggerWindowController *debugger;
-	BreakpointWindowController *breakpoint;
-	PreferencesController *prefs;
-	
-	IBOutlet NSWindow *updateWindow;
-	IBOutlet NSTextField *updateString;
+
 }
-
-@property(readonly) DebuggerWindowController *debugger;
-@property(readonly) BreakpointWindowController *breakpoint;
-
-- (IBAction)showDebuggerWindow:(id)sender;
-- (IBAction)showBreakpointWindow:(id)sender;
-- (IBAction)showPreferences:(id)sender;
-
-- (IBAction)openHelpPage:(id)sender;
-
-- (IBAction)openUpdateInformation:(id)sender;
 
 @end

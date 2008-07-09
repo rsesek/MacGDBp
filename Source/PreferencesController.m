@@ -14,30 +14,20 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
-#import "DebuggerWindowController.h"
-#import "BreakpointWindowController.h"
 #import "PreferencesController.h"
 
-@interface AppDelegate : NSObject
+
+@implementation PreferencesController
+
+/**
+ * Loads the NIB and shows the preferences
+ */
+- (id)init
 {
-	DebuggerWindowController *debugger;
-	BreakpointWindowController *breakpoint;
-	PreferencesController *prefs;
-	
-	IBOutlet NSWindow *updateWindow;
-	IBOutlet NSTextField *updateString;
+	if (self = [super initWithWindowNibName:@"Preferences"])
+	{
+	}
+	return self;
 }
-
-@property(readonly) DebuggerWindowController *debugger;
-@property(readonly) BreakpointWindowController *breakpoint;
-
-- (IBAction)showDebuggerWindow:(id)sender;
-- (IBAction)showBreakpointWindow:(id)sender;
-- (IBAction)showPreferences:(id)sender;
-
-- (IBAction)openHelpPage:(id)sender;
-
-- (IBAction)openUpdateInformation:(id)sender;
 
 @end
