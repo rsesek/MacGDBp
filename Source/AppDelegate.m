@@ -49,8 +49,6 @@
  */
 - (void)applicationDidFinishLaunching:(NSNotification *)notif
 {
-	debugger = [[DebuggerWindowController alloc] init];
-	breakpoint = [[BreakpointWindowController alloc] init];
 	[NSThread detachNewThreadSelector:@selector(versionCheck:) toTarget:self withObject:self];
 }
 
