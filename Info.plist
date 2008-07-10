@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUFeedURL</key>
+	<string>http://www.bluestatic.org/versioncast.php?prod=macgdbp</string>
+	<key>SUShowReleaseNotes</key>
+	<false/>
 </dict>
 </plist>
