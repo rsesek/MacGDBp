@@ -204,7 +204,7 @@
 	// check if we have a partial packet
 	if (length + i > sizeof(buffer))
 	{
-		while (recvd < length)
+		while (recvd < length + i)
 		{
 			int latest = recv(sock, &buffer, sizeof(buffer), 0);
 			if (latest < 1)
