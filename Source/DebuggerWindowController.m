@@ -42,6 +42,7 @@
 																  session:[defaults stringForKey:@"IDEKey"]];
 		expandedRegisters = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
+		[[self window] setDelegate:self];
 	}
 	return self;
 }
@@ -73,6 +74,21 @@
 - (void)windowWillClose:(NSNotification *)notif
 {
 	[[connection socket] close];
+}
+
+/**
+ * Validates the menu items for the "Debugger" menu
+ */
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
+{
+	SEL action = [anItem action];
+	
+	if (action == @selector(stepOut:))
+		return ([connection isConnected] && [stack count] > 1);
+	else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
+		return [connection isConnected];
+	
+	return [[self window] validateUserInterfaceItem:anItem];
 }
 
 /**
