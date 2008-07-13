@@ -218,7 +218,11 @@
 	}
 	
 	NSString *tmp = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; // strip whitespace
-	return [tmp substringToIndex:[tmp length] - 1]; // don't want the null byte
+	tmp = [tmp substringToIndex:[tmp length] - 1]; // don't want the null byte
+	
+	NSAssert([tmp UTF8String][[tmp length] - 1] == '>', @"-[SocketWrapper receive] buffer is incomplete");
+	
+	return tmp;
 }
 
 /**
