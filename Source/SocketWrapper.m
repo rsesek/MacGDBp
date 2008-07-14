@@ -33,7 +33,7 @@
 /**
  * Initializes the socket wrapper with a host and port
  */
-- (id)initWithConnection:(DebuggerConnection *)cnx
+- (id)initWithConnection:(GDBpConnection *)cnx
 {
 	if (self = [super init])
 	{

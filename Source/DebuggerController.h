@@ -17,11 +17,11 @@
 #import <Cocoa/Cocoa.h>
 #import "BSSourceView.h"
 
-@class DebuggerConnection;
+@class GDBpConnection;
 
 @interface DebuggerController : NSWindowController
 {
-	DebuggerConnection *connection;
+	GDBpConnection *connection;
 	
 	IBOutlet NSArrayController *stackController;
 	NSArray *stack;
@@ -42,7 +42,7 @@
 	IBOutlet NSToolbarItem *reconnectButton;
 }
 
-@property(readonly) DebuggerConnection *connection;
+@property(readonly) GDBpConnection *connection;
 @property(readonly) BSSourceView *sourceViewer;
 
 - (void)resetDisplays;

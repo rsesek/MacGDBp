@@ -19,7 +19,7 @@
 #import "SocketWrapper.h"
 #import "Breakpoint.h"
 
-@interface DebuggerConnection : NSObject
+@interface GDBpConnection : NSObject
 {
 	int port;
 	NSString *session;

@@ -16,16 +16,16 @@
 
 #import <Cocoa/Cocoa.h>
 #import "Breakpoint.h"
-#import "DebuggerConnection.h"
+#import "GDBpConnection.h"
 
 @interface BreakpointManager : NSObject
 {
 	NSMutableArray *breakpoints;
 	
-	DebuggerConnection *connection;
+	GDBpConnection *connection;
 }
 
-@property(readwrite, assign) DebuggerConnection *connection;
+@property(readwrite, assign) GDBpConnection *connection;
 @property(readonly) NSMutableArray *breakpoints;
 
 + (BreakpointManager *)sharedManager;

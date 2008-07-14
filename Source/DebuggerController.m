@@ -15,7 +15,7 @@
  */
 
 #import "DebuggerController.h"
-#import "DebuggerConnection.h"
+#import "GDBpConnection.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
 #import "BreakpointManager.h"
@@ -37,7 +37,7 @@
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		connection = [[DebuggerConnection alloc] initWithWindowController:self
+		connection = [[GDBpConnection alloc] initWithWindowController:self
 																	 port:[defaults integerForKey:@"Port"]
 																  session:[defaults stringForKey:@"IDEKey"]];
 		expandedRegisters = [[NSMutableSet alloc] init];

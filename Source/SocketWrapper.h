@@ -16,11 +16,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DebuggerConnection;
+@class GDBpConnection;
 
 @interface SocketWrapper : NSObject
 {
-	DebuggerConnection *connection;
+	GDBpConnection *connection;
 	
 	int port;
 	int sock;
@@ -29,7 +29,7 @@
 	id delegate;
 }
 
-- (id)initWithConnection:(DebuggerConnection *)cnx;
+- (id)initWithConnection:(GDBpConnection *)cnx;
 
 - (id)delegate;
 - (void)setDelegate:(id)aDelegate;

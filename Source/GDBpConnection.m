@@ -14,15 +14,15 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "DebuggerConnection.h"
+#import "GDBpConnection.h"
 #import "AppDelegate.h"
 
-@interface DebuggerConnection (Private)
+@interface GDBpConnection (Private)
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
 @end
 
-@implementation DebuggerConnection
+@implementation GDBpConnection
 
 @synthesize socket, windowController;
 
