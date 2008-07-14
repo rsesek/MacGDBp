@@ -18,6 +18,7 @@
 
 @interface BSSourceView (Private)
 - (void)setupViews;
+- (void)errorHighlightingFile:(NSNotification *)notif;
 @end
 
 @implementation BSSourceView
@@ -32,6 +33,10 @@
 	if (self = [super initWithFrame:frame])
 	{
 		[self setupViews];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(errorHighlightingFile:)
+													 name:NSFileHandleReadToEndOfFileCompletionNotification
+												   object:nil];
 	}
 	return self;
 }
@@ -64,13 +69,19 @@
 	@try
 	{
 		// Attempt to use the PHP CLI to highlight the source file as HTML
-		NSPipe *pipe = [NSPipe pipe];
+		NSPipe *outPipe = [NSPipe pipe];
+		NSPipe *errPipe = [NSPipe pipe];
 		NSTask *task = [[NSTask new] autorelease];
+		
 		[task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
 		[task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
-		[task setStandardOutput:pipe];
+		[task setStandardOutput:outPipe];
+		[task setStandardError:errPipe];
 		[task launch];
-		NSData *data               = [[pipe fileHandleForReading] readDataToEndOfFile];
+		
+		[[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
+		
+		NSData *data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
 		NSAttributedString *source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
 		[[textView textStorage] setAttributedString:source];
 		[source release];
@@ -80,6 +91,16 @@
 		// If the PHP executable is not available then the NSTask will throw an exception
 		[textView setString:[NSString stringWithContentsOfFile:f]];
 	}
+}
+
+/**
+ * If an error occurs in reading the highlighted PHP source, this will merely set the string
+ */
+- (void)errorHighlightingFile:(NSNotification *)notif
+{
+	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
+		[textView setString:[NSString stringWithContentsOfFile:file]];
 }
 
 /**
