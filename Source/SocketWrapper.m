@@ -25,6 +25,7 @@
 
 - (void)error:(NSString *)msg;
 
+@property (copy, readwrite, getter=remoteHost, setter=setHostname:) NSString *hostname;
 @end
 
 @implementation SocketWrapper
@@ -76,13 +77,7 @@
 	delegate = aDelegate;
 }
 
-/**
- * Returns the name of the host to whom we are currently connected.
- */
-- (NSString *)remoteHost
-{
-	return hostname;
-}
+@synthesize hostname;
 
 /**
  * Connects to a socket on the port specified during init. This will dispatch another thread to do the
@@ -158,7 +153,7 @@
 		[self error:@"Could not get remote hostname."];
 	}
 	char *name = inet_ntoa(addr.sin_addr);
-	hostname = [[NSString alloc] initWithUTF8String:name];
+	[self setHostname:[NSString stringWithUTF8String:name]];
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
 	
