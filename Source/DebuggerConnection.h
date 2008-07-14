@@ -15,7 +15,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerWindowController.h"
+#import "DebuggerController.h"
 #import "SocketWrapper.h"
 #import "Breakpoint.h"
 
@@ -25,16 +25,16 @@
 	NSString *session;
 	BOOL connected;
 	
-	DebuggerWindowController *windowController;
+	DebuggerController *windowController;
 	
 	SocketWrapper *socket;
 }
 
 @property(readonly) SocketWrapper *socket;
-@property(readonly) DebuggerWindowController *windowController;
+@property(readonly) DebuggerController *windowController;
 
 // initializer
-- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
+- (id)initWithWindowController:(DebuggerController *)wc port:(int)aPort session:(NSString *)aSession;
 
 // getter
 - (int)port;

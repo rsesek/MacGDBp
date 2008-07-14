@@ -14,17 +14,17 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "DebuggerWindowController.h"
+#import "DebuggerController.h"
 #import "DebuggerConnection.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
 #import "BreakpointManager.h"
 
-@interface DebuggerWindowController (Private)
+@interface DebuggerController (Private)
 - (void)updateSourceViewer;
 @end
 
-@implementation DebuggerWindowController
+@implementation DebuggerController
 
 @synthesize connection, sourceViewer;
 

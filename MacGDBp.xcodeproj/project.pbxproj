@@ -12,7 +12,7 @@
 		1E027F390D36F60800885DEE /* Reconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F380D36F60800885DEE /* Reconnect.png */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerConnection.m */; };
-		1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerWindowController.m */; };
+		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
 		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
@@ -63,8 +63,8 @@
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
 		1E02C56F0C610158006F1752 /* DebuggerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerConnection.h; path = Source/DebuggerConnection.h; sourceTree = "<group>"; };
 		1E02C5700C610158006F1752 /* DebuggerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerConnection.m; path = Source/DebuggerConnection.m; sourceTree = "<group>"; };
-		1E02C5F40C610724006F1752 /* DebuggerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerWindowController.h; path = Source/DebuggerWindowController.h; sourceTree = "<group>"; };
-		1E02C5F50C610724006F1752 /* DebuggerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerWindowController.m; path = Source/DebuggerWindowController.m; sourceTree = "<group>"; };
+		1E02C5F40C610724006F1752 /* DebuggerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerController.h; path = Source/DebuggerController.h; sourceTree = "<group>"; };
+		1E02C5F50C610724006F1752 /* DebuggerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerController.m; path = Source/DebuggerController.m; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
 		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
@@ -187,8 +187,8 @@
 			children = (
 				1E02C56F0C610158006F1752 /* DebuggerConnection.h */,
 				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerWindowController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerWindowController.m */,
+				1E02C5F40C610724006F1752 /* DebuggerController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerController.m */,
 				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
@@ -363,7 +363,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */,
 				1E02C5710C610158006F1752 /* DebuggerConnection.m in Sources */,
-				1E02C5F60C610724006F1752 /* DebuggerWindowController.m in Sources */,
+				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
 				1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1E35FEA10C6599040030F527 /* base64.c in Sources */,

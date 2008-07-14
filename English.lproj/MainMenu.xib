@@ -8,7 +8,6 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="24"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -702,7 +701,7 @@
 				<string key="NSClassName">BreakpointWindowController</string>
 			</object>
 			<object class="NSCustomObject" id="614736281">
-				<string key="NSClassName">DebuggerWindowController</string>
+				<string key="NSClassName">DebuggerController</string>
 			</object>
 			<object class="NSCustomObject" id="461182232">
 				<string key="NSClassName">SUUpdater</string>
@@ -1892,7 +1891,7 @@
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>BreakpointWindowController</string>
-							<string>DebuggerWindowController</string>
+							<string>DebuggerController</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -1955,7 +1954,7 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">DebuggerWindowController</string>
+					<string key="className">DebuggerController</string>
 					<string key="superclassName">NSWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -2008,8 +2007,8 @@
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/DebuggerWindowController.h</string>
+						<string key="majorKey">IBUserSource</string>
+						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

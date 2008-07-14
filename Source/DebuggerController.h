@@ -19,7 +19,7 @@
 
 @class DebuggerConnection;
 
-@interface DebuggerWindowController : NSWindowController
+@interface DebuggerController : NSWindowController
 {
 	DebuggerConnection *connection;
 	

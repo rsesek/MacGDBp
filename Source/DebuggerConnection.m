@@ -30,7 +30,7 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithWindowController:(DebuggerWindowController *)wc port:(int)aPort session:(NSString *)aSession;
+- (id)initWithWindowController:(DebuggerController *)wc port:(int)aPort session:(NSString *)aSession;
 {
 	if (self = [super init])
 	{
