@@ -42,6 +42,11 @@
 - (void)dealloc
 {
 	[file release];
+	
+	[numberView removeFromSuperview];
+	[scrollView removeFromSuperview];
+	[textView removeFromSuperview];
+	
 	[super dealloc];
 }
 
