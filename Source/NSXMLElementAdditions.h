@@ -16,7 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NSXMLElement (NSXMLElementAdditions)
+@interface NSXMLElement (GDBpAdditions)
 
 - (NSString *)fullname;
 - (NSString *)variable;

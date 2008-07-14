@@ -18,7 +18,7 @@
 #include "base64.h"
 #import "AppDelegate.h"
 
-@implementation NSXMLElement (NSXMLElementAdditions)
+@implementation NSXMLElement (GDBpAdditions)
 
 /**
  * Return's the property's full name
