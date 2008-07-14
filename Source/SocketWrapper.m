@@ -250,7 +250,7 @@
  */
 - (void)error:(NSString *)msg
 {
-	[delegate performSelectorOnMainThread:@selector(errorEncountered:) withObject:msg waitUntilDone:NO];
+	[delegate performSelectorOnMainThread:@selector(setError:) withObject:msg waitUntilDone:NO];
 }
 
 @end
