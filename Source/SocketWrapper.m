@@ -21,14 +21,14 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-@interface SocketWrapper (Private)
+@interface SocketWrapper ()
+@property (copy, readwrite, getter=remoteHost) NSString *hostname;
 
 - (void)error:(NSString *)msg;
-
-@property (copy, readwrite, getter=remoteHost, setter=setHostname:) NSString *hostname;
 @end
 
 @implementation SocketWrapper
+@synthesize hostname;
 
 /**
  * Initializes the socket wrapper with a host and port
@@ -76,8 +76,6 @@
 {
 	delegate = aDelegate;
 }
-
-@synthesize hostname;
 
 /**
  * Connects to a socket on the port specified during init. This will dispatch another thread to do the
