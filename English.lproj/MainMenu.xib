@@ -698,7 +698,7 @@
 				<string key="NSClassName">AppDelegate</string>
 			</object>
 			<object class="NSCustomObject" id="745382025">
-				<string key="NSClassName">BreakpointWindowController</string>
+				<string key="NSClassName">BreakpointController</string>
 			</object>
 			<object class="NSCustomObject" id="614736281">
 				<string key="NSClassName">DebuggerController</string>
@@ -1890,7 +1890,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>BreakpointWindowController</string>
+							<string>BreakpointController</string>
 							<string>DebuggerController</string>
 						</object>
 					</object>
@@ -1920,7 +1920,7 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">BreakpointWindowController</string>
+					<string key="className">BreakpointController</string>
 					<string key="superclassName">NSWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1949,8 +1949,8 @@
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">Source/BreakpointWindowController.h</string>
+						<string key="majorKey">IBUserSource</string>
+						<string key="minorKey"/>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

@@ -14,11 +14,11 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "BreakpointWindowController.h"
+#import "BreakpointController.h"
 #import "AppDelegate.h"
 
 
-@implementation BreakpointWindowController
+@implementation BreakpointController
 
 @synthesize sourceView, arrayController;
 
