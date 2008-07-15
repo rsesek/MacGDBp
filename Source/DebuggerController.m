@@ -303,6 +303,7 @@
 	{
 		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[mngr addBreakpoint:bp];
+		[bp release];
 	}
 	
 	[[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
