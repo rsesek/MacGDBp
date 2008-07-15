@@ -35,13 +35,17 @@
  * Initialize method that is called before all other messages. This will set the default
  * preference values.
  */
-+ (void)initialize
++ (void)load
 {
+	NSAutoreleasePool* pool = [NSAutoreleasePool new];
+
 	NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:9000], @"Port", @"macgdbp", @"IDEKey", nil];
 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:dict];
-	
+
 	[dict release];
+
+	[pool release];
 }
 
 /**
