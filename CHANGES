@@ -1,0 +1,19 @@
+MacGDBp                                                               CHANGE LOG
+================================================================================
+
+1.1
+#####################
+- New: Add preferences that allow changing of the Xdebug IDE key and port number
+- Change: Improved software updater via Sparkle
+- Fix: Packets from the Xdebug extension would be incorrectly handled in some situations, causing the display to break or crash
+- New: Add menu items for the debugger commands
+- Fix: Several memory leaks that could, under certain conditions, would cause crashes (thanks to Ciarán Walsh)
+- Change: If MacGDBp can't highlight the source code, it will default to using just plain text
+
+
+1.0.1
+#####################
+- New: Source code is now highlighted via the PHP binary (thanks Ciarán Walsh)
+- New: The breakpoints window is now visible on launch
+- Fixed: #125  Some installations would receive a "Stopping" status that MacGDBp did not handle correctly
+- Fixed: #125  Crash when adding breakpoints
