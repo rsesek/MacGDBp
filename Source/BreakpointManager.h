@@ -21,6 +21,7 @@
 @interface BreakpointManager : NSObject
 {
 	NSMutableArray *breakpoints;
+	NSMutableArray *savedBreakpoints;
 	
 	GDBpConnection *connection;
 }

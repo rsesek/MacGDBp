@@ -9,6 +9,7 @@ MacGDBp                                                               CHANGE LOG
 - New: Add menu items for the debugger commands
 - Fix: Several memory leaks that could, under certain conditions, would cause crashes (thanks to Ciarán Walsh)
 - Change: If MacGDBp can't highlight the source code, it will default to using just plain text
+- New: Breakpoints are saved into preferences so that they are recreated at launch time
 
 
 1.0.1

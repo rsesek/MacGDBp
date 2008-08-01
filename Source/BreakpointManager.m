@@ -36,6 +36,15 @@
 		{
 			breakpoints = [[NSMutableArray alloc] init];
 		}
+		
+		savedBreakpoints = [[[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"Breakpoints"] retain];
+		if (savedBreakpoints)
+		{
+			for (NSDictionary *d in savedBreakpoints)
+			{
+				[breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
+			}
+		}
 	}
 	return self;
 }
@@ -63,6 +72,9 @@
 		[breakpoints addObject:bp];
 		[connection addBreakpoint:bp];
 		
+		[savedBreakpoints addObject:[bp dictionary]];
+		[[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
+		
 		[self updateDisplaysForFile:[bp file]];
 	}
 }
@@ -78,6 +90,10 @@
 		{
 			[breakpoints removeObject:b];
 			[connection removeBreakpoint:b];
+			
+			[savedBreakpoints addObject:[b dictionary]];
+			[[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
+			
 			[self updateDisplaysForFile:file];
 			return b;
 		}
