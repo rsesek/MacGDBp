@@ -6,9 +6,9 @@ MacGDBp                                                               CHANGE LOG
 - New: Add preferences that allow changing of the Xdebug IDE key and port number
 - Change: Improved software updater via Sparkle
 - Fix: Packets from the Xdebug extension would be incorrectly handled in some situations, causing the display to break or crash
-- New: Add menu items for the debugger commands
+- New: #123  Add menu items and keyboard shortcuts for the debugger commands
 - Fix: Several memory leaks that could, under certain conditions, would cause crashes (thanks to Ciarán Walsh)
-- Change: If MacGDBp can't highlight the source code, it will default to using just plain text
+- Change: #130  If MacGDBp can't highlight the source code, it will default to using just plain text
 - New: Breakpoints are saved into preferences so that they are recreated at launch time
 
 
