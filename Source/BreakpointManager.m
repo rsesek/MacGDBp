@@ -91,7 +91,7 @@
 			[breakpoints removeObject:b];
 			[connection removeBreakpoint:b];
 			
-			[savedBreakpoints addObject:[b dictionary]];
+			[savedBreakpoints removeObject:[b dictionary]];
 			[[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
 			
 			[self updateDisplaysForFile:file];
