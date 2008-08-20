@@ -62,8 +62,10 @@
 		return;
 	}
 	
-	Breakpoint *bp = [selection objectAtIndex:0];
-	[manager removeBreakpointAt:[bp line] inFile:[bp file]];
+	for (Breakpoint *bp in selection)
+	{
+		[manager removeBreakpointAt:[bp line] inFile:[bp file]];
+	}
 }
 
 #pragma mark NSTableView Delegate

@@ -4,6 +4,7 @@ MacGDBp                                                               CHANGE LOG
 1.1.1
 #####################
 - Fix: Breakpoints that were removed would come back, multiplied upon relaunch
+- New: Allow multiple selection of breakpoints
 
 
 1.1
