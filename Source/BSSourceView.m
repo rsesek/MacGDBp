@@ -65,6 +65,12 @@
 		[file release];
 		file = [f retain];
 	}
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:f])
+	{
+		[textView setString:@""];
+		return;
+	}
 
 	@try
 	{
@@ -116,6 +122,9 @@
  */
 - (void)scrollToLine:(int)line
 {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:file])
+		return;
+	
 	// go through the document until we find the NSRange for the line we want
 	int rangeIndex = 0;
 	for (int i = 0; i < line; i++)

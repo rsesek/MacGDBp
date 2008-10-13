@@ -1,6 +1,12 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+1.1.2
+#####################
+- Fix: #140  Saved breakpoints for non-existent files would cause an immediate 
+crash on launch
+
+
 1.1.1
 #####################
 - Fix: Breakpoints that were removed would come back, multiplied upon relaunch
