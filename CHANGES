@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: #140  Saved breakpoints for non-existent files would cause an immediate 
 crash on launch
+- New: #139  Windows now remember their size and location
 
 
 1.1.1
