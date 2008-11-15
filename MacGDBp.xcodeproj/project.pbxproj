@@ -124,6 +124,7 @@
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
 				1E9582640E252480001A3D89 /* Preferences */,
 				1E1E52C10DF9B1FB00D334F9 /* Connection */,
+				1EB7BEB90ECF3BC60033283A /* Debugger */,
 				1E1E52C00DF9B1E700D334F9 /* Breakpoints */,
 				1E71886C0D839F6C00969277 /* Source View */,
 			);
@@ -187,8 +188,6 @@
 			children = (
 				1E02C56F0C610158006F1752 /* GDBpConnection.h */,
 				1E02C5700C610158006F1752 /* GDBpConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerController.m */,
 				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
@@ -230,6 +229,15 @@
 				1E9582660E2524AD001A3D89 /* PreferencesController.m */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		1EB7BEB90ECF3BC60033283A /* Debugger */ = {
+			isa = PBXGroup;
+			children = (
+				1E02C5F40C610724006F1752 /* DebuggerController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerController.m */,
+			);
+			name = Debugger;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
