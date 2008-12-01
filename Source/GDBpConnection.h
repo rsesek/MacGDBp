@@ -15,7 +15,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerController.h"
 #import "SocketWrapper.h"
 #import "Breakpoint.h"
 #import "StackFrame.h"
@@ -33,17 +32,14 @@ extern NSString *kErrorOccurredNotif;
 	 */
 	NSString *status;
 	
-	DebuggerController *windowController;
-	
 	SocketWrapper *socket;
 }
 
 @property(readonly, copy) NSString *status;
 @property(readonly) SocketWrapper *socket;
-@property(readonly) DebuggerController *windowController;
 
 // initializer
-- (id)initWithWindowController:(DebuggerController *)wc port:(int)aPort session:(NSString *)aSession;
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 
 // getter
 - (int)port;

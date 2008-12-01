@@ -40,9 +40,7 @@
 		stackController = [[StackController alloc] init];
 		
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		connection = [[GDBpConnection alloc] initWithWindowController:self
-																	 port:[defaults integerForKey:@"Port"]
-																  session:[defaults stringForKey:@"IDEKey"]];
+		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] session:[defaults stringForKey:@"IDEKey"]];
 		expandedRegisters = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 		[[self window] setDelegate:self];

@@ -30,21 +30,19 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 
 @implementation GDBpConnection
 
-@synthesize socket, windowController, status;
+@synthesize socket, status;
 
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithWindowController:(DebuggerController *)wc port:(int)aPort session:(NSString *)aSession;
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 {
 	if (self = [super init])
 	{
 		port = aPort;
 		session = [aSession retain];
 		connected = NO;
-		
-		windowController = [wc retain];
 		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithConnection:self];
@@ -63,7 +61,6 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 {
 	[socket release];
 	[session release];
-	[windowController release];
 	[super dealloc];
 }
 
@@ -112,7 +109,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 {
 	connected = YES;
 	[socket receive];
-	[self refreshStatus];
+	[self updateStatus];
 	
 	// register any breakpoints that exist offline
 	for (Breakpoint *bp in [[BreakpointManager sharedManager] breakpoints])
@@ -144,7 +141,6 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 {
 	[socket close];
 	self.status = @"Connecting";
-	[windowController resetDisplays];
 	[socket connect];
 }
 
