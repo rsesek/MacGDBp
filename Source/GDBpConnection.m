@@ -299,6 +299,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	// get the stack frame
 	[socket send:[self createCommand:@"stack_get -d 0"]];
 	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
 	
 	// get the names of all the contexts
 	[socket send:[self createCommand:@"context_names -d 0"]];
@@ -316,11 +317,16 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 			[contexts setObject:variables forKey:name];
 	}
 	
-	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
+	// get the source
+	NSString *filename = [[xmlframe attributeForName:@"filename"] stringValue];
+	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
+	NSString *source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
+	
+	// create stack frame
 	StackFrame *frame = [[StackFrame alloc]
 		initWithIndex:0
-		withFilename:[[xmlframe attributeForName:@"filename"] stringValue]
-		withSource:nil
+		withFilename:filename
+		withSource:source
 		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
 		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
 		withContexts:contexts
