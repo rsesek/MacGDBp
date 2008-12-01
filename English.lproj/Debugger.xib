@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="8"/>
+			<integer value="46"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -924,6 +924,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>index</string>
 					<string>lineNumber</string>
 					<string>function</string>
+					<string>contexts.Locals</string>
 				</object>
 				<string key="NSObjectClassName">StackFrame</string>
 				<bool key="NSEditable">YES</bool>
@@ -1286,6 +1287,22 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						</object>
 					</object>
 					<int key="connectionID">564</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: selection.contexts.Locals</string>
+						<reference key="source" ref="240336030"/>
+						<reference key="destination" ref="988542050"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="240336030"/>
+							<reference key="NSDestination" ref="988542050"/>
+							<string key="NSLabel">contentArray: selection.contexts.Locals</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">selection.contexts.Locals</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">565</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1824,7 +1841,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">564</int>
+			<int key="maxID">565</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
