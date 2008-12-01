@@ -59,8 +59,6 @@ extern NSString *kErrorOccurredNotif;
 - (StackFrame *)stepOver;
 - (void)addBreakpoint:(Breakpoint *)bp;
 - (void)removeBreakpoint:(Breakpoint *)bp;
-- (void)refreshStatus;
-- (void)updateStackTraceAndRegisters;
 
 // helpers
 - (NSArray *)getProperty:(NSString *)property;

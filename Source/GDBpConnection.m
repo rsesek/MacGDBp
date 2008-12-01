@@ -155,19 +155,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
-	[self refreshStatus];
-}
-
-/**
- * Method that runs tells the debugger to give us its status and will update the status text on the window
- */
-- (void)refreshStatus
-{
 	[self updateStatus];
-	if ([status isEqualToString:@"Break"])
-	{
-		[self updateStackTraceAndRegisters];
-	}
 }
 
 /**
@@ -179,7 +167,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket receive];
 	
 	StackFrame *frame = [self createStackFrame];
-	[self refreshStatus];
+	[self updateStatus];
 	
 	return frame;
 }
@@ -193,7 +181,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket receive];
 	
 	StackFrame *frame = [self createStackFrame];
-	[self refreshStatus];
+	[self updateStatus];
 	
 	return frame;
 }
@@ -207,20 +195,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket receive];
 	
 	StackFrame *frame = [self createStackFrame];
-	[self refreshStatus];
+	[self updateStatus];
 	
 	return frame;
-}
-
-/**
- * This function queries the debug server for the current stacktrace and all the registers on
- * level one. If a user then tries to expand past level one... TOOD: HOLY CRAP WHAT DO WE DO PAST LEVEL 1?
- */
-- (void)updateStackTraceAndRegisters
-{	
-	// do the registers
-	[socket send:[self createCommand:@"context_get"]];
-	[windowController setRegister:[self processData:[socket receive]]];
 }
 
 /**
@@ -321,8 +298,25 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  */
 - (StackFrame *)createStackFrame
 {
+	// get the stack frame
 	[socket send:[self createCommand:@"stack_get -d 0"]];
 	NSXMLDocument *doc = [self processData:[socket receive]];
+	
+	// get the names of all the contexts
+	[socket send:[self createCommand:@"context_names -d 0"]];
+	NSXMLElement *contextNames = [[self processData:[socket receive]] rootElement];
+	NSMutableDictionary *contexts = [NSMutableDictionary dictionary];
+	for (NSXMLElement *context in [contextNames children])
+	{
+		NSString *name = [[context attributeForName:@"name"] stringValue];
+		int cid = [[[context attributeForName:@"id"] stringValue] intValue];
+		
+		// fetch the contexts
+		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d 0 -c %d", cid]]];
+		NSArray *variables = [[[self processData:[socket receive]] rootElement] children];
+		if (variables != nil && name != nil)
+			[contexts setObject:variables forKey:name];
+	}
 	
 	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
 	StackFrame *frame = [[StackFrame alloc]
@@ -331,7 +325,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		withSource:nil
 		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
 		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
-		withContexts:nil
+		withContexts:contexts
 	];
 	
 	return [frame autorelease];
