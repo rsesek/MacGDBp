@@ -143,7 +143,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 - (void)reconnect
 {
 	[socket close];
-	[windowController setStatus:@"Connecting"];
+	self.status = @"Connecting";
 	[windowController resetDisplays];
 	[socket connect];
 }
