@@ -27,9 +27,6 @@
 	StackController *stackController;
 	IBOutlet NSArrayController *stackArrayController;
 	
-	IBOutlet NSArrayController *stackController2;
-	NSArray *stack;
-	
 	IBOutlet NSTreeController *registerController;
 	IBOutlet NSOutlineView *registerView;
 	NSMutableSet *expandedRegisters;
@@ -53,7 +50,6 @@
 
 - (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)anError;
-- (void)setStack:(NSArray *)node;
 - (void)setRegister:(NSXMLDocument *)reg;
 
 - (IBAction)run:(id)sender;

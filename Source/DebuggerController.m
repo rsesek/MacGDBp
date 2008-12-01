@@ -22,6 +22,7 @@
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;
+- (void)updateStackViewer;
 @end
 
 @implementation DebuggerController
@@ -87,7 +88,7 @@
 	SEL action = [anItem action];
 	
 	if (action == @selector(stepOut:))
-		return ([connection isConnected] && [stack count] > 1);
+		return ([connection isConnected] && [stackController.stack count] > 1);
 	else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
 		return [connection isConnected];
 	
@@ -100,7 +101,6 @@
 - (void)resetDisplays
 {
 	[registerController setContent:nil];
-	[stackController2 setContent:nil];
 	[[sourceViewer textView] setString:@""];
 }
 
@@ -141,24 +141,6 @@
 	[errormsg setStringValue:anError];
 	[self setStatus:@"Error"];
 	[errormsg setHidden:NO];
-}
-
-/**
- * Sets the root node element of the stacktrace
- */
-- (void)setStack:(NSArray *)node
-{
-	stack = node;
-	
-	if ([stack count] > 1)
-	{
-		[stepOutButton setEnabled:YES];
-	}
-	[stepInButton setEnabled:YES];
-	[stepOverButton setEnabled:YES];
-	[runButton setEnabled:YES];
-	
-	[self updateSourceViewer];
 }
 
 /**
@@ -211,8 +193,7 @@
 	if ([frame isShiftedFrame:[stackController peek]])
 		[stackController pop];
 	[stackController push:frame];
-	[stackArrayController rearrangeObjects];
-	NSLog(@"stack = %@", stackController.stack);
+	[self updateStackViewer];
 }
 
 /**
@@ -224,8 +205,7 @@
 	[stackController pop]; // frame we were out of
 	[stackController pop]; // frame we are returning to
 	[stackController push:frame];
-	[stackArrayController rearrangeObjects];
-	NSLog(@"stack = %@", stackController.stack);
+	[self updateStackViewer];
 }
 
 /**
@@ -234,11 +214,9 @@
 - (IBAction)stepOver:(id)sender
 {
 	StackFrame *frame = [connection stepOver];
-	
 	[stackController pop];
 	[stackController push:frame];
-	[stackArrayController rearrangeObjects];
-	NSLog(@"stack = %@", stackController.stack);
+	[self updateStackViewer];
 }
 
 /**
@@ -248,43 +226,6 @@
 - (void)tableViewSelectionDidChange:(NSNotification *)notif
 {
 	[self updateSourceViewer];
-}
-
-/**
- * Does the actual updating of the source viewer by reading in the file
- */
-- (void)updateSourceViewer
-{
-	id selectedLevel = [[stackController2 selection] valueForKey:@"level"];
-	if (selectedLevel == NSNoSelectionMarker)
-	{
-		[[sourceViewer textView] setString:@""];
-		return;
-	}
-	int selection = [selectedLevel intValue];
-	
-	if ([stack count] < 1)
-	{
-		NSLog(@"huh... we don't have a stack");
-		return;
-	}
-	
-	// get the filename and then set the text
-	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
-	filename = [[NSURL URLWithString:filename] path];
-	if ([filename isEqualToString:@""])
-	{
-		return;
-	}
-	
-	[sourceViewer setFile:filename];
-	
-	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
-	[sourceViewer setMarkedLine:line];
-	[sourceViewer scrollToLine:line];
-	
-	// make sure the font stays Monaco
-	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 }
 
 /**
@@ -302,6 +243,51 @@
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
 	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+}
+
+#pragma mark Private
+
+/**
+ * Does the actual updating of the source viewer by reading in the file
+ */
+- (void)updateSourceViewer
+{
+	id selection = [stackArrayController selection];
+	if ([selection valueForKey:@"filename"] == NSNoSelectionMarker)
+	{
+		[[sourceViewer textView] setString:@""];
+		return;
+	}
+	
+	// get the filename and then set the text
+	NSString *filename = [selection valueForKey:@"filename"];
+	filename = [[NSURL URLWithString:filename] path];
+	if ([filename isEqualToString:@""])
+	{
+		return;
+	}
+	
+	[sourceViewer setFile:filename];
+	
+	int line = [[selection valueForKey:@"lineNumber"] intValue];
+	[sourceViewer setMarkedLine:line];
+	[sourceViewer scrollToLine:line];
+	
+	// make sure the font stays Monaco
+	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+}
+
+/**
+ * Does some house keeping to the stack viewer
+ */
+- (void)updateStackViewer
+{
+	[stackArrayController rearrangeObjects];
+	[stackArrayController setSelectionIndex:0];
+	
+	[stepInButton setEnabled:YES];
+	[stepOverButton setEnabled:YES];
+	[runButton setEnabled:YES];
 }
 
 #pragma mark BSSourceView Delegate
