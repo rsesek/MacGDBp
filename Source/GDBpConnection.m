@@ -17,6 +17,8 @@
 #import "GDBpConnection.h"
 #import "AppDelegate.h"
 
+NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
+
 @interface GDBpConnection (Private)
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
@@ -121,7 +123,14 @@
  */
 - (void)errorEncountered:(NSString *)error
 {
-	[windowController setError:error];
+	[[NSNotificationCenter defaultCenter]
+		postNotificationName:kErrorOccurredNotif
+		object:self
+		userInfo:[NSDictionary
+			dictionaryWithObject:error
+			forKey:@"NSString"
+		]
+	];
 }
 
 /**

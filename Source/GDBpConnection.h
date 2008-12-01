@@ -20,6 +20,8 @@
 #import "Breakpoint.h"
 #import "StackFrame.h"
 
+extern NSString *kErrorOccurredNotif;
+
 @interface GDBpConnection : NSObject
 {
 	int port;

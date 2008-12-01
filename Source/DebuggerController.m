@@ -46,6 +46,13 @@
 		expandedRegisters = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 		[[self window] setDelegate:self];
+		
+		[[NSNotificationCenter defaultCenter]
+			addObserver:self
+			selector:@selector(handleConnectionError:)
+			name:kErrorOccurredNotif
+			object:connection
+		];
 	}
 	return self;
 }
@@ -141,6 +148,14 @@
 	[errormsg setStringValue:anError];
 	[self setStatus:@"Error"];
 	[errormsg setHidden:NO];
+}
+
+/**
+ * Handles a GDBpConnection error
+ */
+- (void)handleConnectionError:(NSNotification *)notif
+{
+	[self setError:[[notif userInfo] valueForKey:@"NSString"]];
 }
 
 /**
