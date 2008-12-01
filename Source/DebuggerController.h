@@ -43,7 +43,6 @@
 - (void)resetDisplays;
 
 - (void)setError:(NSString *)anError;
-- (void)setRegister:(NSXMLDocument *)reg;
 
 - (IBAction)run:(id)sender;
 - (IBAction)stepIn:(id)sender;
