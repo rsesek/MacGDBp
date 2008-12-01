@@ -43,6 +43,14 @@
 }
 
 /**
+ * Returns a reference to the top of the stack
+ */
+- (StackFrame *)peek
+{
+	return [stack lastObject];
+}
+
+/**
  * Pops the current frame off the stack and returns the frame
  */
 - (StackFrame *)pop

@@ -16,12 +16,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BSSourceView.h"
+#import "StackController.h"
 
 @class GDBpConnection;
 
 @interface DebuggerController : NSWindowController
 {
 	GDBpConnection *connection;
+	
+	StackController *stackController;
 	
 	IBOutlet NSArrayController *stackController2;
 	NSArray *stack;

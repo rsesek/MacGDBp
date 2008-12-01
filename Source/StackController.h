@@ -27,6 +27,7 @@
 
 @property(readonly) NSMutableArray *stack;
 
+- (StackFrame *)peek;
 - (StackFrame *)pop;
 - (void)push:(StackFrame *)frame;
 

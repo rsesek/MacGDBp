@@ -20,6 +20,7 @@
 @interface GDBpConnection (Private)
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
+- (StackFrame *)createStackFrame;
 @end
 
 @implementation GDBpConnection
@@ -171,31 +172,43 @@
 /**
  * Tells the debugger to step into the current command.
  */
-- (void)stepIn
+- (StackFrame *)stepIn
 {
 	[socket send:[self createCommand:@"step_into"]];
 	[socket receive];
+	
+	StackFrame *frame = [self createStackFrame];
 	[self refreshStatus];
+	
+	return frame;
 }
 
 /**
  * Tells the debugger to step out of the current context
  */
-- (void)stepOut
+- (StackFrame *)stepOut
 {
 	[socket send:[self createCommand:@"step_out"]];
 	[socket receive];
+	
+	StackFrame *frame = [self createStackFrame];
 	[self refreshStatus];
+	
+	return frame;
 }
 
 /**
  * Tells the debugger to step over the current function
  */
-- (void)stepOver
+- (StackFrame *)stepOver
 {
 	[socket send:[self createCommand:@"step_over"]];
 	[socket receive];
+	
+	StackFrame *frame = [self createStackFrame];
 	[self refreshStatus];
+	
+	return frame;
 }
 
 /**
@@ -318,6 +331,27 @@
 	}
 	
 	return [doc autorelease];
+}
+
+/**
+ * Creates a StackFrame based on the current position in the debugger
+ */
+- (StackFrame *)createStackFrame
+{
+	[socket send:[self createCommand:@"stack_get -d 0"]];
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	
+	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
+	StackFrame *frame = [[StackFrame alloc]
+		initWithIndex:[[[xmlframe attributeForName:@"level"] stringValue] intValue]
+		withFilename:[[xmlframe attributeForName:@"filename"] stringValue]
+		withSource:nil
+		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
+		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
+		withContexts:nil
+	];
+	
+	return [frame autorelease];
 }
 
 @end

@@ -18,6 +18,7 @@
 #import "DebuggerController.h"
 #import "SocketWrapper.h"
 #import "Breakpoint.h"
+#import "StackFrame.h"
 
 @interface GDBpConnection : NSObject
 {
@@ -45,9 +46,9 @@
 // communication
 - (void)reconnect;
 - (void)run;
-- (void)stepIn;
-- (void)stepOut;
-- (void)stepOver;
+- (StackFrame *)stepIn;
+- (StackFrame *)stepOut;
+- (StackFrame *)stepOver;
 - (void)addBreakpoint:(Breakpoint *)bp;
 - (void)removeBreakpoint:(Breakpoint *)bp;
 - (void)refreshStatus;

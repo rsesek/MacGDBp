@@ -36,6 +36,8 @@
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
+		stackController = [[StackController alloc] init];
+		
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		connection = [[GDBpConnection alloc] initWithWindowController:self
 																	 port:[defaults integerForKey:@"Port"]
@@ -54,6 +56,7 @@
 {
 	[connection release];
 	[expandedRegisters release];
+	[stackController release];
 	[super dealloc];
 }
 
@@ -203,7 +206,11 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	[connection stepIn];
+	StackFrame *frame = [connection stepIn];
+	if ([frame isShiftedFrame:[stackController peek]])
+		[stackController pop];
+	[stackController push:frame];
+	NSLog(@"stack = %@", stackController.stack);
 }
 
 /**
@@ -211,7 +218,10 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	[connection stepOut];
+	StackFrame *frame = [connection stepOut];
+	[stackController pop];
+	[stackController push:frame];
+	NSLog(@"stack = %@", stackController.stack);
 }
 
 /**
@@ -219,7 +229,12 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	[connection stepOver];
+	StackFrame *frame = [connection stepOver];
+	
+	[stackController pop];
+	[stackController push:frame];
+	
+	NSLog(@"stack = %@", stackController.stack);
 }
 
 /**

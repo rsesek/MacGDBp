@@ -52,4 +52,21 @@
 	return self;
 }
 
+/**
+ * Determines whether or not the given frame was shifted, rather than jumped. Essentially,
+ * this checks if it's in the same file/function.
+ */
+- (BOOL)isShiftedFrame:(StackFrame *)frame
+{
+	return ([filename isEqualToString:frame.filename]);
+}
+
+/**
+ * Returns a human-readable representation
+ */
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"#%d %@ [%@:%d]", index, function, filename, lineNumber];
+}
+
 @end

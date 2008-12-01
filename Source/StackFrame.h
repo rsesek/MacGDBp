@@ -64,4 +64,6 @@
 		 inFunction:(NSString *)function
 	   withContexts:(NSDictionary *)contexts;
 
+- (BOOL)isShiftedFrame:(StackFrame *)frame;
+
 @end
