@@ -49,6 +49,8 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		[socket setDelegate:self];
 		[socket connect];
 		
+		self.status = @"Connecting";
+		
 		[[BreakpointManager sharedManager] setConnection:self];
 	}
 	return self;

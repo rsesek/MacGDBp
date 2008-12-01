@@ -42,7 +42,6 @@
 
 - (void)resetDisplays;
 
-- (void)setStatus:(NSString *)aStatus;
 - (void)setError:(NSString *)anError;
 - (void)setRegister:(NSXMLDocument *)reg;
 

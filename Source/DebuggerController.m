@@ -71,8 +71,8 @@
  */
 - (void)awakeFromNib
 {
-	[self setStatus:@"Connecting"];
 	[[self window] setExcludedFromWindowsMenu:YES];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	[sourceViewer setDelegate:self];
 	[stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
 }
@@ -112,22 +112,11 @@
 }
 
 /**
- * Sets the status and clears any error message
- */
-- (void)setStatus:(NSString *)aStatus
-{
-	[errormsg setHidden:YES];
-	[statusmsg setStringValue:aStatus];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
-}
-
-/**
  * Sets the status to be "Error" and then displays the error message
  */
 - (void)setError:(NSString *)anError
 {
 	[errormsg setStringValue:anError];
-	[self setStatus:@"Error"];
 	[errormsg setHidden:NO];
 }
 
