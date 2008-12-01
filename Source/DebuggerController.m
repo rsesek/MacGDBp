@@ -195,6 +195,7 @@
 - (IBAction)reconnect:(id)sender
 {
 	[connection reconnect];
+	[self resetDisplays];
 }
 
 /**
