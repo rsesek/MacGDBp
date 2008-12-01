@@ -28,11 +28,17 @@ extern NSString *kErrorOccurredNotif;
 	NSString *session;
 	BOOL connected;
 	
+	/**
+	 * Human-readable status of the connection
+	 */
+	NSString *status;
+	
 	DebuggerController *windowController;
 	
 	SocketWrapper *socket;
 }
 
+@property(readonly, copy) NSString *status;
 @property(readonly) SocketWrapper *socket;
 @property(readonly) DebuggerController *windowController;
 

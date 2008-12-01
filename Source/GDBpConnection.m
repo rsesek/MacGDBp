@@ -19,15 +19,18 @@
 
 NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 
-@interface GDBpConnection (Private)
+@interface GDBpConnection()
+@property(readwrite, copy) NSString *status;
+
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
 - (StackFrame *)createStackFrame;
+- (void)updateStatus;
 @end
 
 @implementation GDBpConnection
 
-@synthesize socket, windowController;
+@synthesize socket, windowController, status;
 
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
@@ -160,21 +163,10 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  */
 - (void)refreshStatus
 {
-	[socket send:[self createCommand:@"status"]];
-	
-	NSXMLDocument *doc = [self processData:[socket receive]];
-	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
-	[windowController setStatus:[status capitalizedString]];
-	
-	if ([status isEqualToString:@"break"])
+	[self updateStatus];
+	if ([status isEqualToString:@"Break"])
 	{
 		[self updateStackTraceAndRegisters];
-	}
-	else if ([status isEqualToString:@"stopped"] || [status isEqualToString:@"stopping"])
-	{
-		connected = NO;
-		[socket close];
-		[windowController setStatus:@"Stopped"];
 	}
 }
 
@@ -343,6 +335,23 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	];
 	
 	return [frame autorelease];
+}
+
+/**
+ * Fetches the value of and sets the status instance variable
+ */
+- (void)updateStatus
+{
+	[socket send:[self createCommand:@"status"]];
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	self.status = [[[[doc rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+	
+	if ([status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
+	{
+		connected = NO;
+		[socket close];
+		self.status = @"Stopped";
+	}
 }
 
 @end
