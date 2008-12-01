@@ -108,6 +108,7 @@
 - (void)resetDisplays
 {
 	[registerController setContent:nil];
+	[stackController.stack removeAllObjects];
 	[[sourceViewer textView] setString:@""];
 }
 
@@ -241,7 +242,6 @@
 	id selection = [stackArrayController selection];
 	if ([selection valueForKey:@"filename"] == NSNoSelectionMarker)
 	{
-		[[sourceViewer textView] setString:@""];
 		return;
 	}
 	
@@ -253,11 +253,14 @@
 		return;
 	}
 	
-	[sourceViewer setFile:filename];
+	if (![sourceViewer.file isEqualToString:filename])
+		[sourceViewer setFile:filename];
 	
 	int line = [[selection valueForKey:@"lineNumber"] intValue];
 	[sourceViewer setMarkedLine:line];
 	[sourceViewer scrollToLine:line];
+	
+	[[sourceViewer textView] display];
 	
 	// make sure the font stays Monaco
 	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
