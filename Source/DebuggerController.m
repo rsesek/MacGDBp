@@ -68,6 +68,7 @@
 	[self setStatus:@"Connecting"];
 	[[self window] setExcludedFromWindowsMenu:YES];
 	[sourceViewer setDelegate:self];
+	[stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
 }
 
 /**
@@ -210,6 +211,7 @@
 	if ([frame isShiftedFrame:[stackController peek]])
 		[stackController pop];
 	[stackController push:frame];
+	[stackArrayController rearrangeObjects];
 	NSLog(@"stack = %@", stackController.stack);
 }
 
@@ -222,6 +224,7 @@
 	[stackController pop]; // frame we were out of
 	[stackController pop]; // frame we are returning to
 	[stackController push:frame];
+	[stackArrayController rearrangeObjects];
 	NSLog(@"stack = %@", stackController.stack);
 }
 
@@ -234,7 +237,7 @@
 	
 	[stackController pop];
 	[stackController push:frame];
-	
+	[stackArrayController rearrangeObjects];
 	NSLog(@"stack = %@", stackController.stack);
 }
 

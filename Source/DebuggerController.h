@@ -25,6 +25,7 @@
 	GDBpConnection *connection;
 	
 	StackController *stackController;
+	IBOutlet NSArrayController *stackArrayController;
 	
 	IBOutlet NSArrayController *stackController2;
 	NSArray *stack;
