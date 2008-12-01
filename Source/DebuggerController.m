@@ -219,7 +219,8 @@
 - (IBAction)stepOut:(id)sender
 {
 	StackFrame *frame = [connection stepOut];
-	[stackController pop];
+	[stackController pop]; // frame we were out of
+	[stackController pop]; // frame we are returning to
 	[stackController push:frame];
 	NSLog(@"stack = %@", stackController.stack);
 }
