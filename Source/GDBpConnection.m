@@ -343,7 +343,7 @@
 	
 	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
 	StackFrame *frame = [[StackFrame alloc]
-		initWithIndex:[[[xmlframe attributeForName:@"level"] stringValue] intValue]
+		initWithIndex:0
 		withFilename:[[xmlframe attributeForName:@"filename"] stringValue]
 		withSource:nil
 		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]

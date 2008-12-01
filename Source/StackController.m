@@ -56,8 +56,13 @@
 - (StackFrame *)pop
 {
 	StackFrame *frame = [stack lastObject];
+	
 	if (frame != nil)
 		[stack removeLastObject];
+	
+	for (StackFrame *f in stack)
+		f.index--;
+	
 	return frame;
 }
 
@@ -66,6 +71,9 @@
  */
 - (void)push:(StackFrame *)frame
 {
+	for (StackFrame *f in stack)
+		f.index++;
+	
 	[stack insertObject:frame atIndex:[stack count]];
 }
 
