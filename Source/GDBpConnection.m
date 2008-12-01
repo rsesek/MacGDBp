@@ -317,7 +317,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
-		[windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+		[self errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return nil;
 	}
 	
