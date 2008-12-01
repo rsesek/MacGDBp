@@ -1106,14 +1106,6 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">stackController</string>
-						<reference key="source" ref="78922448"/>
-						<reference key="destination" ref="988542050"/>
-					</object>
-					<int key="connectionID">119</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">registerController</string>
 						<reference key="source" ref="78922448"/>
 						<reference key="destination" ref="240336030"/>
@@ -1231,6 +1223,14 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="destination" ref="620534418"/>
 					</object>
 					<int key="connectionID">503</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">stackController2</string>
+						<reference key="source" ref="78922448"/>
+						<reference key="destination" ref="988542050"/>
+					</object>
+					<int key="connectionID">556</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1739,7 +1739,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<reference ref="9"/>
 					<reference ref="9"/>
 					<string>{{344, 269}, {769, 501}}</string>
-					<integer value="0"/>
+					<reference ref="8"/>
 					<reference ref="9"/>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>{213, 107}</string>
@@ -1769,7 +1769,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">555</int>
+			<int key="maxID">556</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1834,7 +1834,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 							<string>registerView</string>
 							<string>runButton</string>
 							<string>sourceViewer</string>
-							<string>stackController</string>
+							<string>stackController2</string>
 							<string>statusmsg</string>
 							<string>stepInButton</string>
 							<string>stepOutButton</string>

@@ -23,7 +23,7 @@
 {
 	GDBpConnection *connection;
 	
-	IBOutlet NSArrayController *stackController;
+	IBOutlet NSArrayController *stackController2;
 	NSArray *stack;
 	
 	IBOutlet NSTreeController *registerController;

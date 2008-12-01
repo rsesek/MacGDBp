@@ -96,7 +96,7 @@
 - (void)resetDisplays
 {
 	[registerController setContent:nil];
-	[stackController setContent:nil];
+	[stackController2 setContent:nil];
 	[[sourceViewer textView] setString:@""];
 }
 
@@ -236,7 +236,7 @@
  */
 - (void)updateSourceViewer
 {
-	id selectedLevel = [[stackController selection] valueForKey:@"level"];
+	id selectedLevel = [[stackController2 selection] valueForKey:@"level"];
 	if (selectedLevel == NSNoSelectionMarker)
 	{
 		[[sourceViewer textView] setString:@""];
