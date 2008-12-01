@@ -35,12 +35,6 @@
 	IBOutlet NSTextField *errormsg;
 	
 	IBOutlet BSSourceView *sourceViewer;
-	
-	IBOutlet NSToolbarItem *stepInButton;
-	IBOutlet NSToolbarItem *stepOutButton;
-	IBOutlet NSToolbarItem *stepOverButton;
-	IBOutlet NSToolbarItem *runButton;
-	IBOutlet NSToolbarItem *reconnectButton;
 }
 
 @property(readonly) GDBpConnection *connection;

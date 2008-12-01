@@ -96,6 +96,8 @@
 		return ([connection isConnected] && [stackController.stack count] > 1);
 	else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
 		return [connection isConnected];
+	else if (action == @selector(reconnect:))
+		return ![connection isConnected];
 	
 	return [[self window] validateUserInterfaceItem:anItem];
 }
@@ -117,25 +119,6 @@
 	[errormsg setHidden:YES];
 	[statusmsg setStringValue:aStatus];
 	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
-	
-	[stepInButton setEnabled:NO];
-	[stepOutButton setEnabled:NO];
-	[stepOverButton setEnabled:NO];
-	[runButton setEnabled:NO];
-	[reconnectButton setEnabled:NO];
-	
-	if ([connection isConnected])
-	{
-		if ([aStatus isEqualToString:@"Starting"])
-		{
-			[stepInButton setEnabled:YES];
-			[runButton setEnabled:YES];
-		}
-	}
-	else
-	{
-		[reconnectButton setEnabled:YES];
-	}
 }
 
 /**
@@ -298,10 +281,6 @@
 {
 	[stackArrayController rearrangeObjects];
 	[stackArrayController setSelectionIndex:0];
-	
-	[stepInButton setEnabled:YES];
-	[stepOverButton setEnabled:YES];
-	[runButton setEnabled:YES];
 }
 
 #pragma mark BSSourceView Delegate
