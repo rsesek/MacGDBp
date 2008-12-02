@@ -27,9 +27,9 @@
 	StackController *stackController;
 	IBOutlet NSArrayController *stackArrayController;
 	
-	IBOutlet NSTreeController *registerController;
-	IBOutlet NSOutlineView *registerView;
-	NSMutableSet *expandedRegisters;
+	IBOutlet NSTreeController *variablesTreeController;
+	IBOutlet NSOutlineView *variablesOutlineView;
+	NSMutableSet *expandedVariables;
 	
 	IBOutlet NSTextField *statusmsg;
 	IBOutlet NSTextField *errormsg;

@@ -42,7 +42,7 @@
 		
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] session:[defaults stringForKey:@"IDEKey"]];
-		expandedRegisters = [[NSMutableSet alloc] init];
+		expandedVariables = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 		[[self window] setDelegate:self];
 		
@@ -62,7 +62,7 @@
 - (void)dealloc
 {
 	[connection release];
-	[expandedRegisters release];
+	[expandedVariables release];
 	[stackController release];
 	[super dealloc];
 }
@@ -108,7 +108,7 @@
  */
 - (void)resetDisplays
 {
-	[registerController setContent:nil];
+	[variablesTreeController setContent:nil];
 	[stackController.stack removeAllObjects];
 	[[sourceViewer textView] setString:@""];
 }
@@ -198,7 +198,7 @@
 - (void)outlineViewItemDidExpand:(NSNotification *)notif
 {
 	NSTreeNode *node = [[notif userInfo] objectForKey:@"NSObject"];
-	[expandedRegisters addObject:[[node representedObject] fullname]];
+	[expandedVariables addObject:[[node representedObject] fullname]];
 }
 
 /**
@@ -206,7 +206,7 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
-	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+	[expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
 }
 
 #pragma mark Private
@@ -258,12 +258,12 @@
  */
 - (void)expandVariables
 {
-	for (int i = 0; i < [registerView numberOfRows]; i++)
+	for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
 	{
-		NSTreeNode *node = [registerView itemAtRow:i];
-		if ([expandedRegisters containsObject:[[node representedObject] fullname]])
+		NSTreeNode *node = [variablesOutlineView itemAtRow:i];
+		if ([expandedVariables containsObject:[[node representedObject] fullname]])
 		{
-			[registerView expandItem:node];
+			[variablesOutlineView expandItem:node];
 		}
 	}
 }

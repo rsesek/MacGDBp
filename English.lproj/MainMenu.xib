@@ -1981,8 +1981,6 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>errormsg</string>
 							<string>reconnectButton</string>
-							<string>registerController</string>
-							<string>registerView</string>
 							<string>runButton</string>
 							<string>sourceViewer</string>
 							<string>stackController2</string>
@@ -1990,13 +1988,13 @@
 							<string>stepInButton</string>
 							<string>stepOutButton</string>
 							<string>stepOverButton</string>
+							<string>variablesOutlineView</string>
+							<string>variablesTreeController</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
 							<string>NSToolbarItem</string>
-							<string>NSTreeController</string>
-							<string>NSOutlineView</string>
 							<string>NSToolbarItem</string>
 							<string>BSSourceView</string>
 							<string>NSArrayController</string>
@@ -2004,6 +2002,8 @@
 							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
+							<string>NSOutlineView</string>
+							<string>NSTreeController</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
