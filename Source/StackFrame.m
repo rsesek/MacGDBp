@@ -58,7 +58,7 @@
  */
 - (BOOL)isShiftedFrame:(StackFrame *)frame
 {
-	return ([filename isEqualToString:frame.filename]);
+	return ([filename isEqualToString:frame.filename] && [function isEqualToString:frame.function]);
 }
 
 /**
