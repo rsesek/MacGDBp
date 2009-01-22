@@ -22,6 +22,8 @@
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;
+- (void)updateStackViewer;
+- (void)expandVariables;
 @end
 
 @implementation DebuggerController
@@ -36,13 +38,20 @@
 {
 	if (self = [super initWithWindowNibName:@"Debugger"])
 	{
+		stackController = [[StackController alloc] init];
+		
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		connection = [[GDBpConnection alloc] initWithWindowController:self
-																	 port:[defaults integerForKey:@"Port"]
-																  session:[defaults stringForKey:@"IDEKey"]];
-		expandedRegisters = [[NSMutableSet alloc] init];
+		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] session:[defaults stringForKey:@"IDEKey"]];
+		expandedVariables = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 		[[self window] setDelegate:self];
+		
+		[[NSNotificationCenter defaultCenter]
+			addObserver:self
+			selector:@selector(handleConnectionError:)
+			name:kErrorOccurredNotif
+			object:connection
+		];
 	}
 	return self;
 }
@@ -53,7 +62,8 @@
 - (void)dealloc
 {
 	[connection release];
-	[expandedRegisters release];
+	[expandedVariables release];
+	[stackController release];
 	[super dealloc];
 }
 
@@ -62,9 +72,10 @@
  */
 - (void)awakeFromNib
 {
-	[self setStatus:@"Connecting"];
 	[[self window] setExcludedFromWindowsMenu:YES];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
 	[sourceViewer setDelegate:self];
+	[stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
 }
 
 /**
@@ -83,9 +94,11 @@
 	SEL action = [anItem action];
 	
 	if (action == @selector(stepOut:))
-		return ([connection isConnected] && [stack count] > 1);
+		return ([connection isConnected] && [stackController.stack count] > 1);
 	else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
 		return [connection isConnected];
+	else if (action == @selector(reconnect:))
+		return ![connection isConnected];
 	
 	return [[self window] validateUserInterfaceItem:anItem];
 }
@@ -95,38 +108,9 @@
  */
 - (void)resetDisplays
 {
-	[registerController setContent:nil];
-	[stackController setContent:nil];
+	[variablesTreeController setContent:nil];
+	[stackController.stack removeAllObjects];
 	[[sourceViewer textView] setString:@""];
-}
-
-/**
- * Sets the status and clears any error message
- */
-- (void)setStatus:(NSString *)aStatus
-{
-	[errormsg setHidden:YES];
-	[statusmsg setStringValue:aStatus];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection session]]];
-	
-	[stepInButton setEnabled:NO];
-	[stepOutButton setEnabled:NO];
-	[stepOverButton setEnabled:NO];
-	[runButton setEnabled:NO];
-	[reconnectButton setEnabled:NO];
-	
-	if ([connection isConnected])
-	{
-		if ([aStatus isEqualToString:@"Starting"])
-		{
-			[stepInButton setEnabled:YES];
-			[runButton setEnabled:YES];
-		}
-	}
-	else
-	{
-		[reconnectButton setEnabled:YES];
-	}
 }
 
 /**
@@ -135,51 +119,15 @@
 - (void)setError:(NSString *)anError
 {
 	[errormsg setStringValue:anError];
-	[self setStatus:@"Error"];
 	[errormsg setHidden:NO];
 }
 
 /**
- * Sets the root node element of the stacktrace
+ * Handles a GDBpConnection error
  */
-- (void)setStack:(NSArray *)node
+- (void)handleConnectionError:(NSNotification *)notif
 {
-	stack = node;
-	
-	if ([stack count] > 1)
-	{
-		[stepOutButton setEnabled:YES];
-	}
-	[stepInButton setEnabled:YES];
-	[stepOverButton setEnabled:YES];
-	[runButton setEnabled:YES];
-	
-	[self updateSourceViewer];
-}
-
-/**
- * Sets the stack root element so that the NSOutlineView can display it
- */
-- (void)setRegister:(NSXMLDocument *)elm
-{
-	// XXX: Doing anything short of this will cause bindings to crash spectacularly for no reason whatsoever, and
-	//		in seemingly arbitrary places. The class that crashes is _NSKeyValueObservationInfoCreateByRemoving.
-	//		http://boredzo.org/blog/archives/2006-01-29/have-you-seen-this-crash says that this means nothing is
-	//		being observed, but I doubt that he was using an NSOutlineView which seems to be one f!cking piece of
-	//		sh!t when used with NSTreeController. http://www.cocoadev.com/index.pl?NSTreeControllerBugOrDeveloperError
-	//		was the inspiration for this fix (below) but the author says that inserting does not work too well, but
-	//		that's okay for us as we just need to replace the entire thing.
-	[registerController setContent:nil];
-	[registerController setContent:[[elm rootElement] children]];
-	
-	for (int i = 0; i < [registerView numberOfRows]; i++)
-	{
-		NSTreeNode *node = [registerView itemAtRow:i];
-		if ([expandedRegisters containsObject:[[node representedObject] fullname]])
-		{
-			[registerView expandItem:node];
-		}
-	}
+	[self setError:[[notif userInfo] valueForKey:@"NSString"]];
 }
 
 /**
@@ -196,6 +144,7 @@
 - (IBAction)reconnect:(id)sender
 {
 	[connection reconnect];
+	[self resetDisplays];
 }
 
 /**
@@ -203,7 +152,11 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	[connection stepIn];
+	StackFrame *frame = [connection stepIn];
+	if ([frame isShiftedFrame:[stackController peek]])
+		[stackController pop];
+	[stackController push:frame];
+	[self updateStackViewer];
 }
 
 /**
@@ -211,7 +164,11 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	[connection stepOut];
+	StackFrame *frame = [connection stepOut];
+	[stackController pop]; // frame we were out of
+	[stackController pop]; // frame we are returning to
+	[stackController push:frame];
+	[self updateStackViewer];
 }
 
 /**
@@ -219,7 +176,10 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	[connection stepOver];
+	StackFrame *frame = [connection stepOver];
+	[stackController pop];
+	[stackController push:frame];
+	[self updateStackViewer];
 }
 
 /**
@@ -229,43 +189,7 @@
 - (void)tableViewSelectionDidChange:(NSNotification *)notif
 {
 	[self updateSourceViewer];
-}
-
-/**
- * Does the actual updating of the source viewer by reading in the file
- */
-- (void)updateSourceViewer
-{
-	id selectedLevel = [[stackController selection] valueForKey:@"level"];
-	if (selectedLevel == NSNoSelectionMarker)
-	{
-		[[sourceViewer textView] setString:@""];
-		return;
-	}
-	int selection = [selectedLevel intValue];
-	
-	if ([stack count] < 1)
-	{
-		NSLog(@"huh... we don't have a stack");
-		return;
-	}
-	
-	// get the filename and then set the text
-	NSString *filename = [[stack objectAtIndex:selection] valueForKey:@"filename"];
-	filename = [[NSURL URLWithString:filename] path];
-	if ([filename isEqualToString:@""])
-	{
-		return;
-	}
-	
-	[sourceViewer setFile:filename];
-	
-	int line = [[[stack objectAtIndex:selection] valueForKey:@"lineno"] intValue];
-	[sourceViewer setMarkedLine:line];
-	[sourceViewer scrollToLine:line];
-	
-	// make sure the font stays Monaco
-	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+	[self expandVariables];
 }
 
 /**
@@ -274,7 +198,7 @@
 - (void)outlineViewItemDidExpand:(NSNotification *)notif
 {
 	NSTreeNode *node = [[notif userInfo] objectForKey:@"NSObject"];
-	[expandedRegisters addObject:[[node representedObject] fullname]];
+	[expandedVariables addObject:[[node representedObject] fullname]];
 }
 
 /**
@@ -282,7 +206,66 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification *)notif
 {
-	[expandedRegisters removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+	[expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+}
+
+#pragma mark Private
+
+/**
+ * Does the actual updating of the source viewer by reading in the file
+ */
+- (void)updateSourceViewer
+{
+	id selection = [stackArrayController selection];
+	if ([selection valueForKey:@"filename"] == NSNoSelectionMarker)
+	{
+		return;
+	}
+	
+	// get the filename and then set the text
+	NSString *filename = [selection valueForKey:@"filename"];
+	filename = [[NSURL URLWithString:filename] path];
+	if ([filename isEqualToString:@""])
+	{
+		return;
+	}
+	
+	if (![sourceViewer.file isEqualToString:filename])
+		[sourceViewer setFile:filename];
+	
+	int line = [[selection valueForKey:@"lineNumber"] intValue];
+	[sourceViewer setMarkedLine:line];
+	[sourceViewer scrollToLine:line];
+	
+	[[sourceViewer textView] display];
+	
+	// make sure the font stays Monaco
+	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+}
+
+/**
+ * Does some house keeping to the stack viewer
+ */
+- (void)updateStackViewer
+{
+	[stackArrayController rearrangeObjects];
+	[stackArrayController setSelectionIndex:0];
+	[self expandVariables];
+}
+
+/**
+ * Expands the variables based on the stored set
+ */
+- (void)expandVariables
+{
+	for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
+	{
+		NSTreeNode *node = [variablesOutlineView itemAtRow:i];
+		if ([expandedVariables containsObject:[[node representedObject] fullname]])
+		{
+			[variablesOutlineView expandItem:node];
+		}
+	}
 }
 
 #pragma mark BSSourceView Delegate

@@ -14,40 +14,67 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
-#import "BSSourceView.h"
 #import "StackController.h"
 
-@class GDBpConnection;
 
-@interface DebuggerController : NSWindowController
+@implementation StackController
+
+@synthesize stack;
+
+/**
+ * Constructor
+ */
+- (id)init
 {
-	GDBpConnection *connection;
-	
-	StackController *stackController;
-	IBOutlet NSArrayController *stackArrayController;
-	
-	IBOutlet NSTreeController *variablesTreeController;
-	IBOutlet NSOutlineView *variablesOutlineView;
-	NSMutableSet *expandedVariables;
-	
-	IBOutlet NSTextField *statusmsg;
-	IBOutlet NSTextField *errormsg;
-	
-	IBOutlet BSSourceView *sourceViewer;
+	if (self = [super init])
+	{
+		stack = [[NSMutableArray alloc] init];
+	}
+	return self;
 }
 
-@property(readonly) GDBpConnection *connection;
-@property(readonly) BSSourceView *sourceViewer;
+/**
+ * Destructor
+ */
+- (void)dealloc
+{
+	[stack release];
+	[super dealloc];
+}
 
-- (void)resetDisplays;
+/**
+ * Returns a reference to the top of the stack
+ */
+- (StackFrame *)peek
+{
+	return [stack lastObject];
+}
 
-- (void)setError:(NSString *)anError;
+/**
+ * Pops the current frame off the stack and returns the frame
+ */
+- (StackFrame *)pop
+{
+	StackFrame *frame = [stack lastObject];
+	
+	if (frame != nil)
+		[stack removeLastObject];
+	
+	for (StackFrame *f in stack)
+		f.index--;
+	
+	return frame;
+}
 
-- (IBAction)run:(id)sender;
-- (IBAction)stepIn:(id)sender;
-- (IBAction)stepOut:(id)sender;
-- (IBAction)stepOver:(id)sender;
-- (IBAction)reconnect:(id)sender;
+/**
+ * Pushes a frame onto the end of the stack
+ */
+- (void)push:(StackFrame *)frame
+{
+	for (StackFrame *f in stack)
+		f.index++;
+	
+	[stack insertObject:frame atIndex:[stack count]];
+}
 
 @end

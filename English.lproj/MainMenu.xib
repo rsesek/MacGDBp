@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9E17</string>
-		<string key="IBDocument.InterfaceBuilderVersion">670</string>
-		<string key="IBDocument.AppKitVersion">949.33</string>
+		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.InterfaceBuilderVersion">672</string>
+		<string key="IBDocument.AppKitVersion">949.34</string>
 		<string key="IBDocument.HIToolboxVersion">352.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1981,22 +1981,20 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>errormsg</string>
 							<string>reconnectButton</string>
-							<string>registerController</string>
-							<string>registerView</string>
 							<string>runButton</string>
 							<string>sourceViewer</string>
-							<string>stackController</string>
+							<string>stackController2</string>
 							<string>statusmsg</string>
 							<string>stepInButton</string>
 							<string>stepOutButton</string>
 							<string>stepOverButton</string>
+							<string>variablesOutlineView</string>
+							<string>variablesTreeController</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
 							<string>NSToolbarItem</string>
-							<string>NSTreeController</string>
-							<string>NSOutlineView</string>
 							<string>NSToolbarItem</string>
 							<string>BSSourceView</string>
 							<string>NSArrayController</string>
@@ -2004,6 +2002,8 @@
 							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
+							<string>NSOutlineView</string>
+							<string>NSTreeController</string>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

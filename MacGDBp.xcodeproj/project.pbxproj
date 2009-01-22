@@ -26,6 +26,8 @@
 		1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9582660E2524AD001A3D89 /* PreferencesController.m */; };
 		1E9583200E2531BD001A3D89 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
+		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
+		1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF4D5C0EE35F0700B62769 /* StackController.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -85,6 +87,10 @@
 		1E9582650E2524AD001A3D89 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesController.h; path = Source/PreferencesController.h; sourceTree = "<group>"; };
 		1E9582660E2524AD001A3D89 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesController.m; path = Source/PreferencesController.m; sourceTree = "<group>"; };
 		1E95831F0E2531BD001A3D89 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		1EB7BED30ECF3CA90033283A /* StackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackFrame.h; path = Source/StackFrame.h; sourceTree = "<group>"; };
+		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
+		1EBF4D5B0EE35F0700B62769 /* StackController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackController.h; path = Source/StackController.h; sourceTree = "<group>"; };
+		1EBF4D5C0EE35F0700B62769 /* StackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackController.m; path = Source/StackController.m; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
 				1E9582640E252480001A3D89 /* Preferences */,
 				1E1E52C10DF9B1FB00D334F9 /* Connection */,
+				1EB7BEB90ECF3BC60033283A /* Debugger */,
 				1E1E52C00DF9B1E700D334F9 /* Breakpoints */,
 				1E71886C0D839F6C00969277 /* Source View */,
 			);
@@ -187,8 +194,6 @@
 			children = (
 				1E02C56F0C610158006F1752 /* GDBpConnection.h */,
 				1E02C5700C610158006F1752 /* GDBpConnection.m */,
-				1E02C5F40C610724006F1752 /* DebuggerController.h */,
-				1E02C5F50C610724006F1752 /* DebuggerController.m */,
 				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
 				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
@@ -230,6 +235,19 @@
 				1E9582660E2524AD001A3D89 /* PreferencesController.m */,
 			);
 			name = Preferences;
+			sourceTree = "<group>";
+		};
+		1EB7BEB90ECF3BC60033283A /* Debugger */ = {
+			isa = PBXGroup;
+			children = (
+				1E02C5F40C610724006F1752 /* DebuggerController.h */,
+				1E02C5F50C610724006F1752 /* DebuggerController.m */,
+				1EB7BED30ECF3CA90033283A /* StackFrame.h */,
+				1EB7BED40ECF3CA90033283A /* StackFrame.m */,
+				1EBF4D5B0EE35F0700B62769 /* StackController.h */,
+				1EBF4D5C0EE35F0700B62769 /* StackController.m */,
+			);
+			name = Debugger;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
@@ -375,6 +393,8 @@
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
 				1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */,
 				1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */,
+				1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */,
+				1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

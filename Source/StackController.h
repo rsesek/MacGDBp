@@ -15,48 +15,20 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SocketWrapper.h"
-#import "Breakpoint.h"
 #import "StackFrame.h"
 
-extern NSString *kErrorOccurredNotif;
-
-@interface GDBpConnection : NSObject
+@interface StackController : NSObject
 {
-	int port;
-	NSString *session;
-	BOOL connected;
-	
 	/**
-	 * Human-readable status of the connection
+	 * Array of StackFrame's (LIFO stack)
 	 */
-	NSString *status;
-	
-	SocketWrapper *socket;
+	NSMutableArray *stack;
 }
 
-@property(readonly, copy) NSString *status;
-@property(readonly) SocketWrapper *socket;
+@property(readonly) NSMutableArray *stack;
 
-// initializer
-- (id)initWithPort:(int)aPort session:(NSString *)aSession;
-
-// getter
-- (int)port;
-- (NSString *)session;
-- (NSString *)remoteHost;
-- (BOOL)isConnected;
-
-// communication
-- (void)reconnect;
-- (void)run;
-- (StackFrame *)stepIn;
-- (StackFrame *)stepOut;
-- (StackFrame *)stepOver;
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (void)removeBreakpoint:(Breakpoint *)bp;
-
-// helpers
-- (NSArray *)getProperty:(NSString *)property;
+- (StackFrame *)peek;
+- (StackFrame *)pop;
+- (void)push:(StackFrame *)frame;
 
 @end

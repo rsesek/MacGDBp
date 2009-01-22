@@ -17,20 +17,26 @@
 #import "GDBpConnection.h"
 #import "AppDelegate.h"
 
-@interface GDBpConnection (Private)
+NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
+
+@interface GDBpConnection()
+@property(readwrite, copy) NSString *status;
+
 - (NSString *)createCommand:(NSString *)cmd;
 - (NSXMLDocument *)processData:(NSString *)data;
+- (StackFrame *)createStackFrame;
+- (void)updateStatus;
 @end
 
 @implementation GDBpConnection
 
-@synthesize socket, windowController;
+@synthesize socket, status;
 
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithWindowController:(DebuggerController *)wc port:(int)aPort session:(NSString *)aSession;
+- (id)initWithPort:(int)aPort session:(NSString *)aSession;
 {
 	if (self = [super init])
 	{
@@ -38,12 +44,12 @@
 		session = [aSession retain];
 		connected = NO;
 		
-		windowController = [wc retain];
-		
 		// now that we have our host information, open the socket
 		socket = [[SocketWrapper alloc] initWithConnection:self];
 		[socket setDelegate:self];
 		[socket connect];
+		
+		self.status = @"Connecting";
 		
 		[[BreakpointManager sharedManager] setConnection:self];
 	}
@@ -57,7 +63,6 @@
 {
 	[socket release];
 	[session release];
-	[windowController release];
 	[super dealloc];
 }
 
@@ -106,7 +111,7 @@
 {
 	connected = YES;
 	[socket receive];
-	[self refreshStatus];
+	[self updateStatus];
 	
 	// register any breakpoints that exist offline
 	for (Breakpoint *bp in [[BreakpointManager sharedManager] breakpoints])
@@ -120,7 +125,14 @@
  */
 - (void)errorEncountered:(NSString *)error
 {
-	[windowController setError:error];
+	[[NSNotificationCenter defaultCenter]
+		postNotificationName:kErrorOccurredNotif
+		object:self
+		userInfo:[NSDictionary
+			dictionaryWithObject:error
+			forKey:@"NSString"
+		]
+	];
 }
 
 /**
@@ -130,8 +142,7 @@
 - (void)reconnect
 {
 	[socket close];
-	[windowController setStatus:@"Connecting"];
-	[windowController resetDisplays];
+	self.status = @"Connecting";
 	[socket connect];
 }
 
@@ -142,89 +153,49 @@
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
-	[self refreshStatus];
-}
-
-/**
- * Method that runs tells the debugger to give us its status and will update the status text on the window
- */
-- (void)refreshStatus
-{
-	[socket send:[self createCommand:@"status"]];
-	
-	NSXMLDocument *doc = [self processData:[socket receive]];
-	NSString *status = [[[doc rootElement] attributeForName:@"status"] stringValue];
-	[windowController setStatus:[status capitalizedString]];
-	
-	if ([status isEqualToString:@"break"])
-	{
-		[self updateStackTraceAndRegisters];
-	}
-	else if ([status isEqualToString:@"stopped"] || [status isEqualToString:@"stopping"])
-	{
-		connected = NO;
-		[socket close];
-		[windowController setStatus:@"Stopped"];
-	}
+	[self updateStatus];
 }
 
 /**
  * Tells the debugger to step into the current command.
  */
-- (void)stepIn
+- (StackFrame *)stepIn
 {
 	[socket send:[self createCommand:@"step_into"]];
 	[socket receive];
-	[self refreshStatus];
+	
+	StackFrame *frame = [self createStackFrame];
+	[self updateStatus];
+	
+	return frame;
 }
 
 /**
  * Tells the debugger to step out of the current context
  */
-- (void)stepOut
+- (StackFrame *)stepOut
 {
 	[socket send:[self createCommand:@"step_out"]];
 	[socket receive];
-	[self refreshStatus];
+	
+	StackFrame *frame = [self createStackFrame];
+	[self updateStatus];
+	
+	return frame;
 }
 
 /**
  * Tells the debugger to step over the current function
  */
-- (void)stepOver
+- (StackFrame *)stepOver
 {
 	[socket send:[self createCommand:@"step_over"]];
 	[socket receive];
-	[self refreshStatus];
-}
-
-/**
- * This function queries the debug server for the current stacktrace and all the registers on
- * level one. If a user then tries to expand past level one... TOOD: HOLY CRAP WHAT DO WE DO PAST LEVEL 1?
- */
-- (void)updateStackTraceAndRegisters
-{
-	// do the stack
-	[socket send:[self createCommand:@"stack_get"]];
-	NSXMLDocument *doc = [self processData:[socket receive]];
-	NSArray *children = [[doc rootElement] children];
-	NSMutableArray *stack = [NSMutableArray array];
-	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	for (int i = 0; i < [children count]; i++)
-	{
-		NSArray *attrs = [[children objectAtIndex:i] attributes];
-		for (int j = 0; j < [attrs count]; j++)
-		{
-			[dict setValue:[[attrs objectAtIndex:j] stringValue] forKey:[[attrs objectAtIndex:j] name]];
-		}
-		[stack addObject:dict];
-		dict = [NSMutableDictionary dictionary];
-	}
-	[windowController setStack:stack];
 	
-	// do the registers
-	[socket send:[self createCommand:@"context_get"]];
-	[windowController setRegister:[self processData:[socket receive]]];
+	StackFrame *frame = [self createStackFrame];
+	[self updateStatus];
+	
+	return frame;
 }
 
 /**
@@ -313,11 +284,72 @@
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
-		[windowController setError:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+		[self errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return nil;
 	}
 	
 	return [doc autorelease];
+}
+
+/**
+ * Creates a StackFrame based on the current position in the debugger
+ */
+- (StackFrame *)createStackFrame
+{
+	// get the stack frame
+	[socket send:[self createCommand:@"stack_get -d 0"]];
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
+	
+	// get the names of all the contexts
+	[socket send:[self createCommand:@"context_names -d 0"]];
+	NSXMLElement *contextNames = [[self processData:[socket receive]] rootElement];
+	NSMutableDictionary *contexts = [NSMutableDictionary dictionary];
+	for (NSXMLElement *context in [contextNames children])
+	{
+		NSString *name = [[context attributeForName:@"name"] stringValue];
+		int cid = [[[context attributeForName:@"id"] stringValue] intValue];
+		
+		// fetch the contexts
+		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d 0 -c %d", cid]]];
+		NSArray *variables = [[[self processData:[socket receive]] rootElement] children];
+		if (variables != nil && name != nil)
+			[contexts setObject:variables forKey:name];
+	}
+	
+	// get the source
+	NSString *filename = [[xmlframe attributeForName:@"filename"] stringValue];
+	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
+	NSString *source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
+	
+	// create stack frame
+	StackFrame *frame = [[StackFrame alloc]
+		initWithIndex:0
+		withFilename:filename
+		withSource:source
+		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
+		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
+		withContexts:contexts
+	];
+	
+	return [frame autorelease];
+}
+
+/**
+ * Fetches the value of and sets the status instance variable
+ */
+- (void)updateStatus
+{
+	[socket send:[self createCommand:@"status"]];
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	self.status = [[[[doc rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+	
+	if ([status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
+	{
+		connected = NO;
+		[socket close];
+		self.status = @"Stopped";
+	}
 }
 
 @end
