@@ -38,6 +38,7 @@
 @property(readwrite, assign) id delegate;
 
 - (void)setFile:(NSString *)f;
+- (void)setString:(NSString *)source asFile:(NSString *)path;
 - (void)scrollToLine:(int)line;
 
 @end

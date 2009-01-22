@@ -33,10 +33,12 @@
 	if (self = [super initWithFrame:frame])
 	{
 		[self setupViews];
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(errorHighlightingFile:)
-													 name:NSFileHandleReadToEndOfFileCompletionNotification
-												   object:nil];
+		[[NSNotificationCenter defaultCenter]
+			addObserver:self
+			selector:@selector(errorHighlightingFile:)
+			name:NSFileHandleReadToEndOfFileCompletionNotification
+			object:nil
+		];
 	}
 	return self;
 }
@@ -100,6 +102,35 @@
 }
 
 /**
+ * Sets the contents of the SourceView via a string rather than loading from a path
+ */
+- (void)setString:(NSString *)source asFile:(NSString *)path
+{
+	// create the temp file
+	NSError *error = nil;
+	NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
+	[source writeToFile:tmpPath atomically:NO encoding:NSASCIIStringEncoding error:&error];
+	if (error)
+	{
+		[textView setString:source];
+		return;
+	}
+	
+	// highlight the temporary file
+	[self setFile:tmpPath];
+	
+	// delete the temp file
+	[[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
+	
+	// plop in our fake path so nobody knows the difference
+	if (path != file)
+	{
+		[file release];
+		file = [path copy];
+	}
+}
+
+/**
  * If an error occurs in reading the highlighted PHP source, this will merely set the string
  */
 - (void)errorHighlightingFile:(NSNotification *)notif
@@ -122,7 +153,7 @@
  */
 - (void)scrollToLine:(int)line
 {
-	if (![[NSFileManager defaultManager] fileExistsAtPath:file])
+	if ([[textView textStorage] length] == 0)
 		return;
 	
 	// go through the document until we find the NSRange for the line we want

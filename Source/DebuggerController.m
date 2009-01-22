@@ -218,29 +218,26 @@
 {
 	id selection = [stackArrayController selection];
 	if ([selection valueForKey:@"filename"] == NSNoSelectionMarker)
-	{
 		return;
-	}
 	
-	// get the filename and then set the text
+	// get the filename
 	NSString *filename = [selection valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
 	if ([filename isEqualToString:@""])
-	{
 		return;
-	}
 	
+	// replace the source if necessary
 	if (![sourceViewer.file isEqualToString:filename])
-		[sourceViewer setFile:filename];
+	{
+		NSString *source = [selection valueForKey:@"source"];
+		[sourceViewer setString:source asFile:filename];
+	}
 	
 	int line = [[selection valueForKey:@"lineNumber"] intValue];
 	[sourceViewer setMarkedLine:line];
 	[sourceViewer scrollToLine:line];
 	
 	[[sourceViewer textView] display];
-	
-	// make sure the font stays Monaco
-	//[sourceViewer setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
 }
 
 /**
