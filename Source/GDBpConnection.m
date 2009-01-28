@@ -118,6 +118,8 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	{
 		[self addBreakpoint:bp];
 	}
+	
+	[[[NSApp delegate] debugger] startDebugger]; // this will just load the debugger to make it look active
 }
 
 /**

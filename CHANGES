@@ -6,6 +6,7 @@ MacGDBp                                                               CHANGE LOG
 - Change: The "File" column now shows the tail rather than the head of the
 value, allowing you to see the last part of the path URI
 - Fix: #129  Debugging files on a remote server will now work if the remote path does not exist on the local debugging client
+- Change: The debugger will automatically step in to the first frame when the connection is made
 
 
 1.1.2

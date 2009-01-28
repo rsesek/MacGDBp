@@ -131,6 +131,14 @@
 }
 
 /**
+ * Called once the socket accepts and MacGDBp is connected to the debugger
+ */
+- (void)startDebugger
+{
+	[self stepIn:self];
+}
+
+/**
  * Forwards the message to run script execution to the connection
  */
 - (IBAction)run:(id)sender
