@@ -30,4 +30,37 @@
 	return self;
 }
 
+/**
+ * Shows the preferences controller window
+ */
+- (void)showPreferencesWindow
+{
+	[self showGeneral:self];
+	[[self window] makeKeyAndOrderFront:self];
+}
+
+#pragma mark Panel Switching
+
+/**
+ * Shows the general panel
+ */
+- (IBAction)showGeneral:(id)sender
+{
+	if ([[self window] contentView] == generalPreferencesView)
+		return;
+	
+	[[self window] setContentView:generalPreferencesView];
+	[toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
+}
+
+#pragma mark NSToolbar Delegate
+
+/**
+ * Returns the selection names
+ */
+- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
+{
+	return [NSArray arrayWithObjects:[generalPreferencesItem itemIdentifier], nil];
+}
+
 @end

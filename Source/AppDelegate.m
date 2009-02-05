@@ -72,7 +72,7 @@
 	if (!prefs)
 		prefs = [[PreferencesController alloc] init];
 	
-	[[prefs window] makeKeyAndOrderFront:self];
+	[prefs showPreferencesWindow];
 }
 
 /**

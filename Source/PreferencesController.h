@@ -19,7 +19,15 @@
 
 @interface PreferencesController : NSWindowController
 {
-
+	IBOutlet NSToolbar *toolbar;
+	
+	IBOutlet NSView *generalPreferencesView;
+	IBOutlet NSToolbarItem *generalPreferencesItem;
 }
+
+- (void)showPreferencesWindow;
+
+// panel switching
+- (IBAction)showGeneral:(id)sender;
 
 @end
