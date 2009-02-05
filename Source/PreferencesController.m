@@ -53,6 +53,18 @@
 	[toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
 }
 
+/**
+ * Shows the path replacement panel
+ */
+- (IBAction)showPaths:(id)sender
+{
+	if ([[self window] contentView] == pathsPreferencesView)
+		return;
+	
+	[[self window] setContentView:pathsPreferencesView];
+	[toolbar setSelectedItemIdentifier:[pathsPreferencesItem itemIdentifier]];
+}
+
 #pragma mark NSToolbar Delegate
 
 /**
@@ -60,7 +72,11 @@
  */
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
 {
-	return [NSArray arrayWithObjects:[generalPreferencesItem itemIdentifier], nil];
+	return [NSArray arrayWithObjects:
+		[generalPreferencesItem itemIdentifier],
+		[pathsPreferencesItem itemIdentifier],
+		nil
+	];
 }
 
 @end

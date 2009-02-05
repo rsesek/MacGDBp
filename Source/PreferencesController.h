@@ -23,11 +23,15 @@
 	
 	IBOutlet NSView *generalPreferencesView;
 	IBOutlet NSToolbarItem *generalPreferencesItem;
+	
+	IBOutlet NSView *pathsPreferencesView;
+	IBOutlet NSToolbarItem *pathsPreferencesItem;
 }
 
 - (void)showPreferencesWindow;
 
 // panel switching
 - (IBAction)showGeneral:(id)sender;
+- (IBAction)showPaths:(id)sender;
 
 @end
