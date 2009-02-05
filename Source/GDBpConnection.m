@@ -306,7 +306,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	// get the names of all the contexts
 	[socket send:[self createCommand:@"context_names -d 0"]];
 	NSXMLElement *contextNames = [[self processData:[socket receive]] rootElement];
-	NSMutableDictionary *contexts = [NSMutableDictionary dictionary];
+	NSMutableArray *variables = [NSMutableArray array];
 	for (NSXMLElement *context in [contextNames children])
 	{
 		NSString *name = [[context attributeForName:@"name"] stringValue];
@@ -314,9 +314,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		
 		// fetch the contexts
 		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d 0 -c %d", cid]]];
-		NSArray *variables = [[[self processData:[socket receive]] rootElement] children];
-		if (variables != nil && name != nil)
-			[contexts setObject:variables forKey:name];
+		NSArray *addVars = [[[self processData:[socket receive]] rootElement] children];
+		if (addVars != nil && name != nil)
+			[variables addObjectsFromArray:addVars];
 	}
 	
 	// get the source
@@ -331,7 +331,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		withSource:source
 		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
 		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
-		withContexts:contexts
+		withVariables:variables
 	];
 	
 	return [frame autorelease];

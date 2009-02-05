@@ -45,9 +45,9 @@
 	NSString *function;
 	
 	/**
-	 * Variable contexts (e.g. locals, class, etc.)
+	 * Variable list
 	 */
-	NSDictionary *contexts;
+	NSArray *variables;
 }
 
 @property(readwrite) int index;
@@ -55,14 +55,14 @@
 @property(readonly, copy) NSString *source;
 @property(readwrite) int lineNumber;
 @property(readwrite, copy) NSString *function;
-@property(readonly, copy) NSDictionary *contexts;
+@property(readonly, copy) NSArray *variables;
 
 - (id)initWithIndex:(int)anIndex
 	   withFilename:(NSString *)aFilename
 		 withSource:(NSString *)aSource
 			 atLine:(int)aLineNumber
 		 inFunction:(NSString *)function
-	   withContexts:(NSDictionary *)contexts;
+	  withVariables:(NSArray *)variables;
 
 - (BOOL)isShiftedFrame:(StackFrame *)frame;
 

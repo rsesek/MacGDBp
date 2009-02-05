@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.02">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">9F33</string>
+		<string key="IBDocument.SystemVersion">9G55</string>
 		<string key="IBDocument.InterfaceBuilderVersion">672</string>
-		<string key="IBDocument.AppKitVersion">949.34</string>
-		<string key="IBDocument.HIToolboxVersion">352.00</string>
+		<string key="IBDocument.AppKitVersion">949.43</string>
+		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="460"/>
+			<integer value="14"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -925,6 +925,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>lineNumber</string>
 					<string>function</string>
 					<string>contexts.Locals</string>
+					<string>variables</string>
 				</object>
 				<string key="NSObjectClassName">StackFrame</string>
 				<bool key="NSEditable">YES</bool>
@@ -1233,22 +1234,6 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<int key="connectionID">564</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentArray: selection.contexts.Locals</string>
-						<reference key="source" ref="240336030"/>
-						<reference key="destination" ref="988542050"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="240336030"/>
-							<reference key="NSDestination" ref="988542050"/>
-							<string key="NSLabel">contentArray: selection.contexts.Locals</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">selection.contexts.Locals</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">565</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">variablesTreeController</string>
 						<reference key="source" ref="78922448"/>
@@ -1263,6 +1248,22 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="destination" ref="395283679"/>
 					</object>
 					<int key="connectionID">567</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: selection.variables</string>
+						<reference key="source" ref="240336030"/>
+						<reference key="destination" ref="988542050"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="240336030"/>
+							<reference key="NSDestination" ref="988542050"/>
+							<string key="NSLabel">contentArray: selection.variables</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">selection.variables</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">568</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1803,7 +1804,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">567</int>
+			<int key="maxID">568</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

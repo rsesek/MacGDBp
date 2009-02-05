@@ -22,13 +22,13 @@
 @interface StackFrame()
 @property(readwrite, copy) NSString *filename;
 @property(readwrite, copy) NSString *source;
-@property(readwrite, copy) NSDictionary *contexts;
+@property(readwrite, copy) NSArray *variables;
 @end
 /***/
 
 @implementation StackFrame
 
-@synthesize index, filename, source, lineNumber, function, contexts;
+@synthesize index, filename, source, lineNumber, function, variables;
 
 /**
  * Constructor
@@ -38,7 +38,7 @@
 		 withSource:(NSString *)aSource
 			 atLine:(int)aLineNumber
 		 inFunction:(NSString *)aFunction
-	   withContexts:(NSDictionary *)aContexts
+	  withVariables:(NSArray *)aVariables
 {
 	if (self = [super init])
 	{
@@ -47,7 +47,7 @@
 		self.source		= aSource;
 		self.lineNumber	= aLineNumber;
 		self.function	= aFunction;
-		self.contexts	= aContexts;
+		self.variables	= aVariables;
 	}
 	return self;
 }
