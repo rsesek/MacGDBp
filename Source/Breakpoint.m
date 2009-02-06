@@ -57,6 +57,28 @@
 }
 
 /**
+ * Returns the transformed path for the breakpoint, as Xdebug needs it
+ */
+- (NSString *)transformedPath
+{
+	NSString *path = self.file;
+	
+	NSMutableArray *transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
+	if (!transforms || [transforms count] < 1)
+		return path;
+	
+	for (NSDictionary *replacement in transforms)
+	{
+		path = [path
+			stringByReplacingOccurrencesOfString:[replacement valueForKey:@"local"]
+			withString:[replacement valueForKey:@"remote"]
+		];
+	}
+	
+	return path;
+}
+
+/**
  * Determines if two breakpoints are equal
  */
 - (BOOL)isEqual:(id)obj

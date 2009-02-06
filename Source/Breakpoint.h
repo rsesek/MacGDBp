@@ -31,6 +31,8 @@
 - (id)initWithLine:(int)l inFile:(NSString *)f;
 - (id)initWithDictionary:(NSDictionary *)dict;
 
+- (NSString *)transformedPath;
+
 - (NSDictionary *)dictionary;
 
 @end
