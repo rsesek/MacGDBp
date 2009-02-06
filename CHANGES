@@ -11,6 +11,8 @@ does not exist on the local debugging client
 connection is made
 - New: #147  Show super globals (and variables in other contexts) in the
 variable viewer
+- New: #129  Created a path replacements preference panel to make creating
+breakpoints possible on remote servers
 
 
 1.1.2
