@@ -16,6 +16,13 @@
 
 #import "PreferencesController.h"
 
+NSSize generalSize;
+NSSize pathsSize;
+
+@interface PreferencesController (Private)
+- (void)resizeWindowToSize:(NSSize)size;
+@end
+
 
 @implementation PreferencesController
 
@@ -26,8 +33,27 @@
 {
 	if (self = [super initWithWindowNibName:@"Preferences"])
 	{
+		blankView = [[NSView alloc] init];
 	}
 	return self;
+}
+
+/**
+ * Destructor
+ */
+- (void)dealloc
+{
+	[blankView release];
+	[super dealloc];
+}
+
+/**
+ * Awake from nib
+ */
+- (void)awakeFromNib
+{
+	generalSize = [generalPreferencesView frame].size;
+	pathsSize = [pathsPreferencesView frame].size;
 }
 
 /**
@@ -49,6 +75,8 @@
 	if ([[self window] contentView] == generalPreferencesView)
 		return;
 	
+	[self resizeWindowToSize:generalSize];
+	
 	[[self window] setContentView:generalPreferencesView];
 	[toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
 }
@@ -60,6 +88,8 @@
 {
 	if ([[self window] contentView] == pathsPreferencesView)
 		return;
+	
+	[self resizeWindowToSize:pathsSize];
 	
 	[[self window] setContentView:pathsPreferencesView];
 	[toolbar setSelectedItemIdentifier:[pathsPreferencesItem itemIdentifier]];
@@ -77,6 +107,31 @@
 		[pathsPreferencesItem itemIdentifier],
 		nil
 	];
+}
+
+#pragma mark Private
+
+/**
+ * Resizes the preferences window to be the size of the given preferences panel
+ */
+- (void)resizeWindowToSize:(NSSize)size
+{
+	[[self window] setContentView:blankView]; // don't want weird redraw artifacts
+	
+	NSRect newFrame;
+	
+	newFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
+	
+	float height = size.height + 50;
+	
+	newFrame.origin.y += newFrame.size.height;
+	newFrame.origin.y -= height;
+	newFrame.size.height = height;
+	newFrame.size.width = size.width;
+	
+	newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:[[self window] styleMask]];
+	
+	[[self window] setFrame:newFrame display:YES animate:YES];
 }
 
 @end

@@ -21,6 +21,8 @@
 {
 	IBOutlet NSToolbar *toolbar;
 	
+	NSView *blankView;
+	
 	IBOutlet NSView *generalPreferencesView;
 	IBOutlet NSToolbarItem *generalPreferencesItem;
 	
