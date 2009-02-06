@@ -62,6 +62,7 @@ NSSize pathsSize;
 - (void)showPreferencesWindow
 {
 	[self showGeneral:self];
+	[[self window] center];
 	[[self window] makeKeyAndOrderFront:self];
 }
 
@@ -122,7 +123,7 @@ NSSize pathsSize;
 	
 	newFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
 	
-	float height = size.height + 50;
+	float height = size.height + 55;
 	
 	newFrame.origin.y += newFrame.size.height;
 	newFrame.origin.y -= height;
