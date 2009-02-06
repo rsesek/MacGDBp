@@ -30,7 +30,8 @@
 	if (self = [super initWithWindowNibName:@"Breakpoints"])
 	{
 		manager = [BreakpointManager sharedManager];
-		[[self window] orderBack:nil];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakpointsWindowVisible"])
+			[[self window] orderBack:nil];
 	}
 	return self;
 }

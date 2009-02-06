@@ -13,6 +13,8 @@ connection is made
 variable viewer
 - New: Selecting different stack frames will now show the variables for that
 frame, as opposed to only showing the current frame's variables
+- New: The breakpoints window will now remember its visible state across
+application launches
 
 
 1.1.2
