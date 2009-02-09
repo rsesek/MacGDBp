@@ -17,22 +17,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface Breakpoint : NSObject
+@interface PreferencesPathsArrayController : NSArrayController
 {
-	NSString *file;
-	int line;
-	int debuggerId;
 }
-
-@property(readonly) NSString *file;
-@property(readonly) int line;
-@property(readwrite, assign) int debuggerId;
-
-- (id)initWithLine:(int)l inFile:(NSString *)f;
-- (id)initWithDictionary:(NSDictionary *)dict;
-
-- (NSString *)transformedPath;
-
-- (NSDictionary *)dictionary;
 
 @end

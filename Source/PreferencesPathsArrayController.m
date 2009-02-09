@@ -14,25 +14,20 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
+#import "PreferencesPathsArrayController.h"
 
 
-@interface Breakpoint : NSObject
+@implementation PreferencesPathsArrayController
+
+/**
+ * Subclass to add the default values to the NSDictionary
+ */
+- (id)newObject
 {
-	NSString *file;
-	int line;
-	int debuggerId;
+	NSMutableDictionary *obj = (NSMutableDictionary *)[super newObject];
+	[obj setValue:@"Remote Path" forKey:@"remote"];
+	[obj setValue:@"Local Path"	forKey:@"local"];
+	return obj;
 }
-
-@property(readonly) NSString *file;
-@property(readonly) int line;
-@property(readwrite, assign) int debuggerId;
-
-- (id)initWithLine:(int)l inFile:(NSString *)f;
-- (id)initWithDictionary:(NSDictionary *)dict;
-
-- (NSString *)transformedPath;
-
-- (NSDictionary *)dictionary;
 
 @end

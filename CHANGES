@@ -15,6 +15,8 @@ variable viewer
 frame, as opposed to only showing the current frame's variables
 - New: The breakpoints window will now remember its visible state across
 application launches
+- New: #129  Created a path replacements preference panel to make creating
+breakpoints possible on remote servers
 
 
 1.1.2

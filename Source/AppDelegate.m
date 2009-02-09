@@ -43,6 +43,7 @@
 		[NSNumber numberWithInt:9000], @"Port",
 		@"macgdbp", @"IDEKey",
 		[NSNumber numberWithBool:YES], @"BreakpointsWindowVisible",
+		[NSMutableArray array], @"PathReplacements",
 		nil
 	];
 	
@@ -77,7 +78,7 @@
 	if (!prefs)
 		prefs = [[PreferencesController alloc] init];
 	
-	[[prefs window] makeKeyAndOrderFront:self];
+	[prefs showPreferencesWindow];
 }
 
 /**
