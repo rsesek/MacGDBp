@@ -143,7 +143,14 @@
  */
 - (IBAction)run:(id)sender
 {
-	[connection run];
+	StackFrame *frame = [connection run];
+	[stackController pop];
+	
+	if ([connection isConnected] && frame != nil)
+	{
+		[stackController push:frame];
+		[self updateStackViewer];
+	}
 }
 
 /**

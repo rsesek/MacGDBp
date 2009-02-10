@@ -175,6 +175,9 @@
 	// take the received data and put it into an NSData
 	NSMutableString *str = [NSMutableString string];
 	
+	if (recvd == -1)
+		return nil;
+	
 	// strip the length from the packet, and clear the null byte then add it to the NSData
 	char packetLength[8];
 	memset(packetLength, '\0', sizeof(packetLength));

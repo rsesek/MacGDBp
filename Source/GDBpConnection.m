@@ -151,11 +151,17 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to continue running the script
  */
-- (void)run
+- (StackFrame *)run
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
+	
 	[self updateStatus];
+	
+	if (!connected)
+		return nil;
+	
+	return [self createStackFrame];
 }
 
 /**
@@ -272,6 +278,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  */
 - (NSXMLDocument *)processData:(NSString *)data
 {
+	if (data == nil)
+		return nil;
+	
 	NSError *parseError = nil;
 	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
 	if (parseError)
@@ -301,6 +310,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	// get the stack frame
 	[socket send:[self createCommand:@"stack_get -d 0"]];
 	NSXMLDocument *doc = [self processData:[socket receive]];
+	if (doc == nil)
+		return nil;
+	
 	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
 	
 	// get the names of all the contexts
@@ -346,7 +358,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	NSXMLDocument *doc = [self processData:[socket receive]];
 	self.status = [[[[doc rootElement] attributeForName:@"status"] stringValue] capitalizedString];
 	
-	if ([status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
+	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
 	{
 		connected = NO;
 		[socket close];
