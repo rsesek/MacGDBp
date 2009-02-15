@@ -1,7 +1,13 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
-1.2.0
+1.2.1
+#####################
+- Fix: The temporary file used for highlighting source code is now saved as UTF8
+so files with non-ASCII characters will now be highlighted
+
+
+1.2
 #####################
 - Change: The "File" column now shows the tail rather than the head of the
 value, allowing you to see the last part of the path URI

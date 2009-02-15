@@ -109,7 +109,7 @@
 	// create the temp file
 	NSError *error = nil;
 	NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
-	[source writeToFile:tmpPath atomically:NO encoding:NSASCIIStringEncoding error:&error];
+	[source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 	if (error)
 	{
 		[textView setString:source];
