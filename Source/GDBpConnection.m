@@ -172,10 +172,12 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket send:[self createCommand:@"step_into"]];
 	[socket receive];
 	
-	StackFrame *frame = [self createStackFrame];
 	[self updateStatus];
 	
-	return frame;
+	if (!connected)
+		return nil;
+	
+	return [self createStackFrame];
 }
 
 /**
@@ -186,10 +188,12 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket send:[self createCommand:@"step_out"]];
 	[socket receive];
 	
-	StackFrame *frame = [self createStackFrame];
 	[self updateStatus];
 	
-	return frame;
+	if (!connected)
+		return nil;
+	
+	return [self createStackFrame];
 }
 
 /**
@@ -200,10 +204,12 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket send:[self createCommand:@"step_over"]];
 	[socket receive];
 	
-	StackFrame *frame = [self createStackFrame];
 	[self updateStatus];
 	
-	return frame;
+	if (!connected)
+		return nil;
+	
+	return [self createStackFrame];
 }
 
 /**

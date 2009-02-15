@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: The temporary file used for highlighting source code is now saved as UTF8
 so files with non-ASCII characters will now be highlighted
+- Fix: #152  MacGDBp would crash/segfault if you stepped at the end of a script
 
 
 1.2
