@@ -311,7 +311,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				1E9583550E2531E7001A3D89 /* CopyFiles */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				1E78FD670C6155EB00D6D005 /* ShellScript */,
+				1E42F1110F4E78C8008412DB /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -363,7 +363,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1E78FD670C6155EB00D6D005 /* ShellScript */ = {
+		1E42F1110F4E78C8008412DB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -373,8 +373,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/ruby;
-			shellScript = "require \"ftools\"\nrequire \"Time\"\n\nhash = %x{/usr/local/bin/git log -1 --pretty=format:%h}\ntimestamp = %x{/usr/local/bin/git log -1 --pretty=format:%ct}\ntime = Time.at(timestamp.to_i)\n\nbuild = (\"%02d\" % time.year) + (\"%02d\" % time.month) + (\"%02d\" % time.day) + \".\" + hash\n\ninfopath = ENV[\"CONFIGURATION_BUILD_DIR\"] + \"/\" + ENV[\"INFOPLIST_PATH\"]\n\nfile = \"\"\nio = File.new(infopath)\nlastline = \"\"\nwhile line = io.gets do\n\tif lastline.match(\"CFBundleVersion\")\n\t\tfile += \"\\t<string>#{build}</string>\\n\"\n\telse\n\t\tfile += line\n\tend\n\tlastline = line\nend\nio.close\n\nio = File.new(infopath, \"w\")\nio.write(file)\nio.close";
+			shellPath = /usr/local/bin/python3.0;
+			shellScript = "\"\"\"\nGitcrement\nCopyright (c) 2009, Blue Static <http://www.bluestatic.org>\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU\nGeneral Public License as published by the Free Software Foundation, either version 3 of the\nLicense, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without\neven the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program.  If not,\nsee <http://www.gnu.org/licenses/>.\n\"\"\"\n\ngitcrement = \"/Users/rsesek/Library/Shell/bin/gitcrement\"\n\nimport io, sys, subprocess\nfrom os import environ\n\nif environ[\"CONFIGURATION\"] == \"Release\":\n\tsubprocess.getoutput(gitcrement + \" next\")\n\nsubprocess.call([\"/Users/rsesek/Library/Shell/bin/gitcrement\", \"current\"])\n\nbuild = subprocess.getoutput(gitcrement + \" current\")\ntry:\n\tbuild = int(build)\nexcept ValueError:\n\tbuild = 0\n\ninfopath = environ[\"CONFIGURATION_BUILD_DIR\"] + \"/\" + environ[\"INFOPLIST_PATH\"]\n\nlastline = \"\"\nplist = \"\"\nf = io.open(infopath, \"r\")\nline = f.readline()\nwhile line != \"\":\n\tif lastline.find(\"CFBundleVersion\") != -1:\n\t\tplist += (\"\\t<string>%i</string>\\n\" % build)\n\telse:\n\t\tplist += line\n\tlastline = line\n\tline = f.readline()\nf.close()\n\nf = io.open(infopath, \"w\")\nf.write(plist)\nf.close()";
 		};
 /* End PBXShellScriptBuildPhase section */
 
