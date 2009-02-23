@@ -23,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>GIT_HASH</string>
+	<string>__GITCREMENT__</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -32,5 +32,7 @@
 	<string>http://www.bluestatic.org/versioncast.php?prod=macgdbp</string>
 	<key>SUShowReleaseNotes</key>
 	<false/>
+	<key>SUPublicDSAKeyFile</key>
+	<string>dsa_pub.pem</string>
 </dict>
 </plist>
