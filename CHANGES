@@ -1,6 +1,12 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+1.3
+#####################
+- New: #155  Add a variable inspector to display the full, untruncated value
+- Change: The Window->Breakpoints (Cmd+Shift+B) will now toggle the visibility
+
+
 1.2.1
 #####################
 - Fix: The temporary file used for highlighting source code is now saved as UTF8
