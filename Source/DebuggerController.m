@@ -249,6 +249,9 @@
 	{
 		NSString *source = [selection valueForKey:@"source"];
 		[sourceViewer setString:source asFile:filename];
+		
+		NSSet *breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
+		[[sourceViewer numberView] setMarkers:breakpoints];
 	}
 	
 	int line = [[selection valueForKey:@"lineNumber"] intValue];

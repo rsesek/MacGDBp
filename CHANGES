@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - New: #155  Add a variable inspector to display the full, untruncated value
 - Change: The Window->Breakpoints (Cmd+Shift+B) will now toggle the visibility
+- Fix: All breakpoint markers will now be displayed in the active code debugger
 
 
 1.2.1
