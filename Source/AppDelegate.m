@@ -78,7 +78,7 @@
  */
 - (IBAction)showBreakpointWindow:(id)sender
 {
-	if (![[breakpoint window] isVisible])
+	if (![[breakpoint window] isVisible] || ![[breakpoint window] isKeyWindow])
 		[[breakpoint window] makeKeyAndOrderFront:sender];
 	else
 		[[breakpoint window] orderOut:sender];
