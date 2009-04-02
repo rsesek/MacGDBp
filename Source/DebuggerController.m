@@ -28,7 +28,7 @@
 
 @implementation DebuggerController
 
-@synthesize connection, sourceViewer;
+@synthesize connection, sourceViewer, inspector;
 
 /**
  * Initializes the window controller and sets the connection using preference

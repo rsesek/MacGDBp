@@ -30,6 +30,7 @@
 @property(readonly) BreakpointController *breakpoint;
 
 - (IBAction)showDebuggerWindow:(id)sender;
+- (IBAction)showInspectorWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 

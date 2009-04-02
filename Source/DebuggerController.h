@@ -31,6 +31,8 @@
 	IBOutlet NSOutlineView *variablesOutlineView;
 	NSMutableSet *expandedVariables;
 	
+	IBOutlet NSWindow *inspector;
+	
 	IBOutlet NSTextField *statusmsg;
 	IBOutlet NSTextField *errormsg;
 	
@@ -39,6 +41,7 @@
 
 @property(readonly) GDBpConnection *connection;
 @property(readonly) BSSourceView *sourceViewer;
+@property(readonly) NSWindow *inspector;
 
 - (void)resetDisplays;
 

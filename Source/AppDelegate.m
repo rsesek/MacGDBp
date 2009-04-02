@@ -63,11 +63,25 @@
 }
 
 /**
+ * Shows the inspector window
+ */
+- (IBAction)showInspectorWindow:(id)sender
+{
+	if (![debugger.inspector isVisible])
+		[debugger.inspector makeKeyAndOrderFront:sender];
+	else
+		[debugger.inspector orderOut:sender];
+}
+
+/**
  * Shows the breakpoints window
  */
 - (IBAction)showBreakpointWindow:(id)sender
 {
-	[[breakpoint window] makeKeyAndOrderFront:self];
+	if (![[breakpoint window] isVisible])
+		[[breakpoint window] makeKeyAndOrderFront:sender];
+	else
+		[[breakpoint window] orderOut:sender];
 }
 
 /**
