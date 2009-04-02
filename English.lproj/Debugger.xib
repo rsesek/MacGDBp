@@ -964,7 +964,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 			<object class="NSWindowTemplate" id="1072871805">
 				<int key="NSWindowStyleMask">8223</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{196, 87}, {331, 423}}</string>
+				<string key="NSWindowRect">{{984, 432}, {400, 400}}</string>
 				<int key="NSWTFlags">-1543503872</int>
 				<string key="NSWindowTitle">Inspector</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -988,7 +988,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 										<object class="NSTextView" id="294150047">
 											<reference key="NSNextResponder" ref="138455094"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{333, 168}</string>
+											<string key="NSFrameSize">{402, 140}</string>
 											<reference key="NSSuperview" ref="138455094"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="1001675206">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -1129,7 +1129,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 													<nil key="NSDelegate"/>
 												</object>
 												<reference key="NSTextView" ref="294150047"/>
-												<double key="NSWidth">3.330000e+02</double>
+												<double key="NSWidth">4.020000e+02</double>
 												<int key="NSTCFlags">1</int>
 											</object>
 											<object class="NSTextViewSharedData" key="NSSharedData">
@@ -1184,7 +1184,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 											<nil key="NSDelegate"/>
 										</object>
 									</object>
-									<string key="NSFrameSize">{333, 425}</string>
+									<string key="NSFrameSize">{402, 402}</string>
 									<reference key="NSSuperview" ref="943668178"/>
 									<reference key="NSDocView" ref="294150047"/>
 									<reference key="NSBGColor" ref="866192031"/>
@@ -1216,7 +1216,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 									<double key="NSPercent">9.456522e-01</double>
 								</object>
 							</object>
-							<string key="NSFrame">{{-1, -1}, {333, 425}}</string>
+							<string key="NSFrame">{{-1, -1}, {402, 402}}</string>
 							<reference key="NSSuperview" ref="451591711"/>
 							<int key="NSsFlags">560</int>
 							<reference key="NSVScroller" ref="896820060"/>
@@ -1224,11 +1224,18 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 							<reference key="NSContentView" ref="138455094"/>
 						</object>
 					</object>
-					<string key="NSFrameSize">{331, 423}</string>
+					<string key="NSFrameSize">{400, 400}</string>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSFrameAutosaveName">InspectorWindow</string>
+			</object>
+			<object class="NSUserDefaultsController" id="463528398">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>InspectorWindowVisible</string>
+				</object>
+				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -1565,6 +1572,22 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="destination" ref="1072871805"/>
 					</object>
 					<int key="connectionID">581</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">visible: values.InspectorWindowVisible</string>
+						<reference key="source" ref="1072871805"/>
+						<reference key="destination" ref="463528398"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1072871805"/>
+							<reference key="NSDestination" ref="463528398"/>
+							<string key="NSLabel">visible: values.InspectorWindowVisible</string>
+							<string key="NSBinding">visible</string>
+							<string key="NSKeyPath">values.InspectorWindowVisible</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">583</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1965,6 +1988,11 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 						<reference key="object" ref="294150047"/>
 						<reference key="parent" ref="943668178"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">582</int>
+						<reference key="object" ref="463528398"/>
+						<reference key="parent" ref="931987460"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2145,7 +2173,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{478, 327}, {331, 423}}</string>
 					<string>{{478, 327}, {331, 423}}</string>
-					<boolean value="YES"/>
+					<boolean value="NO"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2190,7 +2218,7 @@ ELIAAAAAAAgACAAIAAgAAQABAAEAAQ</bytes>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">581</int>
+			<int key="maxID">583</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

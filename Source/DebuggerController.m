@@ -52,6 +52,9 @@
 			name:kErrorOccurredNotif
 			object:connection
 		];
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
+			[inspector orderFront:self];
 	}
 	return self;
 }
