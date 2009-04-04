@@ -30,6 +30,7 @@
 	IBOutlet NSTreeController *variablesTreeController;
 	IBOutlet NSOutlineView *variablesOutlineView;
 	NSMutableSet *expandedVariables;
+	NSXMLElement *selectedVariable;
 	
 	IBOutlet NSWindow *inspector;
 	

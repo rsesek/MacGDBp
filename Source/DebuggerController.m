@@ -170,6 +170,8 @@
  */
 - (IBAction)stepIn:(id)sender
 {
+	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	
 	StackFrame *frame = [connection stepIn];
 	if ([frame isShiftedFrame:[stackController peek]])
 		[stackController pop];
@@ -178,10 +180,12 @@
 }
 
 /**
-* Forwards the message to "step out" to the connection
+ * Forwards the message to "step out" to the connection
  */
 - (IBAction)stepOut:(id)sender
 {
+	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	
 	StackFrame *frame = [connection stepOut];
 	[stackController pop]; // frame we were out of
 	[stackController pop]; // frame we are returning to
@@ -190,10 +194,12 @@
 }
 
 /**
-* Forwards the message to "step over" to the connection
+ * Forwards the message to "step over" to the connection
  */
 - (IBAction)stepOver:(id)sender
 {
+	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	
 	StackFrame *frame = [connection stepOver];
 	[stackController pop];
 	[stackController push:frame];
@@ -276,13 +282,20 @@
  */
 - (void)expandVariables
 {
+	NSString *selection = [selectedVariable fullname];
+	
 	for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
 	{
 		NSTreeNode *node = [variablesOutlineView itemAtRow:i];
-		if ([expandedVariables containsObject:[[node representedObject] fullname]])
-		{
+		NSString *fullname = [[node representedObject] fullname];
+		
+		// see if it needs expanding
+		if ([expandedVariables containsObject:fullname])
 			[variablesOutlineView expandItem:node];
-		}
+		
+		// select it if we had it selected before
+		if ([fullname isEqualToString:selection])
+			[variablesTreeController setSelectionIndexPath:[node indexPath]];
 	}
 }
 
