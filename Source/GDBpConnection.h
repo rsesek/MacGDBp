@@ -49,7 +49,7 @@ extern NSString *kErrorOccurredNotif;
 
 // communication
 - (void)reconnect;
-- (StackFrame *)run;
+- (NSArray *)run;
 - (StackFrame *)stepIn;
 - (StackFrame *)stepOut;
 - (StackFrame *)stepOver;

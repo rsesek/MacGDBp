@@ -150,9 +150,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 }
 
 /**
- * Tells the debugger to continue running the script
+ * Tells the debugger to continue running the script. Returns an NSArray of the new stack
  */
-- (StackFrame *)run
+- (NSArray *)run
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
@@ -162,7 +162,20 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return nil;
 	
-	return [self createCurrentStackFrame];
+	// get the total stack depth
+	[socket send:[self createCommand:@"stack_depth"]];
+	NSXMLDocument *doc = [self processData:[socket receive]];
+	int depth = [[[[doc rootElement] attributeForName:@"depth"] stringValue] intValue];
+	
+	// get all stack frames
+	NSMutableArray *stack = [NSMutableArray arrayWithCapacity:depth];
+	for (int i = 0; i < depth; i++)
+	{
+		StackFrame *frame = [self createStackFrame:i];
+		[stack insertObject:frame atIndex:i];
+	}
+	
+	return stack;
 }
 
 /**
@@ -353,7 +366,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	
 	// create stack frame
 	StackFrame *frame = [[StackFrame alloc]
-		initWithIndex:0
+		initWithIndex:stackDepth
 		withFilename:filename
 		withSource:source
 		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]

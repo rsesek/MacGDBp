@@ -10,6 +10,7 @@ MacGDBp                                                               CHANGE LOG
 retained
 - Fix: #160  The code pane could be unpopulated after the debugging the same
 script a subsequent time
+- Fix: After using the run command, the stack will now be properly updated
 
 
 1.2.1

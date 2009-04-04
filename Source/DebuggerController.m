@@ -148,13 +148,14 @@
  */
 - (IBAction)run:(id)sender
 {
-	StackFrame *frame = [connection run];
-	[stackController pop];
+	NSArray *frames = [connection run];
 	
-	if ([connection isConnected] && frame != nil)
+	if ([connection isConnected] && frames != nil)
 	{
-		[stackController push:frame];
+		[stackController.stack removeAllObjects];
+		[stackController.stack addObjectsFromArray:frames];
 		[self updateStackViewer];
+		[self updateSourceViewer];
 	}
 }
 
