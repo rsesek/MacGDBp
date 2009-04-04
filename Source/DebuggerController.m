@@ -170,7 +170,8 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	if ([[variablesTreeController selectedObjects] count] > 0)
+		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	StackFrame *frame = [connection stepIn];
 	if ([frame isShiftedFrame:[stackController peek]])
@@ -184,7 +185,8 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	if ([[variablesTreeController selectedObjects] count] > 0)
+		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	StackFrame *frame = [connection stepOut];
 	[stackController pop]; // frame we were out of
@@ -198,7 +200,8 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+	if ([[variablesTreeController selectedObjects] count] > 0)
+		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	StackFrame *frame = [connection stepOver];
 	[stackController pop];
