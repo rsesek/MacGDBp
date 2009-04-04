@@ -301,6 +301,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	NSArray *error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
+		NSLog(@"Xdebug error: %@", error);
 		[self errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return nil;
 	}
