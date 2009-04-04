@@ -24,7 +24,8 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 
 - (NSString *)createCommand:(NSString *)cmd, ...;
 - (NSXMLDocument *)processData:(NSString *)data;
-- (StackFrame *)createStackFrame;
+- (StackFrame *)createStackFrame:(int)depth;
+- (StackFrame *)createCurrentStackFrame;
 - (void)updateStatus;
 @end
 
@@ -161,7 +162,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return nil;
 	
-	return [self createStackFrame];
+	return [self createCurrentStackFrame];
 }
 
 /**
@@ -177,7 +178,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return nil;
 	
-	return [self createStackFrame];
+	return [self createCurrentStackFrame];
 }
 
 /**
@@ -193,7 +194,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return nil;
 	
-	return [self createStackFrame];
+	return [self createCurrentStackFrame];
 }
 
 /**
@@ -209,7 +210,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return nil;
 	
-	return [self createStackFrame];
+	return [self createCurrentStackFrame];
 }
 
 /**
@@ -317,12 +318,12 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 }
 
 /**
- * Creates a StackFrame based on the current position in the debugger
+ * Generates a stack frame for the given depth
  */
-- (StackFrame *)createStackFrame
+- (StackFrame *)createStackFrame:(int)stackDepth
 {
 	// get the stack frame
-	[socket send:[self createCommand:@"stack_get -d 0"]];
+	[socket send:[self createCommand:@"stack_get -d %d", stackDepth]];
 	NSXMLDocument *doc = [self processData:[socket receive]];
 	if (doc == nil)
 		return nil;
@@ -339,7 +340,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		int cid = [[[context attributeForName:@"id"] stringValue] intValue];
 		
 		// fetch the contexts
-		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d 0 -c %d", cid]]];
+		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d %d -c %d", stackDepth, cid]]];
 		NSArray *addVars = [[[self processData:[socket receive]] rootElement] children];
 		if (addVars != nil && name != nil)
 			[variables addObjectsFromArray:addVars];
@@ -361,6 +362,14 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	];
 	
 	return [frame autorelease];
+}
+
+/**
+ * Creates a StackFrame based on the current position in the debugger
+ */
+- (StackFrame *)createCurrentStackFrame
+{
+	return [self createStackFrame:0];
 }
 
 /**
