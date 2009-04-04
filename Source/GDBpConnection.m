@@ -22,7 +22,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 @interface GDBpConnection()
 @property(readwrite, copy) NSString *status;
 
-- (NSString *)createCommand:(NSString *)cmd;
+- (NSString *)createCommand:(NSString *)cmd, ...;
 - (NSXMLDocument *)processData:(NSString *)data;
 - (StackFrame *)createStackFrame;
 - (void)updateStatus;
@@ -272,11 +272,18 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 #pragma mark Private
 
 /**
- * Helper method to create a string command with the -i <session> automatically tacked on
+ * Helper method to create a string command with the -i <session> automatically tacked on. Takes
+ * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
  */
-- (NSString *)createCommand:(NSString *)cmd
+- (NSString *)createCommand:(NSString *)cmd, ...
 {
-	return [NSString stringWithFormat:@"%@ -i %@", cmd, session];
+	// collect varargs
+	va_list	argList;
+	va_start(argList, cmd);
+	NSString *format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
+	va_end(argList);
+	
+	return [NSString stringWithFormat:@"%@ -i %@", [format autorelease], session];
 }
 
 /**
