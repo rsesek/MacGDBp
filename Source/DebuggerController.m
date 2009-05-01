@@ -113,7 +113,9 @@
 {
 	[variablesTreeController setContent:nil];
 	[stackController.stack removeAllObjects];
+	[stackArrayController rearrangeObjects];
 	[[sourceViewer textView] setString:@""];
+	sourceViewer.file = nil;
 }
 
 /**
