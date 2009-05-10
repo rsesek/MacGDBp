@@ -345,6 +345,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	
 	// get the source
 	NSString *filename = [[xmlframe attributeForName:@"filename"] stringValue];
+	filename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
 	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
 	NSString *source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
 	

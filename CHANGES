@@ -11,6 +11,7 @@ retained
 - Fix: #160  The code pane could be unpopulated after the debugging the same
 script a subsequent time
 - Fix: #163  Breakpoints with a space in the pathname would not be set
+- Fix: Code would not display if the pathname to the file contained a space
 
 
 1.2.1
