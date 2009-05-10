@@ -20,19 +20,19 @@
 
 @interface BreakpointManager : NSObject
 {
-	NSMutableArray *breakpoints;
-	NSMutableArray *savedBreakpoints;
+	NSMutableArray* breakpoints;
+	NSMutableArray* savedBreakpoints;
 	
-	GDBpConnection *connection;
+	GDBpConnection* connection;
 }
 
-@property(readwrite, assign) GDBpConnection *connection;
-@property(readonly) NSMutableArray *breakpoints;
+@property(readwrite, assign) GDBpConnection* connection;
+@property(readonly) NSMutableArray* breakpoints;
 
-+ (BreakpointManager *)sharedManager;
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file;
-- (NSArray *)breakpointsForFile:(NSString *)file;
-- (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file;
++ (BreakpointManager*)sharedManager;
+- (void)addBreakpoint:(Breakpoint*)bp;
+- (Breakpoint*)removeBreakpointAt:(int)line inFile:(NSString*)file;
+- (NSArray*)breakpointsForFile:(NSString*)file;
+- (BOOL)hasBreakpointAt:(int)line inFile:(NSString*)file;
 
 @end

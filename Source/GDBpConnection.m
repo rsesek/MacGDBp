@@ -17,15 +17,15 @@
 #import "GDBpConnection.h"
 #import "AppDelegate.h"
 
-NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
+NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 
 @interface GDBpConnection()
-@property(readwrite, copy) NSString *status;
+@property(readwrite, copy) NSString* status;
 
-- (NSString *)createCommand:(NSString *)cmd, ...;
-- (NSXMLDocument *)processData:(NSString *)data;
-- (StackFrame *)createStackFrame:(int)depth;
-- (StackFrame *)createCurrentStackFrame;
+- (NSString*)createCommand:(NSString*)cmd, ...;
+- (NSXMLDocument*)processData:(NSString*)data;
+- (StackFrame*)createStackFrame:(int)depth;
+- (StackFrame*)createCurrentStackFrame;
 - (void)updateStatus;
 @end
 
@@ -37,7 +37,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort session:(NSString *)aSession;
+- (id)initWithPort:(int)aPort session:(NSString*)aSession;
 {
 	if (self = [super init])
 	{
@@ -78,7 +78,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Gets the session name
  */
-- (NSString *)session
+- (NSString*)session
 {
 	return session;
 }
@@ -86,7 +86,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Returns the name of the remote host
  */
-- (NSString *)remoteHost
+- (NSString*)remoteHost
 {
 	if (!connected)
 	{
@@ -115,7 +115,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[self updateStatus];
 	
 	// register any breakpoints that exist offline
-	for (Breakpoint *bp in [[BreakpointManager sharedManager] breakpoints])
+	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
 	{
 		[self addBreakpoint:bp];
 	}
@@ -126,7 +126,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Receives errors from the SocketWrapper and updates the display
  */
-- (void)errorEncountered:(NSString *)error
+- (void)errorEncountered:(NSString*)error
 {
 	[[NSNotificationCenter defaultCenter]
 		postNotificationName:kErrorOccurredNotif
@@ -152,7 +152,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to continue running the script. Returns an NSArray of the new stack
  */
-- (NSArray *)run
+- (NSArray*)run
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
@@ -164,14 +164,14 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	
 	// get the total stack depth
 	[socket send:[self createCommand:@"stack_depth"]];
-	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLDocument* doc = [self processData:[socket receive]];
 	int depth = [[[[doc rootElement] attributeForName:@"depth"] stringValue] intValue];
 	
 	// get all stack frames
-	NSMutableArray *stack = [NSMutableArray arrayWithCapacity:depth];
+	NSMutableArray* stack = [NSMutableArray arrayWithCapacity:depth];
 	for (int i = 0; i < depth; i++)
 	{
-		StackFrame *frame = [self createStackFrame:i];
+		StackFrame* frame = [self createStackFrame:i];
 		[stack insertObject:frame atIndex:i];
 	}
 	
@@ -181,7 +181,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to step into the current command.
  */
-- (StackFrame *)stepIn
+- (StackFrame*)stepIn
 {
 	[socket send:[self createCommand:@"step_into"]];
 	[socket receive];
@@ -197,7 +197,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to step out of the current context
  */
-- (StackFrame *)stepOut
+- (StackFrame*)stepOut
 {
 	[socket send:[self createCommand:@"step_out"]];
 	[socket receive];
@@ -213,7 +213,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to step over the current function
  */
-- (StackFrame *)stepOver
+- (StackFrame*)stepOver
 {
 	[socket send:[self createCommand:@"step_over"]];
 	[socket receive];
@@ -230,11 +230,11 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */
-- (NSArray *)getProperty:(NSString *)property
+- (NSArray*)getProperty:(NSString*)property
 {
 	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
 	
-	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLDocument* doc = [self processData:[socket receive]];
 	
 	/*
 	 <response>
@@ -245,8 +245,8 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	 */
 	
 	// we now have to detach all the children so we can insert them into another document
-	NSXMLElement *parent = (NSXMLElement *)[[doc rootElement] childAtIndex:0];
-	NSArray *children = [parent children];
+	NSXMLElement* parent = (NSXMLElement*)[[doc rootElement] childAtIndex:0];
+	NSArray* children = [parent children];
 	[parent setChildren:nil];
 	return children;
 }
@@ -256,23 +256,23 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Send an add breakpoint command
  */
-- (void)addBreakpoint:(Breakpoint *)bp
+- (void)addBreakpoint:(Breakpoint*)bp
 {
 	if (!connected)
 	{
 		return;
 	}
 	
-	NSString *cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", [bp transformedPath], [bp line]]];
+	NSString* cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", [bp transformedPath], [bp line]]];
 	[socket send:cmd];
-	NSXMLDocument *info = [self processData:[socket receive]];
+	NSXMLDocument* info = [self processData:[socket receive]];
 	[bp setDebuggerId:[[[[info rootElement] attributeForName:@"id"] stringValue] intValue]];
 }
 
 /**
  * Removes a breakpoint
  */
-- (void)removeBreakpoint:(Breakpoint *)bp
+- (void)removeBreakpoint:(Breakpoint*)bp
 {
 	if (!connected)
 	{
@@ -289,12 +289,12 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  * Helper method to create a string command with the -i <session> automatically tacked on. Takes
  * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
  */
-- (NSString *)createCommand:(NSString *)cmd, ...
+- (NSString*)createCommand:(NSString*)cmd, ...
 {
 	// collect varargs
 	va_list	argList;
 	va_start(argList, cmd);
-	NSString *format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
+	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
 	va_end(argList);
 	
 	return [NSString stringWithFormat:@"%@ -i %@", [format autorelease], session];
@@ -303,13 +303,13 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Helper function to parse the NSData into an NSXMLDocument
  */
-- (NSXMLDocument *)processData:(NSString *)data
+- (NSXMLDocument*)processData:(NSString*)data
 {
 	if (data == nil)
 		return nil;
 	
-	NSError *parseError = nil;
-	NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
+	NSError* parseError = nil;
+	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
 	if (parseError)
 	{
 		NSLog(@"Could not parse XML? --- %@", parseError);
@@ -319,7 +319,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	}
 	
 	// check and see if there's an error
-	NSArray *error = [[doc rootElement] elementsForName:@"error"];
+	NSArray* error = [[doc rootElement] elementsForName:@"error"];
 	if ([error count] > 0)
 	{
 		NSLog(@"Xdebug error: %@", error);
@@ -333,39 +333,39 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Generates a stack frame for the given depth
  */
-- (StackFrame *)createStackFrame:(int)stackDepth
+- (StackFrame*)createStackFrame:(int)stackDepth
 {
 	// get the stack frame
 	[socket send:[self createCommand:@"stack_get -d %d", stackDepth]];
-	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLDocument* doc = [self processData:[socket receive]];
 	if (doc == nil)
 		return nil;
 	
-	NSXMLElement *xmlframe = [[[doc rootElement] children] objectAtIndex:0];
+	NSXMLElement* xmlframe = [[[doc rootElement] children] objectAtIndex:0];
 	
 	// get the names of all the contexts
 	[socket send:[self createCommand:@"context_names -d 0"]];
-	NSXMLElement *contextNames = [[self processData:[socket receive]] rootElement];
-	NSMutableArray *variables = [NSMutableArray array];
-	for (NSXMLElement *context in [contextNames children])
+	NSXMLElement* contextNames = [[self processData:[socket receive]] rootElement];
+	NSMutableArray* variables = [NSMutableArray array];
+	for (NSXMLElement* context in [contextNames children])
 	{
-		NSString *name = [[context attributeForName:@"name"] stringValue];
+		NSString* name = [[context attributeForName:@"name"] stringValue];
 		int cid = [[[context attributeForName:@"id"] stringValue] intValue];
 		
 		// fetch the contexts
 		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d %d -c %d", stackDepth, cid]]];
-		NSArray *addVars = [[[self processData:[socket receive]] rootElement] children];
+		NSArray* addVars = [[[self processData:[socket receive]] rootElement] children];
 		if (addVars != nil && name != nil)
 			[variables addObjectsFromArray:addVars];
 	}
 	
 	// get the source
-	NSString *filename = [[xmlframe attributeForName:@"filename"] stringValue];
+	NSString* filename = [[xmlframe attributeForName:@"filename"] stringValue];
 	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
-	NSString *source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
+	NSString* source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
 	
 	// create stack frame
-	StackFrame *frame = [[StackFrame alloc]
+	StackFrame* frame = [[StackFrame alloc]
 		initWithIndex:stackDepth
 		withFilename:filename
 		withSource:source
@@ -380,7 +380,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Creates a StackFrame based on the current position in the debugger
  */
-- (StackFrame *)createCurrentStackFrame
+- (StackFrame*)createCurrentStackFrame
 {
 	return [self createStackFrame:0];
 }
@@ -391,7 +391,7 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 - (void)updateStatus
 {
 	[socket send:[self createCommand:@"status"]];
-	NSXMLDocument *doc = [self processData:[socket receive]];
+	NSXMLDocument* doc = [self processData:[socket receive]];
 	self.status = [[[[doc rootElement] attributeForName:@"status"] stringValue] capitalizedString];
 	
 	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])

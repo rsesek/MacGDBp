@@ -18,7 +18,7 @@
 
 @interface BSSourceView (Private)
 - (void)setupViews;
-- (void)errorHighlightingFile:(NSNotification *)notif;
+- (void)errorHighlightingFile:(NSNotification*)notif;
 @end
 
 @implementation BSSourceView
@@ -60,7 +60,7 @@
 /**
  * Sets the file name as well as the text of the source view
  */
-- (void)setFile:(NSString *)f
+- (void)setFile:(NSString*)f
 {
 	if (file != f)
 	{
@@ -77,9 +77,9 @@
 	@try
 	{
 		// Attempt to use the PHP CLI to highlight the source file as HTML
-		NSPipe *outPipe = [NSPipe pipe];
-		NSPipe *errPipe = [NSPipe pipe];
-		NSTask *task = [[NSTask new] autorelease];
+		NSPipe* outPipe = [NSPipe pipe];
+		NSPipe* errPipe = [NSPipe pipe];
+		NSTask* task = [[NSTask new] autorelease];
 		
 		[task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
 		[task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
@@ -89,12 +89,12 @@
 		
 		[[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
 		
-		NSData *data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
-		NSAttributedString *source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
+		NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
+		NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
 		[[textView textStorage] setAttributedString:source];
 		[source release];
 	}
-	@catch (NSException *exception)
+	@catch (NSException* exception)
 	{
 		// If the PHP executable is not available then the NSTask will throw an exception
 		[textView setString:[NSString stringWithContentsOfFile:f]];
@@ -104,11 +104,11 @@
 /**
  * Sets the contents of the SourceView via a string rather than loading from a path
  */
-- (void)setString:(NSString *)source asFile:(NSString *)path
+- (void)setString:(NSString*)source asFile:(NSString*)path
 {
 	// create the temp file
-	NSError *error = nil;
-	NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
+	NSError* error = nil;
+	NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
 	[source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 	if (error)
 	{
@@ -133,9 +133,9 @@
 /**
  * If an error occurs in reading the highlighted PHP source, this will merely set the string
  */
-- (void)errorHighlightingFile:(NSNotification *)notif
+- (void)errorHighlightingFile:(NSNotification*)notif
 {
-	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
 		[textView setString:[NSString stringWithContentsOfFile:file]];
 }

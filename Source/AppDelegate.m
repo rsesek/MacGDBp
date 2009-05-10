@@ -39,7 +39,7 @@
 {
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
 
-	NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+	NSDictionary* dict = [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithInt:9000], @"Port",
 		@"macgdbp", @"IDEKey",
 		[NSNumber numberWithBool:YES], @"BreakpointsWindowVisible",

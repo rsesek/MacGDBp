@@ -45,7 +45,7 @@
 /**
  * Returns a reference to the top of the stack
  */
-- (StackFrame *)peek
+- (StackFrame*)peek
 {
 	return [stack lastObject];
 }
@@ -53,14 +53,14 @@
 /**
  * Pops the current frame off the stack and returns the frame
  */
-- (StackFrame *)pop
+- (StackFrame*)pop
 {
-	StackFrame *frame = [stack lastObject];
+	StackFrame* frame = [stack lastObject];
 	
 	if (frame != nil)
 		[stack removeLastObject];
 	
-	for (StackFrame *f in stack)
+	for (StackFrame* f in stack)
 		f.index--;
 	
 	return frame;
@@ -69,9 +69,9 @@
 /**
  * Pushes a frame onto the end of the stack
  */
-- (void)push:(StackFrame *)frame
+- (void)push:(StackFrame*)frame
 {
-	for (StackFrame *f in stack)
+	for (StackFrame* f in stack)
 		f.index++;
 	
 	[stack insertObject:frame atIndex:[stack count]];

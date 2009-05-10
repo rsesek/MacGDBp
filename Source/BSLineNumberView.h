@@ -20,13 +20,13 @@
 
 @interface BSLineNumberView : NSView
 {
-	BSSourceView *sourceView;
+	BSSourceView* sourceView;
 	NSRange lineNumberRange;
-	NSSet *markers;
+	NSSet* markers;
 }
 
-@property(readwrite, assign) BSSourceView *sourceView;
+@property(readwrite, assign) BSSourceView* sourceView;
 @property(readonly) NSRange lineNumberRange;
-@property(readwrite, retain) NSSet *markers;
+@property(readwrite, retain) NSSet* markers;
 
 @end

@@ -19,44 +19,44 @@
 #import "Breakpoint.h"
 #import "StackFrame.h"
 
-extern NSString *kErrorOccurredNotif;
+extern NSString* kErrorOccurredNotif;
 
 @interface GDBpConnection : NSObject
 {
 	int port;
-	NSString *session;
+	NSString* session;
 	BOOL connected;
 	
 	/**
 	 * Human-readable status of the connection
 	 */
-	NSString *status;
+	NSString* status;
 	
-	SocketWrapper *socket;
+	SocketWrapper* socket;
 }
 
-@property(readonly, copy) NSString *status;
-@property(readonly) SocketWrapper *socket;
+@property(readonly, copy) NSString* status;
+@property(readonly) SocketWrapper* socket;
 
 // initializer
-- (id)initWithPort:(int)aPort session:(NSString *)aSession;
+- (id)initWithPort:(int)aPort session:(NSString*)aSession;
 
 // getter
 - (int)port;
-- (NSString *)session;
-- (NSString *)remoteHost;
+- (NSString*)session;
+- (NSString*)remoteHost;
 - (BOOL)isConnected;
 
 // communication
 - (void)reconnect;
-- (NSArray *)run;
-- (StackFrame *)stepIn;
-- (StackFrame *)stepOut;
-- (StackFrame *)stepOver;
-- (void)addBreakpoint:(Breakpoint *)bp;
-- (void)removeBreakpoint:(Breakpoint *)bp;
+- (NSArray*)run;
+- (StackFrame*)stepIn;
+- (StackFrame*)stepOut;
+- (StackFrame*)stepOver;
+- (void)addBreakpoint:(Breakpoint*)bp;
+- (void)removeBreakpoint:(Breakpoint*)bp;
 
 // helpers
-- (NSArray *)getProperty:(NSString *)property;
+- (NSArray*)getProperty:(NSString*)property;
 
 @end

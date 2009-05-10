@@ -22,9 +22,9 @@
 #include <unistd.h>
 
 @interface SocketWrapper ()
-@property (copy, readwrite, getter=remoteHost) NSString *hostname;
+@property (copy, readwrite, getter=remoteHost) NSString* hostname;
 
-- (void)error:(NSString *)msg;
+- (void)error:(NSString*)msg;
 @end
 
 @implementation SocketWrapper
@@ -33,7 +33,7 @@
 /**
  * Initializes the socket wrapper with a host and port
  */
-- (id)initWithConnection:(GDBpConnection *)cnx
+- (id)initWithConnection:(GDBpConnection*)cnx
 {
 	if (self = [super init])
 	{
@@ -70,7 +70,7 @@
 }
 
 /**
- * Sets the delegate but does *not* retain it
+ * Sets the delegate but does* not* retain it
  */
 - (void)setDelegate:(id)aDelegate
 {
@@ -91,7 +91,7 @@
  */
 - (void)connect:(id)obj
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	// create an INET socket that we'll be listen()ing on
 	int socketOpen = socket(PF_INET, SOCK_STREAM, 0);
@@ -109,7 +109,7 @@
 	
 	// bind the socket... and don't give up until we've tried for a while
 	int tries = 0;
-	while (bind(socketOpen, (struct sockaddr *)&address, sizeof(address)) < 0)
+	while (bind(socketOpen, (struct sockaddr*)&address, sizeof(address)) < 0)
 	{
 		if (tries >= 5)
 		{
@@ -132,7 +132,7 @@
 	// accept a connection
 	struct sockaddr_in remoteAddress;
 	socklen_t remoteAddressLen = sizeof(remoteAddress);
-	sock = accept(socketOpen, (struct sockaddr *)&remoteAddress, &remoteAddressLen);
+	sock = accept(socketOpen, (struct sockaddr*)&remoteAddress, &remoteAddressLen);
 	if (sock < 0)
 	{
 		close(socketOpen);
@@ -146,11 +146,11 @@
 	
 	struct sockaddr_in addr;
 	socklen_t addrLength;
-	if (getpeername(sock, (struct sockaddr *)&addr, &addrLength) < 0)
+	if (getpeername(sock, (struct sockaddr*)&addr, &addrLength) < 0)
 	{
 		[self error:@"Could not get remote hostname."];
 	}
-	char *name = inet_ntoa(addr.sin_addr);
+	char* name = inet_ntoa(addr.sin_addr);
 	[self setHostname:[NSString stringWithUTF8String:name]];
 	
 	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
@@ -164,7 +164,7 @@
  * is used either in a threaded environment so the interface does not hang, or when you *know* the server 
  * will return something (which we almost always do). Returns the data that was received from the socket.
  */
-- (NSString *)receive
+- (NSString*)receive
 {
 	// create a buffer
 	char buffer[1024];
@@ -173,7 +173,7 @@
 	int recvd = recv(sock, &buffer, sizeof(buffer), 0);
 	
 	// take the received data and put it into an NSData
-	NSMutableString *str = [NSMutableString string];
+	NSMutableString* str = [NSMutableString string];
 	
 	if (recvd == -1)
 		return nil;
@@ -218,7 +218,7 @@
 		}
 	}
 	
-	NSString *tmp = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; // strip whitespace
+	NSString* tmp = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; // strip whitespace
 	tmp = [tmp substringToIndex:[tmp length] - 1]; // don't want the null byte
 	
 	NSAssert([tmp UTF8String][[tmp length] - 1] == '>', @"-[SocketWrapper receive] buffer is incomplete");
@@ -229,7 +229,7 @@
 /**
  * Sends a given NSString over the socket. Returns YES on complete submission.
  */
-- (BOOL)send:(NSString *)data
+- (BOOL)send:(NSString*)data
 {
 	data = [NSString stringWithFormat:@"%@\0", data];
 	int sent = send(sock, [data UTF8String], [data length], 0);
@@ -251,7 +251,7 @@
 /**
  * Helper method that just calls -[DebuggerWindowController setError:] on the main thread
  */
-- (void)error:(NSString *)msg
+- (void)error:(NSString*)msg
 {
 	[delegate performSelectorOnMainThread:@selector(setError:) withObject:msg waitUntilDone:NO];
 }

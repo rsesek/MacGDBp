@@ -20,14 +20,14 @@
 
 @interface BreakpointController : NSWindowController
 {
-	BreakpointManager *manager;
+	BreakpointManager* manager;
 	
-	IBOutlet NSArrayController *arrayController;
-	IBOutlet BSSourceView *sourceView;
+	IBOutlet NSArrayController* arrayController;
+	IBOutlet BSSourceView* sourceView;
 }
 
-@property(readonly) BSSourceView *sourceView;
-@property(readonly) NSArrayController *arrayController;
+@property(readonly) BSSourceView* sourceView;
+@property(readonly) NSArrayController* arrayController;
 
 - (IBAction)addBreakpoint:(id)sender;
 - (IBAction)removeBreakpoint:(id)sender;

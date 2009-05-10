@@ -20,33 +20,33 @@
 
 @interface SocketWrapper : NSObject
 {
-	GDBpConnection *connection;
+	GDBpConnection* connection;
 	
 	int port;
 	int sock;
-	NSString *hostname;
+	NSString* hostname;
 	
 	id delegate;
 }
 
-- (id)initWithConnection:(GDBpConnection *)cnx;
+- (id)initWithConnection:(GDBpConnection*)cnx;
 
 - (id)delegate;
 - (void)setDelegate:(id)aDelegate;
 
 - (void)connect;
 - (void)close;
-- (NSString *)receive;
-- (BOOL)send:(NSString *)data;
+- (NSString*)receive;
+- (BOOL)send:(NSString*)data;
 
-- (NSString *)remoteHost;
+- (NSString*)remoteHost;
 
 @end
 
 @interface NSObject (SocketWrapperDelegate)
 
 // error
-- (void)errorEncountered:(NSString *)error;
+- (void)errorEncountered:(NSString*)error;
 
 // connection components
 - (void)socketDidAccept:(id)obj;

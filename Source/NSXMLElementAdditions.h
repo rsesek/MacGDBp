@@ -18,11 +18,11 @@
 
 @interface NSXMLElement (GDBpAdditions)
 
-- (NSString *)fullname;
-- (NSString *)variable;
+- (NSString*)fullname;
+- (NSString*)variable;
 - (BOOL)isLeaf;
-- (NSString *)value;
-- (NSString *)type;
-- (NSArray *)subnodes;
+- (NSString*)value;
+- (NSString*)type;
+- (NSArray*)subnodes;
 
 @end

@@ -27,12 +27,12 @@
 	/**
 	 * File the current frame is in
 	 */
-	NSString *filename;
+	NSString* filename;
 	
 	/**
 	 * Cached, highlighted version of the source
 	 */
-	NSString *source;
+	NSString* source;
 	
 	/**
 	 * Line number of the source the frame points to
@@ -42,28 +42,28 @@
 	/**
 	 * Current-executing function
 	 */
-	NSString *function;
+	NSString* function;
 	
 	/**
 	 * Variable list
 	 */
-	NSArray *variables;
+	NSArray* variables;
 }
 
 @property(readwrite) int index;
-@property(readonly, copy) NSString *filename;
-@property(readonly, copy) NSString *source;
+@property(readonly, copy) NSString* filename;
+@property(readonly, copy) NSString* source;
 @property(readwrite) int lineNumber;
-@property(readwrite, copy) NSString *function;
-@property(readonly, copy) NSArray *variables;
+@property(readwrite, copy) NSString* function;
+@property(readonly, copy) NSArray* variables;
 
 - (id)initWithIndex:(int)anIndex
-	   withFilename:(NSString *)aFilename
-		 withSource:(NSString *)aSource
+	   withFilename:(NSString*)aFilename
+		 withSource:(NSString*)aSource
 			 atLine:(int)aLineNumber
-		 inFunction:(NSString *)function
-	  withVariables:(NSArray *)variables;
+		 inFunction:(NSString*)function
+	  withVariables:(NSArray*)variables;
 
-- (BOOL)isShiftedFrame:(StackFrame *)frame;
+- (BOOL)isShiftedFrame:(StackFrame*)frame;
 
 @end

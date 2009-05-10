@@ -24,7 +24,7 @@
  */
 - (id)newObject
 {
-	NSMutableDictionary *obj = (NSMutableDictionary *)[super newObject];
+	NSMutableDictionary* obj = (NSMutableDictionary*)[super newObject];
 	[obj setValue:@"Remote Path" forKey:@"remote"];
 	[obj setValue:@"Local Path"	forKey:@"local"];
 	return obj;

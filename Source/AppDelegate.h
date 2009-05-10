@@ -21,13 +21,13 @@
 
 @interface AppDelegate : NSObject
 {
-	IBOutlet DebuggerController *debugger;
-	IBOutlet BreakpointController *breakpoint;
-	PreferencesController *prefs;
+	IBOutlet DebuggerController* debugger;
+	IBOutlet BreakpointController* breakpoint;
+	PreferencesController* prefs;
 }
 
-@property(readonly) DebuggerController *debugger;
-@property(readonly) BreakpointController *breakpoint;
+@property(readonly) DebuggerController* debugger;
+@property(readonly) BreakpointController* breakpoint;
 
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showInspectorWindow:(id)sender;
