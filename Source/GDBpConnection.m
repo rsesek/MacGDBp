@@ -281,6 +281,10 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	NSString *format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
 	va_end(argList);
 	
+#ifdef BLU_DEBUG
+	NSLog(@"--> %@", format);
+#endif
+	
 	return [NSString stringWithFormat:@"%@ -i %@", [format autorelease], session];
 }
 
@@ -310,6 +314,10 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		[self errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return nil;
 	}
+	
+#ifdef BLU_DEBUG
+	NSLog(@"<-- %@", doc);
+#endif
 	
 	return [doc autorelease];
 }
