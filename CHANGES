@@ -10,6 +10,7 @@ MacGDBp                                                               CHANGE LOG
 retained
 - Fix: #160  The code pane could be unpopulated after the debugging the same
 script a subsequent time
+- Fix: #163  Breakpoints with a space in the pathname would not be set
 
 
 1.2.1

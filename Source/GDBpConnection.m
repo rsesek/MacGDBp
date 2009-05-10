@@ -245,11 +245,9 @@ NSString *kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 - (void)addBreakpoint:(Breakpoint *)bp
 {
 	if (!connected)
-	{
 		return;
-	}
 	
-	NSString *cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", [bp transformedPath], [bp line]]];
+	NSString *cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f '%@' -n %i", [bp transformedPath], [bp line]]];
 	[socket send:cmd];
 	NSXMLDocument *info = [self processData:[socket receive]];
 	[bp setDebuggerId:[[[[info rootElement] attributeForName:@"id"] stringValue] intValue]];
