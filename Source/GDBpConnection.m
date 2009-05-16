@@ -150,18 +150,10 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 }
 
 /**
- * Tells the debugger to continue running the script. Returns an NSArray of the new stack
+ * Creates an entirely new stack and returns it as an array of StackFrame objects.
  */
-- (NSArray*)run
+- (NSArray*)getCurrentStack
 {
-	[socket send:[self createCommand:@"run"]];
-	[socket receive];
-	
-	[self updateStatus];
-	
-	if (!connected)
-		return nil;
-	
 	// get the total stack depth
 	[socket send:[self createCommand:@"stack_depth"]];
 	NSXMLDocument* doc = [self processData:[socket receive]];
@@ -176,6 +168,22 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	}
 	
 	return stack;
+}
+
+/**
+ * Tells the debugger to continue running the script. Returns the current stack frame.
+ */
+- (StackFrame*)run
+{
+	[socket send:[self createCommand:@"run"]];
+	[socket receive];
+	
+	[self updateStatus];
+	
+	if (!connected)
+		return nil;
+	
+	return [self createCurrentStackFrame];
 }
 
 /**
@@ -366,12 +374,8 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	}
 	
 	// get the source
-<<<<<<< HEAD:Source/GDBpConnection.m
-	NSString *filename = [[xmlframe attributeForName:@"filename"] stringValue];
-	filename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
-=======
 	NSString* filename = [[xmlframe attributeForName:@"filename"] stringValue];
->>>>>>> cosmetics:Source/GDBpConnection.m
+	filename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
 	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
 	NSString* source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
 	
