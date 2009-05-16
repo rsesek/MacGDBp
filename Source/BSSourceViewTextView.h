@@ -20,9 +20,9 @@
 
 @interface BSSourceViewTextView : NSTextView
 {
-	BSSourceView *sourceView;
+	BSSourceView* sourceView;
 }
 
-@property(readwrite, assign) BSSourceView *sourceView;
+@property(readwrite, assign) BSSourceView* sourceView;
 
 @end

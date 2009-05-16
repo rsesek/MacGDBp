@@ -20,9 +20,9 @@
  * Private class continuation
  */
 @interface StackFrame()
-@property(readwrite, copy) NSString *filename;
-@property(readwrite, copy) NSString *source;
-@property(readwrite, copy) NSArray *variables;
+@property(readwrite, copy) NSString* filename;
+@property(readwrite, copy) NSString* source;
+@property(readwrite, copy) NSArray* variables;
 @end
 /***/
 
@@ -34,11 +34,11 @@
  * Constructor
  */
 - (id)initWithIndex:(int)anIndex
-	   withFilename:(NSString *)aFilename
-		 withSource:(NSString *)aSource
+	   withFilename:(NSString*)aFilename
+		 withSource:(NSString*)aSource
 			 atLine:(int)aLineNumber
-		 inFunction:(NSString *)aFunction
-	  withVariables:(NSArray *)aVariables
+		 inFunction:(NSString*)aFunction
+	  withVariables:(NSArray*)aVariables
 {
 	if (self = [super init])
 	{
@@ -56,7 +56,7 @@
  * Determines whether or not the given frame was shifted, rather than jumped. Essentially,
  * this checks if it's in the same file/function.
  */
-- (BOOL)isShiftedFrame:(StackFrame *)frame
+- (BOOL)isShiftedFrame:(StackFrame*)frame
 {
 	return ([filename isEqualToString:frame.filename] && [function isEqualToString:frame.function]);
 }
@@ -64,7 +64,7 @@
 /**
  * Returns a human-readable representation
  */
-- (NSString *)description
+- (NSString*)description
 {
 	return [NSString stringWithFormat:@"#%d %@ [%@:%d]", index, function, filename, lineNumber];
 }

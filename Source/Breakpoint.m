@@ -24,7 +24,7 @@
 /**
  * Initializes a breakpoint with a file and line
  */
-- (id)initWithLine:(int)l inFile:(NSString *)f
+- (id)initWithLine:(int)l inFile:(NSString*)f
 {
 	if (self = [super init])
 	{
@@ -46,7 +46,7 @@
 /**
  * Creates a Breakpoint from the values of an NSDictionary
  */
-- (id)initWithDictionary:(NSDictionary *)dict
+- (id)initWithDictionary:(NSDictionary*)dict
 {
 	if (self = [super init])
 	{
@@ -59,15 +59,15 @@
 /**
  * Returns the transformed path for the breakpoint, as Xdebug needs it
  */
-- (NSString *)transformedPath
+- (NSString*)transformedPath
 {
-	NSString *path = self.file;
+	NSString* path = self.file;
 	
-	NSMutableArray *transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
+	NSMutableArray* transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
 	if (!transforms || [transforms count] < 1)
 		return path;
 	
-	for (NSDictionary *replacement in transforms)
+	for (NSDictionary* replacement in transforms)
 	{
 		path = [path
 			stringByReplacingOccurrencesOfString:[replacement valueForKey:@"local"]
@@ -97,7 +97,7 @@
 /**
  * Returns an NSDictionary of the data so it can be stored in NSUserDefaults
  */
-- (NSDictionary *)dictionary
+- (NSDictionary*)dictionary
 {
 	return [NSDictionary dictionaryWithObjectsAndKeys:file, @"file", [NSNumber numberWithInt:line], @"line", nil];
 }
@@ -105,7 +105,7 @@
 /**
  * Pretty-print
  */
-- (NSString *)description
+- (NSString*)description
 {
 	return [NSString stringWithFormat:@"%@:%i", file, line];
 }

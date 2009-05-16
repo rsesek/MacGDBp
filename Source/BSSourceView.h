@@ -20,29 +20,29 @@
 
 @interface BSSourceView : NSView
 {
-	BSLineNumberView *numberView;
-	BSSourceViewTextView *textView;
-	NSScrollView *scrollView;
+	BSLineNumberView* numberView;
+	BSSourceViewTextView* textView;
+	NSScrollView* scrollView;
 	
-	NSString *file;
+	NSString* file;
 	int markedLine;
 	
 	id delegate;
 }
 
-@property(readwrite, assign) BSLineNumberView *numberView;
-@property(readwrite, assign) BSSourceViewTextView *textView;
-@property(readwrite, assign) NSScrollView *scrollView;
-@property(readwrite, assign) NSString *file;
+@property(readwrite, assign) BSLineNumberView* numberView;
+@property(readwrite, assign) BSSourceViewTextView* textView;
+@property(readwrite, assign) NSScrollView* scrollView;
+@property(readwrite, assign) NSString* file;
 @property(readwrite, assign) int markedLine;
 @property(readwrite, assign) id delegate;
 
-- (void)setFile:(NSString *)f;
-- (void)setString:(NSString *)source asFile:(NSString *)path;
+- (void)setFile:(NSString*)f;
+- (void)setString:(NSString*)source asFile:(NSString*)path;
 - (void)scrollToLine:(int)line;
 
 @end
 
 @interface NSObject (BSSourceViewDelegate)
-- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file;
+- (void)gutterClickedAtLine:(int)line forFile:(NSString*)file;
 @end

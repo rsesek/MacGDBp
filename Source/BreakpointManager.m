@@ -18,7 +18,7 @@
 #import "AppDelegate.h"
 
 @interface BreakpointManager (Private)
-- (void)updateDisplaysForFile:(NSString *)file;
+- (void)updateDisplaysForFile:(NSString*)file;
 @end
 
 @implementation BreakpointManager
@@ -40,7 +40,7 @@
 		savedBreakpoints = [[[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"Breakpoints"] retain];
 		if (savedBreakpoints)
 		{
-			for (NSDictionary *d in savedBreakpoints)
+			for (NSDictionary* d in savedBreakpoints)
 			{
 				[breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
 			}
@@ -52,9 +52,9 @@
 /**
  * Returns the shared manager (singleton)
  */
-+ (BreakpointManager *)sharedManager
++ (BreakpointManager*)sharedManager
 {
-	static BreakpointManager *manager;
+	static BreakpointManager* manager;
 	if (!manager)
 	{
 		manager = [[BreakpointManager alloc] init];
@@ -65,7 +65,7 @@
 /**
  * Registers a breakpoint at a given line
  */
-- (void)addBreakpoint:(Breakpoint *)bp;
+- (void)addBreakpoint:(Breakpoint*)bp;
 {
 	if (![breakpoints containsObject:bp])
 	{
@@ -82,9 +82,9 @@
 /**
  * Removes a breakpoint at a given line/file combination, or nil if nothing was removed
  */
-- (Breakpoint *)removeBreakpointAt:(int)line inFile:(NSString *)file
+- (Breakpoint*)removeBreakpointAt:(int)line inFile:(NSString*)file
 {
-	for (Breakpoint *b in breakpoints)
+	for (Breakpoint* b in breakpoints)
 	{
 		if ([b line] == line && [[b file] isEqualToString:file])
 		{
@@ -104,10 +104,10 @@
 /**
  * Returns all the breakpoints for a given file
  */
-- (NSArray *)breakpointsForFile:(NSString *)file
+- (NSArray*)breakpointsForFile:(NSString*)file
 {
-	NSMutableArray *matches = [NSMutableArray array];
-	for (Breakpoint *b in breakpoints)
+	NSMutableArray* matches = [NSMutableArray array];
+	for (Breakpoint* b in breakpoints)
 	{
 		if ([[b file] isEqualToString:file])
 		{
@@ -121,7 +121,7 @@
 /**
  * Checks to see if a given file has a breakpoint on a given line
  */
-- (BOOL)hasBreakpointAt:(int)line inFile:(NSString *)file
+- (BOOL)hasBreakpointAt:(int)line inFile:(NSString*)file
 {
 	return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
 }
@@ -132,9 +132,9 @@
  * This marks BSSourceView needsDisplay, rearranges the objects in the breakpoints controller,
  * and sets the markers for the BSLineNumberView
  */
-- (void)updateDisplaysForFile:(NSString *)file
+- (void)updateDisplaysForFile:(NSString*)file
 {
-	AppDelegate *appDel = [NSApp delegate];
+	AppDelegate* appDel = [NSApp delegate];
 	[[[appDel breakpoint] arrayController] rearrangeObjects];
 	[[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
 	[[[[appDel breakpoint] sourceView] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];

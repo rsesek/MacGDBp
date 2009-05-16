@@ -62,7 +62,7 @@
 	[NSBezierPath strokeLineFromPoint:NSMakePoint(rect.origin.x, rect.size.height) toPoint:NSMakePoint(rect.origin.x + rect.size.width, rect.size.height)];
 	
 	// font attributes for the line number
-	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
+	NSDictionary* attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName, [NSColor grayColor], NSForegroundColorAttributeName, nil];
 	
 	lineNumberRange = NSMakeRange(0, 0);
 	
@@ -82,10 +82,10 @@
 		{
 			lineNumberRange.location = (lineNumberRange.length == 0 ? line : lineNumberRange.location);
 			lineNumberRange.length++;
-			NSString *num = [NSString stringWithFormat:@"%u", line];
+			NSString* num = [NSString stringWithFormat:@"%u", line];
 			NSSize strSize = [num sizeWithAttributes:attrs];
 			[num drawAtPoint:NSMakePoint([self frame].size.width - strSize.width - 3, fragRect.origin.y + ((fragRect.size.height - strSize.height) / 2)) withAttributes:attrs];
-			Breakpoint *test = [[Breakpoint alloc] initWithLine:line inFile:[sourceView file]];
+			Breakpoint* test = [[Breakpoint alloc] initWithLine:line inFile:[sourceView file]];
 			if ([markers containsObject:test])
 			{
 				[self drawMarkerInRect:fragRect];
@@ -101,9 +101,9 @@
 /**
  * Handles the mouse down event (which is adding, deleting, and toggling breakpoints)
  */
-- (void)mouseDown:(NSEvent *)event
+- (void)mouseDown:(NSEvent*)event
 {
-	NSTextView *textView = [sourceView textView];
+	NSTextView* textView = [sourceView textView];
 	
 	NSPoint clickLoc = [self convertPoint:[event locationInWindow] fromView:nil];
 	
@@ -132,7 +132,7 @@
  */
 - (void)drawMarkerInRect:(NSRect)rect
 {
-	NSBezierPath *path = [NSBezierPath bezierPath];
+	NSBezierPath* path = [NSBezierPath bezierPath];
 	
 	[path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
 	[path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right

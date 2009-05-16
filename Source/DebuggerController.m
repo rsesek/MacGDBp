@@ -40,7 +40,7 @@
 	{
 		stackController = [[StackController alloc] init];
 		
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] session:[defaults stringForKey:@"IDEKey"]];
 		expandedVariables = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
@@ -84,7 +84,7 @@
 /**
  * Called right before the window closes so that we can tell the socket to close down
  */
-- (void)windowWillClose:(NSNotification *)notif
+- (void)windowWillClose:(NSNotification*)notif
 {
 	[[connection socket] close];
 }
@@ -121,7 +121,7 @@
 /**
  * Sets the status to be "Error" and then displays the error message
  */
-- (void)setError:(NSString *)anError
+- (void)setError:(NSString*)anError
 {
 	[errormsg setStringValue:anError];
 	[errormsg setHidden:NO];
@@ -130,7 +130,7 @@
 /**
  * Handles a GDBpConnection error
  */
-- (void)handleConnectionError:(NSNotification *)notif
+- (void)handleConnectionError:(NSNotification*)notif
 {
 	[self setError:[[notif userInfo] valueForKey:@"NSString"]];
 }
@@ -148,13 +148,14 @@
  */
 - (IBAction)run:(id)sender
 {
-	StackFrame *frame = [connection run];
-	[stackController pop];
+	NSArray* frames = [connection run];
 	
-	if ([connection isConnected] && frame != nil)
+	if ([connection isConnected] && frames != nil)
 	{
-		[stackController push:frame];
+		[stackController.stack removeAllObjects];
+		[stackController.stack addObjectsFromArray:frames];
 		[self updateStackViewer];
+		[self updateSourceViewer];
 	}
 }
 
@@ -175,7 +176,7 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame *frame = [connection stepIn];
+	StackFrame* frame = [connection stepIn];
 	if ([frame isShiftedFrame:[stackController peek]])
 		[stackController pop];
 	[stackController push:frame];
@@ -190,7 +191,7 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame *frame = [connection stepOut];
+	StackFrame* frame = [connection stepOut];
 	[stackController pop]; // frame we were out of
 	[stackController pop]; // frame we are returning to
 	[stackController push:frame];
@@ -205,7 +206,7 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame *frame = [connection stepOver];
+	StackFrame* frame = [connection stepOver];
 	[stackController pop];
 	[stackController push:frame];
 	[self updateStackViewer];
@@ -215,7 +216,7 @@
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
  */
-- (void)tableViewSelectionDidChange:(NSNotification *)notif
+- (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
 	[self updateSourceViewer];
 	[self expandVariables];
@@ -224,16 +225,16 @@
 /**
  * Called whenver an item is expanded. This allows us to determine if we need to fetch deeper
  */
-- (void)outlineViewItemDidExpand:(NSNotification *)notif
+- (void)outlineViewItemDidExpand:(NSNotification*)notif
 {
-	NSTreeNode *node = [[notif userInfo] objectForKey:@"NSObject"];
+	NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
 	[expandedVariables addObject:[[node representedObject] fullname]];
 }
 
 /**
  * Called when an item was collapsed. This allows us to remove it from the list of expanded items
  */
-- (void)outlineViewItemDidCollapse:(NSNotification *)notif
+- (void)outlineViewItemDidCollapse:(NSNotification*)notif
 {
 	[expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
 }
@@ -250,7 +251,7 @@
 		return;
 	
 	// get the filename
-	NSString *filename = [selection valueForKey:@"filename"];
+	NSString* filename = [selection valueForKey:@"filename"];
 	filename = [[NSURL URLWithString:filename] path];
 	if ([filename isEqualToString:@""])
 		return;
@@ -258,10 +259,10 @@
 	// replace the source if necessary
 	if (![sourceViewer.file isEqualToString:filename])
 	{
-		NSString *source = [selection valueForKey:@"source"];
+		NSString* source = [selection valueForKey:@"source"];
 		[sourceViewer setString:source asFile:filename];
 		
-		NSSet *breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
+		NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
 		[[sourceViewer numberView] setMarkers:breakpoints];
 	}
 	
@@ -287,12 +288,12 @@
  */
 - (void)expandVariables
 {
-	NSString *selection = [selectedVariable fullname];
+	NSString* selection = [selectedVariable fullname];
 	
 	for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
 	{
-		NSTreeNode *node = [variablesOutlineView itemAtRow:i];
-		NSString *fullname = [[node representedObject] fullname];
+		NSTreeNode* node = [variablesOutlineView itemAtRow:i];
+		NSString* fullname = [[node representedObject] fullname];
 		
 		// see if it needs expanding
 		if ([expandedVariables containsObject:fullname])
@@ -309,9 +310,9 @@
 /**
  * The gutter was clicked, which indicates that a breakpoint needs to be changed
  */
-- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+- (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-	BreakpointManager *mngr = [BreakpointManager sharedManager];
+	BreakpointManager* mngr = [BreakpointManager sharedManager];
 	
 	if ([mngr hasBreakpointAt:line inFile:file])
 	{
@@ -319,7 +320,7 @@
 	}
 	else
 	{
-		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+		Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[mngr addBreakpoint:bp];
 		[bp release];
 	}

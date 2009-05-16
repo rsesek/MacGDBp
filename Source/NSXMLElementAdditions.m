@@ -23,7 +23,7 @@
 /**
  * Return's the property's full name
  */
-- (NSString *)fullname
+- (NSString*)fullname
 {
 	return [[self attributeForName:@"fullname"] stringValue];
 }
@@ -31,7 +31,7 @@
 /**
  * Return's the property's name from the attributes list
  */
-- (NSString *)variable
+- (NSString*)variable
 {
 	return [[self attributeForName:@"name"] stringValue];
 }
@@ -47,12 +47,12 @@
 /**
  * Override children so we can fetch more depth as needed
  */
-- (NSArray *)subnodes
+- (NSArray*)subnodes
 {
-	NSArray *children = [self children];
+	NSArray* children = [self children];
 	if (![self isLeaf] && [children count] < 1)
 	{
-		return [[[(AppDelegate *)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
+		return [[[(AppDelegate*)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
 	}
 	return children;
 }
@@ -60,7 +60,7 @@
 /**
  * Returns the value of the property
  */
-- (NSString *)value
+- (NSString*)value
 {
 	// not a leaf, so don't display any value
 	if (![self isLeaf])
@@ -71,10 +71,10 @@
 	// base64 encoded data
 	if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
 	{
-		char *str = (char *)[[self stringValue] cStringUsingEncoding:NSASCIIStringEncoding];
+		char* str = (char*)[[self stringValue] cStringUsingEncoding:NSASCIIStringEncoding];
 		int strlen = [[self stringValue] lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
 		
-		char *data;
+		char* data;
 		size_t datalen;
 		
 		if (!base64_decode_alloc(str, strlen, &data, &datalen))
@@ -82,7 +82,7 @@
 			NSLog(@"error in converting %@ to base64", self);
 		}
 		
-		NSString *ret = [NSString stringWithCString:data length:datalen];
+		NSString* ret = [NSString stringWithCString:data length:datalen];
 		free(data);
 		
 		return ret;
@@ -95,10 +95,10 @@
 /**
  * Returns the type of variable this is
  */
-- (NSString *)type
+- (NSString*)type
 {
-	NSXMLNode *className = [self attributeForName:@"classname"];
-	NSString *type = [[self attributeForName:@"type"] stringValue];
+	NSXMLNode* className = [self attributeForName:@"classname"];
+	NSString* type = [[self attributeForName:@"type"] stringValue];
 	if (className != nil)
 	{
 		return [NSString stringWithFormat:@"%@ (%@)", [className stringValue], type];

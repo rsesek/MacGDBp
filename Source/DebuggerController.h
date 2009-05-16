@@ -22,31 +22,31 @@
 
 @interface DebuggerController : NSWindowController
 {
-	GDBpConnection *connection;
+	GDBpConnection* connection;
 	
-	StackController *stackController;
-	IBOutlet NSArrayController *stackArrayController;
+	StackController* stackController;
+	IBOutlet NSArrayController* stackArrayController;
 	
-	IBOutlet NSTreeController *variablesTreeController;
-	IBOutlet NSOutlineView *variablesOutlineView;
-	NSMutableSet *expandedVariables;
-	NSXMLElement *selectedVariable;
+	IBOutlet NSTreeController* variablesTreeController;
+	IBOutlet NSOutlineView* variablesOutlineView;
+	NSMutableSet* expandedVariables;
+	NSXMLElement* selectedVariable;
 	
-	IBOutlet NSWindow *inspector;
+	IBOutlet NSWindow* inspector;
 	
-	IBOutlet NSTextField *statusmsg;
-	IBOutlet NSTextField *errormsg;
+	IBOutlet NSTextField* statusmsg;
+	IBOutlet NSTextField* errormsg;
 	
-	IBOutlet BSSourceView *sourceViewer;
+	IBOutlet BSSourceView* sourceViewer;
 }
 
-@property(readonly) GDBpConnection *connection;
-@property(readonly) BSSourceView *sourceViewer;
-@property(readonly) NSWindow *inspector;
+@property(readonly) GDBpConnection* connection;
+@property(readonly) BSSourceView* sourceViewer;
+@property(readonly) NSWindow* inspector;
 
 - (void)resetDisplays;
 
-- (void)setError:(NSString *)anError;
+- (void)setError:(NSString*)anError;
 
 - (void)startDebugger;
 

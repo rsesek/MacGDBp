@@ -19,20 +19,20 @@
 
 @interface Breakpoint : NSObject
 {
-	NSString *file;
+	NSString* file;
 	int line;
 	int debuggerId;
 }
 
-@property(readonly) NSString *file;
+@property(readonly) NSString* file;
 @property(readonly) int line;
 @property(readwrite, assign) int debuggerId;
 
-- (id)initWithLine:(int)l inFile:(NSString *)f;
-- (id)initWithDictionary:(NSDictionary *)dict;
+- (id)initWithLine:(int)l inFile:(NSString*)f;
+- (id)initWithDictionary:(NSDictionary*)dict;
 
-- (NSString *)transformedPath;
+- (NSString*)transformedPath;
 
-- (NSDictionary *)dictionary;
+- (NSDictionary*)dictionary;
 
 @end

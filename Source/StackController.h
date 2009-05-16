@@ -22,13 +22,13 @@
 	/**
 	 * Array of StackFrame's (LIFO stack)
 	 */
-	NSMutableArray *stack;
+	NSMutableArray* stack;
 }
 
-@property(readonly) NSMutableArray *stack;
+@property(readonly) NSMutableArray* stack;
 
-- (StackFrame *)peek;
-- (StackFrame *)pop;
-- (void)push:(StackFrame *)frame;
+- (StackFrame*)peek;
+- (StackFrame*)pop;
+- (void)push:(StackFrame*)frame;
 
 @end

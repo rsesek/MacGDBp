@@ -42,7 +42,7 @@
  */
 - (IBAction)addBreakpoint:(id)sender
 {
-	NSOpenPanel *panel = [NSOpenPanel openPanel];
+	NSOpenPanel* panel = [NSOpenPanel openPanel];
 	
 	if ([panel runModal] != NSOKButton)
 	{
@@ -57,13 +57,13 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
-	NSArray *selection = [arrayController selectedObjects];
+	NSArray* selection = [arrayController selectedObjects];
 	if ([selection count] < 1)
 	{
 		return;
 	}
 	
-	for (Breakpoint *bp in selection)
+	for (Breakpoint* bp in selection)
 	{
 		[manager removeBreakpointAt:[bp line] inFile:[bp file]];
 	}
@@ -75,15 +75,15 @@
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
  */
-- (void)tableViewSelectionDidChange:(NSNotification *)notif
+- (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-	NSArray *selection = [arrayController selectedObjects];
+	NSArray* selection = [arrayController selectedObjects];
 	if ([selection count] < 1)
 	{
 		return;
 	}
 	
-	Breakpoint *bp = [selection objectAtIndex:0];
+	Breakpoint* bp = [selection objectAtIndex:0];
 	[sourceView setFile:[bp file]];
 	[sourceView scrollToLine:[bp line]];
 	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
@@ -94,7 +94,7 @@
 /**
  * The gutter was clicked, which indicates that a breakpoint needs to be changed
  */
-- (void)gutterClickedAtLine:(int)line forFile:(NSString *)file
+- (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
 	if ([manager hasBreakpointAt:line inFile:file])
 	{
@@ -102,7 +102,7 @@
 	}
 	else
 	{
-		Breakpoint *bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+		Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
 		[manager addBreakpoint:bp];
 		[bp release];
 	}

@@ -101,7 +101,7 @@ NSSize pathsSize;
 /**
  * Returns the selection names
  */
-- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar
+- (NSArray*)toolbarSelectableItemIdentifiers:(NSToolbar*)toolbar
 {
 	return [NSArray arrayWithObjects:
 		[generalPreferencesItem itemIdentifier],
