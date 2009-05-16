@@ -46,6 +46,7 @@ extern NSString *kErrorOccurredNotif;
 - (NSString *)session;
 - (NSString *)remoteHost;
 - (BOOL)isConnected;
+- (NSArray*)getCurrentStack;
 
 // communication
 - (void)reconnect;
