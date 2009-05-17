@@ -166,64 +166,39 @@
  */
 - (NSString*)receive
 {
-	// create a buffer
-	char buffer[1024];
-	
-	// do our initial recv() call to get (hopefully) all the data and the lengh of the packet
-	int recvd = recv(sock, &buffer, sizeof(buffer), 0);
-	
-	// take the received data and put it into an NSData
-	NSMutableString* str = [NSMutableString string];
-	
-	if (recvd == -1)
-		return nil;
-	
-	// strip the length from the packet, and clear the null byte then add it to the NSData
+	// Read the first part of the response, the length of the packet.
 	char packetLength[8];
-	memset(packetLength, '\0', sizeof(packetLength));
+	memset(&packetLength, 0x0, 8);
+	char c;
 	int i = 0;
-	while (buffer[i] != '\0')
-	{
-		packetLength[i] = buffer[i];
-		i++;
-	}
-	
-	// we also want the null byte, so move us up 1
-	i++;
-	
-	// the total length of the full transmission
+	while (recv(sock, &c, 1, 0) == 1 && c != 0x0)
+		packetLength[i++] = c;
 	int length = atoi(packetLength);
 	
-	// move the packet part of the received data into it's own char[]
-	char packet[sizeof(buffer)];
-	memset(packet, '\0', sizeof(packet));
-	memmove(packet, &buffer[i], recvd - i);
+	// Our final output.
+	NSMutableString* string = [[NSMutableString alloc] initWithCapacity:length];
 	
-	// convert bytes to NSString
-	[str appendString:[NSString stringWithCString:packet length:recvd - i]];
+	// Create a buffer that we will move data from the network into.
+	char buffer[1024];
 	
-	// check if we have a partial packet
-	if (length + i > sizeof(buffer))
+	// The total amount of data we have currently read.
+	int received = 0;
+	
+	// Loop until we have the entire packet.
+	while (received < length)
 	{
-		while (recvd < length + i)
+		int size = recv(sock, &buffer, sizeof(buffer), 0);
+		if (size < 1)
 		{
-			int latest = recv(sock, &buffer, sizeof(buffer), 0);
-			if (latest < 1)
-			{
-				[self error:@"Socket closed or could not be read"];
-				return nil;
-			}
-			[str appendString:[NSString stringWithCString:buffer length:latest]];
-			recvd += latest;
+			[self error:@"Socket closed or could not be read"];
+			return nil;
 		}
+		NSString* temp = [NSString stringWithCString:buffer encoding:NSASCIIStringEncoding];
+		[string appendString:temp];
+		received += [temp length];
 	}
 	
-	NSString* tmp = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]; // strip whitespace
-	tmp = [tmp substringToIndex:[tmp length] - 1]; // don't want the null byte
-	
-	NSAssert([tmp UTF8String][[tmp length] - 1] == '>', @"-[SocketWrapper receive] buffer is incomplete");
-	
-	return tmp;
+	return [string autorelease];
 }
 
 /**
