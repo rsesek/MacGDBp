@@ -141,7 +141,8 @@
  */
 - (void)startDebugger
 {
-	[self stepIn:self];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
+		[self stepIn:self];
 }
 
 /**

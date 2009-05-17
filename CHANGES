@@ -13,6 +13,8 @@ script a subsequent time
 - Fix: #163  Breakpoints with a space in the pathname would not be set
 - Fix: Code would not display if the pathname to the file contained a space
 - Fix: After using the run command, the stack will now be properly updated
+- New: A preference has been added to disable automatic stepping into the
+first line of execution
 
 
 1.2.1

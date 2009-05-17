@@ -45,6 +45,7 @@
 		[NSNumber numberWithBool:YES], @"BreakpointsWindowVisible",
 		[NSNumber numberWithBool:YES], @"InspectorWindowVisible",
 		[NSMutableArray array], @"PathReplacements",
+		[NSNumber numberWithBool:YES], @"BreakOnFirstLine",
 		nil
 	];
 	
