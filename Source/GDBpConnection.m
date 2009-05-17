@@ -27,6 +27,7 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 - (StackFrame*)createStackFrame:(int)depth;
 - (StackFrame*)createCurrentStackFrame;
 - (void)updateStatus;
+- (NSString*)escapedURIPath:(NSString*)path;
 @end
 
 @implementation GDBpConnection
@@ -250,7 +251,8 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if (!connected)
 		return;
 	
-	NSString* cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f '%@' -n %i", [bp transformedPath], [bp line]]];
+	NSString* file = [self escapedURIPath:[bp transformedPath]];
+	NSString* cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]]];
 	[socket send:cmd];
 	NSXMLDocument* info = [self processData:[socket receive]];
 	[bp setDebuggerId:[[[[info rootElement] attributeForName:@"id"] stringValue] intValue]];
@@ -356,8 +358,8 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	
 	// get the source
 	NSString* filename = [[xmlframe attributeForName:@"filename"] stringValue];
-	filename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
-	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", filename]]];
+	NSString* escapedFilename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
+	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", escapedFilename]]];
 	NSString* source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
 	
 	// create stack frame
@@ -396,6 +398,28 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		[socket close];
 		self.status = @"Stopped";
 	}
+}
+
+/**
+ * Given a file path, this returns a file:// URI and escapes any spaces for the
+ * debugger engine.
+ */
+- (NSString*)escapedURIPath:(NSString*)path
+{
+	// Custon GDBp paths are fine.
+	if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
+		return path;
+	
+	// Create a temporary URL that will escape all the nasty characters.
+	NSURL* url = [NSURL fileURLWithPath:path];
+	NSString* urlString = [url absoluteString];
+	
+	// Remove the host because this is a file:// URL;
+	urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
+	
+	// Escape % for use in printf-style NSString formatters.
+	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+	return urlString;
 }
 
 @end
