@@ -8,8 +8,8 @@ MacGDBp                                                               CHANGE LOG
 - Fix: All breakpoint markers will now be displayed in the active code debugger
 - New: When stepping through code, the selection in the variable list will be
 retained
-- Fix: #160  The code pane could be unpopulated after the debugging the same
-script a subsequent time
+- Fix: #160  The code pane could be unpopulated after debugging the same script
+a subsequent time
 - Fix: #163  Breakpoints with a space in the pathname would not be set
 - Fix: Code would not display if the pathname to the file contained a space
 - Fix: After using the run command, the stack will now be properly updated

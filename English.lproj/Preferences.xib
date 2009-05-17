@@ -200,10 +200,6 @@
 				<string key="NSFrameAutosaveName">Preferences</string>
 			</object>
 			<object class="NSUserDefaultsController" id="811642706">
-				<object class="NSMutableArray" key="NSDeclaredKeys">
-					<bool key="EncodedWithXMLCoder">YES</bool>
-					<string>BreakOnFirstLine</string>
-				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="164161235">
@@ -214,7 +210,7 @@
 					<object class="NSTextField" id="190875294">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{77, 124}, {86, 17}}</string>
+						<string key="NSFrame">{{77, 54}, {86, 17}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="622681529">
@@ -250,7 +246,7 @@
 					<object class="NSTextField" id="510392492">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{168, 122}, {60, 22}}</string>
+						<string key="NSFrame">{{168, 52}, {60, 22}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="503674969">
@@ -280,7 +276,7 @@
 					<object class="NSTextField" id="249176901">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{55, 92}, {108, 17}}</string>
+						<string key="NSFrame">{{55, 22}, {108, 17}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="655138249">
@@ -296,7 +292,7 @@
 					<object class="NSTextField" id="220975723">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{168, 90}, {210, 22}}</string>
+						<string key="NSFrame">{{168, 20}, {210, 22}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="874023099">
@@ -313,7 +309,7 @@
 					<object class="NSTextField" id="153346618">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{17, 54}, {387, 28}}</string>
+						<string key="NSFrame">{{17, 79}, {387, 28}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="134905980">
@@ -333,7 +329,7 @@
 					<object class="NSButton" id="708819028">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{166, 18}, {216, 18}}</string>
+						<string key="NSFrame">{{164, 125}, {216, 18}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="1053497655">
@@ -360,7 +356,7 @@
 					<object class="NSTextField" id="421171423">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{17, 20}, {146, 17}}</string>
+						<string key="NSFrame">{{15, 127}, {146, 17}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="690767777">
@@ -906,13 +902,13 @@
 						<reference key="object" ref="164161235"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="708819028"/>
+							<reference ref="421171423"/>
 							<reference ref="190875294"/>
 							<reference ref="510392492"/>
 							<reference ref="249176901"/>
 							<reference ref="220975723"/>
 							<reference ref="153346618"/>
-							<reference ref="421171423"/>
-							<reference ref="708819028"/>
 						</object>
 						<reference key="parent" ref="1002"/>
 						<string key="objectName">GeneralPreferences</string>
