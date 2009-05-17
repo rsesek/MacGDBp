@@ -172,11 +172,9 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame* frame = [connection stepIn];
-	if ([frame isShiftedFrame:[stackController peek]])
-		[stackController pop];
-	[stackController push:frame];
-	[self updateStackViewer];
+	[connection stepIn];
+	if ([connection isConnected])
+		[self reloadStack];
 }
 
 /**
@@ -187,11 +185,9 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame* frame = [connection stepOut];
-	[stackController pop]; // frame we were out of
-	[stackController pop]; // frame we are returning to
-	[stackController push:frame];
-	[self updateStackViewer];
+	[connection stepOut];
+	if ([connection isConnected])
+		[self reloadStack];
 }
 
 /**
@@ -202,10 +198,9 @@
 	if ([[variablesTreeController selectedObjects] count] > 0)
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
-	StackFrame* frame = [connection stepOver];
-	[stackController pop];
-	[stackController push:frame];
-	[self updateStackViewer];
+	[connection stepOver];
+	if ([connection isConnected])
+		[self reloadStack];
 }
 
 /**

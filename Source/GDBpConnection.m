@@ -173,65 +173,46 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 /**
  * Tells the debugger to continue running the script. Returns the current stack frame.
  */
-- (StackFrame*)run
+- (void)run
 {
 	[socket send:[self createCommand:@"run"]];
 	[socket receive];
 	
 	[self updateStatus];
-	
-	if (!connected)
-		return nil;
-	
-	return [self createCurrentStackFrame];
 }
 
 /**
  * Tells the debugger to step into the current command.
  */
-- (StackFrame*)stepIn
+- (void)stepIn
 {
 	[socket send:[self createCommand:@"step_into"]];
 	[socket receive];
 	
 	[self updateStatus];
-	
-	if (!connected)
-		return nil;
-	
-	return [self createCurrentStackFrame];
+
 }
 
 /**
  * Tells the debugger to step out of the current context
  */
-- (StackFrame*)stepOut
+- (void)stepOut
 {
 	[socket send:[self createCommand:@"step_out"]];
 	[socket receive];
 	
 	[self updateStatus];
-	
-	if (!connected)
-		return nil;
-	
-	return [self createCurrentStackFrame];
 }
 
 /**
  * Tells the debugger to step over the current function
  */
-- (StackFrame*)stepOver
+- (void)stepOver
 {
 	[socket send:[self createCommand:@"step_over"]];
 	[socket receive];
 	
 	[self updateStatus];
-	
-	if (!connected)
-		return nil;
-	
-	return [self createCurrentStackFrame];
 }
 
 /**

@@ -50,10 +50,10 @@ extern NSString* kErrorOccurredNotif;
 
 // communication
 - (void)reconnect;
-- (StackFrame*)run;
-- (StackFrame*)stepIn;
-- (StackFrame*)stepOut;
-- (StackFrame*)stepOver;
+- (void)run;
+- (void)stepIn;
+- (void)stepOut;
+- (void)stepOver;
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (void)removeBreakpoint:(Breakpoint*)bp;
 
