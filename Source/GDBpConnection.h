@@ -50,7 +50,7 @@ extern NSString* kErrorOccurredNotif;
 
 // communication
 - (void)reconnect;
-- (NSArray*)run;
+- (StackFrame*)run;
 - (StackFrame*)stepIn;
 - (StackFrame*)stepOut;
 - (StackFrame*)stepOver;
