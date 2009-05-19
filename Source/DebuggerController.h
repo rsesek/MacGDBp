@@ -44,6 +44,8 @@
 @property(readonly) BSSourceView* sourceViewer;
 @property(readonly) NSWindow* inspector;
 
+- (IBAction)showInspectorWindow:(id)sender;
+
 - (void)resetDisplays;
 
 - (void)setError:(NSString*)anError;

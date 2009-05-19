@@ -108,6 +108,17 @@
 }
 
 /**
+ * Shows the inspector window
+ */
+- (IBAction)showInspectorWindow:(id)sender
+{
+	if (![inspector isVisible])
+		[inspector makeKeyAndOrderFront:sender];
+	else
+		[inspector orderOut:sender];
+}
+
+/**
  * Resets all the displays to be empty
  */
 - (void)resetDisplays
