@@ -193,7 +193,7 @@
 			[self error:@"Socket closed or could not be read"];
 			return nil;
 		}
-		NSString* temp = [NSString stringWithCString:buffer encoding:NSASCIIStringEncoding];
+		NSString* temp = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 		[string appendString:temp];
 		received += [temp length];
 	}
