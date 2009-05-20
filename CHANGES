@@ -15,7 +15,6 @@ a subsequent time
 - Fix: #157  After using the run command, the stack will now be properly updated
 - New: A preference has been added to disable automatic stepping into the
 first line of execution
-- Fix: MacGDBp should no longer throw incomplete packet error messages
 
 
 1.2.1
