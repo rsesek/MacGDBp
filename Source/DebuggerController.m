@@ -164,6 +164,10 @@
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
 		[self reconnect:self];
+	
+	// Invalidate the marked line so we don't look like we're still running.
+	sourceViewer.markedLine = -1;
+	[sourceViewer setNeedsDisplay:YES];
 }
 
 /**
