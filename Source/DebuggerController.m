@@ -14,7 +14,6 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "GDBpConnection.h"
 #import "DebuggerController.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"

@@ -16,10 +16,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BSSourceView.h"
+#import "GDBpConnection.h"
 #import "StackController.h"
-
-@class GDBpConnection;
-@protocol GDBpConnectionDelegate;
 
 @interface DebuggerController : NSWindowController <GDBpConnectionDelegate>
 {
