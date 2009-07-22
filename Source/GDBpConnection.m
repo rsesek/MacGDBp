@@ -47,8 +47,8 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		connected = NO;
 		
 		// now that we have our host information, open the socket
-		socket = [[SocketWrapper alloc] initWithConnection:self];
-		[socket setDelegate:self];
+		socket = [[SocketWrapper alloc] initWithPort:port];
+		socket.delegate = self;
 		[socket connect];
 		
 		self.status = @"Connecting";
@@ -109,7 +109,7 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  * -[SocketWrapper receive] to clear the way for communication, though the information
  * could be useful server information that we don't use right now.
  */
-- (void)socketDidAccept:(id)obj
+- (void)socketDidAccept
 {
 	connected = YES;
 	[socket receive];
@@ -121,7 +121,8 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 		[self addBreakpoint:bp];
 	}
 	
-	[[[NSApp delegate] debugger] startDebugger]; // this will just load the debugger to make it look active
+	// Load the debugger to make it look active.
+	[[[NSApp delegate] debugger] performSelectorOnMainThread:@selector(startDebugger) withObject:nil waitUntilDone:YES];
 }
 
 /**

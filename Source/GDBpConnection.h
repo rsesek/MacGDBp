@@ -21,7 +21,7 @@
 
 extern NSString* kErrorOccurredNotif;
 
-@interface GDBpConnection : NSObject
+@interface GDBpConnection : NSObject <SocketWrapperDelegate>
 {
 	int port;
 	NSString* session;

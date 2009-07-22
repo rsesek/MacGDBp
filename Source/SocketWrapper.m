@@ -29,16 +29,16 @@
 
 @implementation SocketWrapper
 @synthesize hostname;
+@synthesize delegate;
 
 /**
- * Initializes the socket wrapper with a host and port
+ * Initializes the socket wrapper with a port
  */
-- (id)initWithConnection:(GDBpConnection*)cnx
+- (id)initWithPort:(int)aPort;
 {
 	if (self = [super init])
 	{
-		connection = [cnx retain];
-		port = [connection port];
+		port = aPort;
 	}
 	return self;
 }
@@ -48,7 +48,6 @@
  */
 - (void)dealloc
 {
-	[connection release];
 	[hostname release];
 	[super dealloc];
 }
@@ -59,22 +58,6 @@
 - (void)close
 {
 	close(sock);
-}
-
-/**
- * Returns the delegate
- */
-- (id)delegate
-{
-	return delegate;
-}
-
-/**
- * Sets the delegate but does* not* retain it
- */
-- (void)setDelegate:(id)aDelegate
-{
-	delegate = aDelegate;
 }
 
 /**
@@ -153,7 +136,7 @@
 	char* name = inet_ntoa(addr.sin_addr);
 	[self setHostname:[NSString stringWithUTF8String:name]];
 	
-	[connection performSelectorOnMainThread:@selector(socketDidAccept:) withObject:nil waitUntilDone:NO];
+	[delegate socketDidAccept];
 	
 	[pool release];
 }
@@ -224,11 +207,11 @@
 }
 
 /**
- * Helper method that just calls -[DebuggerWindowController setError:] on the main thread
+ * Helper method that just calls |-errorEncountered:|
  */
 - (void)error:(NSString*)msg
 {
-	[delegate performSelectorOnMainThread:@selector(setError:) withObject:msg waitUntilDone:NO];
+	[delegate errorEncountered:msg];
 }
 
 @end

@@ -16,23 +16,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class GDBpConnection;
+@protocol SocketWrapperDelegate;
 
 @interface SocketWrapper : NSObject
 {
-	GDBpConnection* connection;
-	
 	int port;
 	int sock;
 	NSString* hostname;
 	
-	id delegate;
+	id <SocketWrapperDelegate> delegate;
 }
+@property (assign) id <SocketWrapperDelegate> delegate;
 
-- (id)initWithConnection:(GDBpConnection*)cnx;
-
-- (id)delegate;
-- (void)setDelegate:(id)aDelegate;
+- (id)initWithPort:(int)aPort;
 
 - (void)connect;
 - (void)close;
@@ -43,12 +39,13 @@
 
 @end
 
-@interface NSObject (SocketWrapperDelegate)
+@protocol SocketWrapperDelegate <NSObject>
 
-// error
+// Returns a human-readable error message when an error occurred.
 - (void)errorEncountered:(NSString*)error;
 
-// connection components
-- (void)socketDidAccept:(id)obj;
+// Called after the socket is ready for reading and writing. This is not called
+// from the main thread.
+- (void)socketDidAccept;
 
 @end
