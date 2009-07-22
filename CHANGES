@@ -1,6 +1,11 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+1.4
+#####################
+- New: #165  Added a preference to automatically reconnect after debugging
+
+
 1.3
 #####################
 - New: #155  Add a variable inspector to display the full, untruncated value

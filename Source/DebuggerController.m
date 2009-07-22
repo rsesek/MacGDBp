@@ -14,8 +14,8 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "DebuggerController.h"
 #import "GDBpConnection.h"
+#import "DebuggerController.h"
 #import "NSXMLElementAdditions.h"
 #import "AppDelegate.h"
 #import "BreakpointManager.h"
@@ -43,16 +43,10 @@
 		
 		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] session:[defaults stringForKey:@"IDEKey"]];
+		connection.delegate = self;
 		expandedVariables = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
 		[[self window] setDelegate:self];
-		
-		[[NSNotificationCenter defaultCenter]
-			addObserver:self
-			selector:@selector(handleConnectionError:)
-			name:kErrorOccurredNotif
-			object:connection
-		];
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
 			[inspector orderFront:self];
@@ -142,9 +136,17 @@
 /**
  * Handles a GDBpConnection error
  */
-- (void)handleConnectionError:(NSNotification*)notif
+- (void)errorEncountered:(NSString*)error
 {
-	[self setError:[[notif userInfo] valueForKey:@"NSString"]];
+	[self setError:error];
+}
+
+/**
+ * Delegate functioni for GDBpConnection for when the debugger connects.
+ */
+- (void)debuggerConnected
+{
+	[self startDebugger];
 }
 
 /**
@@ -154,6 +156,15 @@
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
 		[self stepIn:self];
+}
+
+/**
+ * Called once the debugger disconnects.
+ */
+- (void)debuggerDisconnected
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
+		[self reconnect:self];
 }
 
 /**

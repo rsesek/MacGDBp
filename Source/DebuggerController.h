@@ -19,8 +19,9 @@
 #import "StackController.h"
 
 @class GDBpConnection;
+@protocol GDBpConnectionDelegate;
 
-@interface DebuggerController : NSWindowController
+@interface DebuggerController : NSWindowController <GDBpConnectionDelegate>
 {
 	GDBpConnection* connection;
 	

@@ -17,8 +17,6 @@
 #import "GDBpConnection.h"
 #import "AppDelegate.h"
 
-NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
-
 @interface GDBpConnection()
 @property(readwrite, copy) NSString* status;
 
@@ -28,11 +26,13 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 - (StackFrame*)createCurrentStackFrame;
 - (void)updateStatus;
 - (NSString*)escapedURIPath:(NSString*)path;
+- (void)doSocketAccept:_nil;
 @end
 
 @implementation GDBpConnection
-
-@synthesize socket, status;
+@synthesize socket;
+@synthesize status;
+@synthesize delegate;
 
 /**
  * Creates a new DebuggerConnection and initializes the socket from the given connection
@@ -111,18 +111,7 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  */
 - (void)socketDidAccept
 {
-	connected = YES;
-	[socket receive];
-	[self updateStatus];
-	
-	// register any breakpoints that exist offline
-	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
-	{
-		[self addBreakpoint:bp];
-	}
-	
-	// Load the debugger to make it look active.
-	[[[NSApp delegate] debugger] performSelectorOnMainThread:@selector(startDebugger) withObject:nil waitUntilDone:YES];
+	[self performSelectorOnMainThread:@selector(doSocketAccept:) withObject:nil waitUntilDone:YES];
 }
 
 /**
@@ -130,14 +119,7 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
  */
 - (void)errorEncountered:(NSString*)error
 {
-	[[NSNotificationCenter defaultCenter]
-		postNotificationName:kErrorOccurredNotif
-		object:self
-		userInfo:[NSDictionary
-			dictionaryWithObject:error
-			forKey:@"NSString"
-		]
-	];
+	[delegate errorEncountered:error];
 }
 
 /**
@@ -192,7 +174,6 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	[socket receive];
 	
 	[self updateStatus];
-
 }
 
 /**
@@ -317,7 +298,7 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	if ([error count] > 0)
 	{
 		NSLog(@"Xdebug error: %@", error);
-		[self errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+		[delegate errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 		return nil;
 	}
 	
@@ -397,6 +378,9 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	{
 		connected = NO;
 		[socket close];
+		
+		[delegate debuggerDisconnected];
+		
 		self.status = @"Stopped";
 	}
 }
@@ -421,6 +405,25 @@ NSString* kErrorOccurredNotif = @"GDBpConnection_ErrorOccured_Notification";
 	// Escape % for use in printf-style NSString formatters.
 	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
 	return urlString;
+}
+
+/**
+ * Helper method for |-socketDidAccept| to be called on the main thread.
+ */
+- (void)doSocketAccept:_nil
+{
+	connected = YES;
+	[socket receive];
+	[self updateStatus];
+	
+	// register any breakpoints that exist offline
+	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
+	{
+		[self addBreakpoint:bp];
+	}
+	
+	// Load the debugger to make it look active.
+	[delegate debuggerConnected];
 }
 
 @end

@@ -200,6 +200,10 @@
 				<string key="NSFrameAutosaveName">Preferences</string>
 			</object>
 			<object class="NSUserDefaultsController" id="811642706">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>AutoReconnect</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="164161235">
@@ -329,7 +333,7 @@
 					<object class="NSButton" id="708819028">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{164, 125}, {216, 18}}</string>
+						<string key="NSFrame">{{164, 147}, {216, 18}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="1053497655">
@@ -340,11 +344,11 @@
 							<reference key="NSControlView" ref="708819028"/>
 							<int key="NSButtonFlags">1211912703</int>
 							<int key="NSButtonFlags2">130</int>
-							<object class="NSCustomResource" key="NSNormalImage">
+							<object class="NSCustomResource" key="NSNormalImage" id="548552881">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">NSSwitch</string>
 							</object>
-							<object class="NSButtonImageSource" key="NSAlternateImage">
+							<object class="NSButtonImageSource" key="NSAlternateImage" id="471173519">
 								<string key="NSImageName">NSSwitch</string>
 							</object>
 							<string key="NSAlternateContents"/>
@@ -356,7 +360,7 @@
 					<object class="NSTextField" id="421171423">
 						<reference key="NSNextResponder" ref="164161235"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{15, 127}, {146, 17}}</string>
+						<string key="NSFrame">{{15, 149}, {146, 17}}</string>
 						<reference key="NSSuperview" ref="164161235"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="690767777">
@@ -369,8 +373,30 @@
 							<reference key="NSTextColor" ref="819706911"/>
 						</object>
 					</object>
+					<object class="NSButton" id="834917142">
+						<reference key="NSNextResponder" ref="164161235"/>
+						<int key="NSvFlags">268</int>
+						<string key="NSFrame">{{164, 125}, {216, 18}}</string>
+						<reference key="NSSuperview" ref="164161235"/>
+						<bool key="NSEnabled">YES</bool>
+						<object class="NSButtonCell" key="NSCell" id="971931499">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">0</int>
+							<string key="NSContents">Automatic reconnect</string>
+							<reference key="NSSupport" ref="1004931791"/>
+							<reference key="NSControlView" ref="834917142"/>
+							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags2">130</int>
+							<reference key="NSNormalImage" ref="548552881"/>
+							<reference key="NSAlternateImage" ref="471173519"/>
+							<string key="NSAlternateContents"/>
+							<string key="NSKeyEquivalent"/>
+							<int key="NSPeriodicDelay">200</int>
+							<int key="NSPeriodicInterval">25</int>
+						</object>
+					</object>
 				</object>
-				<string key="NSFrameSize">{421, 164}</string>
+				<string key="NSFrameSize">{421, 186}</string>
 				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 			</object>
@@ -822,6 +848,22 @@
 					</object>
 					<int key="connectionID">95</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.AutoReconnect</string>
+						<reference key="source" ref="834917142"/>
+						<reference key="destination" ref="811642706"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="834917142"/>
+							<reference key="NSDestination" ref="811642706"/>
+							<string key="NSLabel">value: values.AutoReconnect</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.AutoReconnect</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">98</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -904,6 +946,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="708819028"/>
 							<reference ref="421171423"/>
+							<reference ref="834917142"/>
 							<reference ref="190875294"/>
 							<reference ref="510392492"/>
 							<reference ref="249176901"/>
@@ -1132,6 +1175,20 @@
 						<reference key="object" ref="690767777"/>
 						<reference key="parent" ref="421171423"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">96</int>
+						<reference key="object" ref="834917142"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="971931499"/>
+						</object>
+						<reference key="parent" ref="164161235"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">97</int>
+						<reference key="object" ref="971931499"/>
+						<reference key="parent" ref="834917142"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1190,6 +1247,9 @@
 					<string>92.IBPluginDependency</string>
 					<string>93.IBPluginDependency</string>
 					<string>94.IBPluginDependency</string>
+					<string>96.IBAttributePlaceholdersKey</string>
+					<string>96.IBPluginDependency</string>
+					<string>97.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1209,7 +1269,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{483, 354}, {421, 164}}</string>
+					<string>{{483, 332}, {421, 186}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1252,6 +1312,16 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSMutableDictionary">
+						<string key="NS.key.0">ToolTip</string>
+						<object class="IBToolTipAttribute" key="NS.object.0">
+							<string key="name">ToolTip</string>
+							<reference key="object" ref="834917142"/>
+							<string key="toolTip">Automatically start listening for connections immediately after disconnecting. If disabled, you must use the reconnect toolbar button or menu command before debugging again.</string>
+						</object>
+					</object>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -1274,7 +1344,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">95</int>
+			<int key="maxID">98</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
