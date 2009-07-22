@@ -1185,6 +1185,7 @@
 					<string>67.IBPluginDependency</string>
 					<string>78.CustomClassName</string>
 					<string>78.IBPluginDependency</string>
+					<string>91.IBAttributePlaceholdersKey</string>
 					<string>91.IBPluginDependency</string>
 					<string>92.IBPluginDependency</string>
 					<string>93.IBPluginDependency</string>
@@ -1208,7 +1209,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{369, 205}, {421, 164}}</string>
+					<string>{{483, 354}, {421, 164}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1239,6 +1240,14 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>PreferencesPathsArrayController</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<object class="NSMutableDictionary">
+						<string key="NS.key.0">ToolTip</string>
+						<object class="IBToolTipAttribute" key="NS.object.0">
+							<string key="name">ToolTip</string>
+							<reference key="object" ref="708819028"/>
+							<string key="toolTip">If enabled, MacGDBp will automatically step into the first line of code when the debugger is attached.</string>
+						</object>
+					</object>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
