@@ -268,9 +268,8 @@
 	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
 	va_end(argList);
 	
-#ifdef BLU_DEBUG
-	NSLog(@"--> %@", format);
-#endif
+	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
+		NSLog(@"--> %@", cmd);
 	
 	return [NSString stringWithFormat:@"%@ -i %@", [format autorelease], session];
 }
@@ -302,9 +301,8 @@
 		return nil;
 	}
 	
-#ifdef BLU_DEBUG
-	NSLog(@"<-- %@", doc);
-#endif
+	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
+		NSLog(@"<-- %@", doc);
 	
 	return [doc autorelease];
 }
