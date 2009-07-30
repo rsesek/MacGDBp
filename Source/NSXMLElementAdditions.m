@@ -71,19 +71,21 @@
 	// base64 encoded data
 	if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
 	{
-		char* str = (char*)[[self stringValue] cStringUsingEncoding:NSASCIIStringEncoding];
-		int strlen = [[self stringValue] lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
+		const char* str = [[self stringValue] UTF8String];
+		int strlen = [[self stringValue] length];
 		
 		char* data;
 		size_t datalen;
 		
 		if (!base64_decode_alloc(str, strlen, &data, &datalen))
-		{
-			NSLog(@"error in converting %@ to base64", self);
-		}
+			NSLog(@"error in converting %@ from base64", self);
 		
-		NSString* ret = [NSString stringWithCString:data length:datalen];
-		free(data);
+		NSString* ret = nil;
+		if (data)
+		{
+			ret = [NSString stringWithUTF8String:data];
+			free(data);
+		}
 		
 		return ret;
 	}
