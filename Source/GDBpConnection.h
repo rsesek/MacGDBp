@@ -24,8 +24,13 @@
 @interface GDBpConnection : NSObject <SocketWrapperDelegate>
 {
 	int port;
-	NSString* session;
 	BOOL connected;
+	
+	/**
+	 * An ever-increasing integer that gives each transaction a unique ID for
+	 * the debugging engine. Managed by |-createCommand:|.
+	 */
+	int transactionID;
 	
 	/**
 	 * Human-readable status of the connection
@@ -42,11 +47,10 @@
 @property (assign) id <GDBpConnectionDelegate> delegate;
 
 // initializer
-- (id)initWithPort:(int)aPort session:(NSString*)aSession;
+- (id)initWithPort:(int)aPort;
 
 // getter
 - (int)port;
-- (NSString*)session;
 - (NSString*)remoteHost;
 - (BOOL)isConnected;
 - (NSArray*)getCurrentStack;

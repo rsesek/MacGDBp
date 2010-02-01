@@ -38,12 +38,11 @@
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort session:(NSString*)aSession;
+- (id)initWithPort:(int)aPort
 {
 	if (self = [super init])
 	{
 		port = aPort;
-		session = [aSession retain];
 		connected = NO;
 		
 		// now that we have our host information, open the socket
@@ -64,7 +63,6 @@
 - (void)dealloc
 {
 	[socket release];
-	[session release];
 	[super dealloc];
 }
 
@@ -74,14 +72,6 @@
 - (int)port
 {
 	return port;
-}
-
-/**
- * Gets the session name
- */
-- (NSString*)session
-{
-	return session;
 }
 
 /**
@@ -257,7 +247,7 @@
 #pragma mark Private
 
 /**
- * Helper method to create a string command with the -i <session> automatically tacked on. Takes
+ * Helper method to create a string command with the -i <transaction id> automatically tacked on. Takes
  * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
  */
 - (NSString*)createCommand:(NSString*)cmd, ...
@@ -271,7 +261,7 @@
 	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
 		NSLog(@"--> %@", cmd);
 	
-	return [NSString stringWithFormat:@"%@ -i %@", [format autorelease], session];
+	return [NSString stringWithFormat:@"%@ -i %d", [format autorelease], transactionID++];
 }
 
 /**
@@ -411,6 +401,7 @@
 - (void)doSocketAccept:_nil
 {
 	connected = YES;
+	transactionID = 0;
 	[socket receive];
 	[self updateStatus];
 	
