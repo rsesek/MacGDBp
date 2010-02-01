@@ -1173,7 +1173,7 @@
 					<integer value="0"/>
 					<integer value="0"/>
 					<string>{{647, 290}, {420, 120}}</string>
-					<boolean value="YES"/>
+					<boolean value="NO"/>
 					<string>{196, 240}</string>
 					<string>{{202, 428}, {480, 270}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>

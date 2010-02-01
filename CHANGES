@@ -6,6 +6,7 @@ MacGDBp                                                               CHANGE LOG
 - New: #165  Added a preference to automatically reconnect after debugging
 - Change: #164  Upon disconnecting, the program counter line will no longer be
 highlighted.
+- Fixed: Preferences jumps around when opening.
 
 
 1.3
