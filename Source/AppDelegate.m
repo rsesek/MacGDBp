@@ -41,7 +41,6 @@
 
 	NSDictionary* dict = [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithInt:9000],	@"Port",
-		@"macgdbp",						@"IDEKey",
 		[NSNumber numberWithBool:YES],	@"BreakpointsWindowVisible",
 		[NSNumber numberWithBool:YES],	@"InspectorWindowVisible",
 		[NSMutableArray array],			@"PathReplacements",

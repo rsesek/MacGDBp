@@ -41,7 +41,7 @@
 		stackController = [[StackController alloc] init];
 		
 		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"] ideKey:[defaults stringForKey:@"IDEKey"]];
+		connection = [[GDBpConnection alloc] initWithPort:[defaults integerForKey:@"Port"]];
 		connection.delegate = self;
 		expandedVariables = [[NSMutableSet alloc] init];
 		[[self window] makeKeyAndOrderFront:nil];
@@ -70,7 +70,7 @@
 - (void)awakeFromNib
 {
 	[[self window] setExcludedFromWindowsMenu:YES];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d/%@", [connection remoteHost], [connection port], [connection ideKey]]];
+	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d", [connection remoteHost], [connection port]]];
 	[sourceViewer setDelegate:self];
 	[stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
 }
