@@ -253,7 +253,8 @@
  */
 - (void)error:(NSString*)msg
 {
-	[delegate performSelectorOnMainThread:@selector(setError:) withObject:msg waitUntilDone:NO];
+	NSLog(@"-[SocketWrapper error:] = %@", msg);
+	[delegate performSelectorOnMainThread:@selector(errorEncountered:) withObject:msg waitUntilDone:NO];
 }
 
 @end
