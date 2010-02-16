@@ -54,6 +54,9 @@
 	// The write stream. Weak.
 	CFWriteStreamRef writeStream_;
 	
+	// A dictionary that maps routingIDs to StackFrame objects.
+	NSMutableDictionary* stackFrames_;
+	
 	id <GDBpConnectionDelegate> delegate;
 }
 
@@ -94,6 +97,15 @@
 
 // Called when we disconnect.
 - (void)debuggerDisconnected;
+
+// Tells the debugger to destroy the current stack display.
+- (void)clobberStack;
+
+// Tells the debugger that a new stack frame is avaliable.
+- (void)newStackFrame:(StackFrame*)frame;
+
+// A simple step has occurred. Pop the top frame the new current one is provided.
+- (void)popStackFrame:(StackFrame*)frame;
 
 @end
 

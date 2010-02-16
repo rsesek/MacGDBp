@@ -16,9 +16,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface StackFrame : NSObject
 {
+	/**
+	 * The routing ID used to receive response information from the engine.
+	 */
+	NSUInteger routingID_;
+	
 	/**
 	 * The position in the stack
 	 */
@@ -50,12 +54,13 @@
 	NSArray* variables;
 }
 
-@property(readwrite) int index;
-@property(readonly, copy) NSString* filename;
-@property(readonly, copy) NSString* source;
-@property(readwrite) int lineNumber;
-@property(readwrite, copy) NSString* function;
-@property(readonly, copy) NSArray* variables;
+@property NSUInteger routingID;
+@property (readwrite) int index;
+@property (readonly, copy) NSString* filename;
+@property (copy) NSString* source;
+@property (readwrite) int lineNumber;
+@property (readwrite, copy) NSString* function;
+@property (copy) NSArray* variables;
 
 - (id)initWithIndex:(int)anIndex
 	   withFilename:(NSString*)aFilename

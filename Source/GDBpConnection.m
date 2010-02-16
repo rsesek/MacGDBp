@@ -21,10 +21,18 @@
 
 #import "AppDelegate.h"
 
+
+typedef enum _StackFrameComponents
+{
+	kStackFrameContexts,
+	kStackFrameSource,
+	kStackFrameVariables
+} StackFrameComponent;
+
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
 @interface GDBpConnection ()
-@property(readwrite, copy) NSString* status;
+@property (readwrite, copy) NSString* status;
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
 @property (retain) NSMutableString* currentPacket;
@@ -44,10 +52,14 @@
 - (void)initReceived:(NSXMLDocument*)response;
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
+- (void)rebuildStack:(NSXMLDocument*)response;
+- (void)getStackFrame:(NSXMLDocument*)response;
+- (void)handleRouted:(NSArray*)path response:(NSXMLDocument*)response;
 
 - (NSString*)createCommand:(NSString*)cmd, ...;
+- (NSString*)createRouted:(NSString*)routingID command:(NSString*)cmd, ...;
+
 - (StackFrame*)createStackFrame:(int)depth;
-- (StackFrame*)createCurrentStackFrame;
 - (NSString*)escapedURIPath:(NSString*)path;
 @end
 
@@ -205,7 +217,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 @synthesize readStream = readStream_;
 @synthesize currentPacket = currentPacket_;
 @synthesize writeStream = writeStream_;
- @synthesize queuedWrites = queuedWrites_;
+@synthesize queuedWrites = queuedWrites_;
 @synthesize status;
 @synthesize delegate;
 
@@ -276,6 +288,8 @@ void SocketAcceptCallback(CFSocketRef socket,
 {
 	connected = YES;
 	transactionID = 0;
+	stackFrames_ = [[NSMutableDictionary alloc] init];
+	self.queuedWrites = [NSMutableArray array];
 }
 
 /**
@@ -302,19 +316,8 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (NSArray*)getCurrentStack
 {
-	// get the total stack depth
-	[socket send:[self createCommand:@"stack_depth"]];
-	NSXMLDocument* doc = [self processData:[socket receive]];
-	int depth = [[[[doc rootElement] attributeForName:@"depth"] stringValue] intValue];
-	
-	// get all stack frames
-	NSMutableArray* stack = [NSMutableArray arrayWithCapacity:depth];
-	for (int i = 0; i < depth; i++)
-	{
-		StackFrame* frame = [self createStackFrame:i];
-		[stack insertObject:frame atIndex:i];
-	}
-	
+	NSMutableArray* stack = [NSMutableArray array];
+	NSLog(@"NOTIMPLEMENTED(): %s", _cmd);
 	return stack;
 }
 
@@ -467,6 +470,8 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// The socket goes down, so do the streams, which clean themselves up.
 	CFSocketInvalidate(socket_);
 	CFRelease(socket_);
+	[stackFrames_ release];
+	self.queuedWrites = nil;
 }
 
 /**
@@ -547,6 +552,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 	char* string = (char*)[command UTF8String];
 	int stringLength = strlen(string);
 	
+	// Log the command if TransportDebug is enabled.
+	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
+		NSLog(@"--> %@", command);
+	
 	// Busy wait while writing. BAADD. Should background this operation.
 	while (!done)
 	{
@@ -591,6 +600,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	// Get the name of the command from the engine's response.
 	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
+	NSString* transaction = [[[response rootElement] attributeForName:@"transaction_id"] stringValue];
 	
 	// Dispatch the command response to an appropriate handler.
 	if ([[[response rootElement] name] isEqualToString:@"init"])
@@ -600,8 +610,19 @@ void SocketAcceptCallback(CFSocketRef socket,
 	else if ([command isEqualToString:@"run"] || [command isEqualToString:@"step_into"] ||
 			 [command isEqualToString:@"step_over"] || [command isEqualToString:@"step_out"])
 		[self debuggerStep:response];
+	else if ([command isEqualToString:@"stack_depth"])
+		[self rebuildStack:response];
+	else if ([command isEqualToString:@"stack_get"])
+		[self getStackFrame:response];
+	
+	NSArray* routingPath = [transaction componentsSeparatedByString:@"."];
+	if ([routingPath count] > 1)
+		[self handleRouted:routingPath response:response];
 }
 
+/**
+ * Initial packet received. We've started a brand-new connection to the engine.
+ */
 - (void)initReceived:(NSXMLDocument*)response
 {
 	// Register any breakpoints that exist offline.
@@ -615,7 +636,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Fetches the value of and sets the status instance variable
+ * Receiver for status updates. This just freshens up the UI.
  */
 - (void)updateStatus:(NSXMLDocument*)response
 {
@@ -630,9 +651,107 @@ void SocketAcceptCallback(CFSocketRef socket,
 	}
 }
 
+/**
+ * Step in/out/over and run all take this path. We first get the status of the
+ * debugger and then request fresh stack information.
+ */
 - (void)debuggerStep:(NSXMLDocument*)response
 {
 	[self send:[self createCommand:@"status"]];
+	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
+	NSUInteger routingID = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+	
+	// If this is the run command, tell the delegate that a bunch of updates
+	// are coming. Also remove all existing stack routes and request a new stack.
+	if ([command isEqualToString:@"run"])
+	{
+		[delegate clobberStack];
+		[stackFrames_ removeAllObjects];
+		[self send:[self createCommand:@"stack_depth"]];
+	}
+	
+	[self send:[self createRouted:[NSString stringWithFormat:@"%u", routingID] command:@"stack_get -d 0"]];
+}
+
+/**
+ * We ask for the stack_depth and now we clobber the stack and start rebuilding
+ * it.
+ */
+- (void)rebuildStack:(NSXMLDocument*)response
+{
+	NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
+	
+	// We now need to alloc a bunch of stack frames and get the basic information
+	// for them.
+	for (NSInteger i = 0; i < depth; i++)
+	{
+		NSString* command = [self createCommand:@"stack_get -d %d", i];
+		
+		// Use the transaction ID to create a routing path.
+		NSNumber* routingID = [NSNumber numberWithInt:transactionID - 1];
+		[stackFrames_ setObject:[StackFrame alloc] forKey:routingID];
+		
+		[self send:command];
+	}
+}
+
+/**
+ * The initial rebuild of the stack frame. We now have enough to initialize
+ * a StackFrame object.
+ */
+- (void)getStackFrame:(NSXMLDocument*)response
+{
+	// Get the routing information.
+	NSUInteger routingID = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+	NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
+	
+	// Make sure we initialized this frame in our last |-rebuildStack:|.
+	StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
+	if (!frame)
+		return;
+	
+	NSXMLElement* xmlframe = [[[response rootElement] children] objectAtIndex:0];
+	
+	// Initialize the stack frame.
+	[frame initWithIndex:[[[xmlframe attributeForName:@"level"] stringValue] intValue]
+			withFilename:[[xmlframe attributeForName:@"filename"] stringValue]
+			  withSource:nil
+				  atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
+			  inFunction:[[xmlframe attributeForName:@"where"] stringValue]
+		   withVariables:nil];
+	
+	// Now that we have an initialized frame, request additional information.
+	NSString* routingFormat = @"%u.%d";
+	NSString* routingPath = nil;
+	
+	// Get the source code of the file. Escape % in URL chars.
+	NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+	routingPath = [NSString stringWithFormat:routingFormat, routingID, kStackFrameSource];
+	[self send:[self createRouted:routingPath command:[NSString stringWithFormat:@"source -f %@", escapedFilename]]];
+	
+	// Get the names of all the contexts.
+	routingPath = [NSString stringWithFormat:routingFormat, routingID, kStackFrameContexts];
+	[self send:[self createRouted:routingPath command:@"context_names -d %d", frame.index]];
+}
+
+/**
+ * Routed responses are currently only used in getting all the stack frame data.
+ */
+- (void)handleRouted:(NSArray*)path response:(NSXMLDocument*)response
+{
+	NSLog(@"routed %@ = %@", path, response);
+	
+	// Format of |path|: transactionID.routingID.component
+	StackFrameComponent component = [[path objectAtIndex:2] intValue];
+	
+	// See if we can find the stack frame based on routingID.
+	NSNumber* routingNumber = [NSNumber numberWithInt:[[path objectAtIndex:1] intValue]];
+	StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
+	if (!frame)
+		return;
+	
+	if (component == kStackFrameSource)
+		frame.source = [[response rootElement] value];
 }
 
 #pragma mark Private
@@ -649,10 +768,22 @@ void SocketAcceptCallback(CFSocketRef socket,
 	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
 	va_end(argList);
 	
-	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
-		NSLog(@"--> %@", cmd);
-	
 	return [NSString stringWithFormat:@"%@ -i %d", [format autorelease], transactionID++];
+}
+
+/**
+ * Helper to create a command string. This works a lot like |-createCommand:| but
+ * it also takes a routing ID, which is used to route response data to specific
+ * objects.
+ */
+- (NSString*)createRouted:(NSString*)routingID command:(NSString*)cmd, ...
+{
+	va_list	argList;
+	va_start(argList, cmd);
+	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList];
+	va_end(argList);
+	
+	return [NSString stringWithFormat:@"%@ -i %d.%@", [format autorelease], transactionID++, routingID];
 }
 
 /**
@@ -660,14 +791,6 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (StackFrame*)createStackFrame:(int)stackDepth
 {
-	// get the stack frame
-	[socket send:[self createCommand:@"stack_get -d %d", stackDepth]];
-	NSXMLDocument* doc = [self processData:[socket receive]];
-	if (doc == nil)
-		return nil;
-	
-	NSXMLElement* xmlframe = [[[doc rootElement] children] objectAtIndex:0];
-	
 	// get the names of all the contexts
 	[socket send:[self createCommand:@"context_names -d 0"]];
 	NSXMLElement* contextNames = [[self processData:[socket receive]] rootElement];
@@ -684,31 +807,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 			[variables addObjectsFromArray:addVars];
 	}
 	
-	// get the source
-	NSString* filename = [[xmlframe attributeForName:@"filename"] stringValue];
-	NSString* escapedFilename = [filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"]; // escape % in URL chars
-	[socket send:[self createCommand:[NSString stringWithFormat:@"source -f %@", escapedFilename]]];
-	NSString* source = [[[self processData:[socket receive]] rootElement] value]; // decode base64
-	
-	// create stack frame
-	StackFrame* frame = [[StackFrame alloc]
-		initWithIndex:stackDepth
-		withFilename:filename
-		withSource:source
-		atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
-		inFunction:[[xmlframe attributeForName:@"where"] stringValue]
-		withVariables:variables
-	];
-	
-	return [frame autorelease];
-}
-
-/**
- * Creates a StackFrame based on the current position in the debugger
- */
-- (StackFrame*)createCurrentStackFrame
-{
-	return [self createStackFrame:0];
+	return nil;
 }
 
 /**

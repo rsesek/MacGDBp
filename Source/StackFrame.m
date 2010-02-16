@@ -21,13 +21,12 @@
  */
 @interface StackFrame()
 @property(readwrite, copy) NSString* filename;
-@property(readwrite, copy) NSString* source;
-@property(readwrite, copy) NSArray* variables;
 @end
 /***/
 
 @implementation StackFrame
 
+@synthesize routingID = routingID_;
 @synthesize index, filename, source, lineNumber, function, variables;
 
 /**
