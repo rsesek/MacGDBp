@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${EXECUTABLE_NAME} 1.4 Beta, Copyright 2007-2009 Blue Static</string>
+	<string>${EXECUTABLE_NAME} 1.4 Beta, Copyright 2007-2010 Blue Static</string>
 	<key>CFBundleIconFile</key>
 	<string>MacGDBp</string>
 	<key>CFBundleIdentifier</key>
