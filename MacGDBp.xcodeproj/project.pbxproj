@@ -37,7 +37,6 @@
 		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
 		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
-		1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEEE93F0C618B70000C0732 /* SocketWrapper.m */; };
 		1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointController.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -105,8 +104,6 @@
 		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
 		1EEBFD110D359A9F008F835B /* dimple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dimple.png; sourceTree = "<group>"; };
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
-		1EEEE93E0C618B70000C0732 /* SocketWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketWrapper.h; path = Source/SocketWrapper.h; sourceTree = "<group>"; };
-		1EEEE93F0C618B70000C0732 /* SocketWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketWrapper.m; path = Source/SocketWrapper.m; sourceTree = "<group>"; };
 		1EFF70C10DFDC018006B9D33 /* BreakpointController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointController.h; path = Source/BreakpointController.h; sourceTree = "<group>"; };
 		1EFF70C20DFDC018006B9D33 /* BreakpointController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointController.m; path = Source/BreakpointController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -202,8 +199,6 @@
 			children = (
 				1E02C56F0C610158006F1752 /* GDBpConnection.h */,
 				1E02C5700C610158006F1752 /* GDBpConnection.m */,
-				1EEEE93E0C618B70000C0732 /* SocketWrapper.h */,
-				1EEEE93F0C618B70000C0732 /* SocketWrapper.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
 				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
 			);
@@ -395,7 +390,6 @@
 				1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */,
 				1E02C5710C610158006F1752 /* GDBpConnection.m in Sources */,
 				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
-				1EEEE9400C618B70000C0732 /* SocketWrapper.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1E35FEA10C6599040030F527 /* base64.c in Sources */,
 				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,

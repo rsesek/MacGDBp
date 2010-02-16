@@ -14,11 +14,29 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#import <sys/socket.h>
+#import <netinet/in.h>
+
 #import "GDBpConnection.h"
+
 #import "AppDelegate.h"
 
-@interface GDBpConnection()
+// GDBpConnection (Private) ////////////////////////////////////////////////////
+
+@interface GDBpConnection ()
 @property(readwrite, copy) NSString* status;
+@property (assign) CFSocketRef socket;
+@property (assign) CFReadStreamRef readStream;
+@property (retain) NSMutableString* currentPacket;
+@property (assign) CFWriteStreamRef writeStream;
+
+- (void)connect;
+- (void)close;
+- (void)socketDidAccept;
+- (void)socketDisconnected;
+- (void)readStreamHasData;
+- (void)send:(NSString*)command;
+- (void)errorEncountered:(NSString*)error;
 
 - (NSString*)createCommand:(NSString*)cmd, ...;
 - (NSXMLDocument*)processData:(NSString*)data;
@@ -29,8 +47,149 @@
 - (void)doSocketAccept:_nil;
 @end
 
+// CFNetwork Callbacks /////////////////////////////////////////////////////////
+
+void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
+{
+	NSLog(@"ReadStreamCallback()");
+	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	switch (eventType)
+	{
+		case kCFStreamEventHasBytesAvailable:
+			[connection readStreamHasData];
+			break;
+			
+		case kCFStreamEventErrorOccurred:
+		{
+			CFErrorRef error = CFReadStreamCopyError(stream);
+			CFReadStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+			CFReadStreamClose(stream);
+			CFRelease(stream);
+			[connection errorEncountered:[[(NSError*)error autorelease] description]];
+			break;
+		}
+			
+		case kCFStreamEventEndEncountered:
+			CFReadStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+			CFReadStreamClose(stream);
+			CFRelease(stream);
+			[connection socketDisconnected];
+			break;
+	};
+}
+
+void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
+{
+	NSLog(@"WriteStreamCallback()");
+	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	switch (eventType)
+	{
+		case kCFStreamEventErrorOccurred:
+		{
+			CFErrorRef error = CFWriteStreamCopyError(stream);
+			CFWriteStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+			CFWriteStreamClose(stream);
+			CFRelease(stream);
+			[connection errorEncountered:[[(NSError*)error autorelease] description]];
+			break;
+		}
+			
+		case kCFStreamEventEndEncountered:
+			CFWriteStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+			CFWriteStreamClose(stream);
+			CFRelease(stream);
+			[connection socketDisconnected];
+			break;
+	}
+}
+
+void SocketAcceptCallback(CFSocketRef socket,
+						  CFSocketCallBackType callbackType,
+						  CFDataRef address,
+						  const void* data,
+						  void* connectionRaw)
+{
+	assert(callbackType == kCFSocketAcceptCallBack);
+	NSLog(@"SocketAcceptCallback()");
+	
+	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	
+	CFReadStreamRef readStream;
+	CFWriteStreamRef writeStream;
+	
+	// Create the streams on the socket.
+	CFStreamCreatePairWithSocket(kCFAllocatorDefault,
+								 *(CFSocketNativeHandle*)data,  // Socket handle.
+								 &readStream,  // Read stream in-pointer.
+								 &writeStream);  // Write stream in-pointer.
+	
+	// Create struct to register callbacks for the stream.
+	CFStreamClientContext context;
+	context.version = 0;
+	context.info = connection;
+	context.retain = NULL;
+	context.release = NULL;
+	context.copyDescription = NULL;
+	
+	// Set the client of the read stream.
+	CFOptionFlags readFlags =
+		kCFStreamEventOpenCompleted |
+		kCFStreamEventHasBytesAvailable |
+		kCFStreamEventErrorOccurred |
+		kCFStreamEventEndEncountered;
+	if (CFReadStreamSetClient(readStream, readFlags, ReadStreamCallback, &context))
+		// Schedule in run loop to do asynchronous communication with the engine.
+		CFReadStreamScheduleWithRunLoop(readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+	else
+		return;
+	
+	NSLog(@"Read stream scheduled");
+	
+	// Open the stream now that it's scheduled on the run loop.
+	if (!CFReadStreamOpen(readStream))
+	{
+		CFStreamError error = CFReadStreamGetError(readStream);
+		NSLog(@"error! %@", error);
+		return;
+	}
+	
+	NSLog(@"Read stream opened");
+	
+	// Set the client of the write stream.
+	CFOptionFlags writeFlags =
+		kCFStreamEventOpenCompleted |
+		kCFStreamEventErrorOccurred |
+		kCFStreamEventEndEncountered;
+	if (CFWriteStreamSetClient(writeStream, writeFlags, WriteStreamCallback, &context))
+		// Schedule it in the run loop to receive error information.
+		CFWriteStreamScheduleWithRunLoop(writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+	else
+		return;
+	
+	NSLog(@"Write stream scheduled");
+	
+	// Open the write stream.
+	if (!CFWriteStreamOpen(writeStream))
+	{
+		CFStreamError error = CFWriteStreamGetError(writeStream);
+		NSLog(@"error! %@", error);
+		return;
+	}
+	
+	NSLog(@"Write stream opened");
+	
+	connection.readStream = readStream;
+	connection.writeStream = writeStream;
+	[connection socketDidAccept];
+}
+
+// GDBpConnection //////////////////////////////////////////////////////////////
+
 @implementation GDBpConnection
-@synthesize socket;
+@synthesize socket = socket_;
+@synthesize readStream = readStream_;
+@synthesize currentPacket = currentPacket_;
+@synthesize writeStream = writeStream_;
 @synthesize status;
 @synthesize delegate;
 
@@ -45,14 +204,9 @@
 		port = aPort;
 		connected = NO;
 		
-		// now that we have our host information, open the socket
-		socket = [[SocketWrapper alloc] initWithPort:port];
-		socket.delegate = self;
-		[socket connect];
-		
-		self.status = @"Connecting";
-		
 		[[BreakpointManager sharedManager] setConnection:self];
+		
+		[self connect];
 	}
 	return self;
 }
@@ -62,7 +216,9 @@
  */
 - (void)dealloc
 {
-	[socket release];
+	[self close];
+	self.currentPacket = nil;
+	
 	[super dealloc];
 }
 
@@ -83,7 +239,8 @@
 	{
 		return @"(DISCONNECTED)";
 	}
-	return [socket remoteHost];
+	// TODO: Either impl or remove.
+	return @"";
 }
 
 /**
@@ -118,9 +275,9 @@
  */
 - (void)reconnect
 {
-	[socket close];
+	[self close];
 	self.status = @"Connecting";
-	[socket connect];
+	[self connect];
 }
 
 /**
@@ -247,6 +404,151 @@
 #pragma mark Private
 
 /**
+ * Creates, connects to, and schedules a CFSocket.
+ */
+- (void)connect
+{
+	// Pass ourselves to the callback so we don't have to use ugly globals.
+	CFSocketContext context;
+	context.version = 0;
+	context.info = self;
+	context.retain = NULL;
+	context.release = NULL;
+	context.copyDescription = NULL;
+	
+	// Create the address structure.
+	struct sockaddr_in address;
+	memset(&address, 0, sizeof(address));
+	address.sin_len = sizeof(address);
+	address.sin_family = AF_INET;
+	address.sin_port = htons(port);
+	address.sin_addr.s_addr = htonl(INADDR_ANY);		
+	
+	// Create the socket signature.
+	CFSocketSignature signature;
+	signature.protocolFamily = PF_INET;
+	signature.socketType = SOCK_STREAM;
+	signature.protocol = IPPROTO_TCP;
+	signature.address = (CFDataRef)[NSData dataWithBytes:&address length:sizeof(address)];
+	
+	socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
+												&signature,  // Socket signature.
+												kCFSocketAcceptCallBack,  // Callback types.
+												SocketAcceptCallback,  // Callout function pointer.
+												&context);  // Context to pass to callout.
+	if (!socket_)
+	{
+		[self errorEncountered:@"Could not open socket."];
+		return;
+	}
+	
+	// Allow old, yet-to-be recycled sockets to be reused.
+	BOOL yes = YES;
+	setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(BOOL));
+	
+	// Schedule the socket on the run loop.
+	CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket_, 0);
+	CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopCommonModes);
+	CFRelease(source);
+	
+	self.status = @"Connecting";
+}
+
+/**
+ * Closes a socket and releases the ref.
+ */
+- (void)close
+{
+	// The socket goes down, so do the streams, which clean themselves up.
+	CFSocketInvalidate(socket_);
+	CFRelease(socket_);
+}
+
+/**
+ * Notification that the socket disconnected.
+ */
+- (void)socketDisconnected
+{
+	[self close];
+	[delegate debuggerDisconnected];
+}
+
+/**
+ * Callback from the CFReadStream that there is data waiting to be read.
+ */
+- (void)readStreamHasData
+{
+	UInt8 buffer[1024];
+	CFIndex bytesRead = CFReadStreamRead(readStream_, buffer, 1024);
+	const char* charBuffer = (const char*)buffer;
+	
+	// We haven't finished reading a packet, so just read more data in.
+	if (currentPacketIndex_ < packetSize_)
+	{
+		[currentPacket_ appendFormat:@"%s", buffer];
+		currentPacketIndex_ += bytesRead;
+	}
+	// Time to read a new packet.
+	else
+	{
+		// Read the message header: the size.
+		packetSize_ = atoi(charBuffer);
+		currentPacketIndex_ = bytesRead - strlen(charBuffer);
+		self.currentPacket = [NSMutableString stringWithFormat:@"%s", buffer + strlen(charBuffer) + 1];
+	}
+	
+	// We have finished reading the packet.
+	if (currentPacketIndex_ >= packetSize_)
+	{
+		packetSize_ = 0;
+		currentPacketIndex_ = 0;
+		
+		// Test if we can convert it into an NSXMLDocument.
+		NSError* error = nil;
+		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
+		if (error)
+			NSLog(@"FAILED XML TEST: %@", error);
+		[xmlTest release];
+	}	
+}
+
+/**
+ * Writes a command into the write stream. This does use blocking IO.
+ */
+- (void)send:(NSString*)command
+{
+	BOOL done = NO;
+	
+	char* string = (char*)[command UTF8String];
+	int stringLength = strlen(string);
+	
+	// Busy wait while writing. BAADD. Should background this operation.
+	while (!done)
+	{
+		if (CFWriteStreamCanAcceptBytes(writeStream_))
+		{
+			// Include the NULL byte in the string when we write.
+			int bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)string, stringLength + 1);
+			if (bytesWritten < 0)
+			{
+				NSLog(@"write error");
+			}
+			// Incomplete write.
+			else if (bytesWritten < strlen(string))
+			{
+				// Adjust the buffer and wait for another chance to write.
+				stringLength -= bytesWritten;
+				memmove(string, string + bytesWritten, stringLength);
+			}
+			else
+			{
+				done = YES;
+			}			
+		}
+	}
+}
+
+/**
  * Helper method to create a string command with the -i <transaction id> automatically tacked on. Takes
  * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
  */
@@ -365,7 +667,7 @@
 	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
 	{
 		connected = NO;
-		[socket close];
+		[self close];
 		
 		[delegate debuggerDisconnected];
 		

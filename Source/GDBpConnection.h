@@ -15,13 +15,13 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "SocketWrapper.h"
+
 #import "Breakpoint.h"
 #import "StackFrame.h"
 
 @protocol GDBpConnectionDelegate;
 
-@interface GDBpConnection : NSObject <SocketWrapperDelegate>
+@interface GDBpConnection : NSObject
 {
 	int port;
 	BOOL connected;
@@ -37,13 +37,22 @@
 	 */
 	NSString* status;
 	
-	SocketWrapper* socket;
+	// The raw CFSocket on which the two streams are based. Strong.
+	CFSocketRef socket_;
+	
+	// The read stream that is scheduled on the main run loop. Weak.
+	CFReadStreamRef readStream_;
+	NSMutableString* currentPacket_;
+	int packetSize_;
+	int currentPacketIndex_;
+	
+	// The write stream. Weak.
+	CFWriteStreamRef writeStream_;
 	
 	id <GDBpConnectionDelegate> delegate;
 }
 
 @property (readonly, copy) NSString* status;
-@property (readonly) SocketWrapper* socket;
 @property (assign) id <GDBpConnectionDelegate> delegate;
 
 // initializer
