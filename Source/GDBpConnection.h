@@ -46,6 +46,11 @@
 	int packetSize_;
 	int currentPacketIndex_;
 	
+	// To prevent blocked writing, we enqueue all writes and then wait for the
+	// write stream to tell us it's ready. We store the pending commands in this
+	// array. We use this as a stack (FIFO), with index 0 being first.
+	NSMutableArray* queuedWrites_;
+	
 	// The write stream. Weak.
 	CFWriteStreamRef writeStream_;
 	

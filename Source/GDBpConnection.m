@@ -29,6 +29,7 @@
 @property (assign) CFReadStreamRef readStream;
 @property (retain) NSMutableString* currentPacket;
 @property (assign) CFWriteStreamRef writeStream;
+@property (retain) NSMutableArray* queuedWrites;
 
 - (void)connect;
 - (void)close;
@@ -36,15 +37,18 @@
 - (void)socketDisconnected;
 - (void)readStreamHasData;
 - (void)send:(NSString*)command;
+- (void)performSend:(NSString*)command;
 - (void)errorEncountered:(NSString*)error;
 
+- (void)handleResponse:(NSXMLDocument*)response;
+- (void)initReceived:(NSXMLDocument*)response;
+- (void)updateStatus:(NSXMLDocument*)response;
+- (void)debuggerStep:(NSXMLDocument*)response;
+
 - (NSString*)createCommand:(NSString*)cmd, ...;
-- (NSXMLDocument*)processData:(NSString*)data;
 - (StackFrame*)createStackFrame:(int)depth;
 - (StackFrame*)createCurrentStackFrame;
-- (void)updateStatus;
 - (NSString*)escapedURIPath:(NSString*)path;
-- (void)doSocketAccept:_nil;
 @end
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
@@ -84,6 +88,16 @@ void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, v
 	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
 	switch (eventType)
 	{
+		case kCFStreamEventCanAcceptBytes:
+			NSLog(@"can accept bytes");
+			if ([connection.queuedWrites count] > 0)
+			{
+				NSString* command = [connection.queuedWrites objectAtIndex:0];
+				[connection performSend:command];
+				[connection.queuedWrites removeObjectAtIndex:0];
+			}
+			break;
+		
 		case kCFStreamEventErrorOccurred:
 		{
 			CFErrorRef error = CFWriteStreamCopyError(stream);
@@ -158,6 +172,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Set the client of the write stream.
 	CFOptionFlags writeFlags =
 		kCFStreamEventOpenCompleted |
+		kCFStreamEventCanAcceptBytes |
 		kCFStreamEventErrorOccurred |
 		kCFStreamEventEndEncountered;
 	if (CFWriteStreamSetClient(writeStream, writeFlags, WriteStreamCallback, &context))
@@ -190,6 +205,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 @synthesize readStream = readStream_;
 @synthesize currentPacket = currentPacket_;
 @synthesize writeStream = writeStream_;
+ @synthesize queuedWrites = queuedWrites_;
 @synthesize status;
 @synthesize delegate;
 
@@ -258,7 +274,8 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)socketDidAccept
 {
-	[self performSelectorOnMainThread:@selector(doSocketAccept:) withObject:nil waitUntilDone:YES];
+	connected = YES;
+	transactionID = 0;
 }
 
 /**
@@ -306,10 +323,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)run
 {
-	[socket send:[self createCommand:@"run"]];
-	[socket receive];
-	
-	[self updateStatus];
+	[self send:[self createCommand:@"run"]];
 }
 
 /**
@@ -317,10 +331,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepIn
 {
-	[socket send:[self createCommand:@"step_into"]];
-	[socket receive];
-	
-	[self updateStatus];
+	[self send:[self createCommand:@"step_into"]];
 }
 
 /**
@@ -328,10 +339,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepOut
 {
-	[socket send:[self createCommand:@"step_out"]];
-	[socket receive];
-	
-	[self updateStatus];
+	[self send:[self createCommand:@"step_out"]];
 }
 
 /**
@@ -339,10 +347,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepOver
 {
-	[socket send:[self createCommand:@"step_over"]];
-	[socket receive];
-	
-	[self updateStatus];
+	[self send:[self createCommand:@"step_over"]];
 }
 
 /**
@@ -401,7 +406,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[socket receive];
 }
 
-#pragma mark Private
+#pragma mark Socket and Stream Callbacks
 
 /**
  * Creates, connects to, and schedules a CFSocket.
@@ -507,15 +512,35 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSError* error = nil;
 		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
 		if (error)
-			NSLog(@"FAILED XML TEST: %@", error);
-		[xmlTest release];
+		{
+			NSLog(@"Could not parse XML? --- %@", error);
+			NSLog(@"Error UserInfo: %@", [error userInfo]);
+			NSLog(@"This is the XML Document: %@", currentPacket_);
+			return;
+		}		
+		[self handleResponse:[xmlTest autorelease]];
 	}	
 }
 
 /**
- * Writes a command into the write stream. This does use blocking IO.
+ * Writes a command into the write stream. If the stream is ready for writing,
+ * we do so immediately. If not, the command is queued and will be written
+ * when the stream is ready.
  */
 - (void)send:(NSString*)command
+{
+	if (CFWriteStreamCanAcceptBytes(writeStream_))
+		[self performSend:command];
+	else
+		[queuedWrites_ addObject:command];
+}
+
+/**
+ * This performs a blocking send. This should ONLY be called when we know we
+ * have write access to the stream. We will busy wait in case we don't do a full
+ * send.
+ */
+- (void)performSend:(NSString*)command
 {
 	BOOL done = NO;
 	
@@ -548,6 +573,70 @@ void SocketAcceptCallback(CFSocketRef socket,
 	}
 }
 
+#pragma mark Response Handlers
+
+- (void)handleResponse:(NSXMLDocument*)response
+{
+	// Check and see if there's an error.
+	NSArray* error = [[response rootElement] elementsForName:@"error"];
+	if ([error count] > 0)
+	{
+		NSLog(@"Xdebug error: %@", error);
+		[delegate errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+	}
+	
+	// If TransportDebug is enabled, log the response.
+	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
+		NSLog(@"<-- %@", response);
+	
+	// Get the name of the command from the engine's response.
+	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
+	
+	// Dispatch the command response to an appropriate handler.
+	if ([[[response rootElement] name] isEqualToString:@"init"])
+		[self initReceived:response];
+	else if ([command isEqualToString:@"status"])
+		[self updateStatus:response];
+	else if ([command isEqualToString:@"run"] || [command isEqualToString:@"step_into"] ||
+			 [command isEqualToString:@"step_over"] || [command isEqualToString:@"step_out"])
+		[self debuggerStep:response];
+}
+
+- (void)initReceived:(NSXMLDocument*)response
+{
+	// Register any breakpoints that exist offline.
+	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
+		[self addBreakpoint:bp];
+	
+	// Load the debugger to make it look active.
+	[delegate debuggerConnected];
+	
+	[self send:[self createCommand:@"status"]];
+}
+
+/**
+ * Fetches the value of and sets the status instance variable
+ */
+- (void)updateStatus:(NSXMLDocument*)response
+{
+	self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
+	{
+		connected = NO;
+		[self close];
+		[delegate debuggerDisconnected];
+		
+		self.status = @"Stopped";
+	}
+}
+
+- (void)debuggerStep:(NSXMLDocument*)response
+{
+	[self send:[self createCommand:@"status"]];
+}
+
+#pragma mark Private
+
 /**
  * Helper method to create a string command with the -i <transaction id> automatically tacked on. Takes
  * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
@@ -564,39 +653,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"--> %@", cmd);
 	
 	return [NSString stringWithFormat:@"%@ -i %d", [format autorelease], transactionID++];
-}
-
-/**
- * Helper function to parse the NSData into an NSXMLDocument
- */
-- (NSXMLDocument*)processData:(NSString*)data
-{
-	if (data == nil)
-		return nil;
-	
-	NSError* parseError = nil;
-	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:data options:0 error:&parseError];
-	if (parseError)
-	{
-		NSLog(@"Could not parse XML? --- %@", parseError);
-		NSLog(@"Error UserInfo: %@", [parseError userInfo]);
-		NSLog(@"This is the XML Document: %@", data);
-		return nil;
-	}
-	
-	// check and see if there's an error
-	NSArray* error = [[doc rootElement] elementsForName:@"error"];
-	if ([error count] > 0)
-	{
-		NSLog(@"Xdebug error: %@", error);
-		[delegate errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
-		return nil;
-	}
-	
-	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
-		NSLog(@"<-- %@", doc);
-	
-	return [doc autorelease];
 }
 
 /**
@@ -656,26 +712,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Fetches the value of and sets the status instance variable
- */
-- (void)updateStatus
-{
-	[socket send:[self createCommand:@"status"]];
-	NSXMLDocument* doc = [self processData:[socket receive]];
-	self.status = [[[[doc rootElement] attributeForName:@"status"] stringValue] capitalizedString];
-	
-	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
-	{
-		connected = NO;
-		[self close];
-		
-		[delegate debuggerDisconnected];
-		
-		self.status = @"Stopped";
-	}
-}
-
-/**
  * Given a file path, this returns a file:// URI and escapes any spaces for the
  * debugger engine.
  */
@@ -695,26 +731,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Escape % for use in printf-style NSString formatters.
 	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
 	return urlString;
-}
-
-/**
- * Helper method for |-socketDidAccept| to be called on the main thread.
- */
-- (void)doSocketAccept:_nil
-{
-	connected = YES;
-	transactionID = 0;
-	[socket receive];
-	[self updateStatus];
-	
-	// register any breakpoints that exist offline
-	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
-	{
-		[self addBreakpoint:bp];
-	}
-	
-	// Load the debugger to make it look active.
-	[delegate debuggerConnected];
 }
 
 @end
