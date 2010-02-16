@@ -376,8 +376,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/local/bin/python3.0;
-			shellScript = "\"\"\"\nGitcrement\nCopyright (c) 2009, Blue Static <http://www.bluestatic.org>\n\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU\nGeneral Public License as published by the Free Software Foundation, either version 3 of the\nLicense, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without\neven the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program.  If not,\nsee <http://www.gnu.org/licenses/>.\n\"\"\"\n\ngitcrement = \"/Users/rsesek/Library/Shell/bin/gitcrement\"\n\nimport io, sys, subprocess\nfrom os import environ\n\nif environ[\"CONFIGURATION\"] == \"Release\":\n\tsubprocess.getoutput(gitcrement + \" next\")\n\nsubprocess.call([\"/Users/rsesek/Library/Shell/bin/gitcrement\", \"current\"])\n\nbuild = subprocess.getoutput(gitcrement + \" current\")\ntry:\n\tbuild = int(build)\nexcept ValueError:\n\tbuild = 0\n\ninfopath = environ[\"CONFIGURATION_BUILD_DIR\"] + \"/\" + environ[\"INFOPLIST_PATH\"]\n\nlastline = \"\"\nplist = \"\"\nf = io.open(infopath, \"r\")\nline = f.readline()\nwhile line != \"\":\n\tif lastline.find(\"CFBundleVersion\") != -1:\n\t\tplist += (\"\\t<string>%i</string>\\n\" % build)\n\telse:\n\t\tplist += line\n\tlastline = line\n\tline = f.readline()\nf.close()\n\nf = io.open(infopath, \"w\")\nf.write(plist)\nf.close()";
+			shellPath = /bin/sh;
+			shellScript = "\n# Define the path to Gitcrement in Xcode's Source Trees.\n$GITCREMENT";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -476,10 +476,6 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
@@ -508,6 +504,8 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
