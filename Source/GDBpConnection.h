@@ -42,6 +42,12 @@
 	
 	// The read stream that is scheduled on the main run loop. Weak.
 	CFReadStreamRef readStream_;
+	
+	// The most recently received transaction ID.
+	int lastReadTransaction_;
+	
+	// Information about the current read loop. We append to |currentPacket_|
+	// until |currentPacketSize_| has reached |packetSize_|.
 	NSMutableString* currentPacket_;
 	int packetSize_;
 	int currentPacketIndex_;
@@ -53,6 +59,9 @@
 	
 	// The write stream. Weak.
 	CFWriteStreamRef writeStream_;
+	
+	// The last transactionID written to the stream.
+	int lastWrittenTransaction_;
 	
 	// A dictionary that maps routingIDs to StackFrame objects.
 	NSMutableDictionary* stackFrames_;

@@ -35,8 +35,10 @@ typedef enum _StackFrameComponents
 @property (readwrite, copy) NSString* status;
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
+@property int lastReadTransaction;
 @property (retain) NSMutableString* currentPacket;
 @property (assign) CFWriteStreamRef writeStream;
+@property int lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
 - (void)connect;
@@ -59,6 +61,8 @@ typedef enum _StackFrameComponents
 - (NSString*)createCommand:(NSString*)cmd, ...;
 - (NSString*)createRouted:(NSString*)routingID command:(NSString*)cmd, ...;
 
+- (void)sendQueuedWrites;
+
 - (StackFrame*)createStackFrame:(int)depth;
 - (NSString*)escapedURIPath:(NSString*)path;
 @end
@@ -67,11 +71,11 @@ typedef enum _StackFrameComponents
 
 void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	NSLog(@"ReadStreamCallback()");
 	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventHasBytesAvailable:
+			NSLog(@"About to read.");
 			[connection readStreamHasData];
 			break;
 			
@@ -96,18 +100,11 @@ void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, voi
 
 void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	NSLog(@"WriteStreamCallback()");
 	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventCanAcceptBytes:
-			NSLog(@"can accept bytes");
-			if ([connection.queuedWrites count] > 0)
-			{
-				NSString* command = [connection.queuedWrites objectAtIndex:0];
-				[connection performSend:command];
-				[connection.queuedWrites removeObjectAtIndex:0];
-			}
+			[connection sendQueuedWrites];
 			break;
 		
 		case kCFStreamEventErrorOccurred:
@@ -169,8 +166,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	else
 		return;
 	
-	NSLog(@"Read stream scheduled");
-	
 	// Open the stream now that it's scheduled on the run loop.
 	if (!CFReadStreamOpen(readStream))
 	{
@@ -178,8 +173,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"error! %@", error);
 		return;
 	}
-	
-	NSLog(@"Read stream opened");
 	
 	// Set the client of the write stream.
 	CFOptionFlags writeFlags =
@@ -193,8 +186,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	else
 		return;
 	
-	NSLog(@"Write stream scheduled");
-	
 	// Open the write stream.
 	if (!CFWriteStreamOpen(writeStream))
 	{
@@ -202,8 +193,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"error! %@", error);
 		return;
 	}
-	
-	NSLog(@"Write stream opened");
 	
 	connection.readStream = readStream;
 	connection.writeStream = writeStream;
@@ -215,8 +204,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 @implementation GDBpConnection
 @synthesize socket = socket_;
 @synthesize readStream = readStream_;
+@synthesize lastReadTransaction = lastReadTransaction_;
 @synthesize currentPacket = currentPacket_;
 @synthesize writeStream = writeStream_;
+@synthesize lastWrittenTransaction = lastWrittenTransaction_;
 @synthesize queuedWrites = queuedWrites_;
 @synthesize status;
 @synthesize delegate;
@@ -287,7 +278,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)socketDidAccept
 {
 	connected = YES;
-	transactionID = 0;
+	transactionID = 1;
 	stackFrames_ = [[NSMutableDictionary alloc] init];
 	self.queuedWrites = [NSMutableArray array];
 }
@@ -534,7 +525,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)send:(NSString*)command
 {
-	if (CFWriteStreamCanAcceptBytes(writeStream_))
+	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_))
 		[self performSend:command];
 	else
 		[queuedWrites_ addObject:command];
@@ -577,7 +568,19 @@ void SocketAcceptCallback(CFSocketRef socket,
 			else
 			{
 				done = YES;
-			}			
+				
+				// We need to scan the string to find the transactionID.
+				NSRange occurrence = [command rangeOfString:@"-i "];
+				if (occurrence.location == NSNotFound)
+				{
+					NSLog(@"sent %@ without a transaction ID", command);
+					continue;
+				}
+				NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
+				lastWrittenTransaction_ = [transaction intValue];
+				NSLog(@"command = %@", command);
+				NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
+			}
 		}
 	}
 }
@@ -601,11 +604,19 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Get the name of the command from the engine's response.
 	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
 	NSString* transaction = [[[response rootElement] attributeForName:@"transaction_id"] stringValue];
+	NSArray* routingPath = [transaction componentsSeparatedByString:@"."];
+	
+	NSInteger txnID = [[routingPath objectAtIndex:0] intValue];
+	if (txnID < lastReadTransaction_)
+		NSLog(@"out of date transaction %@", response);
+	
+	if (txnID != lastWrittenTransaction_)
+		NSLog(@"txn doesn't match last written %@", response);
+	
+	NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
 	
 	// Dispatch the command response to an appropriate handler.
-	if ([[[response rootElement] name] isEqualToString:@"init"])
-		[self initReceived:response];
-	else if ([command isEqualToString:@"status"])
+	if ([command isEqualToString:@"status"])
 		[self updateStatus:response];
 	else if ([command isEqualToString:@"run"] || [command isEqualToString:@"step_into"] ||
 			 [command isEqualToString:@"step_over"] || [command isEqualToString:@"step_out"])
@@ -614,10 +625,12 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[self rebuildStack:response];
 	else if ([command isEqualToString:@"stack_get"])
 		[self getStackFrame:response];
-	
-	NSArray* routingPath = [transaction componentsSeparatedByString:@"."];
-	if ([routingPath count] > 1)
+	else if ([routingPath count] > 1)
 		[self handleRouted:routingPath response:response];
+	else if ([[[response rootElement] name] isEqualToString:@"init"])
+		[self initReceived:response];
+	
+	[self sendQueuedWrites];
 }
 
 /**
@@ -784,6 +797,28 @@ void SocketAcceptCallback(CFSocketRef socket,
 	va_end(argList);
 	
 	return [NSString stringWithFormat:@"%@ -i %d.%@", [format autorelease], transactionID++, routingID];
+}
+
+/**
+ * Checks if there are unsent commands in the |queuedWrites_| queue and sends
+ * them if it's OK to do so. This will not block.
+ */
+- (void)sendQueuedWrites
+{
+	if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0)
+	{
+		NSString* command = [queuedWrites_ objectAtIndex:0];
+		NSLog(@"Sending queued write: %@", command);
+		
+		// We don't want to block because this is called from the main thread.
+		// |-performSend:| busy waits when the stream is not ready. Bail out
+		// before we do that becuase busy waiting is BAD.
+		if (!CFWriteStreamCanAcceptBytes(writeStream_))
+			return;
+		
+		[self performSend:command];
+		[queuedWrites_ removeObjectAtIndex:0];
+	}
 }
 
 /**
