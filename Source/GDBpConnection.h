@@ -57,6 +57,11 @@
 	// array. We use this as a stack (FIFO), with index 0 being first.
 	NSMutableArray* queuedWrites_;
 	
+	// We send queued writes in multiple places, sometimes of a run loop event.
+	// Because of this, we need to ensure that only one client is dequeing and
+	// sending at a time.
+	NSRecursiveLock* writeQueueLock_;
+	
 	// The write stream. Weak.
 	CFWriteStreamRef writeStream_;
 	

@@ -281,6 +281,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	transactionID = 1;
 	stackFrames_ = [[NSMutableDictionary alloc] init];
 	self.queuedWrites = [NSMutableArray array];
+	writeQueueLock_ = [NSRecursiveLock new];
 }
 
 /**
@@ -463,6 +464,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	CFRelease(socket_);
 	[stackFrames_ release];
 	self.queuedWrites = nil;
+	[writeQueueLock_ release];
 }
 
 /**
@@ -613,6 +615,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	if (txnID != lastWrittenTransaction_)
 		NSLog(@"txn doesn't match last written %@", response);
 	
+	lastReadTransaction_ = [transaction intValue];
 	NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
 	
 	// Dispatch the command response to an appropriate handler.
@@ -645,7 +648,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Load the debugger to make it look active.
 	[delegate debuggerConnected];
 	
-	[self send:[self createCommand:@"status"]];
+	// TODO: update the status.
 }
 
 /**
@@ -805,6 +808,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)sendQueuedWrites
 {
+	[writeQueueLock_ lock];
 	if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0)
 	{
 		NSString* command = [queuedWrites_ objectAtIndex:0];
@@ -813,12 +817,13 @@ void SocketAcceptCallback(CFSocketRef socket,
 		// We don't want to block because this is called from the main thread.
 		// |-performSend:| busy waits when the stream is not ready. Bail out
 		// before we do that becuase busy waiting is BAD.
-		if (!CFWriteStreamCanAcceptBytes(writeStream_))
-			return;
-		
-		[self performSend:command];
-		[queuedWrites_ removeObjectAtIndex:0];
+		if (CFWriteStreamCanAcceptBytes(writeStream_))
+		{
+			[self performSend:command];
+			[queuedWrites_ removeObjectAtIndex:0];
+		}
 	}
+	[writeQueueLock_ unlock];
 }
 
 /**
