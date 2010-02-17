@@ -679,14 +679,14 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	// If this is the run command, tell the delegate that a bunch of updates
 	// are coming. Also remove all existing stack routes and request a new stack.
-	if ([command isEqualToString:@"run"])
+	if (YES || [command isEqualToString:@"run"])
 	{
-		[delegate clobberStack];
+		//[delegate clobberStack];
 		[stackFrames_ removeAllObjects];
 		[self send:[self createCommand:@"stack_depth"]];
 	}
 	
-	[self send:[self createRouted:[NSString stringWithFormat:@"%u", routingID] command:@"stack_get -d 0"]];
+	//[self send:[self createRouted:[NSString stringWithFormat:@"%u", routingID] command:@"stack_get -d 0"]];
 }
 
 /**
