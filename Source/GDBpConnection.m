@@ -21,14 +21,6 @@
 
 #import "AppDelegate.h"
 
-
-typedef enum _StackFrameComponents
-{
-	kStackFrameContexts,
-	kStackFrameSource,
-	kStackFrameVariables
-} StackFrameComponent;
-
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
 @interface GDBpConnection ()
@@ -56,10 +48,10 @@ typedef enum _StackFrameComponents
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
 - (void)getStackFrame:(NSXMLDocument*)response;
-- (void)handleRouted:(NSArray*)path response:(NSXMLDocument*)response;
+- (void)setSource:(NSXMLDocument*)response;
+- (void)contextsReceived:(NSXMLDocument*)response;
 
-- (NSString*)createCommand:(NSString*)cmd, ...;
-- (NSString*)createRouted:(NSString*)routingID command:(NSString*)cmd, ...;
+- (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...;
 
 - (void)sendQueuedWrites;
 
@@ -282,6 +274,8 @@ void SocketAcceptCallback(CFSocketRef socket,
 	stackFrames_ = [[NSMutableDictionary alloc] init];
 	self.queuedWrites = [NSMutableArray array];
 	writeQueueLock_ = [NSRecursiveLock new];
+	callTable_ = [NSMutableDictionary new];
+	callbackContext_ = [NSMutableDictionary new];
 }
 
 /**
@@ -318,7 +312,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)run
 {
-	[self send:[self createCommand:@"run"]];
+	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"run"];
 }
 
 /**
@@ -326,7 +320,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepIn
 {
-	[self send:[self createCommand:@"step_into"]];
+	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_into"];
 }
 
 /**
@@ -334,7 +328,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepOut
 {
-	[self send:[self createCommand:@"step_out"]];
+	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_out"];
 }
 
 /**
@@ -342,7 +336,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)stepOver
 {
-	[self send:[self createCommand:@"step_over"]];
+	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_over"];
 }
 
 /**
@@ -397,8 +391,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		return;
 	}
 	
-	[socket send:[self createCommand:[NSString stringWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]]]];
-	[socket receive];
+	[self sendCommandWithCallback:nil format:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 #pragma mark Socket and Stream Callbacks
@@ -465,6 +458,8 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[stackFrames_ release];
 	self.queuedWrites = nil;
 	[writeQueueLock_ release];
+	[callTable_ release];
+	[callbackContext_ release];
 }
 
 /**
@@ -616,34 +611,24 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"<-- %@", response);
 	
 	// Get the name of the command from the engine's response.
-	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
-	NSString* transaction = [[[response rootElement] attributeForName:@"transaction_id"] stringValue];
-	NSArray* routingPath = [transaction componentsSeparatedByString:@"."];
-	
-	NSInteger txnID = [[routingPath objectAtIndex:0] intValue];
-	if (txnID < lastReadTransaction_)
+	NSInteger transaction = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+	if (transaction < lastReadTransaction_)
 		NSLog(@"out of date transaction %@", response);
 	
-	if (txnID != lastWrittenTransaction_)
+	if (transaction != lastWrittenTransaction_)
 		NSLog(@"txn doesn't match last written %@", response);
 	
-	lastReadTransaction_ = [transaction intValue];
+	lastReadTransaction_ = transaction;
 	NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
 	
-	// Dispatch the command response to an appropriate handler.
-	if ([command isEqualToString:@"status"])
-		[self updateStatus:response];
-	else if ([command isEqualToString:@"run"] || [command isEqualToString:@"step_into"] ||
-			 [command isEqualToString:@"step_over"] || [command isEqualToString:@"step_out"])
-		[self debuggerStep:response];
-	else if ([command isEqualToString:@"stack_depth"])
-		[self rebuildStack:response];
-	else if ([command isEqualToString:@"stack_get"])
-		[self getStackFrame:response];
-	else if ([routingPath count] > 1)
-		[self handleRouted:routingPath response:response];
-	else if ([[[response rootElement] name] isEqualToString:@"init"])
+	if ([[[response rootElement] name] isEqualToString:@"init"])
+	{
 		[self initReceived:response];
+		return;
+	}
+	
+	SEL callback = NSSelectorFromString([callTable_ objectForKey:[NSNumber numberWithInt:lastReadTransaction_]]);
+	[self performSelector:callback withObject:response];
 	
 	[self sendQueuedWrites];
 }
@@ -685,20 +670,18 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)debuggerStep:(NSXMLDocument*)response
 {
-	[self send:[self createCommand:@"status"]];
+	[self sendCommandWithCallback:@selector(updateStatus:) format:@"status"];
 	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
-	NSUInteger routingID = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
 	
 	// If this is the run command, tell the delegate that a bunch of updates
 	// are coming. Also remove all existing stack routes and request a new stack.
+	// TODO: figure out if we can not clobber the stack every time.
 	if (YES || [command isEqualToString:@"run"])
 	{
 		//[delegate clobberStack];
 		[stackFrames_ removeAllObjects];
-		[self send:[self createCommand:@"stack_depth"]];
+		[self sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"];
 	}
-	
-	//[self send:[self createRouted:[NSString stringWithFormat:@"%u", routingID] command:@"stack_get -d 0"]];
 }
 
 /**
@@ -713,13 +696,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// for them.
 	for (NSInteger i = 0; i < depth; i++)
 	{
-		NSString* command = [self createCommand:@"stack_get -d %d", i];
-		
 		// Use the transaction ID to create a routing path.
-		NSNumber* routingID = [NSNumber numberWithInt:transactionID - 1];
+		NSNumber* routingID = [self sendCommandWithCallback:@selector(getStackFrame:) format:@"stack_get -d %d", i];
 		[stackFrames_ setObject:[StackFrame alloc] forKey:routingID];
-		
-		[self send:command];
 	}
 }
 
@@ -748,70 +727,60 @@ void SocketAcceptCallback(CFSocketRef socket,
 			  inFunction:[[xmlframe attributeForName:@"where"] stringValue]
 		   withVariables:nil];
 	
-	// Now that we have an initialized frame, request additional information.
-	NSString* routingFormat = @"%u.%d";
-	NSString* routingPath = nil;
-	
 	// Get the source code of the file. Escape % in URL chars.
 	NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	routingPath = [NSString stringWithFormat:routingFormat, routingID, kStackFrameSource];
-	[self send:[self createRouted:routingPath command:[NSString stringWithFormat:@"source -f %@", escapedFilename]]];
+	NSNumber* transaction = [self sendCommandWithCallback:@selector(setSource:) format:@"source -f %@", escapedFilename];
+	[callbackContext_ setObject:routingNumber forKey:transaction];
 	
 	// Get the names of all the contexts.
-	routingPath = [NSString stringWithFormat:routingFormat, routingID, kStackFrameContexts];
-	[self send:[self createRouted:routingPath command:@"context_names -d %d", frame.index]];
+	transaction = [self sendCommandWithCallback:@selector(contextsReceived:) format:@"context_names -d %d", frame.index];
+	[callbackContext_ setObject:routingNumber forKey:transaction];
 }
 
-/**
- * Routed responses are currently only used in getting all the stack frame data.
- */
-- (void)handleRouted:(NSArray*)path response:(NSXMLDocument*)response
+- (void)setSource:(NSXMLDocument*)response
 {
-	NSLog(@"routed %@ = %@", path, response);
+	NSNumber* transaction = [NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSNumber* routingNumber = [callbackContext_ objectForKey:transaction];
+	if (!routingNumber)
+		return;
 	
-	// Format of |path|: transactionID.routingID.component
-	StackFrameComponent component = [[path objectAtIndex:2] intValue];
-	
-	// See if we can find the stack frame based on routingID.
-	NSNumber* routingNumber = [NSNumber numberWithInt:[[path objectAtIndex:1] intValue]];
+	[callbackContext_ removeObjectForKey:transaction];
 	StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
 	if (!frame)
 		return;
 	
-	if (component == kStackFrameSource)
-		frame.source = [[response rootElement] value];
+	frame.source = [[response rootElement] value];
+	NSLog(@"frame.source = %@", frame.source);
+}
+
+- (void)contextsReceived:(NSXMLDocument*)response
+{
+	NSLog(@"got contexts = %@", response);
 }
 
 #pragma mark Private
 
 /**
- * Helper method to create a string command with the -i <transaction id> automatically tacked on. Takes
- * a variable number of arguments and parses the given command with +[NSString stringWithFormat:]
+ * This will send a command to the debugger engine. It will append the
+ * transaction ID automatically. It accepts a NSString command along with a
+ * a variable number of arguments to substitute into the command, a la
+ * +[NSString stringWithFormat:]. Returns the transaction ID as a NSNumber.
  */
-- (NSString*)createCommand:(NSString*)cmd, ...
+- (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...
 {
-	// collect varargs
-	va_list	argList;
-	va_start(argList, cmd);
-	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList]; // format the command
-	va_end(argList);
+	// Collect varargs and format command.
+	va_list args;
+	va_start(args, format);
+	NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
+	va_end(args);
 	
-	return [NSString stringWithFormat:@"%@ -i %d", [format autorelease], transactionID++];
-}
-
-/**
- * Helper to create a command string. This works a lot like |-createCommand:| but
- * it also takes a routing ID, which is used to route response data to specific
- * objects.
- */
-- (NSString*)createRouted:(NSString*)routingID command:(NSString*)cmd, ...
-{
-	va_list	argList;
-	va_start(argList, cmd);
-	NSString* format = [[NSString alloc] initWithFormat:cmd arguments:argList];
-	va_end(argList);
+	NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
+	if (callback)
+		[callTable_ setObject:NSStringFromSelector(callback) forKey:callbackKey];
 	
-	return [NSString stringWithFormat:@"%@ -i %d.%@", [format autorelease], transactionID++, routingID];
+	[self send:[NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey]];
+	
+	return callbackKey;
 }
 
 /**
@@ -844,7 +813,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (StackFrame*)createStackFrame:(int)stackDepth
 {
 	// get the names of all the contexts
-	[socket send:[self createCommand:@"context_names -d 0"]];
 	NSXMLElement* contextNames = [[self processData:[socket receive]] rootElement];
 	NSMutableArray* variables = [NSMutableArray array];
 	for (NSXMLElement* context in [contextNames children])

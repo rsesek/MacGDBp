@@ -71,6 +71,16 @@
 	// A dictionary that maps routingIDs to StackFrame objects.
 	NSMutableDictionary* stackFrames_;
 	
+	// Callback table. This maps transaction IDs to selectors. When the engine
+	// returns a response to the debugger, we will dispatch the response XML to
+	// the selector, based on transaction_id.
+	NSMutableDictionary* callTable_;
+	
+	// This stores additional context information for the callback selector.
+	// This dictionary is keyed by the same transaction IDs in |callTable_|, but
+	// also stores some other object that can be accessed in the callback.
+	NSMutableDictionary* callbackContext_;
+	
 	id <GDBpConnectionDelegate> delegate;
 }
 
