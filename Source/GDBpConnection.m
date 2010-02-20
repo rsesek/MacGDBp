@@ -488,8 +488,14 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// We haven't finished reading a packet, so just read more data in.
 	if (currentPacketIndex_ < packetSize_)
 	{
-		[currentPacket_ appendFormat:@"%s", buffer];
 		currentPacketIndex_ += bytesRead;
+		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
+														   buffer,
+														   bytesRead,
+														   kCFStringEncodingUTF8,
+														   true);
+		[self.currentPacket appendString:(NSString*)bufferString];
+		CFRelease(bufferString);
 	}
 	// Time to read a new packet.
 	else
@@ -497,7 +503,13 @@ void SocketAcceptCallback(CFSocketRef socket,
 		// Read the message header: the size.
 		packetSize_ = atoi(charBuffer);
 		currentPacketIndex_ = bytesRead - strlen(charBuffer);
-		self.currentPacket = [NSMutableString stringWithFormat:@"%s", buffer + strlen(charBuffer) + 1];
+		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
+														   buffer + strlen(charBuffer) + 1,
+														   bytesRead - strlen(charBuffer) - 1,
+														   kCFStringEncodingUTF8,
+														   true);
+		self.currentPacket = [NSMutableString stringWithString:(NSString*)bufferString];
+		CFRelease(bufferString);
 	}
 	
 	// We have finished reading the packet.
