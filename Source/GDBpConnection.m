@@ -57,6 +57,7 @@
 - (void)sendQueuedWrites;
 
 - (NSString*)escapedURIPath:(NSString*)path;
+- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
 @end
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
@@ -375,10 +376,23 @@ void SocketAcceptCallback(CFSocketRef socket,
 		return;
 	
 	NSString* file = [self escapedURIPath:[bp transformedPath]];
-	NSString* cmd = [self createCommand:[NSString stringWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]]];
-	[socket send:cmd];
-	NSXMLDocument* info = [self processData:[socket receive]];
-	[bp setDebuggerId:[[[[info rootElement] attributeForName:@"id"] stringValue] intValue]];
+	NSNumber* transaction = [self sendCommandWithCallback:@selector(breakpointReceived:)
+												   format:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
+	[callbackContext_ setObject:bp forKey:transaction];
+}
+
+/**
+ * Callback for setting a breakpoint.
+ */
+- (void)breakpointReceived:(NSXMLDocument*)response
+{
+	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	Breakpoint* bp = [callbackContext_ objectForKey:transaction];
+	if (!bp)
+		return;
+	
+	[callbackContext_ removeObjectForKey:callbackContext_];
+	[bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
 }
 
 /**
@@ -611,7 +625,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"<-- %@", response);
 	
 	// Get the name of the command from the engine's response.
-	NSInteger transaction = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+	NSInteger transaction = [self transactionIDFromResponse:response];
 	if (transaction < lastReadTransaction_)
 		NSLog(@"out of date transaction %@", response);
 	
@@ -682,9 +696,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// TODO: figure out if we can not clobber the stack every time.
 	if (YES || [command isEqualToString:@"run"])
 	{
-		//[delegate clobberStack];
+		if ([delegate respondsToSelector:@selector(clobberStack)])
+			[delegate clobberStack];
 		[stackFrames_ removeAllObjects];
-		[self sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"];
+		stackFirstTransactionID_ = [[self sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"] intValue];
 	}
 }
 
@@ -695,6 +710,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)rebuildStack:(NSXMLDocument*)response
 {
 	NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
+	
+	if (stackFirstTransactionID_ == [self transactionIDFromResponse:response])
+		stackDepth_ = depth;
 	
 	// We now need to alloc a bunch of stack frames and get the basic information
 	// for them.
@@ -713,7 +731,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)getStackFrame:(NSXMLDocument*)response
 {
 	// Get the routing information.
-	NSUInteger routingID = [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+	NSInteger routingID = [self transactionIDFromResponse:response];
+	if (routingID < stackFirstTransactionID_)
+		return;
 	NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
 	
 	// Make sure we initialized this frame in our last |-rebuildStack:|.
@@ -739,6 +759,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Get the names of all the contexts.
 	transaction = [self sendCommandWithCallback:@selector(contextsReceived:) format:@"context_names -d %d", frame.index];
 	[callbackContext_ setObject:routingNumber forKey:transaction];
+	
+	if ([delegate respondsToSelector:@selector(newStackFrame:)])
+		[delegate newStackFrame:frame];
 }
 
 /**
@@ -747,7 +770,9 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)setSource:(NSXMLDocument*)response
 {
-	NSNumber* transaction = [NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	if ([transaction intValue] < stackFirstTransactionID_)
+		return;
 	NSNumber* routingNumber = [callbackContext_ objectForKey:transaction];
 	if (!routingNumber)
 		return;
@@ -758,7 +783,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 		return;
 	
 	frame.source = [[response rootElement] value];
-	NSLog(@"frame.source = %@", frame.source);
+	
+	if ([delegate respondsToSelector:@selector(sourceUpdated:)])
+		[delegate sourceUpdated:frame];
 }
 
 /**
@@ -768,8 +795,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)contextsReceived:(NSXMLDocument*)response
 {
 	// Get the stack frame's routing ID and use it again.
-	NSNumber* receivedTransaction =
-		[NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSNumber* receivedTransaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	if ([receivedTransaction intValue] < stackFirstTransactionID_)
+		return;
 	NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
 	if (!routingID)
 		return;
@@ -795,8 +823,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)variablesReceived:(NSXMLDocument*)response
 {
 	// Get the stack frame's routing ID and use it again.
-	NSNumber* receivedTransaction =
-	[NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSInteger transaction = [self transactionIDFromResponse:response];
+	if (transaction < stackFirstTransactionID_)
+		return;
+	NSNumber* receivedTransaction = [NSNumber numberWithInt:transaction];
 	NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
 	if (!routingID)
 		return;
@@ -887,6 +917,14 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// Escape % for use in printf-style NSString formatters.
 	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
 	return urlString;
+}
+
+/**
+ * Returns the transaction_id from an NSXMLDocument.
+ */
+- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response
+{
+	return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
 }
 
 @end

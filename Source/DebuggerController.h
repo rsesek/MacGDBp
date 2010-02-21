@@ -23,6 +23,10 @@
 {
 	GDBpConnection* connection;
 	
+	// This is true when the |connection| has told us to clobber. We will do
+	// so upon receipt of the first new stack frame.
+	BOOL aboutToClobber_;
+	
 	StackController* stackController;
 	IBOutlet NSArrayController* stackArrayController;
 	

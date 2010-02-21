@@ -254,29 +254,29 @@
  */
 - (void)updateSourceViewer
 {
-	id selection = [stackArrayController selection];
-	if ([selection valueForKey:@"filename"] == NSNoSelectionMarker)
+	NSArray* selection = [stackArrayController selectedObjects];
+	if (!selection || [selection count] < 1)
 		return;
+	if ([selection count] > 1)
+		NSLog(@"INVALID SELECTION");
+	StackFrame* frame = [selection objectAtIndex:0];
 	
-	// get the filename
-	NSString* filename = [selection valueForKey:@"filename"];
-	filename = [[NSURL URLWithString:filename] path];
+	// Get the filename.
+	NSString* filename = [[NSURL URLWithString:frame.filename] path];
 	if ([filename isEqualToString:@""])
 		return;
 	
-	// replace the source if necessary
-	if (![sourceViewer.file isEqualToString:filename])
+	// Replace the source if necessary.
+	if (frame.source && ![sourceViewer.file isEqualToString:filename])
 	{
-		NSString* source = [selection valueForKey:@"source"];
-		[sourceViewer setString:source asFile:filename];
+		[sourceViewer setString:frame.source asFile:filename];
 		
 		NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
 		[[sourceViewer numberView] setMarkers:breakpoints];
 	}
 	
-	int line = [[selection valueForKey:@"lineNumber"] intValue];
-	[sourceViewer setMarkedLine:line];
-	[sourceViewer scrollToLine:line];
+	[sourceViewer setMarkedLine:frame.lineNumber];
+	[sourceViewer scrollToLine:frame.lineNumber];
 	
 	[[sourceViewer textView] display];
 }
@@ -351,6 +351,30 @@
 	
 	[[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
 	[[sourceViewer numberView] setNeedsDisplay:YES];
+}
+
+#pragma mark GDBpConnectionDelegate
+
+- (void)clobberStack
+{
+	aboutToClobber_ = YES;
+}
+
+- (void)newStackFrame:(StackFrame*)frame
+{
+	if (aboutToClobber_)
+	{
+		[stackController.stack removeAllObjects];
+		aboutToClobber_ = NO;
+	}
+	[stackController push:frame];
+	[self updateStackViewer];
+	[self updateSourceViewer];
+}
+
+- (void)sourceUpdated:(StackFrame*)frame
+{
+	[self updateSourceViewer];
 }
 
 @end

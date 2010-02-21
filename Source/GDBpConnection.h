@@ -70,6 +70,10 @@
 	
 	// A dictionary that maps routingIDs to StackFrame objects.
 	NSMutableDictionary* stackFrames_;
+	// The stack depth for the current build of |stackFrames_|.
+	NSInteger stackDepth_;
+	// The earliest transaction ID for the current build of |stackFrames_|.
+	NSInteger stackFirstTransactionID_;
 	
 	// Callback table. This maps transaction IDs to selectors. When the engine
 	// returns a response to the debugger, we will dispatch the response XML to
@@ -128,8 +132,8 @@
 // Tells the debugger that a new stack frame is avaliable.
 - (void)newStackFrame:(StackFrame*)frame;
 
-// A simple step has occurred. Pop the top frame the new current one is provided.
-- (void)popStackFrame:(StackFrame*)frame;
+// Tells the debugger that new source is available for the given frame.
+- (void)sourceUpdated:(StackFrame*)frame;
 
 @end
 
