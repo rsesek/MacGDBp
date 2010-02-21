@@ -80,7 +80,7 @@
  */
 - (void)windowWillClose:(NSNotification*)notif
 {
-	[[connection socket] close];
+	[connection close];
 }
 
 /**
@@ -141,7 +141,7 @@
 }
 
 /**
- * Delegate functioni for GDBpConnection for when the debugger connects.
+ * Delegate function for GDBpConnection for when the debugger connects.
  */
 - (void)debuggerConnected
 {
@@ -176,8 +176,6 @@
 - (IBAction)run:(id)sender
 {
 	[connection run];
-	if ([connection isConnected])
-		[self reloadStack];
 }
 
 /**
@@ -198,8 +196,6 @@
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	[connection stepIn];
-	if ([connection isConnected])
-		[self reloadStack];
 }
 
 /**
@@ -211,8 +207,6 @@
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	[connection stepOut];
-	if ([connection isConnected])
-		[self reloadStack];
 }
 
 /**
@@ -224,8 +218,6 @@
 		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
 	
 	[connection stepOver];
-	if ([connection isConnected])
-		[self reloadStack];
 }
 
 /**

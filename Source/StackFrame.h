@@ -60,7 +60,7 @@
 @property (copy) NSString* source;
 @property (readwrite) int lineNumber;
 @property (readwrite, copy) NSString* function;
-@property (copy) NSArray* variables;
+@property (retain) NSArray* variables;
 
 - (id)initWithIndex:(int)anIndex
 	   withFilename:(NSString*)aFilename

@@ -50,12 +50,12 @@
 - (void)getStackFrame:(NSXMLDocument*)response;
 - (void)setSource:(NSXMLDocument*)response;
 - (void)contextsReceived:(NSXMLDocument*)response;
+- (void)variablesReceived:(NSXMLDocument*)response;
 
 - (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...;
 
 - (void)sendQueuedWrites;
 
-- (StackFrame*)createStackFrame:(int)depth;
 - (NSString*)escapedURIPath:(NSString*)path;
 @end
 
@@ -627,8 +627,12 @@ void SocketAcceptCallback(CFSocketRef socket,
 		return;
 	}
 	
-	SEL callback = NSSelectorFromString([callTable_ objectForKey:[NSNumber numberWithInt:lastReadTransaction_]]);
-	[self performSelector:callback withObject:response];
+	NSString* callbackStr = [callTable_ objectForKey:[NSNumber numberWithInt:lastReadTransaction_]];
+	if (callbackStr)
+	{
+		SEL callback = NSSelectorFromString(callbackStr);
+		[self performSelector:callback withObject:response];
+	}
 	
 	[self sendQueuedWrites];
 }
@@ -737,6 +741,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[callbackContext_ setObject:routingNumber forKey:transaction];
 }
 
+/**
+ * Callback for setting the source of a file while rebuilding a specific stack
+ * frame.
+ */
 - (void)setSource:(NSXMLDocument*)response
 {
 	NSNumber* transaction = [NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
@@ -753,9 +761,61 @@ void SocketAcceptCallback(CFSocketRef socket,
 	NSLog(@"frame.source = %@", frame.source);
 }
 
+/**
+ * Enumerates all the contexts of a given stack frame. We then in turn get the
+ * contents of each one of these contexts.
+ */
 - (void)contextsReceived:(NSXMLDocument*)response
 {
-	NSLog(@"got contexts = %@", response);
+	// Get the stack frame's routing ID and use it again.
+	NSNumber* receivedTransaction =
+		[NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
+	if (!routingID)
+		return;
+	
+	// Get the stack frame by the |routingID|.
+	StackFrame* frame = [stackFrames_ objectForKey:routingID];
+	
+	NSXMLElement* contextNames = [response rootElement];
+	for (NSXMLElement* context in [contextNames children])
+	{
+		NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
+		
+		// Fetch each context's variables.
+		NSNumber* transaction = [self sendCommandWithCallback:@selector(variablesReceived:)
+													   format:@"context_get -d %d -c %d", frame.index, cid];
+		[callbackContext_ setObject:routingID forKey:transaction];
+	}
+}
+
+/**
+ * Receives the variables from the context and attaches them to the stack frame.
+ */
+- (void)variablesReceived:(NSXMLDocument*)response
+{
+	// Get the stack frame's routing ID and use it again.
+	NSNumber* receivedTransaction =
+	[NSNumber numberWithInt:[[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue]];
+	NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
+	if (!routingID)
+		return;
+	
+	// Get the stack frame by the |routingID|.
+	StackFrame* frame = [stackFrames_ objectForKey:routingID];
+	
+	NSMutableArray* variables = [NSMutableArray array];
+	
+	// Merge the frame's existing variables.
+	if (frame.variables)
+		[variables addObjectsFromArray:frame.variables];
+	
+	// Add these new variables.
+	NSArray* addVariables = [[response rootElement] children];
+	if (addVariables)
+		[variables addObjectsFromArray:addVariables];
+	
+	frame.variables = variables;
 }
 
 #pragma mark Private
@@ -805,29 +865,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		}
 	}
 	[writeQueueLock_ unlock];
-}
-
-/**
- * Generates a stack frame for the given depth
- */
-- (StackFrame*)createStackFrame:(int)stackDepth
-{
-	// get the names of all the contexts
-	NSXMLElement* contextNames = [[self processData:[socket receive]] rootElement];
-	NSMutableArray* variables = [NSMutableArray array];
-	for (NSXMLElement* context in [contextNames children])
-	{
-		NSString* name = [[context attributeForName:@"name"] stringValue];
-		int cid = [[[context attributeForName:@"id"] stringValue] intValue];
-		
-		// fetch the contexts
-		[socket send:[self createCommand:[NSString stringWithFormat:@"context_get -d %d -c %d", stackDepth, cid]]];
-		NSArray* addVars = [[[self processData:[socket receive]] rootElement] children];
-		if (addVars != nil && name != nil)
-			[variables addObjectsFromArray:addVars];
-	}
-	
-	return nil;
 }
 
 /**
