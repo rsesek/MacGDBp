@@ -531,6 +531,55 @@ void SocketAcceptCallback(CFSocketRef socket,
 			NSLog(@"Could not parse XML? --- %@", error);
 			NSLog(@"Error UserInfo: %@", [error userInfo]);
 			NSLog(@"This is the XML Document: %@", currentPacket_);
+			
+			// We do not want to starve the write queue, so manually parse out the
+			// transaction ID.
+			NSRange location = [currentPacket_ rangeOfString:@"transaction_id"];
+			if (location.location != NSNotFound)
+			{
+				NSUInteger start = location.location + location.length;
+				NSUInteger end = start;
+				
+				NSCharacterSet* numericSet = [NSCharacterSet decimalDigitCharacterSet];
+				
+				// Loop over the characters after the attribute name to extract the ID.
+				while (end < [currentPacket_ length])
+				{
+					unichar c = [currentPacket_ characterAtIndex:end];
+					if ([numericSet characterIsMember:c])
+					{
+						// If this character is numeric, extend the range to substring.
+						++end;
+					}
+					else
+					{
+						if (start == end)
+						{
+							// If this character is nonnumeric and we have nothing in the
+							// range, skip this character.
+							++start;
+							++end;
+						}
+						else
+						{
+							// We've moved past the numeric ID so we should stop searching.
+							break;
+						}
+					}
+				}
+				
+				// If we were able to extract the transaction ID, update the last read.
+				NSRange substringRange = NSMakeRange(start, end - start);
+				NSString* transaction = [currentPacket_ substringWithRange:substringRange];
+				if ([transaction length])
+				{
+					lastReadTransaction_ = [transaction intValue];
+					return;
+				}
+			}
+			
+			// Otherwise, assume +1 and hope it works.
+			++lastReadTransaction_;
 			return;
 		}		
 		[self handleResponse:[xmlTest autorelease]];
