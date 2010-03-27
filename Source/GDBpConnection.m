@@ -27,10 +27,10 @@
 @property (readwrite, copy) NSString* status;
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
-@property int lastReadTransaction;
+@property NSUInteger lastReadTransaction;
 @property (retain) NSMutableString* currentPacket;
 @property (assign) CFWriteStreamRef writeStream;
-@property int lastWrittenTransaction;
+@property NSUInteger lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
 - (void)connect;
@@ -209,7 +209,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  * Creates a new DebuggerConnection and initializes the socket from the given connection
  * paramters.
  */
-- (id)initWithPort:(int)aPort
+- (id)initWithPort:(NSUInteger)aPort
 {
 	if (self = [super init])
 	{
@@ -237,7 +237,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 /**
  * Gets the port number
  */
-- (int)port
+- (NSUInteger)port
 {
 	return port;
 }

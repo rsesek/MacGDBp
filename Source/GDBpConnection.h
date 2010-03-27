@@ -23,14 +23,14 @@
 
 @interface GDBpConnection : NSObject
 {
-	int port;
+	NSUInteger port;
 	BOOL connected;
 	
 	/**
 	 * An ever-increasing integer that gives each transaction a unique ID for
 	 * the debugging engine. Managed by |-createCommand:|.
 	 */
-	int transactionID;
+	NSUInteger transactionID;
 	
 	/**
 	 * Human-readable status of the connection
@@ -44,7 +44,7 @@
 	CFReadStreamRef readStream_;
 	
 	// The most recently received transaction ID.
-	int lastReadTransaction_;
+	NSUInteger lastReadTransaction_;
 	
 	// Information about the current read loop. We append to |currentPacket_|
 	// until |currentPacketSize_| has reached |packetSize_|.
@@ -66,7 +66,7 @@
 	CFWriteStreamRef writeStream_;
 	
 	// The last transactionID written to the stream.
-	int lastWrittenTransaction_;
+	NSUInteger lastWrittenTransaction_;
 	
 	// A dictionary that maps routingIDs to StackFrame objects.
 	NSMutableDictionary* stackFrames_;
@@ -92,10 +92,10 @@
 @property (assign) id <GDBpConnectionDelegate> delegate;
 
 // initializer
-- (id)initWithPort:(int)aPort;
+- (id)initWithPort:(NSUInteger)aPort;
 
 // getter
-- (int)port;
+- (NSUInteger)port;
 - (NSString*)remoteHost;
 - (BOOL)isConnected;
 - (NSArray*)getCurrentStack;
