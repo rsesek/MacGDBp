@@ -17,13 +17,13 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-#import "GDBpConnection.h"
+#import "DebuggerConnection.h"
 
 #import "AppDelegate.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
-@interface GDBpConnection ()
+@interface DebuggerConnection ()
 @property (readwrite, copy) NSString* status;
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
@@ -64,7 +64,7 @@
 
 void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventHasBytesAvailable:
@@ -93,7 +93,7 @@ void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, voi
 
 void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventCanAcceptBytes:
@@ -128,7 +128,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	assert(callbackType == kCFSocketAcceptCallBack);
 	NSLog(@"SocketAcceptCallback()");
 	
-	GDBpConnection* connection = (GDBpConnection*)connectionRaw;
+	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
 	
 	CFReadStreamRef readStream;
 	CFWriteStreamRef writeStream;
@@ -194,7 +194,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 // GDBpConnection //////////////////////////////////////////////////////////////
 
-@implementation GDBpConnection
+@implementation DebuggerConnection
 @synthesize socket = socket_;
 @synthesize readStream = readStream_;
 @synthesize lastReadTransaction = lastReadTransaction_;
@@ -234,6 +234,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[super dealloc];
 }
 
+
+// Getters /////////////////////////////////////////////////////////////////////
+#pragma mark Getters
+
 /**
  * Gets the port number
  */
@@ -263,29 +267,8 @@ void SocketAcceptCallback(CFSocketRef socket,
 	return connected;
 }
 
-/**
- * Called by SocketWrapper after the connection is successful. This immediately calls
- * -[SocketWrapper receive] to clear the way for communication, though the information
- * could be useful server information that we don't use right now.
- */
-- (void)socketDidAccept
-{
-	connected = YES;
-	transactionID = 1;
-	stackFrames_ = [[NSMutableDictionary alloc] init];
-	self.queuedWrites = [NSMutableArray array];
-	writeQueueLock_ = [NSRecursiveLock new];
-	callTable_ = [NSMutableDictionary new];
-	callbackContext_ = [NSMutableDictionary new];
-}
-
-/**
- * Receives errors from the SocketWrapper and updates the display
- */
-- (void)errorEncountered:(NSString*)error
-{
-	[delegate errorEncountered:error];
-}
+// Commands ////////////////////////////////////////////////////////////////////
+#pragma mark Commands
 
 /**
  * Reestablishes communication with the remote debugger so that a new connection doesn't have to be
@@ -365,6 +348,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	return children;
 }
 
+// Breakpoint Management ///////////////////////////////////////////////////////
 #pragma mark Breakpoints
 
 /**
@@ -382,20 +366,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Callback for setting a breakpoint.
- */
-- (void)breakpointReceived:(NSXMLDocument*)response
-{
-	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
-	Breakpoint* bp = [callbackContext_ objectForKey:transaction];
-	if (!bp)
-		return;
-	
-	[callbackContext_ removeObjectForKey:callbackContext_];
-	[bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
-}
-
-/**
  * Removes a breakpoint
  */
 - (void)removeBreakpoint:(Breakpoint*)bp
@@ -408,7 +378,33 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[self sendCommandWithCallback:nil format:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
-#pragma mark Socket and Stream Callbacks
+
+// Socket and Stream Callbacks /////////////////////////////////////////////////
+#pragma mark Callbacks
+
+/**
+ * Called by SocketWrapper after the connection is successful. This immediately calls
+ * -[SocketWrapper receive] to clear the way for communication, though the information
+ * could be useful server information that we don't use right now.
+ */
+- (void)socketDidAccept
+{
+	connected = YES;
+	transactionID = 1;
+	stackFrames_ = [[NSMutableDictionary alloc] init];
+	self.queuedWrites = [NSMutableArray array];
+	writeQueueLock_ = [NSRecursiveLock new];
+	callTable_ = [NSMutableDictionary new];
+	callbackContext_ = [NSMutableDictionary new];
+}
+
+/**
+ * Receives errors from the SocketWrapper and updates the display
+ */
+- (void)errorEncountered:(NSString*)error
+{
+	[delegate errorEncountered:error];
+}
 
 /**
  * Creates, connects to, and schedules a CFSocket.
@@ -608,8 +604,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	}
 }
 
-#pragma mark Response Handlers
-
 - (void)handleResponse:(NSXMLDocument*)response
 {
 	// Check and see if there's an error.
@@ -650,6 +644,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	[self sendQueuedWrites];
 }
+
+// Specific Response Handlers //////////////////////////////////////////////////
+#pragma mark Response Handlers
 
 /**
  * Initial packet received. We've started a brand-new connection to the engine.
@@ -846,6 +843,20 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[variables addObjectsFromArray:addVariables];
 	
 	frame.variables = variables;
+}
+
+/**
+ * Callback for setting a breakpoint.
+ */
+- (void)breakpointReceived:(NSXMLDocument*)response
+{
+	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	Breakpoint* bp = [callbackContext_ objectForKey:transaction];
+	if (!bp)
+		return;
+	
+	[callbackContext_ removeObjectForKey:callbackContext_];
+	[bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
 }
 
 #pragma mark Private

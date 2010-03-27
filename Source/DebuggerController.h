@@ -16,12 +16,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import "BSSourceView.h"
-#import "GDBpConnection.h"
+#import "DebuggerConnection.h"
 #import "StackController.h"
 
-@interface DebuggerController : NSWindowController <GDBpConnectionDelegate>
+@interface DebuggerController : NSWindowController <DebuggerConnectionDelegate>
 {
-	GDBpConnection* connection;
+	DebuggerConnection* connection;
 	
 	// This is true when the |connection| has told us to clobber. We will do
 	// so upon receipt of the first new stack frame.
@@ -43,7 +43,7 @@
 	IBOutlet BSSourceView* sourceViewer;
 }
 
-@property(readonly) GDBpConnection* connection;
+@property(readonly) DebuggerConnection* connection;
 @property(readonly) BSSourceView* sourceViewer;
 @property(readonly) NSWindow* inspector;
 
