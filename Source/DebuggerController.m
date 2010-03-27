@@ -23,7 +23,6 @@
 - (void)updateSourceViewer;
 - (void)updateStackViewer;
 - (void)expandVariables;
-- (void)reloadStack;
 @end
 
 @implementation DebuggerController
@@ -303,22 +302,6 @@
 		if ([fullname isEqualToString:selection])
 			[variablesTreeController setSelectionIndexPath:[node indexPath]];
 	}
-}
-
-/**
- * This updates the entire stack. Xdebug is queried to get the stack, non-shifted
- * frames are reused and new ones are fetched.
- */
-- (void)reloadStack
-{
-	NSArray* stack = [connection getCurrentStack];
-	if (stack == nil)
-		return;
-	
-	[stackController.stack removeAllObjects];
-	[stackController.stack addObjectsFromArray:stack];
-	[self updateStackViewer];
-	[self updateSourceViewer];
 }
 
 #pragma mark BSSourceView Delegate

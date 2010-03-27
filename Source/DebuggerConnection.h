@@ -105,7 +105,6 @@
 - (NSUInteger)port;
 - (NSString*)remoteHost;
 - (BOOL)isConnected;
-- (NSArray*)getCurrentStack;
 
 // communication
 - (void)reconnect;

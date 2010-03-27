@@ -283,16 +283,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Creates an entirely new stack and returns it as an array of StackFrame objects.
- */
-- (NSArray*)getCurrentStack
-{
-	NSMutableArray* stack = [NSMutableArray array];
-	NSLog(@"NOTIMPLEMENTED(): %s", _cmd);
-	return stack;
-}
-
-/**
  * Tells the debugger to continue running the script. Returns the current stack frame.
  */
 - (void)run
