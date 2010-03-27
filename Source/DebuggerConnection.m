@@ -51,6 +51,7 @@
 - (void)setSource:(NSXMLDocument*)response;
 - (void)contextsReceived:(NSXMLDocument*)response;
 - (void)variablesReceived:(NSXMLDocument*)response;
+- (void)propertiesReceived:(NSXMLDocument*)response;
 
 - (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...;
 
@@ -327,25 +328,9 @@ void SocketAcceptCallback(CFSocketRef socket,
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */
-- (NSArray*)getProperty:(NSString*)property
+- (NSInteger)getProperty:(NSString*)property
 {
-	[socket send:[self createCommand:[NSString stringWithFormat:@"property_get -n \"%@\"", property]]];
-	
-	NSXMLDocument* doc = [self processData:[socket receive]];
-	
-	/*
-	 <response>
-		<property> <!-- this is the one we requested -->
-			<property ... /> <!-- these are what we want -->
-		</property>
-	 </repsonse>
-	 */
-	
-	// we now have to detach all the children so we can insert them into another document
-	NSXMLElement* parent = (NSXMLElement*)[[doc rootElement] childAtIndex:0];
-	NSArray* children = [parent children];
-	[parent setChildren:nil];
-	return children;
+	[self sendCommandWithCallback:@selector(propertiesReceived:) format:@"property_get -n \"%@\"", property];
 }
 
 // Breakpoint Management ///////////////////////////////////////////////////////
@@ -892,6 +877,29 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[variables addObjectsFromArray:addVariables];
 	
 	frame.variables = variables;
+}
+
+/**
+ * Callback from a |-getProperty:| request.
+ */
+- (void)propertiesReceived:(NSXMLDocument*)response
+{
+	NSInteger transaction = [self transactionIDFromResponse:response];
+	
+	/*
+	 <response>
+		 <property> <!-- this is the one we requested -->
+			 <property ... /> <!-- these are what we want -->
+		 </property>
+	 </repsonse>
+	 */
+	
+	// Detach all the children so we can insert them into another document.
+	NSXMLElement* parent = (NSXMLElement*)[[response rootElement] childAtIndex:0];
+	NSArray* children = [parent children];
+	[parent setChildren:nil];
+	
+	[delegate receivedProperties:children forTransaction:transaction];
 }
 
 /**

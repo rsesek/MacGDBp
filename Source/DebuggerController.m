@@ -76,14 +76,6 @@
 }
 
 /**
- * Called right before the window closes so that we can tell the socket to close down
- */
-- (void)windowWillClose:(NSNotification*)notif
-{
-	[connection close];
-}
-
-/**
  * Validates the menu items for the "Debugger" menu
  */
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem

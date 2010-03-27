@@ -116,8 +116,9 @@
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (void)removeBreakpoint:(Breakpoint*)bp;
 
-// helpers
-- (NSArray*)getProperty:(NSString*)property;
+// Gets a property by name from the debugger engine. Returns a transaction ID
+// which used in the delegate callback.
+- (NSInteger)getProperty:(NSString*)property;
 
 @end
 
@@ -143,6 +144,9 @@
 
 // Tells the debugger that new source is available for the given frame.
 - (void)sourceUpdated:(StackFrame*)frame;
+
+// Callback from |-getProperty:|.
+- (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction;
 
 @end
 
