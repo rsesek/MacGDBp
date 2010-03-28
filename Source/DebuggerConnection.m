@@ -709,12 +709,14 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)debuggerStep:(NSXMLDocument*)response
 {
-	[self sendCommandWithCallback:@selector(updateStatus:) format:@"status"];
-	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
+	[self updateStatus:response];
+	if (!connected)
+		return;
 	
 	// If this is the run command, tell the delegate that a bunch of updates
 	// are coming. Also remove all existing stack routes and request a new stack.
 	// TODO: figure out if we can not clobber the stack every time.
+	NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
 	if (YES || [command isEqualToString:@"run"])
 	{
 		if ([delegate respondsToSelector:@selector(clobberStack)])
@@ -937,6 +939,9 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)sendQueuedWrites
 {
+	if (!connected)
+		return;
+	
 	[writeQueueLock_ lock];
 	if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0)
 	{
