@@ -18,18 +18,9 @@
 
 @implementation AppDelegate
 
-@synthesize debugger, breakpoint;
-
-/**
- * Initializes
- */
-- (id)init
-{
-	if (self = [super init])
-	{
-	}
-	return self;
-}
+@synthesize debugger;
+@synthesize breakpoint;
+@synthesize loggingController = loggingController_;
 
 /**
  * Initialize method that is called before all other messages. This will set the default
@@ -62,6 +53,7 @@
 - (IBAction)showDebuggerWindow:(id)sender
 {
 	[[debugger window] makeKeyAndOrderFront:self];
+	NSLog(@"logg %@", [loggingController_ window]);
 }
 
 /**

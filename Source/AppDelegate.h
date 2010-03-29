@@ -15,19 +15,23 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerController.h"
+
 #import "BreakpointController.h"
+#import "DebuggerController.h"
+#import "LoggingController.h"
 #import "PreferencesController.h"
 
 @interface AppDelegate : NSObject
 {
 	IBOutlet DebuggerController* debugger;
 	IBOutlet BreakpointController* breakpoint;
+	IBOutlet LoggingController* loggingController_;
 	PreferencesController* prefs;
 }
 
-@property(readonly) DebuggerController* debugger;
-@property(readonly) BreakpointController* breakpoint;
+@property (readonly) DebuggerController* debugger;
+@property (readonly) BreakpointController* breakpoint;
+@property (readonly) LoggingController* loggingController;
 
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;

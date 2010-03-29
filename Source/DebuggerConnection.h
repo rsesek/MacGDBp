@@ -19,6 +19,8 @@
 #import "Breakpoint.h"
 #import "StackFrame.h"
 
+@class LoggingController;
+
 @protocol DebuggerConnectionDelegate;
 
 // The DebuggerConnection is the communication layer between the application
@@ -41,7 +43,7 @@
 	
 	// The connection's delegate.
 	id <DebuggerConnectionDelegate> delegate;
-	
+
 	// The raw CFSocket on which the two streams are based. Strong.
 	CFSocketRef socket_;
 	

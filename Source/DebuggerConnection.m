@@ -20,6 +20,7 @@
 #import "DebuggerConnection.h"
 
 #import "AppDelegate.h"
+#import "LoggingController.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
@@ -69,7 +70,6 @@ void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, voi
 	switch (eventType)
 	{
 		case kCFStreamEventHasBytesAvailable:
-			NSLog(@"About to read.");
 			[connection readStreamHasData];
 			break;
 			
@@ -218,7 +218,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		connected = NO;
 		
 		[[BreakpointManager sharedManager] setConnection:self];
-		
 		[self connect];
 	}
 	return self;
@@ -501,6 +500,15 @@ void SocketAcceptCallback(CFSocketRef socket,
 		// Test if we can convert it into an NSXMLDocument.
 		NSError* error = nil;
 		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
+
+		// Log this receive event.
+		LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+		LogEntry* log = [logger recordReceive:currentPacket_];
+		log.error = error;
+		log.lastWrittenTransactionID = lastWrittenTransaction_;
+		log.lastReadTransactionID = lastReadTransaction_;
+
+		// Try to recover if we encountered an error.
 		if (error)
 		{
 			NSLog(@"Could not parse XML? --- %@", error);
@@ -590,6 +598,12 @@ void SocketAcceptCallback(CFSocketRef socket,
 	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
 		NSLog(@"--> %@", command);
 	
+	// Log this trancation.
+	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+	LogEntry* log = [logger recordSend:command];
+	log.lastWrittenTransactionID = lastWrittenTransaction_;
+	log.lastReadTransactionID = lastReadTransaction_;	
+
 	// Busy wait while writing. BAADD. Should background this operation.
 	while (!done)
 	{
@@ -946,7 +960,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0)
 	{
 		NSString* command = [queuedWrites_ objectAtIndex:0];
-		NSLog(@"Sending queued write: %@", command);
 		
 		// We don't want to block because this is called from the main thread.
 		// |-performSend:| busy waits when the stream is not ready. Bail out

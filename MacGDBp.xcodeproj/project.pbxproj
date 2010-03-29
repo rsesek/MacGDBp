@@ -21,6 +21,8 @@
 		1E42F1D70F53317B008412DB /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 1E42F1D60F53317B008412DB /* dsa_pub.pem */; };
 		1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
 		1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */; };
+		1E6B5947116106FE001189D2 /* LoggingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6B5946116106FE001189D2 /* LoggingController.m */; };
+		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
 		1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.m */; };
 		1E7188690D839F6300969277 /* BSSourceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.m */; };
 		1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188670D839F6300969277 /* BSSourceViewTextView.m */; };
@@ -81,6 +83,9 @@
 		1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointManager.m; path = Source/BreakpointManager.m; sourceTree = "<group>"; };
 		1E67E6FB0F3C052000E68F1B /* PreferencesPathsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesPathsArrayController.h; path = Source/PreferencesPathsArrayController.h; sourceTree = "<group>"; };
 		1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesPathsArrayController.m; path = Source/PreferencesPathsArrayController.m; sourceTree = "<group>"; };
+		1E6B5945116106FE001189D2 /* LoggingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoggingController.h; path = Source/LoggingController.h; sourceTree = "<group>"; };
+		1E6B5946116106FE001189D2 /* LoggingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoggingController.m; path = Source/LoggingController.m; sourceTree = "<group>"; };
+		1E6B594B11610993001189D2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Log.xib; sourceTree = "<group>"; };
 		1E7188620D839F6300969277 /* BSLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberView.h; path = Source/BSLineNumberView.h; sourceTree = "<group>"; };
 		1E7188630D839F6300969277 /* BSLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSLineNumberView.m; path = Source/BSLineNumberView.m; sourceTree = "<group>"; };
 		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
@@ -201,6 +206,8 @@
 				1E02C5700C610158006F1752 /* DebuggerConnection.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
 				1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */,
+				1E6B5945116106FE001189D2 /* LoggingController.h */,
+				1E6B5946116106FE001189D2 /* LoggingController.m */,
 			);
 			name = Connection;
 			sourceTree = "<group>";
@@ -212,6 +219,7 @@
 				1E416FF60D36F821009A53A2 /* MainMenu.xib */,
 				1E1E53010DF9B89800D334F9 /* Breakpoints.xib */,
 				1E9582600E252474001A3D89 /* Preferences.xib */,
+				1E6B594A11610993001189D2 /* Log.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -360,6 +368,7 @@
 				1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */,
 				1E9582620E252474001A3D89 /* Preferences.xib in Resources */,
 				1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */,
+				1E6B594C11610993001189D2 /* Log.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,6 +412,7 @@
 				1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */,
 				1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */,
 				1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */,
+				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,6 +441,14 @@
 				1E416FF70D36F821009A53A2 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		1E6B594A11610993001189D2 /* Log.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E6B594B11610993001189D2 /* English */,
+			);
+			name = Log.xib;
 			sourceTree = "<group>";
 		};
 		1E9582600E252474001A3D89 /* Preferences.xib */ = {

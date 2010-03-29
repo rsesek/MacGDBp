@@ -40,6 +40,7 @@
 		stackController = [[StackController alloc] init];
 		
 		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+
 		connection = [[DebuggerConnection alloc] initWithPort:[defaults integerForKey:@"Port"]];
 		connection.delegate = self;
 		expandedVariables = [[NSMutableSet alloc] init];
