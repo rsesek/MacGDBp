@@ -593,11 +593,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	char* string = (char*)[command UTF8String];
 	int stringLength = strlen(string);
-	
-	// Log the command if TransportDebug is enabled.
-	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
-		NSLog(@"--> %@", command);
-	
+
 	// Log this trancation.
 	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
 	LogEntry* log = [logger recordSend:command];
@@ -635,8 +631,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 				}
 				NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
 				lastWrittenTransaction_ = [transaction intValue];
-				NSLog(@"command = %@", command);
-				NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
 			}
 		}
 	}
@@ -652,10 +646,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[delegate errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 	}
 	
-	// If TransportDebug is enabled, log the response.
-	if ([[[[NSProcessInfo processInfo] environment] objectForKey:@"TransportDebug"] boolValue])
-		NSLog(@"<-- %@", response);
-	
 	// Get the name of the command from the engine's response.
 	NSInteger transaction = [self transactionIDFromResponse:response];
 	if (transaction < lastReadTransaction_)
@@ -665,7 +655,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"txn doesn't match last written %@", response);
 	
 	lastReadTransaction_ = transaction;
-	NSLog(@"read=%d, write=%d", lastReadTransaction_, lastWrittenTransaction_);
 	
 	if ([[[response rootElement] name] isEqualToString:@"init"])
 	{
