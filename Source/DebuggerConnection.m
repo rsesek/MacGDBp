@@ -501,20 +501,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSError* error = nil;
 		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
 
-		// Log this receive event.
-		LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-		LogEntry* log = [logger recordReceive:currentPacket_];
-		log.error = error;
-		log.lastWrittenTransactionID = lastWrittenTransaction_;
-		log.lastReadTransactionID = lastReadTransaction_;
-
 		// Try to recover if we encountered an error.
 		if (error)
 		{
-			NSLog(@"Could not parse XML? --- %@", error);
-			NSLog(@"Error UserInfo: %@", [error userInfo]);
-			NSLog(@"This is the XML Document: %@", currentPacket_);
-			
 			// We do not want to starve the write queue, so manually parse out the
 			// transaction ID.
 			NSRange location = [currentPacket_ rangeOfString:@"transaction_id"];
@@ -564,7 +553,32 @@ void SocketAcceptCallback(CFSocketRef socket,
 			// Otherwise, assume +1 and hope it works.
 			++lastReadTransaction_;
 			return;
-		}		
+		}
+		else
+		{
+			// See if the transaction can be parsed out.
+			NSInteger transaction = [self transactionIDFromResponse:xmlTest];
+			if (transaction < lastReadTransaction_ || transaction != lastWrittenTransaction_)
+			{
+				NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
+				NSLog(@"out of date transaction %@", xmlTest);
+				return;
+			}
+			
+			if (transaction != lastWrittenTransaction_)
+				NSLog(@"txn doesn't match last written %@", xmlTest);
+			
+			lastReadTransaction_ = transaction;
+		}
+
+		// Log this receive event.
+		LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+		LogEntry* log = [logger recordReceive:currentPacket_];
+		log.error = error;
+		log.lastWrittenTransactionID = lastWrittenTransaction_;
+		log.lastReadTransactionID = lastReadTransaction_;		
+
+		// Finally, dispatch the handler for this response.
 		[self handleResponse:[xmlTest autorelease]];
 	}	
 }
@@ -593,12 +607,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	char* string = (char*)[command UTF8String];
 	int stringLength = strlen(string);
-
-	// Log this trancation.
-	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-	LogEntry* log = [logger recordSend:command];
-	log.lastWrittenTransactionID = lastWrittenTransaction_;
-	log.lastReadTransactionID = lastReadTransaction_;	
 
 	// Busy wait while writing. BAADD. Should background this operation.
 	while (!done)
@@ -634,6 +642,12 @@ void SocketAcceptCallback(CFSocketRef socket,
 			}
 		}
 	}
+
+	// Log this trancation.
+	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+	LogEntry* log = [logger recordSend:command];
+	log.lastWrittenTransactionID = lastWrittenTransaction_;
+	log.lastReadTransactionID = lastReadTransaction_;
 }
 
 - (void)handleResponse:(NSXMLDocument*)response
@@ -645,17 +659,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSLog(@"Xdebug error: %@", error);
 		[delegate errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 	}
-	
-	// Get the name of the command from the engine's response.
-	NSInteger transaction = [self transactionIDFromResponse:response];
-	if (transaction < lastReadTransaction_)
-		NSLog(@"out of date transaction %@", response);
-	
-	if (transaction != lastWrittenTransaction_)
-		NSLog(@"txn doesn't match last written %@", response);
-	
-	lastReadTransaction_ = transaction;
-	
+
 	if ([[[response rootElement] name] isEqualToString:@"init"])
 	{
 		[self initReceived:response];
