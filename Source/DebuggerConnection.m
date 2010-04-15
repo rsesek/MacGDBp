@@ -546,12 +546,16 @@ void SocketAcceptCallback(CFSocketRef socket,
 				if ([transaction length])
 				{
 					lastReadTransaction_ = [transaction intValue];
+					if (xmlTest)
+						[self handleResponse:[xmlTest autorelease]];
 					return;
 				}
 			}
 			
 			// Otherwise, assume +1 and hope it works.
 			++lastReadTransaction_;
+			if (xmlTest)
+				[self handleResponse:[xmlTest autorelease]];
 			return;
 		}
 		else
@@ -594,6 +598,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[self performSend:command];
 	else
 		[queuedWrites_ addObject:command];
+	[self sendQueuedWrites];
 }
 
 /**
