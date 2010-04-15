@@ -60,6 +60,7 @@
 
 - (NSString*)escapedURIPath:(NSString*)path;
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
+- (NSInteger)transactionIDFromCommand:(NSString*)command;
 @end
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
@@ -502,7 +503,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
 
 		// Try to recover if we encountered an error.
-		if (error)
+		if (!xmlTest)
 		{
 			// We do not want to starve the write queue, so manually parse out the
 			// transaction ID.
@@ -554,7 +555,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		{
 			// See if the transaction can be parsed out.
 			NSInteger transaction = [self transactionIDFromResponse:xmlTest];
-			if (transaction < lastReadTransaction_ || transaction != lastWrittenTransaction_)
+			if (transaction < lastReadTransaction_)
 			{
 				NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
 				NSLog(@"out of date transaction %@", xmlTest);
@@ -562,7 +563,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 			}
 			
 			if (transaction != lastWrittenTransaction_)
-				NSLog(@"txn doesn't match last written %@", xmlTest);
+				NSLog(@"txn %d(%d) <> %d doesn't match last written", transaction, lastReadTransaction_, lastWrittenTransaction_);
 			
 			lastReadTransaction_ = transaction;
 		}
@@ -586,7 +587,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)send:(NSString*)command
 {
-	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_))
+	if (CFWriteStreamCanAcceptBytes(writeStream_))
 		[self performSend:command];
 	else
 		[queuedWrites_ addObject:command];
@@ -600,6 +601,11 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)performSend:(NSString*)command
 {
+	// If this is an out-of-date transaction, do not bother sending it.
+	NSInteger transaction = [self transactionIDFromCommand:command];
+	if (transaction != NSNotFound && transaction < lastWrittenTransaction_)
+		return;
+
 	BOOL done = NO;
 	
 	char* string = (char*)[command UTF8String];
@@ -628,14 +634,12 @@ void SocketAcceptCallback(CFSocketRef socket,
 				done = YES;
 				
 				// We need to scan the string to find the transactionID.
-				NSRange occurrence = [command rangeOfString:@"-i "];
-				if (occurrence.location == NSNotFound)
+				if (transaction == NSNotFound)
 				{
 					NSLog(@"sent %@ without a transaction ID", command);
 					continue;
 				}
-				NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
-				lastWrittenTransaction_ = [transaction intValue];
+				lastWrittenTransaction_ = transaction;
 			}
 		}
 	}
@@ -991,6 +995,19 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response
 {
 	return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+}
+
+/**
+ * Scans a command string for the transaction ID component. If it is not found,
+ * returns NSNotFound.
+ */
+- (NSInteger)transactionIDFromCommand:(NSString*)command
+{
+	NSRange occurrence = [command rangeOfString:@"-i "];
+	if (occurrence.location == NSNotFound)
+		return NSNotFound;
+	NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
+	return [transaction intValue];
 }
 
 @end
