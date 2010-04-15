@@ -544,19 +544,11 @@ void SocketAcceptCallback(CFSocketRef socket,
 				NSRange substringRange = NSMakeRange(start, end - start);
 				NSString* transaction = [currentPacket_ substringWithRange:substringRange];
 				if ([transaction length])
-				{
 					lastReadTransaction_ = [transaction intValue];
-					if (xmlTest)
-						[self handleResponse:[xmlTest autorelease]];
-					return;
-				}
 			}
 			
 			// Otherwise, assume +1 and hope it works.
 			++lastReadTransaction_;
-			if (xmlTest)
-				[self handleResponse:[xmlTest autorelease]];
-			return;
 		}
 		else
 		{
