@@ -44,6 +44,8 @@
 - (void)errorEncountered:(NSString*)error;
 
 - (void)handleResponse:(NSXMLDocument*)response;
+- (void)handlePacket:(NSString*)packet;
+
 - (void)initReceived:(NSXMLDocument*)response;
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
@@ -463,121 +465,147 @@ void SocketAcceptCallback(CFSocketRef socket,
 {
 	UInt8 buffer[1024];
 	CFIndex bytesRead = CFReadStreamRead(readStream_, buffer, 1024);
+	CFIndex bytesRemaining = bytesRead;
 	const char* charBuffer = (const char*)buffer;
-	
-	// We haven't finished reading a packet, so just read more data in.
-	if (currentPacketIndex_ < packetSize_)
+
+	// The read loop works by going through the buffer until all the bytes have
+	// been processed.
+	while (bytesRemaining > 0)
 	{
-		currentPacketIndex_ += bytesRead;
+		// If there is not a current packet, set some state.
+		if (!self.currentPacket)
+		{
+			// Read the message header: the size.
+			packetSize_ = atoi(charBuffer);
+			currentPacketIndex_ = 0;
+			self.currentPacket = [NSMutableString stringWithCapacity:packetSize_];
+			bytesRemaining -= strlen(charBuffer) + 1;
+			continue;  // Spin the loop to begin doing an actual read.
+		}
+		
+		// The two variables used to substring the bytestream.
+		CFIndex bufferOffset = bytesRead - bytesRemaining;
+		CFIndex readSize = 0;
+		NSInteger packetRemaining = MAX(0, packetSize_ - currentPacketIndex_);
+
+		// If this read has more than one packet response in it, this is where the
+		// split occurs.
+		if (packetRemaining < bytesRemaining)
+			readSize = packetRemaining + 1;  // Read to the end of the packet + NULL.
+		else
+			readSize = bytesRemaining;  // Consume the rest of the read data.
+
+		// Substring the byte stream and append it to the packet string.
 		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
-														   buffer,
-														   bytesRead,
+														   buffer + bufferOffset,  // Byte pointer, offset by start index.
+														   readSize,  // Length.
 														   kCFStringEncodingUTF8,
 														   true);
 		[self.currentPacket appendString:(NSString*)bufferString];
 		CFRelease(bufferString);
-	}
-	// Time to read a new packet.
-	else
-	{
-		// Read the message header: the size.
-		packetSize_ = atoi(charBuffer);
-		currentPacketIndex_ = bytesRead - strlen(charBuffer);
-		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
-														   buffer + strlen(charBuffer) + 1,
-														   bytesRead - strlen(charBuffer) - 1,
-														   kCFStringEncodingUTF8,
-														   true);
-		self.currentPacket = [NSMutableString stringWithString:(NSString*)bufferString];
-		CFRelease(bufferString);
-	}
-	
-	// We have finished reading the packet.
-	if (currentPacketIndex_ >= packetSize_)
-	{
-		packetSize_ = 0;
-		currentPacketIndex_ = 0;
-		
-		// Test if we can convert it into an NSXMLDocument.
-		NSError* error = nil;
-		NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
 
-		// Try to recover if we encountered an error.
-		if (!xmlTest)
+		// Advance counters.
+		currentPacketIndex_ += readSize;
+		bytesRemaining -= readSize;
+		
+		// If this read finished the packet, handle it and reset.
+		NSLog(@"cpi %d ps %d br %d rs %d", currentPacketIndex_, packetSize_, bytesRead, readSize);
+		if (packetRemaining <= readSize)
 		{
-			// We do not want to starve the write queue, so manually parse out the
-			// transaction ID.
-			NSRange location = [currentPacket_ rangeOfString:@"transaction_id"];
-			if (location.location != NSNotFound)
+			NSLog(@"read cp %@", currentPacket_);
+			[self handlePacket:[[currentPacket_ retain] autorelease]];
+			self.currentPacket = nil;
+			packetSize_ = 0;
+			currentPacketIndex_ = 0;
+		}
+	}
+}
+
+/**
+ * Performs the packet handling of a raw string XML packet. From this point on,
+ * the packets are associated with a transaction and are then dispatched.
+ */
+- (void)handlePacket:(NSString*)packet
+{
+	// Test if we can convert it into an NSXMLDocument.
+	NSError* error = nil;
+	NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
+	
+	// Try to recover if we encountered an error.
+	if (!xmlTest)
+	{
+		// We do not want to starve the write queue, so manually parse out the
+		// transaction ID.
+		NSRange location = [currentPacket_ rangeOfString:@"transaction_id"];
+		if (location.location != NSNotFound)
+		{
+			NSUInteger start = location.location + location.length;
+			NSUInteger end = start;
+			
+			NSCharacterSet* numericSet = [NSCharacterSet decimalDigitCharacterSet];
+			
+			// Loop over the characters after the attribute name to extract the ID.
+			while (end < [currentPacket_ length])
 			{
-				NSUInteger start = location.location + location.length;
-				NSUInteger end = start;
-				
-				NSCharacterSet* numericSet = [NSCharacterSet decimalDigitCharacterSet];
-				
-				// Loop over the characters after the attribute name to extract the ID.
-				while (end < [currentPacket_ length])
+				unichar c = [currentPacket_ characterAtIndex:end];
+				if ([numericSet characterIsMember:c])
 				{
-					unichar c = [currentPacket_ characterAtIndex:end];
-					if ([numericSet characterIsMember:c])
+					// If this character is numeric, extend the range to substring.
+					++end;
+				}
+				else
+				{
+					if (start == end)
 					{
-						// If this character is numeric, extend the range to substring.
+						// If this character is nonnumeric and we have nothing in the
+						// range, skip this character.
+						++start;
 						++end;
 					}
 					else
 					{
-						if (start == end)
-						{
-							// If this character is nonnumeric and we have nothing in the
-							// range, skip this character.
-							++start;
-							++end;
-						}
-						else
-						{
-							// We've moved past the numeric ID so we should stop searching.
-							break;
-						}
+						// We've moved past the numeric ID so we should stop searching.
+						break;
 					}
 				}
-				
-				// If we were able to extract the transaction ID, update the last read.
-				NSRange substringRange = NSMakeRange(start, end - start);
-				NSString* transaction = [currentPacket_ substringWithRange:substringRange];
-				if ([transaction length])
-					lastReadTransaction_ = [transaction intValue];
 			}
 			
-			// Otherwise, assume +1 and hope it works.
-			++lastReadTransaction_;
+			// If we were able to extract the transaction ID, update the last read.
+			NSRange substringRange = NSMakeRange(start, end - start);
+			NSString* transaction = [currentPacket_ substringWithRange:substringRange];
+			if ([transaction length])
+				lastReadTransaction_ = [transaction intValue];
 		}
-		else
+		
+		// Otherwise, assume +1 and hope it works.
+		++lastReadTransaction_;
+	}
+	else
+	{
+		// See if the transaction can be parsed out.
+		NSInteger transaction = [self transactionIDFromResponse:xmlTest];
+		if (transaction < lastReadTransaction_)
 		{
-			// See if the transaction can be parsed out.
-			NSInteger transaction = [self transactionIDFromResponse:xmlTest];
-			if (transaction < lastReadTransaction_)
-			{
-				NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
-				NSLog(@"out of date transaction %@", xmlTest);
-				return;
-			}
-			
-			if (transaction != lastWrittenTransaction_)
-				NSLog(@"txn %d(%d) <> %d doesn't match last written", transaction, lastReadTransaction_, lastWrittenTransaction_);
-			
-			lastReadTransaction_ = transaction;
+			NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
+			NSLog(@"out of date transaction %@", packet);
+			return;
 		}
-
-		// Log this receive event.
-		LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-		LogEntry* log = [logger recordReceive:currentPacket_];
-		log.error = error;
-		log.lastWrittenTransactionID = lastWrittenTransaction_;
-		log.lastReadTransactionID = lastReadTransaction_;		
-
-		// Finally, dispatch the handler for this response.
-		[self handleResponse:[xmlTest autorelease]];
-	}	
+		
+		if (transaction != lastWrittenTransaction_)
+			NSLog(@"txn %d(%d) <> %d doesn't match last written", transaction, lastReadTransaction_, lastWrittenTransaction_);
+		
+		lastReadTransaction_ = transaction;
+	}
+	
+	// Log this receive event.
+	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+	LogEntry* log = [logger recordReceive:currentPacket_];
+	log.error = error;
+	log.lastWrittenTransactionID = lastWrittenTransaction_;
+	log.lastReadTransactionID = lastReadTransaction_;
+	
+	// Finally, dispatch the handler for this response.
+	[self handleResponse:[xmlTest autorelease]];	
 }
 
 /**
