@@ -472,47 +472,46 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// been processed.
 	while (bytesRemaining > 0)
 	{
+		// Starting point in the buffer to work with.
+		CFIndex bufferOffset = bytesRead - bytesRemaining;
+
 		// If there is not a current packet, set some state.
 		if (!self.currentPacket)
 		{
 			// Read the message header: the size.
-			packetSize_ = atoi(charBuffer);
+			packetSize_ = atoi(charBuffer + bufferOffset);
 			currentPacketIndex_ = 0;
 			self.currentPacket = [NSMutableString stringWithCapacity:packetSize_];
-			bytesRemaining -= strlen(charBuffer) + 1;
+			bytesRemaining -= strlen(charBuffer + bufferOffset) + 1;
 			continue;  // Spin the loop to begin doing an actual read.
 		}
-		
-		// The two variables used to substring the bytestream.
-		CFIndex bufferOffset = bytesRead - bytesRemaining;
-		CFIndex readSize = 0;
-		NSInteger packetRemaining = MAX(0, packetSize_ - currentPacketIndex_);
 
 		// If this read has more than one packet response in it, this is where the
 		// split occurs.
+		NSInteger packetRemaining = MAX(0, packetSize_ - currentPacketIndex_);
+		CFIndex dataSize = 0;
 		if (packetRemaining < bytesRemaining)
-			readSize = packetRemaining + 1;  // Read to the end of the packet + NULL.
+			dataSize = packetRemaining + 1;  // Read to the end of the packet + NULL.
 		else
-			readSize = bytesRemaining;  // Consume the rest of the read data.
+			dataSize = bytesRemaining;  // Consume the rest of the read data.
 
 		// Substring the byte stream and append it to the packet string.
 		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
 														   buffer + bufferOffset,  // Byte pointer, offset by start index.
-														   readSize,  // Length.
+														   dataSize,  // Length.
 														   kCFStringEncodingUTF8,
 														   true);
 		[self.currentPacket appendString:(NSString*)bufferString];
 		CFRelease(bufferString);
 
 		// Advance counters.
-		currentPacketIndex_ += readSize;
-		bytesRemaining -= readSize;
+		currentPacketIndex_ += dataSize;
+		bytesRemaining -= dataSize;
 		
 		// If this read finished the packet, handle it and reset.
-		NSLog(@"cpi %d ps %d br %d rs %d", currentPacketIndex_, packetSize_, bytesRead, readSize);
-		if (packetRemaining <= readSize)
+		NSLog(@"cpi %d ps %d br %d ds %d", currentPacketIndex_, packetSize_, bytesRead, dataSize);
+		if (packetRemaining <= dataSize)
 		{
-			NSLog(@"read cp %@", currentPacket_);
 			[self handlePacket:[[currentPacket_ retain] autorelease]];
 			self.currentPacket = nil;
 			packetSize_ = 0;
@@ -572,9 +571,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 			
 			// If we were able to extract the transaction ID, update the last read.
 			NSRange substringRange = NSMakeRange(start, end - start);
-			NSString* transaction = [currentPacket_ substringWithRange:substringRange];
-			if ([transaction length])
-				lastReadTransaction_ = [transaction intValue];
+			NSString* transactionStr = [currentPacket_ substringWithRange:substringRange];
+			if ([transactionStr length])
+				lastReadTransaction_ = [transactionStr intValue];
 		}
 		
 		// Otherwise, assume +1 and hope it works.
