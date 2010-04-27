@@ -463,54 +463,46 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)readStreamHasData
 {
-	UInt8 buffer[1024];
-	CFIndex bytesRead = CFReadStreamRead(readStream_, buffer, 1024);
-	CFIndex bytesRemaining = bytesRead;
+	const NSUInteger kBufferSize = 1024;
+	UInt8 buffer[kBufferSize];
+	CFIndex bufferOffset = 0;  // Starting point in |buffer| to work with.
+	CFIndex bytesRead = CFReadStreamRead(readStream_, buffer, kBufferSize);
 	const char* charBuffer = (const char*)buffer;
 
 	// The read loop works by going through the buffer until all the bytes have
 	// been processed.
-	while (bytesRemaining > 0)
+	while (bufferOffset < bytesRead)
 	{
-		// Starting point in the buffer to work with.
-		CFIndex bufferOffset = bytesRead - bytesRemaining;
+		// strlen() counts to the first non-NULL character.
+		NSUInteger partLength = MIN(strlen(charBuffer + bufferOffset), kBufferSize - bufferOffset);
 
 		// If there is not a current packet, set some state.
 		if (!self.currentPacket)
 		{
-			// Read the message header: the size.
+			// Read the message header: the size.  This will be |partLength| bytes.
 			packetSize_ = atoi(charBuffer + bufferOffset);
 			currentPacketIndex_ = 0;
 			self.currentPacket = [NSMutableString stringWithCapacity:packetSize_];
-			bytesRemaining -= strlen(charBuffer + bufferOffset) + 1;
-			continue;  // Spin the loop to begin doing an actual read.
+			bufferOffset += partLength + 1;  // Pass over the NULL byte.
+			continue;  // Spin the loop to begin reading actual data.
 		}
-
-		// If this read has more than one packet response in it, this is where the
-		// split occurs.
-		NSInteger packetRemaining = MAX(0, packetSize_ - currentPacketIndex_);
-		CFIndex dataSize = 0;
-		if (packetRemaining < bytesRemaining)
-			dataSize = packetRemaining + 1;  // Read to the end of the packet + NULL.
-		else
-			dataSize = bytesRemaining;  // Consume the rest of the read data.
 
 		// Substring the byte stream and append it to the packet string.
 		CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
 														   buffer + bufferOffset,  // Byte pointer, offset by start index.
-														   dataSize,  // Length.
+														   partLength,  // Length.
 														   kCFStringEncodingUTF8,
 														   true);
 		[self.currentPacket appendString:(NSString*)bufferString];
 		CFRelease(bufferString);
 
 		// Advance counters.
-		currentPacketIndex_ += dataSize;
-		bytesRemaining -= dataSize;
+		currentPacketIndex_ += partLength;
+		bufferOffset += partLength + 1;
 		
 		// If this read finished the packet, handle it and reset.
-		NSLog(@"cpi %d ps %d br %d ds %d", currentPacketIndex_, packetSize_, bytesRead, dataSize);
-		if (packetRemaining <= dataSize)
+		NSLog(@"cpi %d ps %d br %d ds %d", currentPacketIndex_, packetSize_, bytesRead, partLength);
+		if (currentPacketIndex_ >= packetSize_)
 		{
 			[self handlePacket:[[currentPacket_ retain] autorelease]];
 			self.currentPacket = nil;
