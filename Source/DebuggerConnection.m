@@ -473,8 +473,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	// been processed.
 	while (bufferOffset < bytesRead)
 	{
-		// strlen() counts to the first non-NULL character.
-		NSUInteger partLength = MIN(strlen(charBuffer + bufferOffset), kBufferSize - bufferOffset);
+		// Find the NULL separator, or the end of the string.
+		NSUInteger partLength = 0;
+		for (NSUInteger i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
 
 		// If there is not a current packet, set some state.
 		if (!self.currentPacket)
@@ -583,7 +584,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 		}
 		
 		if (transaction != lastWrittenTransaction_)
-			NSLog(@"txn %d(%d) <> %d doesn't match last written", transaction, lastReadTransaction_, lastWrittenTransaction_);
+			NSLog(@"txn %d <> %d last written, %d last read", transaction, lastWrittenTransaction_, lastReadTransaction_);
 		
 		lastReadTransaction_ = transaction;
 	}
