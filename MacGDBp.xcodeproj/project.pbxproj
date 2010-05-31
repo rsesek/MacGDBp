@@ -13,6 +13,7 @@
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerProcessor.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
+		1E0724E311B47BCC0017AD3C /* DebuggerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0724E211B47BCC0017AD3C /* DebuggerConnection.m */; };
 		1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E0AFBB80FC2518700C67031 /* HUDIcon.png */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
@@ -71,6 +72,8 @@
 		1E02C5700C610158006F1752 /* DebuggerProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerProcessor.m; path = Source/DebuggerProcessor.m; sourceTree = "<group>"; };
 		1E02C5F40C610724006F1752 /* DebuggerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerController.h; path = Source/DebuggerController.h; sourceTree = "<group>"; };
 		1E02C5F50C610724006F1752 /* DebuggerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerController.m; path = Source/DebuggerController.m; sourceTree = "<group>"; };
+		1E0724E111B47BCC0017AD3C /* DebuggerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerConnection.h; path = Source/DebuggerConnection.h; sourceTree = "<group>"; };
+		1E0724E211B47BCC0017AD3C /* DebuggerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerConnection.m; path = Source/DebuggerConnection.m; sourceTree = "<group>"; };
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
@@ -202,6 +205,8 @@
 		1E1E52C10DF9B1FB00D334F9 /* Connection */ = {
 			isa = PBXGroup;
 			children = (
+				1E0724E111B47BCC0017AD3C /* DebuggerConnection.h */,
+				1E0724E211B47BCC0017AD3C /* DebuggerConnection.m */,
 				1E02C56F0C610158006F1752 /* DebuggerProcessor.h */,
 				1E02C5700C610158006F1752 /* DebuggerProcessor.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
@@ -413,6 +418,7 @@
 				1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */,
 				1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */,
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
+				1E0724E311B47BCC0017AD3C /* DebuggerConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

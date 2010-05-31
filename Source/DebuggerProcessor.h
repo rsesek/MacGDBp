@@ -19,8 +19,6 @@
 #import "Breakpoint.h"
 #import "StackFrame.h"
 
-@class LoggingController;
-
 @protocol DebuggerProcessorDelegate;
 
 // The DebuggerConnection is the communication layer between the application
@@ -43,46 +41,6 @@
 	
 	// The connection's delegate.
 	id <DebuggerProcessorDelegate> delegate;
-
-	// The raw CFSocket on which the two streams are based. Strong.
-	CFSocketRef socket_;
-	
-	// The read stream that is scheduled on the main run loop. Weak.
-	CFReadStreamRef readStream_;
-	
-	// The write stream. Weak.
-	CFWriteStreamRef writeStream_;
-	
-	// An ever-increasing integer that gives each transaction a unique ID for the
-	// debugging engine.
-	NSUInteger transactionID;
-	
-	// The most recently received transaction ID.
-	NSUInteger lastReadTransaction_;
-	
-	// The last transactionID written to the stream.
-	NSUInteger lastWrittenTransaction_;
-	
-	// Callback table. This maps transaction IDs to selectors. When the engine
-	// returns a response to the debugger, we will dispatch the response XML to
-	// the selector, based on transaction_id.
-	NSMutableDictionary* callTable_;
-	
-	// To prevent blocked writing, we enqueue all writes and then wait for the
-	// write stream to tell us it's ready. We store the pending commands in this
-	// array. We use this as a stack (FIFO), with index 0 being first.
-	NSMutableArray* queuedWrites_;
-	
-	// We send queued writes in multiple places, sometimes off a run loop event.
-	// Because of this, we need to ensure that only one client is dequeing and
-	// sending at a time.
-	NSRecursiveLock* writeQueueLock_;
-	
-	// Information about the current read loop. We append to |currentPacket_|
-	// until |currentPacketSize_| has reached |packetSize_|.
-	NSMutableString* currentPacket_;
-	int packetSize_;
-	int currentPacketIndex_;
 	
 	// A dictionary that maps routingIDs to StackFrame objects.
 	NSMutableDictionary* stackFrames_;
