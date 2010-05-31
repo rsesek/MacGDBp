@@ -17,14 +17,14 @@
 #import <sys/socket.h>
 #import <netinet/in.h>
 
-#import "DebuggerConnection.h"
+#import "DebuggerProcessor.h"
 
 #import "AppDelegate.h"
 #import "LoggingController.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
-@interface DebuggerConnection ()
+@interface DebuggerProcessor ()
 @property (readwrite, copy) NSString* status;
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
@@ -69,7 +69,7 @@
 
 void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+	DebuggerProcessor* connection = (DebuggerProcessor*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventHasBytesAvailable:
@@ -97,7 +97,7 @@ void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, voi
 
 void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+	DebuggerProcessor* connection = (DebuggerProcessor*)connectionRaw;
 	switch (eventType)
 	{
 		case kCFStreamEventCanAcceptBytes:
@@ -132,7 +132,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	assert(callbackType == kCFSocketAcceptCallBack);
 	NSLog(@"SocketAcceptCallback()");
 	
-	DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+	DebuggerProcessor* connection = (DebuggerProcessor*)connectionRaw;
 	
 	CFReadStreamRef readStream;
 	CFWriteStreamRef writeStream;
@@ -198,7 +198,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 // GDBpConnection //////////////////////////////////////////////////////////////
 
-@implementation DebuggerConnection
+@implementation DebuggerProcessor
 @synthesize socket = socket_;
 @synthesize readStream = readStream_;
 @synthesize lastReadTransaction = lastReadTransaction_;
