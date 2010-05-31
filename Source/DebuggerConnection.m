@@ -607,7 +607,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)send:(NSString*)command
 {
-	if (CFWriteStreamCanAcceptBytes(writeStream_))
+	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_))
 		[self performSend:command];
 	else
 		[queuedWrites_ addObject:command];
