@@ -23,7 +23,6 @@
 @interface DebuggerProcessor ()
 @property (readwrite, copy) NSString* status;
 
-- (void)initReceived:(NSXMLDocument*)response;
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
@@ -50,14 +49,13 @@
 {
 	if (self = [super init])
 	{
-		port = aPort;
-		connected = NO;
-
 		stackFrames_ = [[NSMutableDictionary alloc] init];
 		callbackContext_ = [NSMutableDictionary new];
 
 		[[BreakpointManager sharedManager] setConnection:self];
-		[self connect];
+		connection_ = [[DebuggerConnection alloc] initWithPort:aPort];
+		connection_.delegate = self;
+		[connection_ connect];
 	}
 	return self;
 }
@@ -67,7 +65,7 @@
  */
 - (void)dealloc
 {
-	[self close];
+	[connection_ close];
 	[stackFrames_ release];
 	[callbackContext_ release];
 	[super dealloc];
@@ -82,7 +80,7 @@
  */
 - (NSUInteger)port
 {
-	return port;
+	return [connection_ port];
 }
 
 /**
@@ -90,10 +88,9 @@
  */
 - (NSString*)remoteHost
 {
-	if (!connected)
-	{
+	if (![connection_ connected])
 		return @"(DISCONNECTED)";
-	}
+
 	// TODO: Either impl or remove.
 	return @"";
 }
@@ -103,7 +100,7 @@
  */
 - (BOOL)isConnected
 {
-	return connected;
+	return [connection_ connected];
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
@@ -115,9 +112,9 @@
  */
 - (void)reconnect
 {
-	[self close];
+	[connection_ close];
 	self.status = @"Connecting";
-	[self connect];
+	[connection_ connect];
 }
 
 /**
@@ -125,7 +122,7 @@
  */
 - (void)run
 {
-	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"run"];
+	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"run"];
 }
 
 /**
@@ -133,7 +130,7 @@
  */
 - (void)stepIn
 {
-	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_into"];
+	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_into"];
 }
 
 /**
@@ -141,7 +138,7 @@
  */
 - (void)stepOut
 {
-	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_out"];
+	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_out"];
 }
 
 /**
@@ -149,7 +146,7 @@
  */
 - (void)stepOver
 {
-	[self sendCommandWithCallback:@selector(debuggerStep:) format:@"step_over"];
+	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_over"];
 }
 
 /**
@@ -158,7 +155,7 @@
  */
 - (NSInteger)getProperty:(NSString*)property
 {
-	[self sendCommandWithCallback:@selector(propertiesReceived:) format:@"property_get -n \"%@\"", property];
+	[connection_ sendCommandWithCallback:@selector(propertiesReceived:) format:@"property_get -n \"%@\"", property];
 }
 
 // Breakpoint Management ///////////////////////////////////////////////////////
@@ -169,11 +166,11 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp
 {
-	if (!connected)
+	if (![connection_ connected])
 		return;
 	
-	NSString* file = [self escapedURIPath:[bp transformedPath]];
-	NSNumber* transaction = [self sendCommandWithCallback:@selector(breakpointReceived:)
+	NSString* file = [connection_ escapedURIPath:[bp transformedPath]];
+	NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(breakpointReceived:)
 												   format:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
 	[callbackContext_ setObject:bp forKey:transaction];
 }
@@ -183,12 +180,10 @@
  */
 - (void)removeBreakpoint:(Breakpoint*)bp
 {
-	if (!connected)
-	{
+	if (![connection_ connected])
 		return;
-	}
 	
-	[self sendCommandWithCallback:nil format:@"breakpoint_remove -d %i", [bp debuggerId]];
+	[connection_ sendCommandWithCallback:nil format:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////
@@ -197,7 +192,7 @@
 /**
  * Initial packet received. We've started a brand-new connection to the engine.
  */
-- (void)initReceived:(NSXMLDocument*)response
+- (void)handleInitialResponse:(NSXMLDocument*)response
 {
 	// Register any breakpoints that exist offline.
 	for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
@@ -217,8 +212,7 @@
 	self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
 	if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
 	{
-		connected = NO;
-		[self close];
+		[connection_ close];
 		[delegate debuggerDisconnected];
 		
 		self.status = @"Stopped";
@@ -232,7 +226,7 @@
 - (void)debuggerStep:(NSXMLDocument*)response
 {
 	[self updateStatus:response];
-	if (!connected)
+	if (![connection_ connected])
 		return;
 	
 	// If this is the run command, tell the delegate that a bunch of updates
@@ -244,7 +238,7 @@
 		if ([delegate respondsToSelector:@selector(clobberStack)])
 			[delegate clobberStack];
 		[stackFrames_ removeAllObjects];
-		stackFirstTransactionID_ = [[self sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"] intValue];
+		stackFirstTransactionID_ = [[connection_ sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"] intValue];
 	}
 }
 
@@ -256,7 +250,7 @@
 {
 	NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
 	
-	if (stackFirstTransactionID_ == [self transactionIDFromResponse:response])
+	if (stackFirstTransactionID_ == [connection_ transactionIDFromResponse:response])
 		stackDepth_ = depth;
 	
 	// We now need to alloc a bunch of stack frames and get the basic information
@@ -264,7 +258,7 @@
 	for (NSInteger i = 0; i < depth; i++)
 	{
 		// Use the transaction ID to create a routing path.
-		NSNumber* routingID = [self sendCommandWithCallback:@selector(getStackFrame:) format:@"stack_get -d %d", i];
+		NSNumber* routingID = [connection_ sendCommandWithCallback:@selector(getStackFrame:) format:@"stack_get -d %d", i];
 		[stackFrames_ setObject:[StackFrame alloc] forKey:routingID];
 	}
 }
@@ -276,7 +270,7 @@
 - (void)getStackFrame:(NSXMLDocument*)response
 {
 	// Get the routing information.
-	NSInteger routingID = [self transactionIDFromResponse:response];
+	NSInteger routingID = [connection_ transactionIDFromResponse:response];
 	if (routingID < stackFirstTransactionID_)
 		return;
 	NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
@@ -298,11 +292,11 @@
 	
 	// Get the source code of the file. Escape % in URL chars.
 	NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	NSNumber* transaction = [self sendCommandWithCallback:@selector(setSource:) format:@"source -f %@", escapedFilename];
+	NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(setSource:) format:@"source -f %@", escapedFilename];
 	[callbackContext_ setObject:routingNumber forKey:transaction];
 	
 	// Get the names of all the contexts.
-	transaction = [self sendCommandWithCallback:@selector(contextsReceived:) format:@"context_names -d %d", frame.index];
+	transaction = [connection_ sendCommandWithCallback:@selector(contextsReceived:) format:@"context_names -d %d", frame.index];
 	[callbackContext_ setObject:routingNumber forKey:transaction];
 	
 	if ([delegate respondsToSelector:@selector(newStackFrame:)])
@@ -315,7 +309,7 @@
  */
 - (void)setSource:(NSXMLDocument*)response
 {
-	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
 	if ([transaction intValue] < stackFirstTransactionID_)
 		return;
 	NSNumber* routingNumber = [callbackContext_ objectForKey:transaction];
@@ -340,7 +334,7 @@
 - (void)contextsReceived:(NSXMLDocument*)response
 {
 	// Get the stack frame's routing ID and use it again.
-	NSNumber* receivedTransaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	NSNumber* receivedTransaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
 	if ([receivedTransaction intValue] < stackFirstTransactionID_)
 		return;
 	NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
@@ -356,7 +350,7 @@
 		NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
 		
 		// Fetch each context's variables.
-		NSNumber* transaction = [self sendCommandWithCallback:@selector(variablesReceived:)
+		NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(variablesReceived:)
 													   format:@"context_get -d %d -c %d", frame.index, cid];
 		[callbackContext_ setObject:routingID forKey:transaction];
 	}
@@ -368,7 +362,7 @@
 - (void)variablesReceived:(NSXMLDocument*)response
 {
 	// Get the stack frame's routing ID and use it again.
-	NSInteger transaction = [self transactionIDFromResponse:response];
+	NSInteger transaction = [connection_ transactionIDFromResponse:response];
 	if (transaction < stackFirstTransactionID_)
 		return;
 	NSNumber* receivedTransaction = [NSNumber numberWithInt:transaction];
@@ -398,7 +392,7 @@
  */
 - (void)propertiesReceived:(NSXMLDocument*)response
 {
-	NSInteger transaction = [self transactionIDFromResponse:response];
+	NSInteger transaction = [connection_ transactionIDFromResponse:response];
 	
 	/*
 	 <response>
@@ -421,35 +415,13 @@
  */
 - (void)breakpointReceived:(NSXMLDocument*)response
 {
-	NSNumber* transaction = [NSNumber numberWithInt:[self transactionIDFromResponse:response]];
+	NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
 	Breakpoint* bp = [callbackContext_ objectForKey:transaction];
 	if (!bp)
 		return;
 	
 	[callbackContext_ removeObjectForKey:callbackContext_];
 	[bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
-}
-
-/**
- * Given a file path, this returns a file:// URI and escapes any spaces for the
- * debugger engine.
- */
-- (NSString*)escapedURIPath:(NSString*)path
-{
-	// Custon GDBp paths are fine.
-	if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
-		return path;
-	
-	// Create a temporary URL that will escape all the nasty characters.
-	NSURL* url = [NSURL fileURLWithPath:path];
-	NSString* urlString = [url absoluteString];
-	
-	// Remove the host because this is a file:// URL;
-	urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
-	
-	// Escape % for use in printf-style NSString formatters.
-	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	return urlString;
 }
 
 @end

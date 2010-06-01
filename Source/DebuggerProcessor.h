@@ -17,6 +17,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "Breakpoint.h"
+#import "DebuggerConnection.h"
 #import "StackFrame.h"
 
 @protocol DebuggerProcessorDelegate;
@@ -28,13 +29,10 @@
 // primary unit that this class deals with is the StackFrame; clients should
 // maintain a stack structure and the Connection will inform the delegate when
 // a new frame is created or the stack should be destroyed.
-@interface DebuggerProcessor : NSObject
+@interface DebuggerProcessor : NSObject <DebuggerConnectionDelegate>
 {
-	// The port to connect on.
-	NSUInteger port;
-	
-	// If the connection to the debugger engine is currently active.
-	BOOL connected;
+	// The connection to the debugger engine.
+	DebuggerConnection* connection_;
 	
 	// Human-readable status of the connection.
 	NSString* status;

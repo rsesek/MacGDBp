@@ -16,15 +16,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol DebuggerConnectionDelegate;
 @class LoggingController;
 
 @interface DebuggerConnection : NSObject
 {
 	// The port to connect on.
-	NSUInteger port;
+	NSUInteger port_;
 	
 	// If the connection to the debugger engine is currently active.
-	BOOL connected;
+	BOOL connected_;
 
 	// The raw CFSocket on which the two streams are based. Strong.
 	CFSocketRef socket_;
@@ -67,8 +68,14 @@
 	int currentPacketIndex_;
 
 	// The delegate.
-	id delegate_;
+	id <DebuggerConnectionDelegate> delegate_;
 }
+
+@property (readonly) NSUInteger port;
+@property (readonly) BOOL connected;
+@property (assign) id <DebuggerConnectionDelegate> delegate;
+
+- (id)initWithPort:(NSUInteger)aPort;
 
 - (void)connect;
 - (void)close;
@@ -91,3 +98,21 @@
 - (NSInteger)transactionIDFromCommand:(NSString*)command;
 
 @end
+
+// Delegate ////////////////////////////////////////////////////////////////////
+
+@protocol DebuggerConnectionDelegate <NSObject>
+
+@optional
+
+- (void)connectionDidAccept:(DebuggerConnection*)cx;
+- (void)connectionDidCose:(DebuggerConnection*)cx;
+
+- (void)handleInitialResponse:(NSXMLDocument*)response;
+
+- (void)handleResponse:(NSXMLDocument*)response;
+
+- (void)errorEncountered:(NSString*)error;
+
+@end
+

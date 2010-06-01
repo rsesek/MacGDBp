@@ -171,6 +171,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 @implementation DebuggerConnection
 
+@synthesize port = port_;
+@synthesize connected = connected_;
+@synthesize delegate = delegate_;
+
 @synthesize socket = socket_;
 @synthesize readStream = readStream_;
 @synthesize lastReadTransaction = lastReadTransaction_;
@@ -178,6 +182,15 @@ void SocketAcceptCallback(CFSocketRef socket,
 @synthesize writeStream = writeStream_;
 @synthesize lastWrittenTransaction = lastWrittenTransaction_;
 @synthesize queuedWrites = queuedWrites_;
+
+- (id)initWithPort:(NSUInteger)aPort
+{
+	if (self = [super init])
+	{
+		port_ = aPort;
+	}
+	return self;
+}
 
 - (void)dealloc
 {
@@ -192,7 +205,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)socketDidAccept
 {
-	connected = YES;
+	connected_ = YES;
 	transactionID = 1;
 	self.queuedWrites = [NSMutableArray array];
 	writeQueueLock_ = [NSRecursiveLock new];
@@ -225,7 +238,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	memset(&address, 0, sizeof(address));
 	address.sin_len = sizeof(address);
 	address.sin_family = AF_INET;
-	address.sin_port = htons(port);
+	address.sin_port = htons(port_);
 	address.sin_addr.s_addr = htonl(INADDR_ANY);		
 	
 	// Create the socket signature.
@@ -275,7 +288,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)socketDisconnected
 {
 	[self close];
-	[delegate_ debuggerDisconnected];
+	[delegate_ connectionDidCose:self];
 }
 
 /**
@@ -503,7 +516,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	if ([[[response rootElement] name] isEqualToString:@"init"])
 	{
-		[self initReceived:response];
+		[delegate_ handleInitialResponse:response];
 		return;
 	}
 	
@@ -511,7 +524,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	if (callbackStr)
 	{
 		SEL callback = NSSelectorFromString(callbackStr);
-		[self performSelector:callback withObject:response];
+		[delegate_ performSelector:callback withObject:response];
 	}
 	
 	[self sendQueuedWrites];
@@ -548,7 +561,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)sendQueuedWrites
 {
-	if (!connected)
+	if (!connected_)
 		return;
 	
 	[writeQueueLock_ lock];
@@ -588,6 +601,28 @@ void SocketAcceptCallback(CFSocketRef socket,
 		return NSNotFound;
 	NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
 	return [transaction intValue];
+}
+
+/**
+ * Given a file path, this returns a file:// URI and escapes any spaces for the
+ * debugger engine.
+ */
+- (NSString*)escapedURIPath:(NSString*)path
+{
+	// Custon GDBp paths are fine.
+	if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
+		return path;
+	
+	// Create a temporary URL that will escape all the nasty characters.
+	NSURL* url = [NSURL fileURLWithPath:path];
+	NSString* urlString = [url absoluteString];
+	
+	// Remove the host because this is a file:// URL;
+	urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
+	
+	// Escape % for use in printf-style NSString formatters.
+	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+	return urlString;
 }
 
 @end
