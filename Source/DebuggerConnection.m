@@ -456,10 +456,13 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)send:(NSString*)command
 {
-	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_))
+	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_)) {
 		[self performSend:command];
-	else
+	} else {
+		[writeQueueLock_ lock];
 		[queuedWrites_ addObject:command];
+		[writeQueueLock_ unlock];
+	}
 	[self sendQueuedWrites];
 }
 
