@@ -209,7 +209,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	transactionID = 1;
 	self.queuedWrites = [NSMutableArray array];
 	writeQueueLock_ = [NSRecursiveLock new];
-	callTable_ = [NSMutableDictionary new];
 }
 
 /**
@@ -279,7 +278,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	CFRelease(socket_);
 	self.queuedWrites = nil;
 	[writeQueueLock_ release];
-	[callTable_ release];
 }
 
 /**
@@ -519,14 +517,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 		[delegate_ handleInitialResponse:response];
 		return;
 	}
-	
-	NSString* callbackStr = [callTable_ objectForKey:[NSNumber numberWithInt:lastReadTransaction_]];
-	if (callbackStr)
-	{
-		SEL callback = NSSelectorFromString(callbackStr);
-		[delegate_ performSelector:callback withObject:response];
-	}
-	
+
+	if ([delegate_ respondsToSelector:@selector(handleResponse:)])
+		[(NSObject*)delegate_ performSelectorOnMainThread:@selector(handleResponse:) withObject:response waitUntilDone:NO];
+
 	[self sendQueuedWrites];
 }
 
@@ -538,7 +532,7 @@ void SocketAcceptCallback(CFSocketRef socket,
  * a variable number of arguments to substitute into the command, a la
  * +[NSString stringWithFormat:]. Returns the transaction ID as a NSNumber.
  */
-- (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...
+- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...
 {
 	// Collect varargs and format command.
 	va_list args;
@@ -547,9 +541,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	va_end(args);
 	
 	NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
-	if (callback)
-		[callTable_ setObject:NSStringFromSelector(callback) forKey:callbackKey];
-	
 	[self send:[NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey]];
 	
 	return callbackKey;

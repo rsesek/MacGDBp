@@ -23,6 +23,8 @@
 @interface DebuggerProcessor ()
 @property (readwrite, copy) NSString* status;
 
+- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn;
+
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
@@ -51,6 +53,7 @@
 	{
 		stackFrames_ = [[NSMutableDictionary alloc] init];
 		callbackContext_ = [NSMutableDictionary new];
+		callTable_ = [NSMutableDictionary new];
 
 		[[BreakpointManager sharedManager] setConnection:self];
 		connection_ = [[DebuggerConnection alloc] initWithPort:aPort];
@@ -67,6 +70,7 @@
 {
 	[connection_ close];
 	[stackFrames_ release];
+	[callTable_ release];
 	[callbackContext_ release];
 	[super dealloc];
 }
@@ -122,7 +126,8 @@
  */
 - (void)run
 {
-	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"run"];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"run"];
+	[self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
 /**
@@ -130,7 +135,8 @@
  */
 - (void)stepIn
 {
-	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_into"];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"step_into"];
+	[self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
 /**
@@ -138,7 +144,8 @@
  */
 - (void)stepOut
 {
-	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_out"];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"step_out"];
+	[self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
 /**
@@ -146,7 +153,8 @@
  */
 - (void)stepOver
 {
-	[connection_ sendCommandWithCallback:@selector(debuggerStep:) format:@"step_over"];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"step_over"];
+	[self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
 /**
@@ -155,7 +163,8 @@
  */
 - (NSInteger)getProperty:(NSString*)property
 {
-	[connection_ sendCommandWithCallback:@selector(propertiesReceived:) format:@"property_get -n \"%@\"", property];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -n \"%@\"", property];
+	[self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
 }
 
 // Breakpoint Management ///////////////////////////////////////////////////////
@@ -170,9 +179,9 @@
 		return;
 	
 	NSString* file = [connection_ escapedURIPath:[bp transformedPath]];
-	NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(breakpointReceived:)
-												   format:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
-	[callbackContext_ setObject:bp forKey:transaction];
+	NSNumber* tx = [connection_ sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
+	[self recordCallback:@selector(breakpointReceived:) forTransaction:tx];
+	[callbackContext_ setObject:bp forKey:tx];
 }
 
 /**
@@ -183,7 +192,7 @@
 	if (![connection_ connected])
 		return;
 	
-	[connection_ sendCommandWithCallback:nil format:@"breakpoint_remove -d %i", [bp debuggerId]];
+	[connection_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////
@@ -203,6 +212,17 @@
 	
 	// TODO: update the status.
 }
+
+- (void)handleResponse:(NSXMLDocument*)response
+{
+	NSInteger transactionID = [connection_ transactionIDFromResponse:response];
+	NSString* callbackStr = [callTable_ objectForKey:[NSNumber numberWithInt:transactionID]];
+	if (callbackStr)
+	{
+		SEL callback = NSSelectorFromString(callbackStr);
+		[self performSelector:callback withObject:response];
+	}
+}	
 
 /**
  * Receiver for status updates. This just freshens up the UI.
@@ -238,7 +258,9 @@
 		if ([delegate respondsToSelector:@selector(clobberStack)])
 			[delegate clobberStack];
 		[stackFrames_ removeAllObjects];
-		stackFirstTransactionID_ = [[connection_ sendCommandWithCallback:@selector(rebuildStack:) format:@"stack_depth"] intValue];
+		NSNumber* tx = [connection_ sendCommandWithFormat:@"stack_depth"];
+		[self recordCallback:@selector(rebuildStack:) forTransaction:tx];
+		stackFirstTransactionID_ = [tx intValue];
 	}
 }
 
@@ -258,7 +280,8 @@
 	for (NSInteger i = 0; i < depth; i++)
 	{
 		// Use the transaction ID to create a routing path.
-		NSNumber* routingID = [connection_ sendCommandWithCallback:@selector(getStackFrame:) format:@"stack_get -d %d", i];
+		NSNumber* routingID = [connection_ sendCommandWithFormat:@"stack_get -d %d", i];
+		[self recordCallback:@selector(getStackFrame:) forTransaction:routingID];
 		[stackFrames_ setObject:[StackFrame alloc] forKey:routingID];
 	}
 }
@@ -292,11 +315,13 @@
 	
 	// Get the source code of the file. Escape % in URL chars.
 	NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(setSource:) format:@"source -f %@", escapedFilename];
+	NSNumber* transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
+	[self recordCallback:@selector(setSource:) forTransaction:transaction];
 	[callbackContext_ setObject:routingNumber forKey:transaction];
 	
 	// Get the names of all the contexts.
-	transaction = [connection_ sendCommandWithCallback:@selector(contextsReceived:) format:@"context_names -d %d", frame.index];
+	transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
+	[self recordCallback:@selector(contextsReceived:) forTransaction:transaction];
 	[callbackContext_ setObject:routingNumber forKey:transaction];
 	
 	if ([delegate respondsToSelector:@selector(newStackFrame:)])
@@ -350,9 +375,9 @@
 		NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
 		
 		// Fetch each context's variables.
-		NSNumber* transaction = [connection_ sendCommandWithCallback:@selector(variablesReceived:)
-													   format:@"context_get -d %d -c %d", frame.index, cid];
-		[callbackContext_ setObject:routingID forKey:transaction];
+		NSNumber* tx = [connection_ sendCommandWithFormat:@"context_get -d %d -c %d", frame.index, cid];
+		[self recordCallback:@selector(variablesReceived:) forTransaction:tx];
+		[callbackContext_ setObject:routingID forKey:tx];
 	}
 }
 
@@ -422,6 +447,13 @@
 	
 	[callbackContext_ removeObjectForKey:callbackContext_];
 	[bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
+}
+
+// Private /////////////////////////////////////////////////////////////////////
+
+- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn
+{
+	[callTable_ setObject:NSStringFromSelector(callback) forKey:txn];
 }
 
 @end

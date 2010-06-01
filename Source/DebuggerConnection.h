@@ -46,11 +46,6 @@
 	// The last transactionID written to the stream.
 	NSUInteger lastWrittenTransaction_;
 	
-	// Callback table. This maps transaction IDs to selectors. When the engine
-	// returns a response to the debugger, we will dispatch the response XML to
-	// the selector, based on transaction_id.
-	NSMutableDictionary* callTable_;
-	
 	// To prevent blocked writing, we enqueue all writes and then wait for the
 	// write stream to tell us it's ready. We store the pending commands in this
 	// array. We use this as a stack (FIFO), with index 0 being first.
@@ -89,7 +84,7 @@
 - (void)handleResponse:(NSXMLDocument*)response;
 - (void)handlePacket:(NSString*)packet;
 
-- (NSNumber*)sendCommandWithCallback:(SEL)callback format:(NSString*)format, ...;
+- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
 
 - (void)sendQueuedWrites;
 
