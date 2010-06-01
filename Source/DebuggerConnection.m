@@ -225,6 +225,8 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)connectInternal
 {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
 	runLoop_ = [NSRunLoop currentRunLoop];
 
 	// Pass ourselves to the callback so we don't have to use ugly globals.
@@ -271,6 +273,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	CFRelease(source);
 
 	[runLoop_ run];
+
+	[pool drain];
+	[pool release];
 }
 
 /**
