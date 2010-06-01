@@ -36,6 +36,18 @@
 
 - (void)connectInternal;
 
+- (void)socketDidAccept;
+- (void)socketDisconnected;
+- (void)readStreamHasData;
+
+- (void)performSend:(NSString*)command;
+- (void)sendQueuedWrites;
+
+- (void)handleResponse:(NSXMLDocument*)response;
+- (void)handlePacket:(NSString*)packet;
+
+- (void)errorEncountered:(NSString*)error;
+
 @end
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
@@ -201,27 +213,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Called by SocketWrapper after the connection is successful. This immediately calls
- * -[SocketWrapper receive] to clear the way for communication, though the information
- * could be useful server information that we don't use right now.
- */
-- (void)socketDidAccept
-{
-	connected_ = YES;
-	transactionID = 1;
-	self.queuedWrites = [NSMutableArray array];
-	writeQueueLock_ = [NSRecursiveLock new];
-}
-
-/**
- * Receives errors from the SocketWrapper and updates the display
- */
-- (void)errorEncountered:(NSString*)error
-{
-	[delegate_ errorEncountered:error];
-}
-
-/**
  * Kicks off the socket on another thread.
  */
 - (void)connect
@@ -283,11 +274,26 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
+ * Called by SocketWrapper after the connection is successful. This immediately calls
+ * -[SocketWrapper receive] to clear the way for communication, though the information
+ * could be useful server information that we don't use right now.
+ */
+- (void)socketDidAccept
+{
+	connected_ = YES;
+	transactionID = 1;
+	self.queuedWrites = [NSMutableArray array];
+	writeQueueLock_ = [NSRecursiveLock new];
+}
+
+/**
  * Closes a socket and releases the ref.
  */
 - (void)close
 {
-	CFRunLoopStop([runLoop_ getCFRunLoop]);
+	if (runLoop_) {
+		CFRunLoopStop([runLoop_ getCFRunLoop]);
+	}
 
 	// The socket goes down, so do the streams, which clean themselves up.
 	if (socket_) {
@@ -304,7 +310,98 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (void)socketDisconnected
 {
 	[self close];
-	[delegate_ connectionDidCose:self];
+	[delegate_ connectionDidClose:self];
+}
+
+/**
+ * Writes a command into the write stream. If the stream is ready for writing,
+ * we do so immediately. If not, the command is queued and will be written
+ * when the stream is ready.
+ */
+- (void)send:(NSString*)command
+{
+	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_)) {
+		[self performSend:command];
+	} else {
+		[writeQueueLock_ lock];
+		[queuedWrites_ addObject:command];
+		[writeQueueLock_ unlock];
+	}
+	[self sendQueuedWrites];
+}
+
+/**
+ * This will send a command to the debugger engine. It will append the
+ * transaction ID automatically. It accepts a NSString command along with a
+ * a variable number of arguments to substitute into the command, a la
+ * +[NSString stringWithFormat:]. Returns the transaction ID as a NSNumber.
+ */
+- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...
+{
+	// Collect varargs and format command.
+	va_list args;
+	va_start(args, format);
+	NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
+	va_end(args);
+	
+	NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
+	[self send:[NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey]];
+	
+	return callbackKey;
+}
+
+/**
+ * Given a file path, this returns a file:// URI and escapes any spaces for the
+ * debugger engine.
+ */
+- (NSString*)escapedURIPath:(NSString*)path
+{
+	// Custon GDBp paths are fine.
+	if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
+		return path;
+	
+	// Create a temporary URL that will escape all the nasty characters.
+	NSURL* url = [NSURL fileURLWithPath:path];
+	NSString* urlString = [url absoluteString];
+	
+	// Remove the host because this is a file:// URL;
+	urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
+	
+	// Escape % for use in printf-style NSString formatters.
+	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+	return urlString;
+}
+
+/**
+ * Returns the transaction_id from an NSXMLDocument.
+ */
+- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response
+{
+	return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
+}
+
+/**
+ * Scans a command string for the transaction ID component. If it is not found,
+ * returns NSNotFound.
+ */
+- (NSInteger)transactionIDFromCommand:(NSString*)command
+{
+	NSRange occurrence = [command rangeOfString:@"-i "];
+	if (occurrence.location == NSNotFound)
+		return NSNotFound;
+	NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
+	return [transaction intValue];
+}
+
+// Private /////////////////////////////////////////////////////////////////////
+#pragma mark Private
+
+/**
+ * Receives errors from the SocketWrapper and updates the display
+ */
+- (void)errorEncountered:(NSString*)error
+{
+	[delegate_ errorEncountered:error];
 }
 
 /**
@@ -449,20 +546,25 @@ void SocketAcceptCallback(CFSocketRef socket,
 	[self handleResponse:[xmlTest autorelease]];	
 }
 
-/**
- * Writes a command into the write stream. If the stream is ready for writing,
- * we do so immediately. If not, the command is queued and will be written
- * when the stream is ready.
- */
-- (void)send:(NSString*)command
+- (void)handleResponse:(NSXMLDocument*)response
 {
-	if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_)) {
-		[self performSend:command];
-	} else {
-		[writeQueueLock_ lock];
-		[queuedWrites_ addObject:command];
-		[writeQueueLock_ unlock];
+	// Check and see if there's an error.
+	NSArray* error = [[response rootElement] elementsForName:@"error"];
+	if ([error count] > 0)
+	{
+		NSLog(@"Xdebug error: %@", error);
+		[delegate_ errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
 	}
+	
+	if ([[[response rootElement] name] isEqualToString:@"init"])
+	{
+		[delegate_ handleInitialResponse:response];
+		return;
+	}
+	
+	if ([delegate_ respondsToSelector:@selector(handleResponse:)])
+		[(NSObject*)delegate_ performSelectorOnMainThread:@selector(handleResponse:) withObject:response waitUntilDone:NO];
+	
 	[self sendQueuedWrites];
 }
 
@@ -523,50 +625,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 	log.lastReadTransactionID = lastReadTransaction_;
 }
 
-- (void)handleResponse:(NSXMLDocument*)response
-{
-	// Check and see if there's an error.
-	NSArray* error = [[response rootElement] elementsForName:@"error"];
-	if ([error count] > 0)
-	{
-		NSLog(@"Xdebug error: %@", error);
-		[delegate_ errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
-	}
-	
-	if ([[[response rootElement] name] isEqualToString:@"init"])
-	{
-		[delegate_ handleInitialResponse:response];
-		return;
-	}
-
-	if ([delegate_ respondsToSelector:@selector(handleResponse:)])
-		[(NSObject*)delegate_ performSelectorOnMainThread:@selector(handleResponse:) withObject:response waitUntilDone:NO];
-
-	[self sendQueuedWrites];
-}
-
-#pragma mark Private
-
-/**
- * This will send a command to the debugger engine. It will append the
- * transaction ID automatically. It accepts a NSString command along with a
- * a variable number of arguments to substitute into the command, a la
- * +[NSString stringWithFormat:]. Returns the transaction ID as a NSNumber.
- */
-- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...
-{
-	// Collect varargs and format command.
-	va_list args;
-	va_start(args, format);
-	NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
-	NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
-	[self send:[NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey]];
-	
-	return callbackKey;
-}
-
 /**
  * Checks if there are unsent commands in the |queuedWrites_| queue and sends
  * them if it's OK to do so. This will not block.
@@ -591,50 +649,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 		}
 	}
 	[writeQueueLock_ unlock];
-}
-
-
-/**
- * Returns the transaction_id from an NSXMLDocument.
- */
-- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response
-{
-	return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
-}
-
-/**
- * Scans a command string for the transaction ID component. If it is not found,
- * returns NSNotFound.
- */
-- (NSInteger)transactionIDFromCommand:(NSString*)command
-{
-	NSRange occurrence = [command rangeOfString:@"-i "];
-	if (occurrence.location == NSNotFound)
-		return NSNotFound;
-	NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
-	return [transaction intValue];
-}
-
-/**
- * Given a file path, this returns a file:// URI and escapes any spaces for the
- * debugger engine.
- */
-- (NSString*)escapedURIPath:(NSString*)path
-{
-	// Custon GDBp paths are fine.
-	if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
-		return path;
-	
-	// Create a temporary URL that will escape all the nasty characters.
-	NSURL* url = [NSURL fileURLWithPath:path];
-	NSString* urlString = [url absoluteString];
-	
-	// Remove the host because this is a file:// URL;
-	urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
-	
-	// Escape % for use in printf-style NSString formatters.
-	urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	return urlString;
 }
 
 @end

@@ -19,6 +19,10 @@
 @protocol DebuggerConnectionDelegate;
 @class LoggingController;
 
+// This class is the lowest level component to the network. It deals with all
+// the intracies of network and stream programming. Almost all the work this
+// class does is on a background thread, which is created when the connection is
+// asked to connect and shutdown when asked to close.
 @interface DebuggerConnection : NSObject
 {
 	// The port to connect on.
@@ -51,7 +55,7 @@
 	
 	// To prevent blocked writing, we enqueue all writes and then wait for the
 	// write stream to tell us it's ready. We store the pending commands in this
-	// array. We use this as a stack (FIFO), with index 0 being first.
+	// array. We use this as a queue (FIFO), with index 0 being first.
 	NSMutableArray* queuedWrites_;
 	
 	// We send queued writes in multiple places, sometimes off a run loop event.
@@ -77,19 +81,10 @@
 
 - (void)connect;
 - (void)close;
-- (void)socketDidAccept;
-- (void)socketDisconnected;
-- (void)readStreamHasData;
-- (void)send:(NSString*)command;
-- (void)performSend:(NSString*)command;
-- (void)errorEncountered:(NSString*)error;
 
-- (void)handleResponse:(NSXMLDocument*)response;
-- (void)handlePacket:(NSString*)packet;
+- (void)send:(NSString*)command;
 
 - (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
-
-- (void)sendQueuedWrites;
 
 - (NSString*)escapedURIPath:(NSString*)path;
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
@@ -104,7 +99,7 @@
 @optional
 
 - (void)connectionDidAccept:(DebuggerConnection*)cx;
-- (void)connectionDidCose:(DebuggerConnection*)cx;
+- (void)connectionDidClose:(DebuggerConnection*)cx;
 
 - (void)handleInitialResponse:(NSXMLDocument*)response;
 
