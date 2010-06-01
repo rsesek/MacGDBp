@@ -27,6 +27,9 @@
 	// If the connection to the debugger engine is currently active.
 	BOOL connected_;
 
+	// Reference to the message loop that the socket runs on. Weak.
+	NSRunLoop* runLoop_;
+
 	// The raw CFSocket on which the two streams are based. Strong.
 	CFSocketRef socket_;
 	

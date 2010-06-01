@@ -34,6 +34,8 @@
 @property NSUInteger lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
+- (void)connectInternal;
+
 @end
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
@@ -220,10 +222,20 @@ void SocketAcceptCallback(CFSocketRef socket,
 }
 
 /**
- * Creates, connects to, and schedules a CFSocket.
+ * Kicks off the socket on another thread.
  */
 - (void)connect
 {
+	[NSThread detachNewThreadSelector:@selector(connectInternal) toTarget:self withObject:nil];
+}
+
+/**
+ * Creates, connects to, and schedules a CFSocket.
+ */
+- (void)connectInternal
+{
+	runLoop_ = [NSRunLoop currentRunLoop];
+
 	// Pass ourselves to the callback so we don't have to use ugly globals.
 	CFSocketContext context;
 	context.version = 0;
@@ -264,8 +276,10 @@ void SocketAcceptCallback(CFSocketRef socket,
 	
 	// Schedule the socket on the run loop.
 	CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket_, 0);
-	CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopCommonModes);
+	CFRunLoopAddSource([runLoop_ getCFRunLoop], source, kCFRunLoopCommonModes);
 	CFRelease(source);
+
+	[runLoop_ run];
 }
 
 /**
@@ -273,9 +287,13 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)close
 {
+	CFRunLoopStop([runLoop_ getCFRunLoop]);
+
 	// The socket goes down, so do the streams, which clean themselves up.
-	CFSocketInvalidate(socket_);
-	CFRelease(socket_);
+	if (socket_) {
+		CFSocketInvalidate(socket_);
+		CFRelease(socket_);
+	}
 	self.queuedWrites = nil;
 	[writeQueueLock_ release];
 }
