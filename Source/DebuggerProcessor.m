@@ -216,12 +216,14 @@
 - (void)handleResponse:(NSXMLDocument*)response
 {
 	NSInteger transactionID = [connection_ transactionIDFromResponse:response];
-	NSString* callbackStr = [callTable_ objectForKey:[NSNumber numberWithInt:transactionID]];
+	NSNumber* key = [NSNumber numberWithInt:transactionID];
+	NSString* callbackStr = [callTable_ objectForKey:key];
 	if (callbackStr)
 	{
 		SEL callback = NSSelectorFromString(callbackStr);
 		[self performSelector:callback withObject:response];
 	}
+	[callTable_ removeObjectForKey:key];
 }	
 
 /**
