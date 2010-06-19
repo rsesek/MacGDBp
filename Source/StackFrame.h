@@ -19,6 +19,11 @@
 @interface StackFrame : NSObject
 {
 	/**
+	 * Whether or not the stack frame has been fully loaded.
+	 */
+	BOOL loaded_;
+
+	/**
 	 * The routing ID used to receive response information from the engine.
 	 */
 	NSUInteger routingID_;
@@ -54,6 +59,7 @@
 	NSArray* variables;
 }
 
+@property BOOL loaded;
 @property NSUInteger routingID;
 @property (readwrite) int index;
 @property (readonly, copy) NSString* filename;

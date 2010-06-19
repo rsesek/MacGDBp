@@ -26,6 +26,7 @@
 
 @implementation StackFrame
 
+@synthesize loaded = loaded_;
 @synthesize routingID = routingID_;
 @synthesize index, filename, source, lineNumber, function, variables;
 

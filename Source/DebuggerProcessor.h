@@ -82,6 +82,9 @@
 // which used in the delegate callback.
 - (NSInteger)getProperty:(NSString*)property;
 
+// Takes a partially loaded stack frame and fetches the rest of the information.
+- (void)loadStackFrame:(StackFrame*)frame;
+
 @end
 
 // Delegate ////////////////////////////////////////////////////////////////////
@@ -105,6 +108,7 @@
 - (void)newStackFrame:(StackFrame*)frame;
 
 // Tells the debugger that new source is available for the given frame.
+// TODO: rename to |-frameUpdated:|.
 - (void)sourceUpdated:(StackFrame*)frame;
 
 // Callback from |-getProperty:|.

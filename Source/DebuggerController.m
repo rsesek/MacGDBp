@@ -252,7 +252,12 @@
 	if ([selection count] > 1)
 		NSLog(@"INVALID SELECTION");
 	StackFrame* frame = [selection objectAtIndex:0];
-	
+
+	if (!frame.loaded) {
+		[connection loadStackFrame:frame];
+		return;
+	}
+
 	// Get the filename.
 	NSString* filename = [[NSURL URLWithString:frame.filename] path];
 	if ([filename isEqualToString:@""])
