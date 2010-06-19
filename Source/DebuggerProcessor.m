@@ -314,17 +314,21 @@
 				  atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
 			  inFunction:[[xmlframe attributeForName:@"where"] stringValue]
 		   withVariables:nil];
-	
-	// Get the source code of the file. Escape % in URL chars.
-	NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-	NSNumber* transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
-	[self recordCallback:@selector(setSource:) forTransaction:transaction];
-	[callbackContext_ setObject:routingNumber forKey:transaction];
-	
-	// Get the names of all the contexts.
-	transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
-	[self recordCallback:@selector(contextsReceived:) forTransaction:transaction];
-	[callbackContext_ setObject:routingNumber forKey:transaction];
+
+	// Only get the complete frame for the first level. The other frames will get
+	// information loaded lazily when the user clicks on one.
+	if (frame.index == 0) {
+		// Get the source code of the file. Escape % in URL chars.
+		NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+		NSNumber* transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
+		[self recordCallback:@selector(setSource:) forTransaction:transaction];
+		[callbackContext_ setObject:routingNumber forKey:transaction];
+		
+		// Get the names of all the contexts.
+		transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
+		[self recordCallback:@selector(contextsReceived:) forTransaction:transaction];
+		[callbackContext_ setObject:routingNumber forKey:transaction];
+	}
 	
 	if ([delegate respondsToSelector:@selector(newStackFrame:)])
 		[delegate newStackFrame:frame];
