@@ -274,7 +274,6 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 	[runLoop_ run];
 
-	[pool drain];
 	[pool release];
 }
 
