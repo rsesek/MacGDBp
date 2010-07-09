@@ -16,41 +16,16 @@
 
 #import "StackFrame.h"
 
-/**
- * Private class continuation
- */
-@interface StackFrame()
-@property(readwrite, copy) NSString* filename;
-@end
-/***/
-
 @implementation StackFrame
 
 @synthesize loaded = loaded_;
 @synthesize routingID = routingID_;
-@synthesize index, filename, source, lineNumber, function, variables;
-
-/**
- * Constructor
- */
-- (id)initWithIndex:(int)anIndex
-	   withFilename:(NSString*)aFilename
-		 withSource:(NSString*)aSource
-			 atLine:(int)aLineNumber
-		 inFunction:(NSString*)aFunction
-	  withVariables:(NSArray*)aVariables
-{
-	if (self = [super init])
-	{
-		self.index		= anIndex;
-		self.filename	= aFilename;
-		self.source		= aSource;
-		self.lineNumber	= aLineNumber;
-		self.function	= aFunction;
-		self.variables	= aVariables;
-	}
-	return self;
-}
+@synthesize index = index_;
+@synthesize filename = filename_;
+@synthesize source = source_;
+@synthesize lineNumber = lineNumber_;
+@synthesize function = function_;
+@synthesize variables = variables_;
 
 /**
  * Determines whether or not the given frame was shifted, rather than jumped. Essentially,
@@ -58,7 +33,7 @@
  */
 - (BOOL)isShiftedFrame:(StackFrame*)frame
 {
-	return ([filename isEqualToString:frame.filename] && [function isEqualToString:frame.function]);
+	return ([self.filename isEqualToString:frame.filename] && [self.function isEqualToString:frame.function]);
 }
 
 /**
@@ -66,7 +41,7 @@
  */
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"#%d %@ [%@:%d]", index, function, filename, lineNumber];
+	return [NSString stringWithFormat:@"#%d %@ [%@:%d]", self.index, self.function, self.filename, self.lineNumber];
 }
 
 @end

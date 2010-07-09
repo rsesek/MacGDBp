@@ -306,7 +306,7 @@
 		// Use the transaction ID to create a routing path.
 		NSNumber* routingID = [connection_ sendCommandWithFormat:@"stack_get -d %d", i];
 		[self recordCallback:@selector(getStackFrame:) forTransaction:routingID];
-		[stackFrames_ setObject:[StackFrame alloc] forKey:routingID];
+		[stackFrames_ setObject:[[StackFrame new] autorelease] forKey:routingID];
 	}
 }
 
@@ -330,12 +330,10 @@
 	NSXMLElement* xmlframe = [[[response rootElement] children] objectAtIndex:0];
 	
 	// Initialize the stack frame.
-	[frame initWithIndex:[[[xmlframe attributeForName:@"level"] stringValue] intValue]
-			withFilename:[[xmlframe attributeForName:@"filename"] stringValue]
-			  withSource:nil
-				  atLine:[[[xmlframe attributeForName:@"lineno"] stringValue] intValue]
-			  inFunction:[[xmlframe attributeForName:@"where"] stringValue]
-		   withVariables:nil];
+	frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
+	frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
+	frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
+	frame.function = [[xmlframe attributeForName:@"where"] stringValue];
 	frame.routingID = routingID;
 
 	// Only get the complete frame for the first level. The other frames will get

@@ -31,49 +31,42 @@
 	/**
 	 * The position in the stack
 	 */
-	int index;
+	NSUInteger index_;
 	
 	/**
 	 * File the current frame is in
 	 */
-	NSString* filename;
+	NSString* filename_;
 	
 	/**
 	 * Cached, highlighted version of the source
 	 */
-	NSString* source;
+	NSString* source_;
 	
 	/**
 	 * Line number of the source the frame points to
 	 */
-	int lineNumber;
+	NSUInteger lineNumber_;
 	
 	/**
 	 * Current-executing function
 	 */
-	NSString* function;
+	NSString* function_;
 	
 	/**
 	 * Variable list
 	 */
-	NSArray* variables;
+	NSArray* variables_;
 }
 
 @property BOOL loaded;
 @property NSUInteger routingID;
-@property (readwrite) int index;
-@property (readonly, copy) NSString* filename;
+@property (readwrite) NSUInteger index;
+@property (copy) NSString* filename;
 @property (copy) NSString* source;
-@property (readwrite) int lineNumber;
-@property (readwrite, copy) NSString* function;
+@property (readwrite) NSUInteger lineNumber;
+@property (copy) NSString* function;
 @property (retain) NSArray* variables;
-
-- (id)initWithIndex:(int)anIndex
-	   withFilename:(NSString*)aFilename
-		 withSource:(NSString*)aSource
-			 atLine:(int)aLineNumber
-		 inFunction:(NSString*)function
-	  withVariables:(NSArray*)variables;
 
 - (BOOL)isShiftedFrame:(StackFrame*)frame;
 
