@@ -271,21 +271,23 @@ void PerformQuitSignal(void* info)
   signature.socketType = SOCK_STREAM;
   signature.protocol = IPPROTO_TCP;
   signature.address = (CFDataRef)[NSData dataWithBytes:&address length:sizeof(address)];
-  
-  socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
-                                              &signature,  // Socket signature.
-                                              kCFSocketAcceptCallBack,  // Callback types.
-                                              SocketAcceptCallback,  // Callout function pointer.
-                                              &context);  // Context to pass to callout.
-  if (!socket_)
-  {
-    [self errorEncountered:@"Could not open socket."];
-    return;
-  }
+
+  do {
+    socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
+                                                &signature,  // Socket signature.
+                                                kCFSocketAcceptCallBack,  // Callback types.
+                                                SocketAcceptCallback,  // Callout function pointer.
+                                                &context);  // Context to pass to callout.
+    if (!socket_) {
+      [self errorEncountered:@"Could not open socket."];
+      sleep(1);
+    }
+  } while (!socket_);
   
   // Allow old, yet-to-be recycled sockets to be reused.
   BOOL yes = YES;
   setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(BOOL));
+  setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(BOOL));
   
   // Schedule the socket on the run loop.
   CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket_, 0);
@@ -354,6 +356,7 @@ void PerformQuitSignal(void* info)
   
   // The socket goes down, so do the streams, which clean themselves up.
   if (socket_) {
+    NSLog(@"invalidating socket");
     CFSocketInvalidate(socket_);
     CFRelease(socket_);
     socket_ = NULL;
@@ -412,7 +415,7 @@ void PerformQuitSignal(void* info)
   [self performSelector:@selector(send:)
                onThread:thread_
              withObject:taggedCommand
-          waitUntilDone:YES];
+          waitUntilDone:connected_];
   
   return callbackKey;
 }

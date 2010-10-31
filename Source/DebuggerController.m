@@ -139,6 +139,7 @@
  */
 - (void)debuggerConnected
 {
+  [errormsg setHidden:YES];
   [self startDebugger];
 }
 
