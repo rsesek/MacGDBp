@@ -374,6 +374,7 @@
   if (node) {
     [node setChildren:properties];
     [variablesTreeController rearrangeObjects];
+    [pendingProperties_ removeObjectForKey:key];
   }
 }
 
