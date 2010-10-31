@@ -33,6 +33,10 @@
 @property (readonly) BreakpointController* breakpoint;
 @property (readonly) LoggingController* loggingController;
 
+// Returns the instance of this class that is acting as the application's
+// delegate.
++ (AppDelegate*)instance;
+
 - (IBAction)showDebuggerWindow:(id)sender;
 - (IBAction)showBreakpointWindow:(id)sender;
 - (IBAction)showPreferences:(id)sender;

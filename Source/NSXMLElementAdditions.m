@@ -53,7 +53,7 @@
   // If this node has children but they haven't been loaded from the backend,
   // request them asynchronously.
   if (![self isLeaf] && [children count] < 1) {
-    [[[(AppDelegate*)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
+    [[AppDelegate instance].debugger.connection getProperty:[self fullname]];
   }
   return children;
 }

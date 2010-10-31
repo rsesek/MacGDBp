@@ -425,7 +425,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 - (LogEntry*)recordSend:(NSString*)command
 {
-  LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+  LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newSendEntry:command];
   entry.lastReadTransactionID = lastReadTransaction_;
   entry.lastWrittenTransactionID = lastWrittenTransaction_;
@@ -437,7 +437,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 - (LogEntry*)recordReceive:(NSString*)command
 {
-  LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+  LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newReceiveEntry:command];
   entry.lastReadTransactionID = lastReadTransaction_;
   entry.lastWrittenTransactionID = lastWrittenTransaction_;

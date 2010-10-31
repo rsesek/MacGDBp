@@ -47,6 +47,11 @@
   [pool release];
 }
 
++ (AppDelegate*)instance
+{
+  return (AppDelegate*)[NSApp delegate];
+}
+
 /**
  * Shows the debugger window
  */
