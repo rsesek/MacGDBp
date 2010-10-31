@@ -26,6 +26,10 @@
   // This is true when the |connection| has told us to clobber. We will do
   // so upon receipt of the first new stack frame.
   BOOL aboutToClobber_;
+
+  // Dictionary of transcations to tree nodes that are used when properties
+  // are requested from the backend.
+  NSMutableDictionary* pendingProperties_;
   
   StackController* stackController;
   IBOutlet NSArrayController* stackArrayController;
@@ -60,5 +64,7 @@
 - (IBAction)stepOut:(id)sender;
 - (IBAction)stepOver:(id)sender;
 - (IBAction)reconnect:(id)sender;
+
+- (void)fetchProperty:(NSString*)property forNode:(NSXMLElement*)node;
 
 @end

@@ -38,7 +38,8 @@
   if (self = [super initWithWindowNibName:@"Debugger"])
   {
     stackController = [[StackController alloc] init];
-    
+    pendingProperties_ = [[NSMutableDictionary alloc] init];
+
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
     connection = [[DebuggerProcessor alloc] initWithPort:[defaults integerForKey:@"Port"]];
@@ -61,6 +62,7 @@
   [connection release];
   [expandedVariables release];
   [stackController release];
+  [pendingProperties_ release];
   [super dealloc];
 }
 
@@ -212,6 +214,12 @@
   [connection stepOver];
 }
 
+- (void)fetchProperty:(NSString*)property forNode:(NSXMLElement*)node
+{
+  NSInteger txn = [connection getProperty:property];
+  [pendingProperties_ setObject:node forKey:[NSNumber numberWithInt:txn]];
+}
+
 /**
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
@@ -339,6 +347,7 @@
 - (void)clobberStack
 {
   aboutToClobber_ = YES;
+  [pendingProperties_ removeAllObjects];
 }
 
 - (void)newStackFrame:(StackFrame*)frame
@@ -356,6 +365,16 @@
 - (void)sourceUpdated:(StackFrame*)frame
 {
   [self updateSourceViewer];
+}
+
+- (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction
+{
+  NSNumber* key = [NSNumber numberWithInt:transaction];
+  NSXMLElement* node = [pendingProperties_ objectForKey:key];
+  if (node) {
+    [node setChildren:properties];
+    [variablesTreeController rearrangeObjects];
+  }
 }
 
 @end

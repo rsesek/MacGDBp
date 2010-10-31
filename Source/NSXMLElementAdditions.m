@@ -50,10 +50,10 @@
 - (NSArray*)subnodes
 {
   NSArray* children = [self children];
-  // If this node has children but they haven't been loaded from the backend,
-  // request them asynchronously.
   if (![self isLeaf] && [children count] < 1) {
-    [[AppDelegate instance].debugger.connection getProperty:[self fullname]];
+    // If this node has children but they haven't been loaded from the backend,
+    // request them asynchronously.
+    [[AppDelegate instance].debugger fetchProperty:[self fullname] forNode:self];
   }
   return children;
 }
