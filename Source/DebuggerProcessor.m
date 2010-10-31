@@ -165,6 +165,7 @@
 {
   NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -n \"%@\"", property];
   [self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
+  return [tx intValue];
 }
 
 - (void)loadStackFrame:(StackFrame*)frame

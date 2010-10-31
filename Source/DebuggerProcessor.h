@@ -22,8 +22,8 @@
 
 @protocol DebuggerProcessorDelegate;
 
-// The DebuggerConnection is the communication layer between the application
-// and the Xdebug engine. Clients can issue debugger commands using this class,
+// The DebuggerProcessor is the communication layer between the application
+// and the back-end debugger. Clients issue debugger commands via this class,
 // which are sent in an asynchronous manner. Reads are also asynchronous and
 // the primary client of this class should set itself as the delegate. The
 // primary unit that this class deals with is the StackFrame; clients should
