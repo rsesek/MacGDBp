@@ -33,7 +33,7 @@
  */
 - (BOOL)isShiftedFrame:(StackFrame*)frame
 {
-	return ([self.filename isEqualToString:frame.filename] && [self.function isEqualToString:frame.function]);
+  return ([self.filename isEqualToString:frame.filename] && [self.function isEqualToString:frame.function]);
 }
 
 /**
@@ -41,7 +41,7 @@
  */
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"#%d %@ [%@:%d]", self.index, self.function, self.filename, self.lineNumber];
+  return [NSString stringWithFormat:@"#%d %@ [%@:%d]", self.index, self.function, self.filename, self.lineNumber];
 }
 
 @end

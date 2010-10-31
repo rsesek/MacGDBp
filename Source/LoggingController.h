@@ -23,11 +23,11 @@
 // this class to record the relevant information.
 @interface LoggingController : NSWindowController
 {
-	// An array of log entries, with object at index 0 being the oldest entry.
-	NSMutableArray* logEntries_;
+  // An array of log entries, with object at index 0 being the oldest entry.
+  NSMutableArray* logEntries_;
 
-	// The array controller.
-	IBOutlet NSArrayController* logEntriesController_;
+  // The array controller.
+  IBOutlet NSArrayController* logEntriesController_;
 }
 @property (readonly) NSArray* logEntries;
 
@@ -49,25 +49,25 @@
 // Log Entry ///////////////////////////////////////////////////////////////////
 
 typedef enum _LogEntryDirection {
-	kLogEntrySending = 0,
-	kLogEntryReceiving
+  kLogEntrySending = 0,
+  kLogEntryReceiving
 } LogEntryDirection;
 
 // A simple class that stores information for a single log entry.
 @interface LogEntry : NSObject
 {
-	// The direction this communication went.
-	LogEntryDirection direction_;
-	
-	// The command that was sent or the response.
-	NSString* contents_;
+  // The direction this communication went.
+  LogEntryDirection direction_;
+  
+  // The command that was sent or the response.
+  NSString* contents_;
 
-	// Any error information.
-	NSError* error_;
+  // Any error information.
+  NSError* error_;
 
-	// The values of the last read and written transaction IDs.
-	NSUInteger lastWrittenTransactionID_;
-	NSUInteger lastReadTransactionID_;
+  // The values of the last read and written transaction IDs.
+  NSUInteger lastWrittenTransactionID_;
+  NSUInteger lastReadTransactionID_;
 }
 @property (assign) LogEntryDirection direction;
 @property (copy) NSString* contents;

@@ -25,7 +25,7 @@
  */
 - (NSString*)fullname
 {
-	return [[self attributeForName:@"fullname"] stringValue];
+  return [[self attributeForName:@"fullname"] stringValue];
 }
 
 /**
@@ -33,7 +33,7 @@
  */
 - (NSString*)variable
 {
-	return [[self attributeForName:@"name"] stringValue];
+  return [[self attributeForName:@"name"] stringValue];
 }
 
 /**
@@ -41,7 +41,7 @@
  */
 - (BOOL)isLeaf
 {
-	return ([[[self attributeForName:@"children"] stringValue] intValue] == 0);
+  return ([[[self attributeForName:@"children"] stringValue] intValue] == 0);
 }
 
 /**
@@ -49,12 +49,12 @@
  */
 - (NSArray*)subnodes
 {
-	NSArray* children = [self children];
-	if (![self isLeaf] && [children count] < 1)
-	{
-		return [[[(AppDelegate*)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
-	}
-	return children;
+  NSArray* children = [self children];
+  if (![self isLeaf] && [children count] < 1)
+  {
+    return [[[(AppDelegate*)[NSApp delegate] debugger] connection] getProperty:[self fullname]];
+  }
+  return children;
 }
 
 /**
@@ -62,36 +62,36 @@
  */
 - (NSString*)value
 {
-	// not a leaf, so don't display any value
-	if (![self isLeaf])
-	{
-		return @"...";
-	}
-	
-	// base64 encoded data
-	if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
-	{
-		const char* str = [[self stringValue] UTF8String];
-		int strlen = [[self stringValue] length];
-		
-		char* data;
-		size_t datalen;
-		
-		if (!base64_decode_alloc(str, strlen, &data, &datalen))
-			NSLog(@"error in converting %@ from base64", self);
-		
-		NSString* ret = nil;
-		if (data)
-		{
-			ret = [NSString stringWithUTF8String:data];
-			free(data);
-		}
-		
-		return ret;
-	}
-	
-	// just a normal string
-	return [self stringValue];
+  // not a leaf, so don't display any value
+  if (![self isLeaf])
+  {
+    return @"...";
+  }
+  
+  // base64 encoded data
+  if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
+  {
+    const char* str = [[self stringValue] UTF8String];
+    int strlen = [[self stringValue] length];
+    
+    char* data;
+    size_t datalen;
+    
+    if (!base64_decode_alloc(str, strlen, &data, &datalen))
+      NSLog(@"error in converting %@ from base64", self);
+    
+    NSString* ret = nil;
+    if (data)
+    {
+      ret = [NSString stringWithUTF8String:data];
+      free(data);
+    }
+    
+    return ret;
+  }
+  
+  // just a normal string
+  return [self stringValue];
 }
 
 /**
@@ -99,13 +99,13 @@
  */
 - (NSString*)type
 {
-	NSXMLNode* className = [self attributeForName:@"classname"];
-	NSString* type = [[self attributeForName:@"type"] stringValue];
-	if (className != nil)
-	{
-		return [NSString stringWithFormat:@"%@ (%@)", [className stringValue], type];
-	}
-	return type;
+  NSXMLNode* className = [self attributeForName:@"classname"];
+  NSString* type = [[self attributeForName:@"type"] stringValue];
+  if (className != nil)
+  {
+    return [NSString stringWithFormat:@"%@ (%@)", [className stringValue], type];
+  }
+  return type;
 }
 
 @end

@@ -30,17 +30,17 @@
  */
 - (id)initWithFrame:(NSRect)frame
 {
-	if (self = [super initWithFrame:frame])
-	{
-		[self setupViews];
-		[[NSNotificationCenter defaultCenter]
-			addObserver:self
-			selector:@selector(errorHighlightingFile:)
-			name:NSFileHandleReadToEndOfFileCompletionNotification
-			object:nil
-		];
-	}
-	return self;
+  if (self = [super initWithFrame:frame])
+  {
+    [self setupViews];
+    [[NSNotificationCenter defaultCenter]
+      addObserver:self
+      selector:@selector(errorHighlightingFile:)
+      name:NSFileHandleReadToEndOfFileCompletionNotification
+      object:nil
+    ];
+  }
+  return self;
 }
 
 /**
@@ -48,13 +48,13 @@
  */
 - (void)dealloc
 {
-	[file release];
-	
-	[numberView removeFromSuperview];
-	[scrollView removeFromSuperview];
-	[textView removeFromSuperview];
-	
-	[super dealloc];
+  [file release];
+  
+  [numberView removeFromSuperview];
+  [scrollView removeFromSuperview];
+  [textView removeFromSuperview];
+  
+  [super dealloc];
 }
 
 /**
@@ -62,43 +62,43 @@
  */
 - (void)setFile:(NSString*)f
 {
-	if (file != f)
-	{
-		[file release];
-		file = [f retain];
-	}
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:f])
-	{
-		[textView setString:@""];
-		return;
-	}
+  if (file != f)
+  {
+    [file release];
+    file = [f retain];
+  }
+  
+  if (![[NSFileManager defaultManager] fileExistsAtPath:f])
+  {
+    [textView setString:@""];
+    return;
+  }
 
-	@try
-	{
-		// Attempt to use the PHP CLI to highlight the source file as HTML
-		NSPipe* outPipe = [NSPipe pipe];
-		NSPipe* errPipe = [NSPipe pipe];
-		NSTask* task = [[NSTask new] autorelease];
-		
-		[task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
-		[task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
-		[task setStandardOutput:outPipe];
-		[task setStandardError:errPipe];
-		[task launch];
-		
-		[[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
-		
-		NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
-		NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
-		[[textView textStorage] setAttributedString:source];
-		[source release];
-	}
-	@catch (NSException* exception)
-	{
-		// If the PHP executable is not available then the NSTask will throw an exception
-		[textView setString:[NSString stringWithContentsOfFile:f]];
-	}
+  @try
+  {
+    // Attempt to use the PHP CLI to highlight the source file as HTML
+    NSPipe* outPipe = [NSPipe pipe];
+    NSPipe* errPipe = [NSPipe pipe];
+    NSTask* task = [[NSTask new] autorelease];
+    
+    [task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
+    [task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
+    [task setStandardOutput:outPipe];
+    [task setStandardError:errPipe];
+    [task launch];
+    
+    [[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
+    
+    NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
+    NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
+    [[textView textStorage] setAttributedString:source];
+    [source release];
+  }
+  @catch (NSException* exception)
+  {
+    // If the PHP executable is not available then the NSTask will throw an exception
+    [textView setString:[NSString stringWithContentsOfFile:f]];
+  }
 }
 
 /**
@@ -106,28 +106,28 @@
  */
 - (void)setString:(NSString*)source asFile:(NSString*)path
 {
-	// create the temp file
-	NSError* error = nil;
-	NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
-	[source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
-	if (error)
-	{
-		[textView setString:source];
-		return;
-	}
-	
-	// highlight the temporary file
-	[self setFile:tmpPath];
-	
-	// delete the temp file
-	[[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
-	
-	// plop in our fake path so nobody knows the difference
-	if (path != file)
-	{
-		[file release];
-		file = [path copy];
-	}
+  // create the temp file
+  NSError* error = nil;
+  NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
+  [source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
+  if (error)
+  {
+    [textView setString:source];
+    return;
+  }
+  
+  // highlight the temporary file
+  [self setFile:tmpPath];
+  
+  // delete the temp file
+  [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
+  
+  // plop in our fake path so nobody knows the difference
+  if (path != file)
+  {
+    [file release];
+    file = [path copy];
+  }
 }
 
 /**
@@ -135,9 +135,9 @@
  */
 - (void)errorHighlightingFile:(NSNotification*)notif
 {
-	NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
-	if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
-		[textView setString:[NSString stringWithContentsOfFile:file]];
+  NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
+  if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
+    [textView setString:[NSString stringWithContentsOfFile:file]];
 }
 
 /**
@@ -145,7 +145,7 @@
  */
 - (BOOL)isFlipped
 {
-	return YES;
+  return YES;
 }
 
 /**
@@ -153,20 +153,20 @@
  */
 - (void)scrollToLine:(int)line
 {
-	if ([[textView textStorage] length] == 0)
-		return;
-	
-	// go through the document until we find the NSRange for the line we want
-	int rangeIndex = 0;
-	for (int i = 0; i < line; i++)
-	{
-		rangeIndex = NSMaxRange([[textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
-	}
-	
-	// now get the true start/end markers for it
-	unsigned lineStart, lineEnd;
-	[[textView string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
-	[textView scrollRangeToVisible:[[textView string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+  if ([[textView textStorage] length] == 0)
+    return;
+  
+  // go through the document until we find the NSRange for the line we want
+  int rangeIndex = 0;
+  for (int i = 0; i < line; i++)
+  {
+    rangeIndex = NSMaxRange([[textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
+  }
+  
+  // now get the true start/end markers for it
+  unsigned lineStart, lineEnd;
+  [[textView string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
+  [textView scrollRangeToVisible:[[textView string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 }
 
 /**
@@ -174,47 +174,47 @@
  */
 - (void)setupViews
 {
-	int gutterWidth = 30;
-	
-	// setup the line number view
-	NSRect numberFrame = [self bounds];
-	numberFrame.origin = NSMakePoint(0.0, 0.0);
-	numberFrame.size.width = gutterWidth;
-	numberView = [[BSLineNumberView alloc] initWithFrame:numberFrame];
-	[numberView setAutoresizingMask:NSViewHeightSizable];
-	[numberView setSourceView:self];
-	[self addSubview:numberView];
-	
-	// create the scroll view
-	NSRect scrollFrame = [self bounds];
-	scrollFrame.origin.x = gutterWidth;
-	scrollFrame.size.width = scrollFrame.size.width - gutterWidth;
-	scrollView = [[NSScrollView alloc] initWithFrame:scrollFrame];
-	[scrollView setHasHorizontalScroller:YES];
-	[scrollView setHasVerticalScroller:YES];
-	[scrollView setAutohidesScrollers:YES];
-	[scrollView setBorderType:NSBezelBorder];
-	[scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
-	[[scrollView contentView] setAutoresizesSubviews:YES];
-	[self addSubview:scrollView];
-	
-	// add the text view to the scroll view
-	NSRect textFrame;
-	textFrame.origin = NSMakePoint(0.0, 0.0);
-	textFrame.size = [scrollView contentSize];
-	textView = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
-	[textView setSourceView:self];
-	[textView setEditable:NO];
-	[textView setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
-	[textView setHorizontallyResizable:YES];
-	[textView setVerticallyResizable:YES];
-	[textView setMinSize:textFrame.size];
-	[textView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[textView textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-	[[textView textContainer] setWidthTracksTextView:NO];
-	[[textView textContainer] setHeightTracksTextView:NO];
-	[textView setAutoresizingMask:NSViewNotSizable];
-	[scrollView setDocumentView:textView];
+  int gutterWidth = 30;
+  
+  // setup the line number view
+  NSRect numberFrame = [self bounds];
+  numberFrame.origin = NSMakePoint(0.0, 0.0);
+  numberFrame.size.width = gutterWidth;
+  numberView = [[BSLineNumberView alloc] initWithFrame:numberFrame];
+  [numberView setAutoresizingMask:NSViewHeightSizable];
+  [numberView setSourceView:self];
+  [self addSubview:numberView];
+  
+  // create the scroll view
+  NSRect scrollFrame = [self bounds];
+  scrollFrame.origin.x = gutterWidth;
+  scrollFrame.size.width = scrollFrame.size.width - gutterWidth;
+  scrollView = [[NSScrollView alloc] initWithFrame:scrollFrame];
+  [scrollView setHasHorizontalScroller:YES];
+  [scrollView setHasVerticalScroller:YES];
+  [scrollView setAutohidesScrollers:YES];
+  [scrollView setBorderType:NSBezelBorder];
+  [scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
+  [[scrollView contentView] setAutoresizesSubviews:YES];
+  [self addSubview:scrollView];
+  
+  // add the text view to the scroll view
+  NSRect textFrame;
+  textFrame.origin = NSMakePoint(0.0, 0.0);
+  textFrame.size = [scrollView contentSize];
+  textView = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
+  [textView setSourceView:self];
+  [textView setEditable:NO];
+  [textView setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+  [textView setHorizontallyResizable:YES];
+  [textView setVerticallyResizable:YES];
+  [textView setMinSize:textFrame.size];
+  [textView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[textView textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[textView textContainer] setWidthTracksTextView:NO];
+  [[textView textContainer] setHeightTracksTextView:NO];
+  [textView setAutoresizingMask:NSViewNotSizable];
+  [scrollView setDocumentView:textView];
 }
 
 @end

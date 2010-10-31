@@ -28,23 +28,23 @@
  */
 + (void)load
 {
-	NSAutoreleasePool* pool = [NSAutoreleasePool new];
+  NSAutoreleasePool* pool = [NSAutoreleasePool new];
 
-	NSDictionary* dict = [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithInt:9000],	@"Port",
-		[NSNumber numberWithBool:YES],	@"BreakpointsWindowVisible",
-		[NSNumber numberWithBool:YES],	@"InspectorWindowVisible",
-		[NSMutableArray array],			@"PathReplacements",
-		[NSNumber numberWithBool:YES],	@"BreakOnFirstLine",
-		[NSNumber numberWithBool:NO],	@"AutoReconnect",
-		nil
-	];
-	
-	[[NSUserDefaults standardUserDefaults] registerDefaults:dict];
+  NSDictionary* dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+    [NSNumber numberWithInt:9000],  @"Port",
+    [NSNumber numberWithBool:YES],  @"BreakpointsWindowVisible",
+    [NSNumber numberWithBool:YES],  @"InspectorWindowVisible",
+    [NSMutableArray array],         @"PathReplacements",
+    [NSNumber numberWithBool:YES],  @"BreakOnFirstLine",
+    [NSNumber numberWithBool:NO],   @"AutoReconnect",
+    nil
+  ];
+  
+  [[NSUserDefaults standardUserDefaults] registerDefaults:dict];
 
-	[dict release];
+  [dict release];
 
-	[pool release];
+  [pool release];
 }
 
 /**
@@ -52,8 +52,8 @@
  */
 - (IBAction)showDebuggerWindow:(id)sender
 {
-	[[debugger window] makeKeyAndOrderFront:self];
-	NSLog(@"logg %@", [loggingController_ window]);
+  [[debugger window] makeKeyAndOrderFront:self];
+  NSLog(@"logg %@", [loggingController_ window]);
 }
 
 /**
@@ -61,10 +61,10 @@
  */
 - (IBAction)showBreakpointWindow:(id)sender
 {
-	if (![[breakpoint window] isVisible] || ![[breakpoint window] isKeyWindow])
-		[[breakpoint window] makeKeyAndOrderFront:sender];
-	else
-		[[breakpoint window] orderOut:sender];
+  if (![[breakpoint window] isVisible] || ![[breakpoint window] isKeyWindow])
+    [[breakpoint window] makeKeyAndOrderFront:sender];
+  else
+    [[breakpoint window] orderOut:sender];
 }
 
 /**
@@ -72,10 +72,10 @@
  */
 - (IBAction)showPreferences:(id)sender
 {
-	if (!prefs)
-		prefs = [[PreferencesController alloc] init];
-	
-	[prefs showPreferencesWindow];
+  if (!prefs)
+    prefs = [[PreferencesController alloc] init];
+  
+  [prefs showPreferencesWindow];
 }
 
 /**
@@ -83,7 +83,7 @@
  */
 - (IBAction)openHelpPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/help.php"]];
+  [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.bluestatic.org/software/macgdbp/help.php"]];
 }
 
 @end

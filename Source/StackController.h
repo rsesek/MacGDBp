@@ -19,10 +19,10 @@
 
 @interface StackController : NSObject
 {
-	/**
-	 * Array of StackFrame's (LIFO stack)
-	 */
-	NSMutableArray* stack;
+  /**
+   * Array of StackFrame's (LIFO stack)
+   */
+  NSMutableArray* stack;
 }
 
 @property(readonly) NSMutableArray* stack;

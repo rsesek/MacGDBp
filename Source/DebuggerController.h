@@ -21,26 +21,26 @@
 
 @interface DebuggerController : NSWindowController <DebuggerProcessorDelegate>
 {
-	DebuggerProcessor* connection;
-	
-	// This is true when the |connection| has told us to clobber. We will do
-	// so upon receipt of the first new stack frame.
-	BOOL aboutToClobber_;
-	
-	StackController* stackController;
-	IBOutlet NSArrayController* stackArrayController;
-	
-	IBOutlet NSTreeController* variablesTreeController;
-	IBOutlet NSOutlineView* variablesOutlineView;
-	NSMutableSet* expandedVariables;
-	NSXMLElement* selectedVariable;
-	
-	IBOutlet NSWindow* inspector;
-	
-	IBOutlet NSTextField* statusmsg;
-	IBOutlet NSTextField* errormsg;
-	
-	IBOutlet BSSourceView* sourceViewer;
+  DebuggerProcessor* connection;
+  
+  // This is true when the |connection| has told us to clobber. We will do
+  // so upon receipt of the first new stack frame.
+  BOOL aboutToClobber_;
+  
+  StackController* stackController;
+  IBOutlet NSArrayController* stackArrayController;
+  
+  IBOutlet NSTreeController* variablesTreeController;
+  IBOutlet NSOutlineView* variablesOutlineView;
+  NSMutableSet* expandedVariables;
+  NSXMLElement* selectedVariable;
+  
+  IBOutlet NSWindow* inspector;
+  
+  IBOutlet NSTextField* statusmsg;
+  IBOutlet NSTextField* errormsg;
+  
+  IBOutlet BSSourceView* sourceViewer;
 }
 
 @property(readonly) DebuggerProcessor* connection;

@@ -20,10 +20,10 @@
 
 @interface BreakpointController : NSWindowController
 {
-	BreakpointManager* manager;
-	
-	IBOutlet NSArrayController* arrayController;
-	IBOutlet BSSourceView* sourceView;
+  BreakpointManager* manager;
+  
+  IBOutlet NSArrayController* arrayController;
+  IBOutlet BSSourceView* sourceView;
 }
 
 @property(readonly) BSSourceView* sourceView;

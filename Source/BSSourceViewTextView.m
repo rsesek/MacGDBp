@@ -26,27 +26,27 @@
  */
 - (void)drawRect:(NSRect)rect
 {
-	[super drawRect:rect];
-	
-	unsigned i = 0, line = 1;
-	while (i < [[self layoutManager] numberOfGlyphs])
-	{
-		NSRange fragRange;
-		NSRect fragRect = [self convertRect:[[self layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange] fromView:self];
-		fragRect.origin.x = rect.origin.x; // horizontal scrolling matters not
-		
-		if ([sourceView markedLine] == line)
-		{
-			[[[NSColor redColor] colorWithAlphaComponent:0.25] set];
-			[NSBezierPath fillRect:fragRect];
-			break;
-		}
-		
-		i += fragRange.length;
-		line++;
-	}
-	
-	[[sourceView numberView] setNeedsDisplay:YES];
+  [super drawRect:rect];
+  
+  unsigned i = 0, line = 1;
+  while (i < [[self layoutManager] numberOfGlyphs])
+  {
+    NSRange fragRange;
+    NSRect fragRect = [self convertRect:[[self layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange] fromView:self];
+    fragRect.origin.x = rect.origin.x; // horizontal scrolling matters not
+    
+    if ([sourceView markedLine] == line)
+    {
+      [[[NSColor redColor] colorWithAlphaComponent:0.25] set];
+      [NSBezierPath fillRect:fragRect];
+      break;
+    }
+    
+    i += fragRange.length;
+    line++;
+  }
+  
+  [[sourceView numberView] setNeedsDisplay:YES];
 }
 
 @end

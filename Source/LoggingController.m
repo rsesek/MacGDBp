@@ -23,37 +23,37 @@
 
 - (id)init
 {
-	if (self = [self initWithWindowNibName:@"Log"])
-	{
-		logEntries_ = [NSMutableArray new];
-	}
-	return self;
+  if (self = [self initWithWindowNibName:@"Log"])
+  {
+    logEntries_ = [NSMutableArray new];
+  }
+  return self;
 }
 
 - (void)dealloc
 {
-	[logEntries_ release];
-	[super dealloc];
+  [logEntries_ release];
+  [super dealloc];
 }
 
 - (LogEntry*)recordSend:(NSString*)command
 {
-	LogEntry* entry = [LogEntry new];
-	entry.direction = kLogEntrySending;
-	entry.contents = command;
-	[logEntries_ addObject:entry];
-	[logEntriesController_ rearrangeObjects];
-	return [entry autorelease];
+  LogEntry* entry = [LogEntry new];
+  entry.direction = kLogEntrySending;
+  entry.contents = command;
+  [logEntries_ addObject:entry];
+  [logEntriesController_ rearrangeObjects];
+  return [entry autorelease];
 }
 
 - (LogEntry*)recordReceive:(NSString*)response
 {
-	LogEntry* entry = [LogEntry new];
-	entry.direction = kLogEntryReceiving;
-	entry.contents = response;
-	[logEntries_ addObject:entry];
-	[logEntriesController_ rearrangeObjects];
-	return [entry autorelease];
+  LogEntry* entry = [LogEntry new];
+  entry.direction = kLogEntryReceiving;
+  entry.contents = response;
+  [logEntries_ addObject:entry];
+  [logEntriesController_ rearrangeObjects];
+  return [entry autorelease];
 }
 
 @end
@@ -70,15 +70,15 @@
 
 - (void)dealloc
 {
-	self.contents = nil;
-	self.error = nil;
-	self.lastWrittenTransactionID = 0;
-	self.lastReadTransactionID = 0;
+  self.contents = nil;
+  self.error = nil;
+  self.lastWrittenTransactionID = 0;
+  self.lastReadTransactionID = 0;
 }
 
 - (NSString*)directionName
 {
-	return (direction_ == kLogEntryReceiving ? @"Recv" : @"Send");
+  return (direction_ == kLogEntryReceiving ? @"Recv" : @"Send");
 }
 
 @end

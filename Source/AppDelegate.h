@@ -23,10 +23,10 @@
 
 @interface AppDelegate : NSObject
 {
-	IBOutlet DebuggerController* debugger;
-	IBOutlet BreakpointController* breakpoint;
-	IBOutlet LoggingController* loggingController_;
-	PreferencesController* prefs;
+  IBOutlet DebuggerController* debugger;
+  IBOutlet BreakpointController* breakpoint;
+  IBOutlet LoggingController* loggingController_;
+  PreferencesController* prefs;
 }
 
 @property (readonly) DebuggerController* debugger;

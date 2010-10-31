@@ -19,9 +19,9 @@
 
 @interface Breakpoint : NSObject
 {
-	NSString* file;
-	int line;
-	int debuggerId;
+  NSString* file;
+  int line;
+  int debuggerId;
 }
 
 @property(readonly) NSString* file;

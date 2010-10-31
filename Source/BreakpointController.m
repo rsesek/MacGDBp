@@ -27,13 +27,13 @@
  */
 - (id)init
 {
-	if (self = [super initWithWindowNibName:@"Breakpoints"])
-	{
-		manager = [BreakpointManager sharedManager];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakpointsWindowVisible"])
-			[[self window] orderBack:nil];
-	}
-	return self;
+  if (self = [super initWithWindowNibName:@"Breakpoints"])
+  {
+    manager = [BreakpointManager sharedManager];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakpointsWindowVisible"])
+      [[self window] orderBack:nil];
+  }
+  return self;
 }
 
 /**
@@ -42,14 +42,14 @@
  */
 - (IBAction)addBreakpoint:(id)sender
 {
-	NSOpenPanel* panel = [NSOpenPanel openPanel];
-	
-	if ([panel runModal] != NSOKButton)
-	{
-		return;
-	}
-	
-	[sourceView setFile:[panel filename]];
+  NSOpenPanel* panel = [NSOpenPanel openPanel];
+  
+  if ([panel runModal] != NSOKButton)
+  {
+    return;
+  }
+  
+  [sourceView setFile:[panel filename]];
 }
 
 /**
@@ -57,16 +57,16 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
-	NSArray* selection = [arrayController selectedObjects];
-	if ([selection count] < 1)
-	{
-		return;
-	}
-	
-	for (Breakpoint* bp in selection)
-	{
-		[manager removeBreakpointAt:[bp line] inFile:[bp file]];
-	}
+  NSArray* selection = [arrayController selectedObjects];
+  if ([selection count] < 1)
+  {
+    return;
+  }
+  
+  for (Breakpoint* bp in selection)
+  {
+    [manager removeBreakpointAt:[bp line] inFile:[bp file]];
+  }
 }
 
 #pragma mark NSTableView Delegate
@@ -77,16 +77,16 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-	NSArray* selection = [arrayController selectedObjects];
-	if ([selection count] < 1)
-	{
-		return;
-	}
-	
-	Breakpoint* bp = [selection objectAtIndex:0];
-	[sourceView setFile:[bp file]];
-	[sourceView scrollToLine:[bp line]];
-	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+  NSArray* selection = [arrayController selectedObjects];
+  if ([selection count] < 1)
+  {
+    return;
+  }
+  
+  Breakpoint* bp = [selection objectAtIndex:0];
+  [sourceView setFile:[bp file]];
+  [sourceView scrollToLine:[bp line]];
+  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
 }
 
 #pragma mark BSSourceView Delegate
@@ -96,19 +96,19 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-	if ([manager hasBreakpointAt:line inFile:file])
-	{
-		[manager removeBreakpointAt:line inFile:file];
-	}
-	else
-	{
-		Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
-		[manager addBreakpoint:bp];
-		[bp release];
-	}
-	
-	[[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
-	[[sourceView numberView] setNeedsDisplay:YES];
+  if ([manager hasBreakpointAt:line inFile:file])
+  {
+    [manager removeBreakpointAt:line inFile:file];
+  }
+  else
+  {
+    Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+    [manager addBreakpoint:bp];
+    [bp release];
+  }
+  
+  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
+  [[sourceView numberView] setNeedsDisplay:YES];
 }
 
 @end

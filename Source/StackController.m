@@ -26,11 +26,11 @@
  */
 - (id)init
 {
-	if (self = [super init])
-	{
-		stack = [[NSMutableArray alloc] init];
-	}
-	return self;
+  if (self = [super init])
+  {
+    stack = [[NSMutableArray alloc] init];
+  }
+  return self;
 }
 
 /**
@@ -38,8 +38,8 @@
  */
 - (void)dealloc
 {
-	[stack release];
-	[super dealloc];
+  [stack release];
+  [super dealloc];
 }
 
 /**
@@ -47,7 +47,7 @@
  */
 - (StackFrame*)peek
 {
-	return [stack lastObject];
+  return [stack lastObject];
 }
 
 /**
@@ -55,12 +55,12 @@
  */
 - (StackFrame*)pop
 {
-	StackFrame* frame = [stack lastObject];
-	
-	if (frame != nil)
-		[stack removeLastObject];
+  StackFrame* frame = [stack lastObject];
+  
+  if (frame != nil)
+    [stack removeLastObject];
 
-	return frame;
+  return frame;
 }
 
 /**
@@ -68,7 +68,7 @@
  */
 - (void)push:(StackFrame*)frame
 {
-	[stack insertObject:frame atIndex:[stack count]];
+  [stack insertObject:frame atIndex:[stack count]];
 }
 
 @end

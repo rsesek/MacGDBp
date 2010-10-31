@@ -19,15 +19,15 @@
 
 @interface PreferencesController : NSWindowController
 {
-	IBOutlet NSToolbar* toolbar;
-	
-	NSView* blankView;
-	
-	IBOutlet NSView* generalPreferencesView;
-	IBOutlet NSToolbarItem* generalPreferencesItem;
-	
-	IBOutlet NSView* pathsPreferencesView;
-	IBOutlet NSToolbarItem* pathsPreferencesItem;
+  IBOutlet NSToolbar* toolbar;
+  
+  NSView* blankView;
+  
+  IBOutlet NSView* generalPreferencesView;
+  IBOutlet NSToolbarItem* generalPreferencesItem;
+  
+  IBOutlet NSView* pathsPreferencesView;
+  IBOutlet NSToolbarItem* pathsPreferencesItem;
 }
 
 - (void)showPreferencesWindow;

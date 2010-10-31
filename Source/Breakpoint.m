@@ -26,12 +26,12 @@
  */
 - (id)initWithLine:(int)l inFile:(NSString*)f
 {
-	if (self = [super init])
-	{
-		file = [f retain];
-		line = l;
-	}
-	return self;
+  if (self = [super init])
+  {
+    file = [f retain];
+    line = l;
+  }
+  return self;
 }
 
 /**
@@ -39,8 +39,8 @@
  */
 - (void)dealloc
 {
-	[file release];
-	[super dealloc];
+  [file release];
+  [super dealloc];
 }
 
 /**
@@ -48,12 +48,12 @@
  */
 - (id)initWithDictionary:(NSDictionary*)dict
 {
-	if (self = [super init])
-	{
-		file = [[dict valueForKey:@"file"] retain];
-		line = [[dict valueForKey:@"line"] intValue];
-	}
-	return self;
+  if (self = [super init])
+  {
+    file = [[dict valueForKey:@"file"] retain];
+    line = [[dict valueForKey:@"line"] intValue];
+  }
+  return self;
 }
 
 /**
@@ -61,21 +61,21 @@
  */
 - (NSString*)transformedPath
 {
-	NSString* path = self.file;
-	
-	NSMutableArray* transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
-	if (!transforms || [transforms count] < 1)
-		return path;
-	
-	for (NSDictionary* replacement in transforms)
-	{
-		path = [path
-			stringByReplacingOccurrencesOfString:[replacement valueForKey:@"local"]
-			withString:[replacement valueForKey:@"remote"]
-		];
-	}
-	
-	return path;
+  NSString* path = self.file;
+  
+  NSMutableArray* transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
+  if (!transforms || [transforms count] < 1)
+    return path;
+  
+  for (NSDictionary* replacement in transforms)
+  {
+    path = [path
+      stringByReplacingOccurrencesOfString:[replacement valueForKey:@"local"]
+      withString:[replacement valueForKey:@"remote"]
+    ];
+  }
+  
+  return path;
 }
 
 /**
@@ -83,7 +83,7 @@
  */
 - (BOOL)isEqual:(id)obj
 {
-	return ([[obj file] isEqualToString:file] && [obj line] == line);
+  return ([[obj file] isEqualToString:file] && [obj line] == line);
 }
 
 /**
@@ -91,7 +91,7 @@
  */
 - (NSUInteger)hash
 {
-	return ([file hash] << 8) + line;
+  return ([file hash] << 8) + line;
 }
 
 /**
@@ -99,7 +99,7 @@
  */
 - (NSDictionary*)dictionary
 {
-	return [NSDictionary dictionaryWithObjectsAndKeys:file, @"file", [NSNumber numberWithInt:line], @"line", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:file, @"file", [NSNumber numberWithInt:line], @"line", nil];
 }
 
 /**
@@ -107,7 +107,7 @@
  */
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"%@:%i", file, line];
+  return [NSString stringWithFormat:@"%@:%i", file, line];
 }
 
 @end

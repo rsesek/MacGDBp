@@ -18,45 +18,45 @@
 
 @interface StackFrame : NSObject
 {
-	/**
-	 * Whether or not the stack frame has been fully loaded.
-	 */
-	BOOL loaded_;
+  /**
+   * Whether or not the stack frame has been fully loaded.
+   */
+  BOOL loaded_;
 
-	/**
-	 * The routing ID used to receive response information from the engine.
-	 */
-	NSUInteger routingID_;
-	
-	/**
-	 * The position in the stack
-	 */
-	NSUInteger index_;
-	
-	/**
-	 * File the current frame is in
-	 */
-	NSString* filename_;
-	
-	/**
-	 * Cached, highlighted version of the source
-	 */
-	NSString* source_;
-	
-	/**
-	 * Line number of the source the frame points to
-	 */
-	NSUInteger lineNumber_;
-	
-	/**
-	 * Current-executing function
-	 */
-	NSString* function_;
-	
-	/**
-	 * Variable list
-	 */
-	NSArray* variables_;
+  /**
+   * The routing ID used to receive response information from the engine.
+   */
+  NSUInteger routingID_;
+  
+  /**
+   * The position in the stack
+   */
+  NSUInteger index_;
+  
+  /**
+   * File the current frame is in
+   */
+  NSString* filename_;
+  
+  /**
+   * Cached, highlighted version of the source
+   */
+  NSString* source_;
+  
+  /**
+   * Line number of the source the frame points to
+   */
+  NSUInteger lineNumber_;
+  
+  /**
+   * Current-executing function
+   */
+  NSString* function_;
+  
+  /**
+   * Variable list
+   */
+  NSArray* variables_;
 }
 
 @property BOOL loaded;

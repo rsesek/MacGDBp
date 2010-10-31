@@ -35,22 +35,22 @@
  */
 - (id)init
 {
-	if (self = [super initWithWindowNibName:@"Debugger"])
-	{
-		stackController = [[StackController alloc] init];
-		
-		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+  if (self = [super initWithWindowNibName:@"Debugger"])
+  {
+    stackController = [[StackController alloc] init];
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-		connection = [[DebuggerProcessor alloc] initWithPort:[defaults integerForKey:@"Port"]];
-		connection.delegate = self;
-		expandedVariables = [[NSMutableSet alloc] init];
-		[[self window] makeKeyAndOrderFront:nil];
-		[[self window] setDelegate:self];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
-			[inspector orderFront:self];
-	}
-	return self;
+    connection = [[DebuggerProcessor alloc] initWithPort:[defaults integerForKey:@"Port"]];
+    connection.delegate = self;
+    expandedVariables = [[NSMutableSet alloc] init];
+    [[self window] makeKeyAndOrderFront:nil];
+    [[self window] setDelegate:self];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
+      [inspector orderFront:self];
+  }
+  return self;
 }
 
 /**
@@ -58,10 +58,10 @@
  */
 - (void)dealloc
 {
-	[connection release];
-	[expandedVariables release];
-	[stackController release];
-	[super dealloc];
+  [connection release];
+  [expandedVariables release];
+  [stackController release];
+  [super dealloc];
 }
 
 /**
@@ -69,10 +69,10 @@
  */
 - (void)awakeFromNib
 {
-	[[self window] setExcludedFromWindowsMenu:YES];
-	[[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d", [connection remoteHost], [connection port]]];
-	[sourceViewer setDelegate:self];
-	[stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
+  [[self window] setExcludedFromWindowsMenu:YES];
+  [[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d", [connection remoteHost], [connection port]]];
+  [sourceViewer setDelegate:self];
+  [stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
 }
 
 /**
@@ -80,16 +80,16 @@
  */
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
-	SEL action = [anItem action];
-	
-	if (action == @selector(stepOut:))
-		return ([connection isConnected] && [stackController.stack count] > 1);
-	else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
-		return [connection isConnected];
-	else if (action == @selector(reconnect:))
-		return ![connection isConnected];
-	
-	return [[self window] validateUserInterfaceItem:anItem];
+  SEL action = [anItem action];
+  
+  if (action == @selector(stepOut:))
+    return ([connection isConnected] && [stackController.stack count] > 1);
+  else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
+    return [connection isConnected];
+  else if (action == @selector(reconnect:))
+    return ![connection isConnected];
+  
+  return [[self window] validateUserInterfaceItem:anItem];
 }
 
 /**
@@ -97,10 +97,10 @@
  */
 - (IBAction)showInspectorWindow:(id)sender
 {
-	if (![inspector isVisible])
-		[inspector makeKeyAndOrderFront:sender];
-	else
-		[inspector orderOut:sender];
+  if (![inspector isVisible])
+    [inspector makeKeyAndOrderFront:sender];
+  else
+    [inspector orderOut:sender];
 }
 
 /**
@@ -108,11 +108,11 @@
  */
 - (void)resetDisplays
 {
-	[variablesTreeController setContent:nil];
-	[stackController.stack removeAllObjects];
-	[stackArrayController rearrangeObjects];
-	[[sourceViewer textView] setString:@""];
-	sourceViewer.file = nil;
+  [variablesTreeController setContent:nil];
+  [stackController.stack removeAllObjects];
+  [stackArrayController rearrangeObjects];
+  [[sourceViewer textView] setString:@""];
+  sourceViewer.file = nil;
 }
 
 /**
@@ -120,8 +120,8 @@
  */
 - (void)setError:(NSString*)anError
 {
-	[errormsg setStringValue:anError];
-	[errormsg setHidden:NO];
+  [errormsg setStringValue:anError];
+  [errormsg setHidden:NO];
 }
 
 /**
@@ -129,7 +129,7 @@
  */
 - (void)errorEncountered:(NSString*)error
 {
-	[self setError:error];
+  [self setError:error];
 }
 
 /**
@@ -137,7 +137,7 @@
  */
 - (void)debuggerConnected
 {
-	[self startDebugger];
+  [self startDebugger];
 }
 
 /**
@@ -145,8 +145,8 @@
  */
 - (void)startDebugger
 {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
-		[self stepIn:self];
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
+    [self stepIn:self];
 }
 
 /**
@@ -154,12 +154,12 @@
  */
 - (void)debuggerDisconnected
 {
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
-		[self reconnect:self];
-	
-	// Invalidate the marked line so we don't look like we're still running.
-	sourceViewer.markedLine = -1;
-	[sourceViewer setNeedsDisplay:YES];
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
+    [self reconnect:self];
+  
+  // Invalidate the marked line so we don't look like we're still running.
+  sourceViewer.markedLine = -1;
+  [sourceViewer setNeedsDisplay:YES];
 }
 
 /**
@@ -167,7 +167,7 @@
  */
 - (IBAction)run:(id)sender
 {
-	[connection run];
+  [connection run];
 }
 
 /**
@@ -175,8 +175,8 @@
  */
 - (IBAction)reconnect:(id)sender
 {
-	[connection reconnect];
-	[self resetDisplays];
+  [connection reconnect];
+  [self resetDisplays];
 }
 
 /**
@@ -184,10 +184,10 @@
  */
 - (IBAction)stepIn:(id)sender
 {
-	if ([[variablesTreeController selectedObjects] count] > 0)
-		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
-	
-	[connection stepIn];
+  if ([[variablesTreeController selectedObjects] count] > 0)
+    selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+  
+  [connection stepIn];
 }
 
 /**
@@ -195,10 +195,10 @@
  */
 - (IBAction)stepOut:(id)sender
 {
-	if ([[variablesTreeController selectedObjects] count] > 0)
-		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
-	
-	[connection stepOut];
+  if ([[variablesTreeController selectedObjects] count] > 0)
+    selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+  
+  [connection stepOut];
 }
 
 /**
@@ -206,10 +206,10 @@
  */
 - (IBAction)stepOver:(id)sender
 {
-	if ([[variablesTreeController selectedObjects] count] > 0)
-		selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
-	
-	[connection stepOver];
+  if ([[variablesTreeController selectedObjects] count] > 0)
+    selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
+  
+  [connection stepOver];
 }
 
 /**
@@ -218,8 +218,8 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-	[self updateSourceViewer];
-	[self expandVariables];
+  [self updateSourceViewer];
+  [self expandVariables];
 }
 
 /**
@@ -227,8 +227,8 @@
  */
 - (void)outlineViewItemDidExpand:(NSNotification*)notif
 {
-	NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
-	[expandedVariables addObject:[[node representedObject] fullname]];
+  NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
+  [expandedVariables addObject:[[node representedObject] fullname]];
 }
 
 /**
@@ -236,7 +236,7 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification*)notif
 {
-	[expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+  [expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
 }
 
 #pragma mark Private
@@ -246,36 +246,36 @@
  */
 - (void)updateSourceViewer
 {
-	NSArray* selection = [stackArrayController selectedObjects];
-	if (!selection || [selection count] < 1)
-		return;
-	if ([selection count] > 1)
-		NSLog(@"INVALID SELECTION");
-	StackFrame* frame = [selection objectAtIndex:0];
+  NSArray* selection = [stackArrayController selectedObjects];
+  if (!selection || [selection count] < 1)
+    return;
+  if ([selection count] > 1)
+    NSLog(@"INVALID SELECTION");
+  StackFrame* frame = [selection objectAtIndex:0];
 
-	if (!frame.loaded) {
-		[connection loadStackFrame:frame];
-		return;
-	}
+  if (!frame.loaded) {
+    [connection loadStackFrame:frame];
+    return;
+  }
 
-	// Get the filename.
-	NSString* filename = [[NSURL URLWithString:frame.filename] path];
-	if ([filename isEqualToString:@""])
-		return;
-	
-	// Replace the source if necessary.
-	if (frame.source && ![sourceViewer.file isEqualToString:filename])
-	{
-		[sourceViewer setString:frame.source asFile:filename];
-		
-		NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
-		[[sourceViewer numberView] setMarkers:breakpoints];
-	}
-	
-	[sourceViewer setMarkedLine:frame.lineNumber];
-	[sourceViewer scrollToLine:frame.lineNumber];
-	
-	[[sourceViewer textView] display];
+  // Get the filename.
+  NSString* filename = [[NSURL URLWithString:frame.filename] path];
+  if ([filename isEqualToString:@""])
+    return;
+  
+  // Replace the source if necessary.
+  if (frame.source && ![sourceViewer.file isEqualToString:filename])
+  {
+    [sourceViewer setString:frame.source asFile:filename];
+    
+    NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
+    [[sourceViewer numberView] setMarkers:breakpoints];
+  }
+  
+  [sourceViewer setMarkedLine:frame.lineNumber];
+  [sourceViewer scrollToLine:frame.lineNumber];
+  
+  [[sourceViewer textView] display];
 }
 
 /**
@@ -283,9 +283,9 @@
  */
 - (void)updateStackViewer
 {
-	[stackArrayController rearrangeObjects];
-	[stackArrayController setSelectionIndex:0];
-	[self expandVariables];
+  [stackArrayController rearrangeObjects];
+  [stackArrayController setSelectionIndex:0];
+  [self expandVariables];
 }
 
 /**
@@ -293,21 +293,21 @@
  */
 - (void)expandVariables
 {
-	NSString* selection = [selectedVariable fullname];
-	
-	for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
-	{
-		NSTreeNode* node = [variablesOutlineView itemAtRow:i];
-		NSString* fullname = [[node representedObject] fullname];
-		
-		// see if it needs expanding
-		if ([expandedVariables containsObject:fullname])
-			[variablesOutlineView expandItem:node];
-		
-		// select it if we had it selected before
-		if ([fullname isEqualToString:selection])
-			[variablesTreeController setSelectionIndexPath:[node indexPath]];
-	}
+  NSString* selection = [selectedVariable fullname];
+  
+  for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
+  {
+    NSTreeNode* node = [variablesOutlineView itemAtRow:i];
+    NSString* fullname = [[node representedObject] fullname];
+    
+    // see if it needs expanding
+    if ([expandedVariables containsObject:fullname])
+      [variablesOutlineView expandItem:node];
+    
+    // select it if we had it selected before
+    if ([fullname isEqualToString:selection])
+      [variablesTreeController setSelectionIndexPath:[node indexPath]];
+  }
 }
 
 #pragma mark BSSourceView Delegate
@@ -317,45 +317,45 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-	BreakpointManager* mngr = [BreakpointManager sharedManager];
-	
-	if ([mngr hasBreakpointAt:line inFile:file])
-	{
-		[mngr removeBreakpointAt:line inFile:file];
-	}
-	else
-	{
-		Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
-		[mngr addBreakpoint:bp];
-		[bp release];
-	}
-	
-	[[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
-	[[sourceViewer numberView] setNeedsDisplay:YES];
+  BreakpointManager* mngr = [BreakpointManager sharedManager];
+  
+  if ([mngr hasBreakpointAt:line inFile:file])
+  {
+    [mngr removeBreakpointAt:line inFile:file];
+  }
+  else
+  {
+    Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
+    [mngr addBreakpoint:bp];
+    [bp release];
+  }
+  
+  [[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
+  [[sourceViewer numberView] setNeedsDisplay:YES];
 }
 
 #pragma mark GDBpConnectionDelegate
 
 - (void)clobberStack
 {
-	aboutToClobber_ = YES;
+  aboutToClobber_ = YES;
 }
 
 - (void)newStackFrame:(StackFrame*)frame
 {
-	if (aboutToClobber_)
-	{
-		[stackController.stack removeAllObjects];
-		aboutToClobber_ = NO;
-	}
-	[stackController push:frame];
-	[self updateStackViewer];
-	[self updateSourceViewer];
+  if (aboutToClobber_)
+  {
+    [stackController.stack removeAllObjects];
+    aboutToClobber_ = NO;
+  }
+  [stackController push:frame];
+  [self updateStackViewer];
+  [self updateSourceViewer];
 }
 
 - (void)sourceUpdated:(StackFrame*)frame
 {
-	[self updateSourceViewer];
+  [self updateSourceViewer];
 }
 
 @end

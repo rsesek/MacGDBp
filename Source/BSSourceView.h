@@ -20,14 +20,14 @@
 
 @interface BSSourceView : NSView
 {
-	BSLineNumberView* numberView;
-	BSSourceViewTextView* textView;
-	NSScrollView* scrollView;
-	
-	NSString* file;
-	int markedLine;
-	
-	id delegate;
+  BSLineNumberView* numberView;
+  BSSourceViewTextView* textView;
+  NSScrollView* scrollView;
+  
+  NSString* file;
+  int markedLine;
+  
+  id delegate;
 }
 
 @property(readwrite, assign) BSLineNumberView* numberView;

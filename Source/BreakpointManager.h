@@ -20,10 +20,10 @@
 
 @interface BreakpointManager : NSObject
 {
-	NSMutableArray* breakpoints;
-	NSMutableArray* savedBreakpoints;
-	
-	DebuggerProcessor* connection;
+  NSMutableArray* breakpoints;
+  NSMutableArray* savedBreakpoints;
+  
+  DebuggerProcessor* connection;
 }
 
 @property(readwrite, assign) DebuggerProcessor* connection;

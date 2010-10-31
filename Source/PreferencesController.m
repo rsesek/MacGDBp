@@ -31,11 +31,11 @@ NSSize pathsSize;
  */
 - (id)init
 {
-	if (self = [super initWithWindowNibName:@"Preferences"])
-	{
-		blankView = [[NSView alloc] init];
-	}
-	return self;
+  if (self = [super initWithWindowNibName:@"Preferences"])
+  {
+    blankView = [[NSView alloc] init];
+  }
+  return self;
 }
 
 /**
@@ -43,8 +43,8 @@ NSSize pathsSize;
  */
 - (void)dealloc
 {
-	[blankView release];
-	[super dealloc];
+  [blankView release];
+  [super dealloc];
 }
 
 /**
@@ -52,8 +52,8 @@ NSSize pathsSize;
  */
 - (void)awakeFromNib
 {
-	generalSize = [generalPreferencesView frame].size;
-	pathsSize = [pathsPreferencesView frame].size;
+  generalSize = [generalPreferencesView frame].size;
+  pathsSize = [pathsPreferencesView frame].size;
 }
 
 /**
@@ -61,9 +61,9 @@ NSSize pathsSize;
  */
 - (void)showPreferencesWindow
 {
-	[self showGeneral:self];
-	[[self window] center];
-	[[self window] makeKeyAndOrderFront:self];
+  [self showGeneral:self];
+  [[self window] center];
+  [[self window] makeKeyAndOrderFront:self];
 }
 
 #pragma mark Panel Switching
@@ -73,13 +73,13 @@ NSSize pathsSize;
  */
 - (IBAction)showGeneral:(id)sender
 {
-	if ([[self window] contentView] == generalPreferencesView)
-		return;
-	
-	[self resizeWindowToSize:generalSize];
-	
-	[[self window] setContentView:generalPreferencesView];
-	[toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
+  if ([[self window] contentView] == generalPreferencesView)
+    return;
+  
+  [self resizeWindowToSize:generalSize];
+  
+  [[self window] setContentView:generalPreferencesView];
+  [toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
 }
 
 /**
@@ -87,13 +87,13 @@ NSSize pathsSize;
  */
 - (IBAction)showPaths:(id)sender
 {
-	if ([[self window] contentView] == pathsPreferencesView)
-		return;
-	
-	[self resizeWindowToSize:pathsSize];
-	
-	[[self window] setContentView:pathsPreferencesView];
-	[toolbar setSelectedItemIdentifier:[pathsPreferencesItem itemIdentifier]];
+  if ([[self window] contentView] == pathsPreferencesView)
+    return;
+  
+  [self resizeWindowToSize:pathsSize];
+  
+  [[self window] setContentView:pathsPreferencesView];
+  [toolbar setSelectedItemIdentifier:[pathsPreferencesItem itemIdentifier]];
 }
 
 #pragma mark NSToolbar Delegate
@@ -103,11 +103,11 @@ NSSize pathsSize;
  */
 - (NSArray*)toolbarSelectableItemIdentifiers:(NSToolbar*)toolbar
 {
-	return [NSArray arrayWithObjects:
-		[generalPreferencesItem itemIdentifier],
-		[pathsPreferencesItem itemIdentifier],
-		nil
-	];
+  return [NSArray arrayWithObjects:
+    [generalPreferencesItem itemIdentifier],
+    [pathsPreferencesItem itemIdentifier],
+    nil
+  ];
 }
 
 #pragma mark Private
@@ -117,22 +117,22 @@ NSSize pathsSize;
  */
 - (void)resizeWindowToSize:(NSSize)size
 {
-	[[self window] setContentView:blankView]; // don't want weird redraw artifacts
-	
-	NSRect newFrame;
-	
-	newFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
-	
-	float height = size.height + 55;
-	
-	newFrame.origin.y += newFrame.size.height;
-	newFrame.origin.y -= height;
-	newFrame.size.height = height;
-	newFrame.size.width = size.width;
-	
-	newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:[[self window] styleMask]];
-	
-	[[self window] setFrame:newFrame display:YES animate:YES];
+  [[self window] setContentView:blankView]; // don't want weird redraw artifacts
+  
+  NSRect newFrame;
+  
+  newFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
+  
+  float height = size.height + 55;
+  
+  newFrame.origin.y += newFrame.size.height;
+  newFrame.origin.y -= height;
+  newFrame.size.height = height;
+  newFrame.size.width = size.width;
+  
+  newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:[[self window] styleMask]];
+  
+  [[self window] setFrame:newFrame display:YES animate:YES];
 }
 
 @end

@@ -30,23 +30,23 @@
  */
 - (id)init
 {
-	if (self = [super init])
-	{
-		if (!breakpoints)
-		{
-			breakpoints = [[NSMutableArray alloc] init];
-		}
-		
-		savedBreakpoints = [[[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"Breakpoints"] retain];
-		if (savedBreakpoints)
-		{
-			for (NSDictionary* d in savedBreakpoints)
-			{
-				[breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
-			}
-		}
-	}
-	return self;
+  if (self = [super init])
+  {
+    if (!breakpoints)
+    {
+      breakpoints = [[NSMutableArray alloc] init];
+    }
+    
+    savedBreakpoints = [[[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"Breakpoints"] retain];
+    if (savedBreakpoints)
+    {
+      for (NSDictionary* d in savedBreakpoints)
+      {
+        [breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
+      }
+    }
+  }
+  return self;
 }
 
 /**
@@ -54,12 +54,12 @@
  */
 + (BreakpointManager*)sharedManager
 {
-	static BreakpointManager* manager;
-	if (!manager)
-	{
-		manager = [[BreakpointManager alloc] init];
-	}
-	return manager;
+  static BreakpointManager* manager;
+  if (!manager)
+  {
+    manager = [[BreakpointManager alloc] init];
+  }
+  return manager;
 }
 
 /**
@@ -67,16 +67,16 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp;
 {
-	if (![breakpoints containsObject:bp])
-	{
-		[breakpoints addObject:bp];
-		[connection addBreakpoint:bp];
-		
-		[savedBreakpoints addObject:[bp dictionary]];
-		[[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
-		
-		[self updateDisplaysForFile:[bp file]];
-	}
+  if (![breakpoints containsObject:bp])
+  {
+    [breakpoints addObject:bp];
+    [connection addBreakpoint:bp];
+    
+    [savedBreakpoints addObject:[bp dictionary]];
+    [[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
+    
+    [self updateDisplaysForFile:[bp file]];
+  }
 }
 
 /**
@@ -84,21 +84,21 @@
  */
 - (Breakpoint*)removeBreakpointAt:(int)line inFile:(NSString*)file
 {
-	for (Breakpoint* b in breakpoints)
-	{
-		if ([b line] == line && [[b file] isEqualToString:file])
-		{
-			[breakpoints removeObject:b];
-			[connection removeBreakpoint:b];
-			
-			[savedBreakpoints removeObject:[b dictionary]];
-			[[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
-			
-			[self updateDisplaysForFile:file];
-			return b;
-		}
-	}
-	return nil;
+  for (Breakpoint* b in breakpoints)
+  {
+    if ([b line] == line && [[b file] isEqualToString:file])
+    {
+      [breakpoints removeObject:b];
+      [connection removeBreakpoint:b];
+      
+      [savedBreakpoints removeObject:[b dictionary]];
+      [[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
+      
+      [self updateDisplaysForFile:file];
+      return b;
+    }
+  }
+  return nil;
 }
 
 /**
@@ -106,16 +106,16 @@
  */
 - (NSArray*)breakpointsForFile:(NSString*)file
 {
-	NSMutableArray* matches = [NSMutableArray array];
-	for (Breakpoint* b in breakpoints)
-	{
-		if ([[b file] isEqualToString:file])
-		{
-			[matches addObject:b];
-		}
-	}
-	
-	return matches;
+  NSMutableArray* matches = [NSMutableArray array];
+  for (Breakpoint* b in breakpoints)
+  {
+    if ([[b file] isEqualToString:file])
+    {
+      [matches addObject:b];
+    }
+  }
+  
+  return matches;
 }
 
 /**
@@ -123,7 +123,7 @@
  */
 - (BOOL)hasBreakpointAt:(int)line inFile:(NSString*)file
 {
-	return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
+  return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
 }
 
 #pragma mark Private
@@ -134,12 +134,12 @@
  */
 - (void)updateDisplaysForFile:(NSString*)file
 {
-	AppDelegate* appDel = [NSApp delegate];
-	[[[appDel breakpoint] arrayController] rearrangeObjects];
-	[[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
-	[[[[appDel breakpoint] sourceView] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
-	[[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
-	[[[[appDel debugger] sourceViewer] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  AppDelegate* appDel = [NSApp delegate];
+  [[[appDel breakpoint] arrayController] rearrangeObjects];
+  [[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
+  [[[[appDel breakpoint] sourceView] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  [[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
+  [[[[appDel debugger] sourceViewer] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
 }
 
 @end
