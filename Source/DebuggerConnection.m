@@ -230,6 +230,12 @@ void PerformQuitSignal(void* info)
  */
 - (void)connect
 {
+  if (thread_ && !connected_) {
+    // A thread has been detached but the socket has yet to connect. Do not
+    // spawn a new thread otherwise multiple threads will be blocked on the same
+    // socket.
+    return;
+  }
   [NSThread detachNewThreadSelector:@selector(connectionThreadStart) toTarget:self withObject:nil];
 }
 
