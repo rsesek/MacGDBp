@@ -36,24 +36,10 @@
   [super dealloc];
 }
 
-- (LogEntry*)recordSend:(NSString*)command
+- (void)recordEntry:(LogEntry*)entry
 {
-  LogEntry* entry = [LogEntry new];
-  entry.direction = kLogEntrySending;
-  entry.contents = command;
   [logEntries_ addObject:entry];
-  [logEntriesController_ rearrangeObjects];
-  return [entry autorelease];
-}
-
-- (LogEntry*)recordReceive:(NSString*)response
-{
-  LogEntry* entry = [LogEntry new];
-  entry.direction = kLogEntryReceiving;
-  entry.contents = response;
-  [logEntries_ addObject:entry];
-  [logEntriesController_ rearrangeObjects];
-  return [entry autorelease];
+  [logEntriesController_ rearrangeObjects];  
 }
 
 @end
@@ -67,6 +53,22 @@
 @synthesize error = error_;
 @synthesize lastWrittenTransactionID = lastWrittenTransactionID_;
 @synthesize lastReadTransactionID = lastReadTransactionID_;
+
++ (LogEntry*)newSendEntry:(NSString*)command
+{
+  LogEntry* entry = [LogEntry new];
+  entry.direction = kLogEntrySending;
+  entry.contents  = command;
+  return entry;
+}
+
++ (LogEntry*)newReceiveEntry:(NSString*)command
+{
+  LogEntry* entry = [LogEntry new];
+  entry.direction = kLogEntryReceiving;
+  entry.contents  = command;
+  return entry;
+}
 
 - (void)dealloc
 {

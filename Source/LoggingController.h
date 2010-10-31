@@ -34,15 +34,9 @@
 // Designated initializer.
 - (id)init;
 
-// Creates a new log entry with the specified command, adds it to the entries
-// list, and returns the new entry as a weak pointer. Callers can then set
-// additional properties.
-- (LogEntry*)recordSend:(NSString*)command;
-
-// Creates a new log entry with the specified response data, adds it to the list
-// of entries, and returns the new entry as a weak pointer. Callers can then set
-// additional properties.
-- (LogEntry*)recordReceive:(NSString*)response;
+// Records a log entry. This will add it to the list and will update the UI.
+// This will take ownership of |entry|.
+- (void)recordEntry:(LogEntry*)entry;
 
 @end
 
@@ -74,5 +68,10 @@ typedef enum _LogEntryDirection {
 @property (retain) NSError* error;
 @property (assign) NSUInteger lastWrittenTransactionID;
 @property (assign) NSUInteger lastReadTransactionID;
+
 - (NSString*)directionName;
+
++ (LogEntry*)newSendEntry:(NSString*)command;
++ (LogEntry*)newReceiveEntry:(NSString*)command;
+
 @end

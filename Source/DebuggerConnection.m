@@ -426,20 +426,26 @@ void SocketAcceptCallback(CFSocketRef socket,
 - (LogEntry*)recordSend:(NSString*)command
 {
   LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-  [logger performSelectorOnMainThread:@selector(recordSend:)
-                           withObject:command
+  LogEntry* entry = [LogEntry newSendEntry:command];
+  entry.lastReadTransactionID = lastReadTransaction_;
+  entry.lastWrittenTransactionID = lastWrittenTransaction_;
+  [logger performSelectorOnMainThread:@selector(recordEntry:)
+                           withObject:entry
                         waitUntilDone:NO];
-  return [logger.logEntries lastObject];
+  return [entry autorelease];
 }
 
 - (LogEntry*)recordReceive:(NSString*)command
 {
   LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-  [logger performSelectorOnMainThread:@selector(recordReceive:)
-                           withObject:command
+  LogEntry* entry = [LogEntry newReceiveEntry:command];
+  entry.lastReadTransactionID = lastReadTransaction_;
+  entry.lastWrittenTransactionID = lastWrittenTransaction_;
+  [logger performSelectorOnMainThread:@selector(recordEntry:)
+                           withObject:entry
                         waitUntilDone:NO];
-  return [logger.logEntries lastObject];
-}  
+  return [entry autorelease];
+}
 
 // Stream Managers /////////////////////////////////////////////////////////////
 
@@ -577,8 +583,6 @@ void SocketAcceptCallback(CFSocketRef socket,
   // Log this receive event.
   LogEntry* log = [self recordReceive:currentPacket_];
   log.error = error;
-  log.lastWrittenTransactionID = lastWrittenTransaction_;
-  log.lastReadTransactionID = lastReadTransaction_;
   
   // Finally, dispatch the handler for this response.
   [self handleResponse:[xmlTest autorelease]];  
@@ -662,9 +666,7 @@ void SocketAcceptCallback(CFSocketRef socket,
   }
   
   // Log this trancation.
-  LogEntry* log = [self recordSend:command];
-  log.lastWrittenTransactionID = lastWrittenTransaction_;
-  log.lastReadTransactionID = lastReadTransaction_;
+  [self recordSend:command];
 }
 
 /**
