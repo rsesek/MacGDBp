@@ -34,7 +34,7 @@
 @property NSUInteger lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
-- (void)connectInternal;
+- (void)connectionThreadStart;
 
 - (void)socketDidAccept;
 - (void)socketDisconnected;
@@ -220,13 +220,13 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)connect
 {
-  [NSThread detachNewThreadSelector:@selector(connectInternal) toTarget:self withObject:nil];
+  [NSThread detachNewThreadSelector:@selector(connectionThreadStart) toTarget:self withObject:nil];
 }
 
 /**
  * Creates, connects to, and schedules a CFSocket.
  */
-- (void)connectInternal
+- (void)connectionThreadStart
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
