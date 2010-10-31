@@ -333,6 +333,8 @@ void PerformQuitSignal(void* info)
 {
   connected_ = YES;
   transactionID = 1;
+  lastReadTransaction_ = 0;
+  lastWrittenTransaction_ = 0;
   self.queuedWrites = [NSMutableArray array];
   writeQueueLock_ = [NSRecursiveLock new];
 }
