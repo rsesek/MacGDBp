@@ -312,6 +312,7 @@ void SocketAcceptCallback(CFSocketRef socket,
     CFRelease(socket_);
   }
   self.queuedWrites = nil;
+  connected_ = NO;
   [writeQueueLock_ release];
 }
 
