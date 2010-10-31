@@ -41,7 +41,6 @@
   }
   
   // The value of the node is base64 encoded.
-  NSLog(@"encoding check");
   if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
     const char* str = [[self stringValue] UTF8String];
     int strlen = [[self stringValue] length];

@@ -493,7 +493,6 @@ void SocketAcceptCallback(CFSocketRef socket,
     bufferOffset += partLength + 1;
     
     // If this read finished the packet, handle it and reset.
-    NSLog(@"cpi %d ps %d br %d ds %d", currentPacketIndex_, packetSize_, bytesRead, partLength);
     if (currentPacketIndex_ >= packetSize_)
     {
       [self handlePacket:[[currentPacket_ retain] autorelease]];
