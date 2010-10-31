@@ -294,7 +294,7 @@ void PerformQuitSignal(void* info)
   quitSource_ = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &quitContext);
   CFRunLoopAddSource([runLoop_ getCFRunLoop], quitSource_, kCFRunLoopCommonModes);
 
-  [runLoop_ run];
+  CFRunLoopRun();
 
   thread_ = nil;
   runLoop_ = nil;
@@ -324,6 +324,9 @@ void PerformQuitSignal(void* info)
  */
 - (void)close
 {
+  if (thread_) {
+    [thread_ cancel];
+  }
   if (runLoop_ && quitSource_) {
     CFRunLoopSourceSignal(quitSource_);
     CFRunLoopWakeUp([runLoop_ getCFRunLoop]);
@@ -335,6 +338,10 @@ void PerformQuitSignal(void* info)
  */
 - (void)performQuitSignal
 {
+  self.queuedWrites = nil;
+  connected_ = NO;
+  [writeQueueLock_ release];
+
   if (runLoop_) {
     CFRunLoopStop([runLoop_ getCFRunLoop]);
   }
@@ -345,10 +352,6 @@ void PerformQuitSignal(void* info)
     CFRelease(socket_);
     socket_ = NULL;
   }
-
-  self.queuedWrites = nil;
-  connected_ = NO;
-  [writeQueueLock_ release];
 }
 
 /**
