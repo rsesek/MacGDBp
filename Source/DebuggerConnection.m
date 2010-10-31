@@ -123,7 +123,9 @@ void SocketAcceptCallback(CFSocketRef socket,
   NSLog(@"SocketAcceptCallback()");
   
   DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
-  
+  if (![connection inReconnectMode])
+    return;
+
   CFReadStreamRef readStream;
   CFWriteStreamRef writeStream;
   
@@ -200,6 +202,7 @@ void PerformQuitSignal(void* info)
 
 @synthesize port = port_;
 @synthesize connected = connected_;
+@synthesize reconnect = reconnect_;
 @synthesize delegate = delegate_;
 
 @synthesize socket = socket_;
@@ -215,6 +218,7 @@ void PerformQuitSignal(void* info)
   if (self = [super init])
   {
     port_ = aPort;
+    reconnect_ = YES;
   }
   return self;
 }
@@ -223,6 +227,12 @@ void PerformQuitSignal(void* info)
 {
   self.currentPacket = nil;
   [super dealloc];
+}
+
+- (void)reconnect
+{
+  connected_ = NO;
+  reconnect_ = YES;
 }
 
 /**
@@ -373,7 +383,7 @@ void PerformQuitSignal(void* info)
     // through normal disconnected procedure (a call to |-close|, followed by
     // the downing of the socket and the stream, which also produces this
     // messsage). Instead, the stream callbacks encountered EOF unexpectedly.
-    [self close];
+    //[self close];
   }
   if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
     [delegate_ connectionDidClose:self];
@@ -618,13 +628,10 @@ void PerformQuitSignal(void* info)
     
     // Otherwise, assume +1 and hope it works.
     ++lastReadTransaction_;
-  }
-  else
-  {
+  } else if (!reconnect_) {
     // See if the transaction can be parsed out.
     NSInteger transaction = [self transactionIDFromResponse:xmlTest];
-    if (transaction < lastReadTransaction_)
-    {
+    if (transaction < lastReadTransaction_) {
       NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
       NSLog(@"out of date transaction %@", packet);
       return;
@@ -655,8 +662,9 @@ void PerformQuitSignal(void* info)
     [self errorEncountered:errorMessage];
   }
   
-  if ([[[response rootElement] name] isEqualToString:@"init"])
-  {
+  if ([[[response rootElement] name] isEqualToString:@"init"]) {
+    connected_ = YES;
+    reconnect_ = NO;
     [delegate_ performSelectorOnMainThread:@selector(handleInitialResponse:)
                                 withObject:response
                              waitUntilDone:NO];

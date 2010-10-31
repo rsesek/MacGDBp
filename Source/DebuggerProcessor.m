@@ -105,7 +105,7 @@
  */
 - (BOOL)isConnected
 {
-  return [connection_ connected];
+  return [connection_ connected] && active_;
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
@@ -117,10 +117,9 @@
  */
 - (void)reconnect
 {
-  if (connection_.connected)
-    [connection_ close];
   self.status = @"Connecting";
-  [connection_ connect];
+  active_ = NO;
+  [connection_ reconnect];
 }
 
 /**
@@ -233,6 +232,8 @@
  */
 - (void)handleInitialResponse:(NSXMLDocument*)response
 {
+  active_ = YES;
+
   // Register any breakpoints that exist offline.
   for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
     [self addBreakpoint:bp];
@@ -262,12 +263,13 @@
 - (void)updateStatus:(NSXMLDocument*)response
 {
   self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
-  if (status == nil || [status isEqualToString:@"Stopped"] || [status isEqualToString:@"Stopping"])
-  {
-    [connection_ close];
+  active_ = YES;
+  if (!status || [status isEqualToString:@"Stopped"]) {
     [delegate debuggerDisconnected];
-    
-    self.status = @"Stopped";
+    active_ = NO;
+  } else if ([status isEqualToString:@"Stopping"]) {
+    [connection_ sendCommandWithFormat:@"stop"];
+    active_ = NO;
   }
 }
 
@@ -278,22 +280,17 @@
 - (void)debuggerStep:(NSXMLDocument*)response
 {
   [self updateStatus:response];
-  if (![connection_ connected])
+  if (![self isConnected])
     return;
-  
+
   // If this is the run command, tell the delegate that a bunch of updates
   // are coming. Also remove all existing stack routes and request a new stack.
-  // TODO: figure out if we can not clobber the stack every time.
-  NSString* command = [[[response rootElement] attributeForName:@"command"] stringValue];
-  if (YES || [command isEqualToString:@"run"])
-  {
-    if ([delegate respondsToSelector:@selector(clobberStack)])
-      [delegate clobberStack];
-    [stackFrames_ removeAllObjects];
-    NSNumber* tx = [connection_ sendCommandWithFormat:@"stack_depth"];
-    [self recordCallback:@selector(rebuildStack:) forTransaction:tx];
-    stackFirstTransactionID_ = [tx intValue];
-  }
+  if ([delegate respondsToSelector:@selector(clobberStack)])
+    [delegate clobberStack];
+  [stackFrames_ removeAllObjects];
+  NSNumber* tx = [connection_ sendCommandWithFormat:@"stack_depth"];
+  [self recordCallback:@selector(rebuildStack:) forTransaction:tx];
+  stackFirstTransactionID_ = [tx intValue];
 }
 
 /**

@@ -31,6 +31,9 @@
   // If the connection to the debugger engine is currently active.
   BOOL connected_;
 
+  // Whether or not in reconnect mode.
+  BOOL reconnect_;
+
   // The thread on which network operations are performed. Weak.
   NSThread* thread_;
 
@@ -81,12 +84,17 @@
 
 @property (readonly) NSUInteger port;
 @property (readonly) BOOL connected;
+@property (readonly, getter=inReconnectMode) BOOL reconnect;
 @property (assign) id <DebuggerConnectionDelegate> delegate;
 
 - (id)initWithPort:(NSUInteger)aPort;
 
 - (void)connect;
 - (void)close;
+
+// Marks the connection as being in "reconnect mode," which sets the expectation
+// of receiving another <init> message.
+- (void)reconnect;
 
 - (void)send:(NSString*)command;
 

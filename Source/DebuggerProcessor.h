@@ -36,6 +36,7 @@
   
   // Human-readable status of the connection.
   NSString* status;
+  BOOL active_;
   
   // The connection's delegate.
   id <DebuggerProcessorDelegate> delegate;
