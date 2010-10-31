@@ -34,6 +34,7 @@
 		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF4D5C0EE35F0700B62769 /* StackController.m */; };
+		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -105,6 +106,8 @@
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
 		1EBF4D5B0EE35F0700B62769 /* StackController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackController.h; path = Source/StackController.h; sourceTree = "<group>"; };
 		1EBF4D5C0EE35F0700B62769 /* StackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackController.m; path = Source/StackController.m; sourceTree = "<group>"; };
+		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
+		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -264,6 +267,8 @@
 				1EB7BED40ECF3CA90033283A /* StackFrame.m */,
 				1EBF4D5B0EE35F0700B62769 /* StackController.h */,
 				1EBF4D5C0EE35F0700B62769 /* StackController.m */,
+				1EC1337C127DBB00007946FC /* VariableNode.h */,
+				1EC1337D127DBB00007946FC /* VariableNode.m */,
 			);
 			name = Debugger;
 			sourceTree = "<group>";
@@ -426,6 +431,7 @@
 				1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */,
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
 				1E0724E311B47BCC0017AD3C /* DebuggerConnection.m in Sources */,
+				1EC1337E127DBB00007946FC /* VariableNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
