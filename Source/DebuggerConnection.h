@@ -31,6 +31,9 @@
 	// If the connection to the debugger engine is currently active.
 	BOOL connected_;
 
+  // The thread on which network operations are performed. Weak.
+  NSThread* thread_;
+
 	// Reference to the message loop that the socket runs on. Weak.
 	NSRunLoop* runLoop_;
 
@@ -69,8 +72,8 @@
 	int packetSize_;
 	int currentPacketIndex_;
 
-	// The delegate.
-	id <DebuggerConnectionDelegate> delegate_;
+	// The delegate. All methods are executed on the main thread.
+	NSObject<DebuggerConnectionDelegate>* delegate_;
 }
 
 @property (readonly) NSUInteger port;
@@ -84,6 +87,8 @@
 
 - (void)send:(NSString*)command;
 
+// This sends the given command format to the debugger. This method is thread
+// safe and schedules the request on the |runLoop_|.
 - (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
 
 - (NSString*)escapedURIPath:(NSString*)path;

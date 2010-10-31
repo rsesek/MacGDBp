@@ -46,7 +46,10 @@
 - (void)handleResponse:(NSXMLDocument*)response;
 - (void)handlePacket:(NSString*)packet;
 
+// Threadsafe wrappers for the delegate's methods.
 - (void)errorEncountered:(NSString*)error;
+- (LogEntry*)recordSend:(NSString*)command;
+- (LogEntry*)recordReceive:(NSString*)command;
 
 @end
 
@@ -227,6 +230,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+  thread_ = [NSThread currentThread];
 	runLoop_ = [NSRunLoop currentRunLoop];
 
 	// Pass ourselves to the callback so we don't have to use ugly globals.
@@ -273,6 +277,9 @@ void SocketAcceptCallback(CFSocketRef socket,
 	CFRelease(source);
 
 	[runLoop_ run];
+
+  thread_ = nil;
+  runLoop_ = nil;
 
 	[pool release];
 }
@@ -349,7 +356,11 @@ void SocketAcceptCallback(CFSocketRef socket,
 	va_end(args);
 	
 	NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
-	[self send:[NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey]];
+  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey];
+  [self performSelector:@selector(send:)
+               onThread:thread_
+             withObject:taggedCommand
+          waitUntilDone:YES];
 	
 	return callbackKey;
 }
@@ -400,13 +411,37 @@ void SocketAcceptCallback(CFSocketRef socket,
 // Private /////////////////////////////////////////////////////////////////////
 #pragma mark Private
 
+// Delegate Thread-Safe Wrappers ///////////////////////////////////////////////
+
 /**
  * Receives errors from the SocketWrapper and updates the display
  */
 - (void)errorEncountered:(NSString*)error
 {
-	[delegate_ errorEncountered:error];
+	[delegate_ performSelectorOnMainThread:@selector(errorEncountered:)
+                              withObject:error
+                           waitUntilDone:NO];
 }
+
+- (LogEntry*)recordSend:(NSString*)command
+{
+  LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+  [logger performSelectorOnMainThread:@selector(recordSend:)
+                           withObject:command
+                        waitUntilDone:NO];
+  return [logger.logEntries lastObject];
+}
+
+- (LogEntry*)recordReceive:(NSString*)command
+{
+	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
+	[logger performSelectorOnMainThread:@selector(recordReceive:)
+                           withObject:command
+                        waitUntilDone:NO];
+  return [logger.logEntries lastObject];
+}  
+
+// Stream Managers /////////////////////////////////////////////////////////////
 
 /**
  * Callback from the CFReadStream that there is data waiting to be read.
@@ -540,8 +575,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	}
 	
 	// Log this receive event.
-	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-	LogEntry* log = [logger recordReceive:currentPacket_];
+	LogEntry* log = [self recordReceive:currentPacket_];
 	log.error = error;
 	log.lastWrittenTransactionID = lastWrittenTransaction_;
 	log.lastReadTransactionID = lastReadTransaction_;
@@ -557,17 +591,22 @@ void SocketAcceptCallback(CFSocketRef socket,
 	if ([error count] > 0)
 	{
 		NSLog(@"Xdebug error: %@", error);
-		[delegate_ errorEncountered:[[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue]];
+    NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
+    [self errorEncountered:errorMessage];
 	}
 	
 	if ([[[response rootElement] name] isEqualToString:@"init"])
 	{
-		[delegate_ handleInitialResponse:response];
+    [delegate_ performSelectorOnMainThread:@selector(handleInitialResponse:)
+                                withObject:response
+                             waitUntilDone:NO];
 		return;
 	}
 	
 	if ([delegate_ respondsToSelector:@selector(handleResponse:)])
-		[(NSObject*)delegate_ performSelectorOnMainThread:@selector(handleResponse:) withObject:response waitUntilDone:NO];
+		[delegate_ performSelectorOnMainThread:@selector(handleResponse:)
+                                withObject:response
+                             waitUntilDone:NO];
 	
 	[self sendQueuedWrites];
 }
@@ -623,8 +662,7 @@ void SocketAcceptCallback(CFSocketRef socket,
 	}
 	
 	// Log this trancation.
-	LoggingController* logger = [(AppDelegate*)[NSApp delegate] loggingController];
-	LogEntry* log = [logger recordSend:command];
+	LogEntry* log = [self recordSend:command];
 	log.lastWrittenTransactionID = lastWrittenTransaction_;
 	log.lastReadTransactionID = lastReadTransaction_;
 }
