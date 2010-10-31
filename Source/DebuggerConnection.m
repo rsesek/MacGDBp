@@ -43,6 +43,8 @@
 - (void)performSend:(NSString*)command;
 - (void)sendQueuedWrites;
 
+- (void)performQuitSignal;
+
 - (void)handleResponse:(NSXMLDocument*)response;
 - (void)handlePacket:(NSString*)packet;
 
@@ -184,6 +186,14 @@ void SocketAcceptCallback(CFSocketRef socket,
   [connection socketDidAccept];
 }
 
+// Other Run Loop Callbacks ////////////////////////////////////////////////////
+
+void PerformQuitSignal(void* info)
+{
+  DebuggerConnection* obj = (DebuggerConnection*)info;
+  [obj performQuitSignal];
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 @implementation DebuggerConnection
@@ -276,10 +286,22 @@ void SocketAcceptCallback(CFSocketRef socket,
   CFRunLoopAddSource([runLoop_ getCFRunLoop], source, kCFRunLoopCommonModes);
   CFRelease(source);
 
+  // Create a source that is used to quit.
+  CFRunLoopSourceContext quitContext = { 0 };
+  quitContext.version = 0;
+  quitContext.info = self;
+  quitContext.perform = PerformQuitSignal;
+  quitSource_ = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &quitContext);
+  CFRunLoopAddSource([runLoop_ getCFRunLoop], quitSource_, kCFRunLoopCommonModes);
+
   [runLoop_ run];
 
   thread_ = nil;
   runLoop_ = nil;
+
+  CFRunLoopSourceInvalidate(quitSource_);
+  CFRelease(quitSource_);
+  quitSource_ = NULL;
 
   [pool release];
 }
@@ -302,15 +324,28 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)close
 {
+  if (runLoop_ && quitSource_) {
+    CFRunLoopSourceSignal(quitSource_);
+    CFRunLoopWakeUp([runLoop_ getCFRunLoop]);
+  }
+}
+
+/**
+ * Quits the run loop and stops the thread.
+ */
+- (void)performQuitSignal
+{
   if (runLoop_) {
     CFRunLoopStop([runLoop_ getCFRunLoop]);
   }
-
+  
   // The socket goes down, so do the streams, which clean themselves up.
   if (socket_) {
     CFSocketInvalidate(socket_);
     CFRelease(socket_);
+    socket_ = NULL;
   }
+
   self.queuedWrites = nil;
   connected_ = NO;
   [writeQueueLock_ release];
@@ -321,8 +356,15 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)socketDisconnected
 {
-  [self close];
-  [delegate_ connectionDidClose:self];
+  if (connected_) {
+    // The state still is connected, which means that we did not get here
+    // through normal disconnected procedure (a call to |-close|, followed by
+    // the downing of the socket and the stream, which also produces this
+    // messsage). Instead, the stream callbacks encountered EOF unexpectedly.
+    [self close];
+  }
+  if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
+    [delegate_ connectionDidClose:self];
 }
 
 /**
@@ -419,6 +461,8 @@ void SocketAcceptCallback(CFSocketRef socket,
  */
 - (void)errorEncountered:(NSString*)error
 {
+  if (![delegate_ respondsToSelector:@selector(errorEncountered:)])
+    return;
   [delegate_ performSelectorOnMainThread:@selector(errorEncountered:)
                               withObject:error
                            waitUntilDone:NO];

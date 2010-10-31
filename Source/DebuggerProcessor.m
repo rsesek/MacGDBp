@@ -117,7 +117,8 @@
  */
 - (void)reconnect
 {
-  [connection_ close];
+  if (connection_.connected)
+    [connection_ close];
   self.status = @"Connecting";
   [connection_ connect];
 }
@@ -221,6 +222,11 @@
 
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
+
+- (void)errorEncountered:(NSString*)error
+{
+  [delegate errorEncountered:error];
+}
 
 /**
  * Initial packet received. We've started a brand-new connection to the engine.

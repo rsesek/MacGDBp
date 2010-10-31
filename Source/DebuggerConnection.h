@@ -45,7 +45,10 @@
   
   // The write stream. Weak.
   CFWriteStreamRef writeStream_;
-  
+
+  // Run loop source used to quit the thread.
+  CFRunLoopSourceRef quitSource_;
+
   // An ever-increasing integer that gives each transaction a unique ID for the
   // debugging engine.
   NSUInteger transactionID;
