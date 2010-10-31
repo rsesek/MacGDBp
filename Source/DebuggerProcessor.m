@@ -17,6 +17,7 @@
 #import "DebuggerProcessor.h"
 
 #import "AppDelegate.h"
+#import "NSXMLElementAdditions.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
@@ -365,7 +366,7 @@
   if (!frame)
     return;
   
-  frame.source = [[response rootElement] value];
+  frame.source = [[response rootElement] base64DecodedValue];
   
   if ([delegate respondsToSelector:@selector(sourceUpdated:)])
     [delegate sourceUpdated:frame];
@@ -416,18 +417,22 @@
   
   // Get the stack frame by the |routingID|.
   StackFrame* frame = [stackFrames_ objectForKey:routingID];
-  
+
   NSMutableArray* variables = [NSMutableArray array];
-  
+
   // Merge the frame's existing variables.
   if (frame.variables)
     [variables addObjectsFromArray:frame.variables];
-  
+
   // Add these new variables.
   NSArray* addVariables = [[response rootElement] children];
-  if (addVariables)
-    [variables addObjectsFromArray:addVariables];
-  
+  if (addVariables) {
+    for (NSXMLElement* elm in addVariables) {
+      VariableNode* node = [[VariableNode alloc] initWithXMLNode:elm];
+      [variables addObject:[node autorelease]];
+    }
+  }
+
   frame.variables = variables;
 }
 

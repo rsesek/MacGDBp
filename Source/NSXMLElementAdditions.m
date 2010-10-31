@@ -15,26 +15,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#include "base64.h"
+
 #import "AppDelegate.h"
+#include "base64.h"
 
 @implementation NSXMLElement (GDBpAdditions)
-
-/**
- * Return's the property's full name
- */
-- (NSString*)fullname
-{
-  return [[self attributeForName:@"fullname"] stringValue];
-}
-
-/**
- * Return's the property's name from the attributes list
- */
-- (NSString*)variable
-{
-  return [[self attributeForName:@"name"] stringValue];
-}
 
 /**
  * Returns whether or not this node has any children
@@ -45,33 +30,19 @@
 }
 
 /**
- * Override children so we can fetch more depth as needed
- */
-- (NSArray*)subnodes
-{
-  NSArray* children = [self children];
-  if (![self isLeaf] && [children count] < 1) {
-    // If this node has children but they haven't been loaded from the backend,
-    // request them asynchronously.
-    [[AppDelegate instance].debugger fetchProperty:[self fullname] forNode:self];
-  }
-  return children;
-}
-
-/**
  * Returns the value of the property
  */
-- (NSString*)value
+- (NSString*)base64DecodedValue
 {
-  // not a leaf, so don't display any value
-  if (![self isLeaf])
-  {
+  // Non-leaf nodes do not have a value:
+  //   https://www.bluestatic.org/bugs/showreport.php?bugid=168
+  if (![self isLeaf]) {
     return @"...";
   }
   
-  // base64 encoded data
-  if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"])
-  {
+  // The value of the node is base64 encoded.
+  NSLog(@"encoding check");
+  if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
     const char* str = [[self stringValue] UTF8String];
     int strlen = [[self stringValue] length];
     
@@ -82,8 +53,7 @@
       NSLog(@"error in converting %@ from base64", self);
     
     NSString* ret = nil;
-    if (data)
-    {
+    if (data) {
       ret = [NSString stringWithUTF8String:data];
       free(data);
     }
@@ -91,22 +61,8 @@
     return ret;
   }
   
-  // just a normal string
-  return [self stringValue];
-}
-
-/**
- * Returns the type of variable this is
- */
-- (NSString*)type
-{
-  NSXMLNode* className = [self attributeForName:@"classname"];
-  NSString* type = [[self attributeForName:@"type"] stringValue];
-  if (className != nil)
-  {
-    return [NSString stringWithFormat:@"%@ (%@)", [className stringValue], type];
-  }
-  return type;
+  // The value is just a normal string.
+  return [self stringValue];  
 }
 
 @end

@@ -17,7 +17,7 @@
 #import "VariableNode.h"
 
 #import "AppDelegate.h"
-#include "base64.h"
+#include "NSXMLElementAdditions.h"
 
 // Private Properties //////////////////////////////////////////////////////////
 
@@ -29,9 +29,6 @@
 @property (copy) NSString* type;
 @property (copy) NSString* value;
 @property (retain) NSMutableArray* children;
-
-// Takes an XML node and computes the value.
-- (NSString*)decodeValueForNode:(NSXMLElement*)node;
 
 @end
 
@@ -51,10 +48,10 @@
 {
   if (self = [super init]) {
     self.name       = [[node attributeForName:@"name"] stringValue];
-    self.fullName   = [[node attributeForName:@"fullName"] stringValue];
-    self.className  = [[node attributeForName:@"className"] stringValue];
+    self.fullName   = [[node attributeForName:@"fullname"] stringValue];
+    self.className  = [[node attributeForName:@"classname"] stringValue];
     self.type       = [[node attributeForName:@"type"] stringValue];
-    self.value      = [self decodeValueForNode:node];
+    self.value      = [node base64DecodedValue];
     self.children   = [NSMutableArray array];
     if ([node children]) {
       [self setChildrenFromXMLChildren:[node children]];
@@ -77,9 +74,12 @@
 
 - (void)setChildrenFromXMLChildren:(NSArray*)children
 {
-  for (NSXMLElement* child in children) {
-    VariableNode* node = [[VariableNode alloc] initWithXMLNode:child];
-    [children_ addObject:[node autorelease]];
+  for (NSXMLNode* child in children) {
+    // Other child nodes may be the string value.
+    if ([child isKindOfClass:[NSXMLElement class]]) {
+      VariableNode* node = [[VariableNode alloc] initWithXMLNode:(NSXMLElement*)child];
+      [children_ addObject:[node autorelease]];
+    }
   }
 }
 
@@ -105,40 +105,6 @@
     return [NSString stringWithFormat:@"%@ (%@)", self.className, self.type];
   }
   return self.type;
-}
-
-// Private /////////////////////////////////////////////////////////////////////
-
-- (NSString*)decodeValueForNode:(NSXMLElement*)node
-{
-  // Non-leaf nodes do not have a value:
-  //   https://www.bluestatic.org/bugs/showreport.php?bugid=168
-  if (![self isLeaf]) {
-    return @"...";
-  }
-
-  // The value of the node is base64 encoded.
-  if ([[[node attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
-    const char* str = [[node stringValue] UTF8String];
-    int strlen = [[node stringValue] length];
-
-    char* data;
-    size_t datalen;
-
-    if (!base64_decode_alloc(str, strlen, &data, &datalen))
-      NSLog(@"error in converting %@ from base64", self);
-
-    NSString* ret = nil;
-    if (data) {
-      ret = [NSString stringWithUTF8String:data];
-      free(data);
-    }
-
-    return ret;
-  }
-
-  // The value is just a normal string.
-  return [node stringValue];  
 }
 
 @end

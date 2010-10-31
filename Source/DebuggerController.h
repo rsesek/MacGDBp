@@ -18,6 +18,7 @@
 #import "BSSourceView.h"
 #import "DebuggerProcessor.h"
 #import "StackController.h"
+#include "VariableNode.h"
 
 @interface DebuggerController : NSWindowController <DebuggerProcessorDelegate>
 {
@@ -37,7 +38,7 @@
   IBOutlet NSTreeController* variablesTreeController;
   IBOutlet NSOutlineView* variablesOutlineView;
   NSMutableSet* expandedVariables;
-  NSXMLElement* selectedVariable;
+  VariableNode* selectedVariable;
   
   IBOutlet NSWindow* inspector;
   
@@ -65,6 +66,6 @@
 - (IBAction)stepOver:(id)sender;
 - (IBAction)reconnect:(id)sender;
 
-- (void)fetchProperty:(NSString*)property forNode:(NSXMLElement*)node;
+- (void)fetchProperty:(NSString*)property forNode:(VariableNode*)node;
 
 @end

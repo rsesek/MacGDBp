@@ -214,7 +214,7 @@
   [connection stepOver];
 }
 
-- (void)fetchProperty:(NSString*)property forNode:(NSXMLElement*)node
+- (void)fetchProperty:(NSString*)property forNode:(VariableNode*)node
 {
   NSInteger txn = [connection getProperty:property];
   [pendingProperties_ setObject:node forKey:[NSNumber numberWithInt:txn]];
@@ -236,7 +236,7 @@
 - (void)outlineViewItemDidExpand:(NSNotification*)notif
 {
   NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
-  [expandedVariables addObject:[[node representedObject] fullname]];
+  [expandedVariables addObject:[[node representedObject] fullName]];
 }
 
 /**
@@ -244,7 +244,7 @@
  */
 - (void)outlineViewItemDidCollapse:(NSNotification*)notif
 {
-  [expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullname]];
+  [expandedVariables removeObject:[[[[notif userInfo] objectForKey:@"NSObject"] representedObject] fullName]];
 }
 
 #pragma mark Private
@@ -301,19 +301,19 @@
  */
 - (void)expandVariables
 {
-  NSString* selection = [selectedVariable fullname];
+  NSString* selection = [selectedVariable fullName];
   
   for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
   {
     NSTreeNode* node = [variablesOutlineView itemAtRow:i];
-    NSString* fullname = [[node representedObject] fullname];
+    NSString* fullName = [[node representedObject] fullName];
     
     // see if it needs expanding
-    if ([expandedVariables containsObject:fullname])
+    if ([expandedVariables containsObject:fullName])
       [variablesOutlineView expandItem:node];
     
     // select it if we had it selected before
-    if ([fullname isEqualToString:selection])
+    if ([fullName isEqualToString:selection])
       [variablesTreeController setSelectionIndexPath:[node indexPath]];
   }
 }
@@ -370,9 +370,9 @@
 - (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction
 {
   NSNumber* key = [NSNumber numberWithInt:transaction];
-  NSXMLElement* node = [pendingProperties_ objectForKey:key];
+  VariableNode* node = [pendingProperties_ objectForKey:key];
   if (node) {
-    [node setChildren:properties];
+    [node setChildrenFromXMLChildren:properties];
     [variablesTreeController rearrangeObjects];
     [pendingProperties_ removeObjectForKey:key];
   }
