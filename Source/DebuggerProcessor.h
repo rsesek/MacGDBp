@@ -21,6 +21,7 @@
 #import "StackFrame.h"
 
 @protocol DebuggerProcessorDelegate;
+@class VariableNode;
 
 // The DebuggerProcessor is the communication layer between the application
 // and the back-end debugger. Clients issue debugger commands via this class,
@@ -80,8 +81,9 @@
 - (void)removeBreakpoint:(Breakpoint*)bp;
 
 // Gets a property by name from the debugger engine. Returns a transaction ID
-// which used in the delegate callback.
-- (NSInteger)getProperty:(NSString*)property;
+// which used in the delegate callback. Properties must be retrieved at a
+// certain stack depth.
+- (NSInteger)getChildrenOfProperty:(VariableNode*)property atDepth:(NSInteger)depth;
 
 // Takes a partially loaded stack frame and fetches the rest of the information.
 - (void)loadStackFrame:(StackFrame*)frame;

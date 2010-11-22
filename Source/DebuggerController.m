@@ -215,9 +215,12 @@
   [connection stepOver];
 }
 
-- (void)fetchProperty:(NSString*)property forNode:(VariableNode*)node
+- (void)fetchChildProperties:(VariableNode*)node
 {
-  NSInteger txn = [connection getProperty:property];
+  NSArray* selection = [stackArrayController selectedObjects];
+  assert([selection count] == 1);
+  NSInteger depth = [[selection objectAtIndex:0] index];
+  NSInteger txn = [connection getChildrenOfProperty:node atDepth:depth];
   [pendingProperties_ setObject:node forKey:[NSNumber numberWithInt:txn]];
 }
 

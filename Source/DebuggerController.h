@@ -66,6 +66,6 @@
 - (IBAction)stepOver:(id)sender;
 - (IBAction)reconnect:(id)sender;
 
-- (void)fetchProperty:(NSString*)property forNode:(VariableNode*)node;
+- (void)fetchChildProperties:(VariableNode*)node;
 
 @end

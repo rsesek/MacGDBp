@@ -29,6 +29,7 @@
   NSString* value_;
   NSMutableArray* children_;
   NSInteger childCount_;
+  NSString* address_;
 }
 
 @property (readonly, copy) NSString* name;
@@ -38,6 +39,7 @@
 @property (readonly, copy) NSString* value;
 @property (readonly, retain) NSArray* children;
 @property (readonly) NSInteger childCount;
+@property (readonly, copy) NSString* address;
 
 // Creates and initializes a new VariableNode from the XML response from the
 // debugger backend.

@@ -29,6 +29,7 @@
 @property (copy) NSString* type;
 @property (copy) NSString* value;
 @property (retain) NSMutableArray* children;
+@property (copy) NSString* address;
 
 @end
 
@@ -43,6 +44,7 @@
 @synthesize value = value_;
 @synthesize children = children_;
 @synthesize childCount = childCount_;
+@synthesize address = address_;
 
 - (id)initWithXMLNode:(NSXMLElement*)node
 {
@@ -57,6 +59,7 @@
       [self setChildrenFromXMLChildren:[node children]];
     }
     childCount_     = [[[node attributeForName:@"numchildren"] stringValue] integerValue];
+    self.address    = [[node attributeForName:@"address"] stringValue];
   }
   return self;
 }
@@ -69,6 +72,7 @@
   self.type = nil;
   self.value = nil;
   self.children = nil;
+  self.address = nil;
   [super dealloc];
 }
 
@@ -89,7 +93,7 @@
   if (![self isLeaf] && [children count] < 1) {
     // If this node has children but they haven't been loaded from the backend,
     // request them asynchronously.
-    [[AppDelegate instance].debugger fetchProperty:self.fullName forNode:self];
+    [[AppDelegate instance].debugger fetchChildProperties:self];
   }
   return children;
 }

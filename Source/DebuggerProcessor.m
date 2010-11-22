@@ -162,9 +162,9 @@
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */
-- (NSInteger)getProperty:(NSString*)property
+- (NSInteger)getChildrenOfProperty:(VariableNode*)property atDepth:(NSInteger)depth;
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -n \"%@\"", property];
+  NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -d %d -n %@", depth, [property fullName]];
   [self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
   return [tx intValue];
 }
