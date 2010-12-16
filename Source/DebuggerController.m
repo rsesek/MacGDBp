@@ -139,6 +139,8 @@
 - (void)debuggerConnected
 {
   [errormsg setHidden:YES];
+  if (!self.connection.attached)
+    return;
   [self startDebugger];
 }
 
