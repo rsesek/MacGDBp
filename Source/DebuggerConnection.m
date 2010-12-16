@@ -120,8 +120,6 @@ void SocketAcceptCallback(CFSocketRef socket,
                           void* connectionRaw)
 {
   assert(callbackType == kCFSocketAcceptCallBack);
-  NSLog(@"SocketAcceptCallback()");
-  
   DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
 
   CFReadStreamRef readStream;
