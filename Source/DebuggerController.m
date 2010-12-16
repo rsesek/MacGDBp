@@ -75,6 +75,7 @@
   [[self window] setTitle:[NSString stringWithFormat:@"GDBp @ %@:%d", [connection remoteHost], [connection port]]];
   [sourceViewer setDelegate:self];
   [stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
+  self.connection.attached = [attachedCheckbox_ state] == NSOnState;
 }
 
 /**

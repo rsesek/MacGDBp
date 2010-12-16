@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="593"/>
+			<integer value="592"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1197,6 +1197,7 @@
 									</object>
 									<string key="NSFrameSize">{402, 402}</string>
 									<reference key="NSSuperview" ref="943668178"/>
+									<reference key="NSNextKeyView" ref="294150047"/>
 									<reference key="NSDocView" ref="294150047"/>
 									<reference key="NSBGColor" ref="866192031"/>
 									<object class="NSCursor" key="NSCursor">
@@ -1229,6 +1230,7 @@
 							</object>
 							<string key="NSFrame">{{-1, -1}, {402, 402}}</string>
 							<reference key="NSSuperview" ref="451591711"/>
+							<reference key="NSNextKeyView" ref="138455094"/>
 							<int key="NSsFlags">560</int>
 							<reference key="NSVScroller" ref="896820060"/>
 							<reference key="NSHScroller" ref="498580399"/>
@@ -1242,6 +1244,10 @@
 				<string key="NSFrameAutosaveName">InspectorWindow</string>
 			</object>
 			<object class="NSUserDefaultsController" id="463528398">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>DebuggerAttached</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 		</object>
@@ -1611,6 +1617,30 @@
 						<reference key="destination" ref="161298121"/>
 					</object>
 					<int key="connectionID">594</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">attachedCheckbox_</string>
+						<reference key="source" ref="78922448"/>
+						<reference key="destination" ref="161298121"/>
+					</object>
+					<int key="connectionID">595</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.DebuggerAttached</string>
+						<reference key="source" ref="660002690"/>
+						<reference key="destination" ref="463528398"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="660002690"/>
+							<reference key="NSDestination" ref="463528398"/>
+							<string key="NSLabel">value: values.DebuggerAttached</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.DebuggerAttached</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">596</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2204,7 +2234,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{449, 334}, {617, 227}}</string>
+					<string>{{444, 325}, {617, 227}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{418, 770}, {617, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2233,11 +2263,11 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{373, 60}, {769, 501}}</string>
+					<string>{{368, 51}, {769, 501}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="0"/>
 					<integer value="0"/>
-					<string>{{373, 60}, {769, 501}}</string>
+					<string>{{368, 51}, {769, 501}}</string>
 					<integer value="1"/>
 					<integer value="1"/>
 					<string>{{344, 269}, {769, 501}}</string>
@@ -2267,7 +2297,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">594</int>
+			<int key="maxID">596</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2315,6 +2345,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>attachedToggled:</string>
+							<string>run:</string>
 							<string>showInspectorWindow:</string>
 							<string>stepIn:</string>
 							<string>stepOut:</string>
@@ -2322,6 +2353,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2334,6 +2366,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>attachedToggled:</string>
+							<string>run:</string>
 							<string>showInspectorWindow:</string>
 							<string>stepIn:</string>
 							<string>stepOut:</string>
@@ -2343,6 +2376,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
 								<string key="name">attachedToggled:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">run:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -2367,6 +2404,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>attachedCheckbox_</string>
 							<string>errormsg</string>
 							<string>inspector</string>
 							<string>sourceViewer</string>
@@ -2377,6 +2415,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSButton</string>
 							<string>NSTextField</string>
 							<string>NSWindow</string>
 							<string>BSSourceView</string>
@@ -2390,6 +2429,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>attachedCheckbox_</string>
 							<string>errormsg</string>
 							<string>inspector</string>
 							<string>sourceViewer</string>
@@ -2400,6 +2440,10 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">attachedCheckbox_</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">errormsg</string>
 								<string key="candidateClassName">NSTextField</string>

@@ -36,6 +36,7 @@
     [NSNumber numberWithBool:YES],  @"InspectorWindowVisible",
     [NSMutableArray array],         @"PathReplacements",
     [NSNumber numberWithBool:YES],  @"BreakOnFirstLine",
+    [NSNumber numberWithBool:YES],  @"DebuggerAttached",
     nil
   ];
   
