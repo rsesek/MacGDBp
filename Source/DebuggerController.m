@@ -88,8 +88,6 @@
     return ([connection isConnected] && [stackController.stack count] > 1);
   else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
     return [connection isConnected];
-  else if (action == @selector(reconnect:))
-    return ![connection isConnected];
   
   return [[self window] validateUserInterfaceItem:anItem];
 }
@@ -157,9 +155,6 @@
  */
 - (void)debuggerDisconnected
 {
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
-    ; // TODO: fix
-  
   // Invalidate the marked line so we don't look like we're still running.
   sourceViewer.markedLine = -1;
   [sourceViewer setNeedsDisplay:YES];

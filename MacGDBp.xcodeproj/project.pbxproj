@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1E027F0A0D36F23F00885DEE /* Run.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F080D36F23F00885DEE /* Run.png */; };
 		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
-		1E027F390D36F60800885DEE /* Reconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F380D36F60800885DEE /* Reconnect.png */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerProcessor.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
@@ -66,7 +65,6 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
 		1E027F090D36F23F00885DEE /* StepOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOver.png; path = Icons/StepOver.png; sourceTree = "<group>"; };
-		1E027F380D36F60800885DEE /* Reconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Reconnect.png; path = Icons/Reconnect.png; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
 		1E02C56F0C610158006F1752 /* DebuggerProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerProcessor.h; path = Source/DebuggerProcessor.h; sourceTree = "<group>"; };
@@ -183,7 +181,6 @@
 			isa = PBXGroup;
 			children = (
 				1E0AFBB80FC2518700C67031 /* HUDIcon.png */,
-				1E027F380D36F60800885DEE /* Reconnect.png */,
 				1E027F080D36F23F00885DEE /* Run.png */,
 				1E027F090D36F23F00885DEE /* StepOver.png */,
 				1EEBFC360D358F1B008F835B /* StepOut.png */,
@@ -379,7 +376,6 @@
 				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
 				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
 				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
-				1E027F390D36F60800885DEE /* Reconnect.png in Resources */,
 				1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */,
 				1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */,
 				1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */,
