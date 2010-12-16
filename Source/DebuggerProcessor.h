@@ -38,6 +38,10 @@
   // Human-readable status of the connection.
   NSString* status;
   BOOL active_;
+
+  // Whether the debugger should detach immediately after being contacted by the
+  // backend. YES means all debugger connections will be dropped.
+  BOOL attached_;
   
   // The connection's delegate.
   id <DebuggerProcessorDelegate> delegate;
@@ -61,6 +65,7 @@
 }
 
 @property (readonly, copy) NSString* status;
+@property (assign) BOOL attached;
 @property (assign) id <DebuggerProcessorDelegate> delegate;
 
 // initializer
@@ -72,7 +77,6 @@
 - (BOOL)isConnected;
 
 // communication
-- (void)reconnect;
 - (void)run;
 - (void)stepIn;
 - (void)stepOut;

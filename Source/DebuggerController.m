@@ -158,7 +158,7 @@
 - (void)debuggerDisconnected
 {
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AutoReconnect"])
-    [self reconnect:self];
+    ; // TODO: fix
   
   // Invalidate the marked line so we don't look like we're still running.
   sourceViewer.markedLine = -1;
@@ -173,13 +173,9 @@
   [connection run];
 }
 
-/**
- * Tells the connection to ask the server to reconnect
- */
-- (IBAction)reconnect:(id)sender
+- (IBAction)attachedToggled:(id)sender
 {
-  [connection reconnect];
-  [self resetDisplays];
+  connection.attached = [sender state] == NSOnState;
 }
 
 /**

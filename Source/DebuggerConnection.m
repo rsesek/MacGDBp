@@ -123,8 +123,6 @@ void SocketAcceptCallback(CFSocketRef socket,
   NSLog(@"SocketAcceptCallback()");
   
   DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
-  if (![connection inReconnectMode])
-    return;
 
   CFReadStreamRef readStream;
   CFWriteStreamRef writeStream;
@@ -202,7 +200,6 @@ void PerformQuitSignal(void* info)
 
 @synthesize port = port_;
 @synthesize connected = connected_;
-@synthesize reconnect = reconnect_;
 @synthesize delegate = delegate_;
 
 @synthesize socket = socket_;
@@ -218,7 +215,6 @@ void PerformQuitSignal(void* info)
   if (self = [super init])
   {
     port_ = aPort;
-    reconnect_ = YES;
   }
   return self;
 }
@@ -227,12 +223,6 @@ void PerformQuitSignal(void* info)
 {
   self.currentPacket = nil;
   [super dealloc];
-}
-
-- (void)reconnect
-{
-  connected_ = NO;
-  reconnect_ = YES;
 }
 
 /**
@@ -337,6 +327,10 @@ void PerformQuitSignal(void* info)
   lastWrittenTransaction_ = 0;
   self.queuedWrites = [NSMutableArray array];
   writeQueueLock_ = [NSRecursiveLock new];
+  if ([delegate_ respondsToSelector:@selector(connectionDidAccept:)])
+    [delegate_ performSelectorOnMainThread:@selector(connectionDidAccept:)
+                                withObject:self
+                             waitUntilDone:NO];
 }
 
 /**
@@ -630,7 +624,7 @@ void PerformQuitSignal(void* info)
     
     // Otherwise, assume +1 and hope it works.
     ++lastReadTransaction_;
-  } else if (!reconnect_) {
+  } else /*if (!reconnect_)*/ {
     // See if the transaction can be parsed out.
     NSInteger transaction = [self transactionIDFromResponse:xmlTest];
     if (transaction < lastReadTransaction_) {
@@ -666,7 +660,6 @@ void PerformQuitSignal(void* info)
   
   if ([[[response rootElement] name] isEqualToString:@"init"]) {
     connected_ = YES;
-    reconnect_ = NO;
     [delegate_ performSelectorOnMainThread:@selector(handleInitialResponse:)
                                 withObject:response
                              waitUntilDone:NO];

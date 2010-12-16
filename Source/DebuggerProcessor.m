@@ -42,6 +42,7 @@
 @implementation DebuggerProcessor
 
 @synthesize status;
+@synthesize attached = attached_;
 @synthesize delegate;
 
 /**
@@ -110,17 +111,6 @@
 
 // Commands ////////////////////////////////////////////////////////////////////
 #pragma mark Commands
-
-/**
- * Reestablishes communication with the remote debugger so that a new connection doesn't have to be
- * created every time you want to debug a page
- */
-- (void)reconnect
-{
-  self.status = @"Connecting";
-  active_ = NO;
-  [connection_ reconnect];
-}
 
 /**
  * Tells the debugger to continue running the script. Returns the current stack frame.
@@ -221,6 +211,12 @@
 
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
+
+- (void)connectionDidAccept:(DebuggerConnection*)cx
+{
+  if (!self.attached)
+    [connection_ sendCommandWithFormat:@"detach"];
+}
 
 - (void)errorEncountered:(NSString*)error
 {
