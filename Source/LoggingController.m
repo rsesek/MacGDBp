@@ -76,6 +76,7 @@
   self.error = nil;
   self.lastWrittenTransactionID = 0;
   self.lastReadTransactionID = 0;
+  [super dealloc];
 }
 
 - (NSString*)directionName
