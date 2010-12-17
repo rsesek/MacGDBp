@@ -73,7 +73,6 @@
 
 // getter
 - (NSUInteger)port;
-- (NSString*)remoteHost;
 - (BOOL)isConnected;
 
 // communication

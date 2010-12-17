@@ -90,18 +90,6 @@
 }
 
 /**
- * Returns the name of the remote host
- */
-- (NSString*)remoteHost
-{
-  if (![connection_ connected])
-    return @"(DISCONNECTED)";
-
-  // TODO: Either impl or remove.
-  return @"";
-}
-
-/**
  * Returns whether or not we have an active connection
  */
 - (BOOL)isConnected
