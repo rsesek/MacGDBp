@@ -16,7 +16,6 @@
 		1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E0AFBB80FC2518700C67031 /* HUDIcon.png */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
-		1E35FEA10C6599040030F527 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FEA00C6599040030F527 /* base64.c */; };
 		1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF60D36F821009A53A2 /* MainMenu.xib */; };
 		1E42F1D70F53317B008412DB /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 1E42F1D60F53317B008412DB /* dsa_pub.pem */; };
 		1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
@@ -34,6 +33,10 @@
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF4D5C0EE35F0700B62769 /* StackController.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
+		1EC6965712BBC6A700A8D984 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965112BBC6A700A8D984 /* LICENSE */; };
+		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
+		1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965512BBC6A700A8D984 /* README.bluestatic */; };
+		1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965612BBC6A700A8D984 /* README.chromium */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -76,8 +79,6 @@
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
-		1E35FE9F0C6599040030F527 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = base64.h; path = Source/base64.h; sourceTree = "<group>"; };
-		1E35FEA00C6599040030F527 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = Source/base64.c; sourceTree = "<group>"; };
 		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
 		1E416FF70D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1E42F1D60F53317B008412DB /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
@@ -106,6 +107,12 @@
 		1EBF4D5C0EE35F0700B62769 /* StackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackController.m; path = Source/StackController.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
 		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
+		1EC6965112BBC6A700A8D984 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1EC6965212BBC6A700A8D984 /* modp_b64.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modp_b64.cc; sourceTree = "<group>"; };
+		1EC6965312BBC6A700A8D984 /* modp_b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64.h; sourceTree = "<group>"; };
+		1EC6965412BBC6A700A8D984 /* modp_b64_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64_data.h; sourceTree = "<group>"; };
+		1EC6965512BBC6A700A8D984 /* README.bluestatic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.bluestatic; sourceTree = "<group>"; };
+		1EC6965612BBC6A700A8D984 /* README.chromium */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.chromium; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -270,6 +277,19 @@
 			name = Debugger;
 			sourceTree = "<group>";
 		};
+		1EC6965012BBC6A700A8D984 /* modp_b64 */ = {
+			isa = PBXGroup;
+			children = (
+				1EC6965112BBC6A700A8D984 /* LICENSE */,
+				1EC6965212BBC6A700A8D984 /* modp_b64.cc */,
+				1EC6965312BBC6A700A8D984 /* modp_b64.h */,
+				1EC6965412BBC6A700A8D984 /* modp_b64_data.h */,
+				1EC6965512BBC6A700A8D984 /* README.bluestatic */,
+				1EC6965612BBC6A700A8D984 /* README.chromium */,
+			);
+			path = modp_b64;
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
 			isa = PBXGroup;
 			children = (
@@ -287,8 +307,7 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* MacGDBp_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				1E35FE9F0C6599040030F527 /* base64.h */,
-				1E35FEA00C6599040030F527 /* base64.c */,
+				1EC6965012BBC6A700A8D984 /* modp_b64 */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -382,6 +401,9 @@
 				1E9582620E252474001A3D89 /* Preferences.xib in Resources */,
 				1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */,
 				1E6B594C11610993001189D2 /* Log.xib in Resources */,
+				1EC6965712BBC6A700A8D984 /* LICENSE in Resources */,
+				1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */,
+				1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +435,6 @@
 				1E02C5710C610158006F1752 /* DebuggerProcessor.m in Sources */,
 				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
-				1E35FEA10C6599040030F527 /* base64.c in Sources */,
 				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
 				1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */,
 				1E7188690D839F6300969277 /* BSSourceView.m in Sources */,
@@ -428,6 +449,7 @@
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
 				1E0724E311B47BCC0017AD3C /* DebuggerConnection.m in Sources */,
 				1EC1337E127DBB00007946FC /* VariableNode.m in Sources */,
+				1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
