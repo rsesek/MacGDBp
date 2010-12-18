@@ -60,8 +60,6 @@
 
 - (void)setError:(NSString*)anError;
 
-- (void)startDebugger;
-
 - (IBAction)attachedToggled:(id)sender;
 
 - (IBAction)run:(id)sender;

@@ -141,14 +141,6 @@
   [errormsg setHidden:YES];
   if (!self.connection.attached)
     return;
-  [self startDebugger];
-}
-
-/**
- * Called once the socket accepts and MacGDBp is connected to the debugger
- */
-- (void)startDebugger
-{
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
     [self stepIn:self];
 }
