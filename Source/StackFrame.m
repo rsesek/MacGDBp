@@ -27,6 +27,15 @@
 @synthesize function = function_;
 @synthesize variables = variables_;
 
+- (void)dealloc
+{
+  self.filename = nil;
+  self.source = nil;
+  self.function = nil;
+  self.variables = nil;
+  [super dealloc];
+}
+
 /**
  * Determines whether or not the given frame was shifted, rather than jumped. Essentially,
  * this checks if it's in the same file/function.
