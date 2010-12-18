@@ -88,8 +88,6 @@
 - (void)connect;
 - (void)close;
 
-- (void)send:(NSString*)command;
-
 // This sends the given command format to the debugger. This method is thread
 // safe and schedules the request on the |runLoop_|.
 - (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;

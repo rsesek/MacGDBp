@@ -40,6 +40,8 @@
 - (void)socketDisconnected;
 - (void)readStreamHasData;
 
+// These methods MUST be called on the network thread as they are not threadsafe.
+- (void)send:(NSString*)command;
 - (void)performSend:(NSString*)command;
 - (void)sendQueuedWrites;
 
