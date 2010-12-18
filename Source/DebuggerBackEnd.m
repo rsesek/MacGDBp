@@ -14,14 +14,14 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "DebuggerProcessor.h"
+#import "DebuggerBackEnd.h"
 
 #import "AppDelegate.h"
 #import "NSXMLElementAdditions.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
 
-@interface DebuggerProcessor ()
+@interface DebuggerBackEnd ()
 @property (readwrite, copy) NSString* status;
 
 - (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn;
@@ -39,14 +39,14 @@
 
 // GDBpConnection //////////////////////////////////////////////////////////////
 
-@implementation DebuggerProcessor
+@implementation DebuggerBackEnd
 
 @synthesize status;
 @synthesize attached = attached_;
 @synthesize delegate;
 
 /**
- * Creates a new DebuggerConnection and initializes the socket from the given connection
+ * Creates a new DebuggerBackEnd and initializes the socket from the given connection
  * paramters.
  */
 - (id)initWithPort:(NSUInteger)aPort
@@ -58,7 +58,7 @@
     callTable_ = [NSMutableDictionary new];
 
     [[BreakpointManager sharedManager] setConnection:self];
-    connection_ = [[DebuggerConnection alloc] initWithPort:aPort];
+    connection_ = [[NetworkConnection alloc] initWithPort:aPort];
     connection_.delegate = self;
     [connection_ connect];
   }
@@ -200,7 +200,7 @@
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
 
-- (void)connectionDidAccept:(DebuggerConnection*)cx
+- (void)connectionDidAccept:(NetworkConnection*)cx
 {
   if (!self.attached)
     [connection_ sendCommandWithFormat:@"detach"];

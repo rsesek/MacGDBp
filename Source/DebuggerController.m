@@ -42,7 +42,7 @@
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-    connection = [[DebuggerProcessor alloc] initWithPort:[defaults integerForKey:@"Port"]];
+    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]];
     connection.delegate = self;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];

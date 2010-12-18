@@ -16,14 +16,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol DebuggerConnectionDelegate;
+@protocol NetworkConnectionDelegate;
 @class LoggingController;
 
 // This class is the lowest level component to the network. It deals with all
 // the intricacies of network and stream programming. Almost all the work this
 // class does is on a background thread, which is created when the connection is
 // asked to connect and shutdown when asked to close.
-@interface DebuggerConnection : NSObject
+@interface NetworkConnection : NSObject
 {
   // The port to connect on.
   NSUInteger port_;
@@ -76,12 +76,12 @@
   int currentPacketIndex_;
 
   // The delegate. All methods are executed on the main thread.
-  NSObject<DebuggerConnectionDelegate>* delegate_;
+  NSObject<NetworkConnectionDelegate>* delegate_;
 }
 
 @property (readonly) NSUInteger port;
 @property (readonly) BOOL connected;
-@property (assign) id <DebuggerConnectionDelegate> delegate;
+@property (assign) id <NetworkConnectionDelegate> delegate;
 
 - (id)initWithPort:(NSUInteger)aPort;
 
@@ -100,12 +100,12 @@
 
 // Delegate ////////////////////////////////////////////////////////////////////
 
-@protocol DebuggerConnectionDelegate <NSObject>
+@protocol NetworkConnectionDelegate <NSObject>
 
 @optional
 
-- (void)connectionDidAccept:(DebuggerConnection*)cx;
-- (void)connectionDidClose:(DebuggerConnection*)cx;
+- (void)connectionDidAccept:(NetworkConnection*)cx;
+- (void)connectionDidClose:(NetworkConnection*)cx;
 
 - (void)handleInitialResponse:(NSXMLDocument*)response;
 

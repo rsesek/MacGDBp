@@ -14,7 +14,7 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import "DebuggerConnection.h"
+#import "NetworkConnection.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -22,9 +22,9 @@
 #import "AppDelegate.h"
 #import "LoggingController.h"
 
-// DebuggerConnection (Private) ////////////////////////////////////////////////
+// NetworkConnection (Private) /////////////////////////////////////////////////
 
-@interface DebuggerConnection ()
+@interface NetworkConnection ()
 
 @property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
@@ -61,7 +61,7 @@
 
 void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-  DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
   switch (eventType)
   {
     case kCFStreamEventHasBytesAvailable:
@@ -89,7 +89,7 @@ void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, voi
 
 void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
 {
-  DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
   switch (eventType)
   {
     case kCFStreamEventCanAcceptBytes:
@@ -122,7 +122,7 @@ void SocketAcceptCallback(CFSocketRef socket,
                           void* connectionRaw)
 {
   assert(callbackType == kCFSocketAcceptCallBack);
-  DebuggerConnection* connection = (DebuggerConnection*)connectionRaw;
+  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
 
   CFReadStreamRef readStream;
   CFWriteStreamRef writeStream;
@@ -190,13 +190,13 @@ void SocketAcceptCallback(CFSocketRef socket,
 
 void PerformQuitSignal(void* info)
 {
-  DebuggerConnection* obj = (DebuggerConnection*)info;
+  NetworkConnection* obj = (NetworkConnection*)info;
   [obj performQuitSignal];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-@implementation DebuggerConnection
+@implementation NetworkConnection
 
 @synthesize port = port_;
 @synthesize connected = connected_;

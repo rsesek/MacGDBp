@@ -19,7 +19,7 @@
 @class LogEntry;
 
 // The LoggingController manages the communication log with the debugger engine.
-// Whenever a command or a response received, the DebuggerConnection notifies
+// Whenever a command or a response received, the NetworkConnection notifies
 // this class to record the relevant information.
 @interface LoggingController : NSWindowController
 {
