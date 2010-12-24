@@ -1,0 +1,7 @@
+Name: modp base64 decoder
+URL: http://src.chromium.org/svn/trunk/src/third_party/modp_b64/ @ 64572
+
+See README.chromium for Chromium's changes to this library.
+
+Blue Static has modified this to work on POSIX systems only to be independent
+of Chromium's build files (base/basictypes.h).
