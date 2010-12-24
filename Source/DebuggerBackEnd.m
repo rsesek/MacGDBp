@@ -153,12 +153,15 @@
     return;
 
   NSNumber* routingNumber = [NSNumber numberWithInt:frame.routingID];
+  NSNumber* transaction = nil;
 
   // Get the source code of the file. Escape % in URL chars.
-  NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-  NSNumber* transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
-  [self recordCallback:@selector(setSource:) forTransaction:transaction];
-  [callbackContext_ setObject:routingNumber forKey:transaction];
+  if ([frame.filename length]) {
+    NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+    transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
+    [self recordCallback:@selector(setSource:) forTransaction:transaction];
+    [callbackContext_ setObject:routingNumber forKey:transaction];
+  }
   
   // Get the names of all the contexts.
   transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
