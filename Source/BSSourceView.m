@@ -19,6 +19,7 @@
 @interface BSSourceView (Private)
 - (void)setupViews;
 - (void)errorHighlightingFile:(NSNotification*)notif;
+- (void)setPlainTextStringFromFile:(NSString*)filePath;
 @end
 
 @implementation BSSourceView
@@ -97,7 +98,7 @@
   @catch (NSException* exception)
   {
     // If the PHP executable is not available then the NSTask will throw an exception
-    [textView setString:[NSString stringWithContentsOfFile:f]];
+    [self setPlainTextStringFromFile:f];
   }
 }
 
@@ -137,7 +138,7 @@
 {
   NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
   if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
-    [textView setString:[NSString stringWithContentsOfFile:file]];
+    [self setPlainTextStringFromFile:file];
 }
 
 /**
@@ -215,6 +216,23 @@
   [[textView textContainer] setHeightTracksTextView:NO];
   [textView setAutoresizingMask:NSViewNotSizable];
   [scrollView setDocumentView:textView];
+}
+
+/**
+ * Gets the plain-text representation of the file at |filePath| and sets the
+ * contents in the source view.
+ */
+- (void)setPlainTextStringFromFile:(NSString*)filePath
+{
+  NSError* error;
+  NSString* contents = [NSString stringWithContentsOfFile:filePath
+                                                 encoding:NSUTF8StringEncoding
+                                                    error:&error];
+  if (error) {
+    NSLog(@"Error reading file at %@: %@", filePath, error);
+    return;
+  }
+  [textView setString:contents];
 }
 
 @end
