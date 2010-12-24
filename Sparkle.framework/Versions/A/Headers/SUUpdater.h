@@ -22,8 +22,6 @@
 
 + (SUUpdater *)sharedUpdater;
 + (SUUpdater *)updaterForBundle:(NSBundle *)bundle;
-- initForBundle:(NSBundle *)bundle;
-
 - (NSBundle *)hostBundle;
 
 - (void)setDelegate:(id)delegate;
