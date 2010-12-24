@@ -204,6 +204,8 @@
 - (void)fetchChildProperties:(VariableNode*)node
 {
   NSArray* selection = [stackArrayController selectedObjects];
+  if (![selection count])
+    return;
   assert([selection count] == 1);
   NSInteger depth = [[selection objectAtIndex:0] index];
   NSInteger txn = [connection getChildrenOfProperty:node atDepth:depth];
@@ -217,7 +219,17 @@
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
   [self updateSourceViewer];
-  [self expandVariables];
+  // TODO: This is very, very hacky because it's nondeterministic. The issue
+  // is that calling |-[NSOutlineView expandItem:]| while the table is still
+  // doing its redraw will translate to a no-op. Instead, we need to restructure
+  // this controller so that when everything has been laid out we call
+  // |-expandVariables|; but NSOutlineView doesn't have a |-didFinishDoingCrap:|
+  // method. The other issue is that we need to call this method from
+  // selectionDidChange but ONLY when it was the result of a user-initiated
+  // action and not the stack viewer updating causing a selection change.
+  // If it happens in the latter, then we run into the same issue that causes
+  // this to no-op.
+  [self performSelector:@selector(expandVariables) withObject:nil afterDelay:0.05];
 }
 
 /**
@@ -283,7 +295,6 @@
 {
   [stackArrayController rearrangeObjects];
   [stackArrayController setSelectionIndex:0];
-  [self expandVariables];
 }
 
 /**
@@ -292,9 +303,8 @@
 - (void)expandVariables
 {
   NSString* selection = [selectedVariable fullName];
-  
-  for (int i = 0; i < [variablesOutlineView numberOfRows]; i++)
-  {
+
+  for (int i = 0; i < [variablesOutlineView numberOfRows]; i++) {
     NSTreeNode* node = [variablesOutlineView itemAtRow:i];
     NSString* fullName = [[node representedObject] fullName];
     
