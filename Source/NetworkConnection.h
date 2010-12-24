@@ -55,7 +55,7 @@ class NetworkCallbackController;
   // The write stream. Weak.
   CFWriteStreamRef writeStream_;
 
-  // Run loop source used to quit the thread.
+  // Run loop source used to quit the thread. Strong.
   CFRunLoopSourceRef quitSource_;
 
   // An ever-increasing integer that gives each transaction a unique ID for the
