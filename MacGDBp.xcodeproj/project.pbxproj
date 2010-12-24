@@ -12,7 +12,6 @@
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerBackEnd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerBackEnd.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
-		1E0724E311B47BCC0017AD3C /* NetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0724E211B47BCC0017AD3C /* NetworkConnection.m */; };
 		1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E0AFBB80FC2518700C67031 /* HUDIcon.png */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
@@ -43,6 +42,7 @@
 		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
 		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
+		1EFBE63012C515C200F96D6E /* NetworkConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EFBE62F12C515C200F96D6E /* NetworkConnection.mm */; };
 		1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointController.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -75,7 +75,6 @@
 		1E02C5F40C610724006F1752 /* DebuggerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerController.h; path = Source/DebuggerController.h; sourceTree = "<group>"; };
 		1E02C5F50C610724006F1752 /* DebuggerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerController.m; path = Source/DebuggerController.m; sourceTree = "<group>"; };
 		1E0724E111B47BCC0017AD3C /* NetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkConnection.h; path = Source/NetworkConnection.h; sourceTree = "<group>"; };
-		1E0724E211B47BCC0017AD3C /* NetworkConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkConnection.m; path = Source/NetworkConnection.m; sourceTree = "<group>"; };
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
@@ -120,6 +119,7 @@
 		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
 		1EEBFD110D359A9F008F835B /* dimple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dimple.png; sourceTree = "<group>"; };
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
+		1EFBE62F12C515C200F96D6E /* NetworkConnection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NetworkConnection.mm; path = Source/NetworkConnection.mm; sourceTree = "<group>"; };
 		1EFF70C10DFDC018006B9D33 /* BreakpointController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointController.h; path = Source/BreakpointController.h; sourceTree = "<group>"; };
 		1EFF70C20DFDC018006B9D33 /* BreakpointController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointController.m; path = Source/BreakpointController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -213,7 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				1E0724E111B47BCC0017AD3C /* NetworkConnection.h */,
-				1E0724E211B47BCC0017AD3C /* NetworkConnection.m */,
+				1EFBE62F12C515C200F96D6E /* NetworkConnection.mm */,
 				1E02C56F0C610158006F1752 /* DebuggerBackEnd.h */,
 				1E02C5700C610158006F1752 /* DebuggerBackEnd.m */,
 				1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */,
@@ -447,9 +447,9 @@
 				1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */,
 				1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */,
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
-				1E0724E311B47BCC0017AD3C /* NetworkConnection.m in Sources */,
 				1EC1337E127DBB00007946FC /* VariableNode.m in Sources */,
 				1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */,
+				1EFBE63012C515C200F96D6E /* NetworkConnection.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

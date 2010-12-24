@@ -59,132 +59,164 @@
 
 // CFNetwork Callbacks /////////////////////////////////////////////////////////
 
-void ReadStreamCallback(CFReadStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
+class NetworkCallbackController
 {
-  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
-  switch (eventType)
+ public:
+  NetworkCallbackController(NetworkConnection* connection)
+      : connection_(connection),
+        runLoop_(CFRunLoopGetCurrent())
   {
-    case kCFStreamEventHasBytesAvailable:
-      [connection readStreamHasData];
-      break;
-      
-    case kCFStreamEventErrorOccurred:
-    {
-      CFErrorRef error = CFReadStreamCopyError(stream);
-      CFReadStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-      CFReadStreamClose(stream);
-      CFRelease(stream);
-      [connection errorEncountered:[[(NSError*)error autorelease] description]];
-      break;
+  }
+
+  static void SocketAcceptCallback(CFSocketRef socket,
+                                   CFSocketCallBackType callbackType,
+                                   CFDataRef address,
+                                   const void* data,
+                                   void* self)
+  {
+    assert(callbackType == kCFSocketAcceptCallBack);
+    static_cast<NetworkCallbackController*>(self)->OnSocketAccept(socket, address, data);
+  }
+
+  void OnSocketAccept(CFSocketRef socket,
+                      CFDataRef address,
+                      const void* data)
+  {
+    CFReadStreamRef readStream;
+    CFWriteStreamRef writeStream;
+    
+    // Create the streams on the socket.
+    CFStreamCreatePairWithSocket(kCFAllocatorDefault,
+                                 *(CFSocketNativeHandle*)data,  // Socket handle.
+                                 &readStream,  // Read stream in-pointer.
+                                 &writeStream);  // Write stream in-pointer.
+    
+    // Create struct to register callbacks for the stream.
+    CFStreamClientContext context = { 0 };
+    context.info = this;
+    
+    // Set the client of the read stream.
+    CFOptionFlags readFlags = kCFStreamEventOpenCompleted |
+                              kCFStreamEventHasBytesAvailable |
+                              kCFStreamEventErrorOccurred |
+                              kCFStreamEventEndEncountered;
+    if (CFReadStreamSetClient(readStream, readFlags, &NetworkCallbackController::ReadStreamCallback, &context))
+      // Schedule in run loop to do asynchronous communication with the engine.
+      CFReadStreamScheduleWithRunLoop(readStream, runLoop_, kCFRunLoopCommonModes);
+    else
+      return;
+    
+    // Open the stream now that it's scheduled on the run loop.
+    if (!CFReadStreamOpen(readStream)) {
+      ReportError(CFReadStreamCopyError(readStream));
+      return;
     }
-      
-    case kCFStreamEventEndEncountered:
-      CFReadStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-      CFReadStreamClose(stream);
-      CFRelease(stream);
-      [connection socketDisconnected];
-      break;
-  };
-}
-
-void WriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType eventType, void* connectionRaw)
-{
-  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
-  switch (eventType)
-  {
-    case kCFStreamEventCanAcceptBytes:
-      [connection sendQueuedWrites];
-      break;
-      
-    case kCFStreamEventErrorOccurred:
-    {
-      CFErrorRef error = CFWriteStreamCopyError(stream);
-      CFWriteStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-      CFWriteStreamClose(stream);
-      CFRelease(stream);
-      [connection errorEncountered:[[(NSError*)error autorelease] description]];
-      break;
+    
+    // Set the client of the write stream.
+    CFOptionFlags writeFlags = kCFStreamEventOpenCompleted |
+                               kCFStreamEventCanAcceptBytes |
+                               kCFStreamEventErrorOccurred |
+                               kCFStreamEventEndEncountered;
+    if (CFWriteStreamSetClient(writeStream, writeFlags, &NetworkCallbackController::WriteStreamCallback, &context))
+      // Schedule it in the run loop to receive error information.
+      CFWriteStreamScheduleWithRunLoop(writeStream, runLoop_, kCFRunLoopCommonModes);
+    else
+      return;
+    
+    // Open the write stream.
+    if (!CFWriteStreamOpen(writeStream)) {
+      ReportError(CFWriteStreamCopyError(writeStream));
+      return;
     }
-      
-    case kCFStreamEventEndEncountered:
-      CFWriteStreamUnscheduleFromRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-      CFWriteStreamClose(stream);
-      CFRelease(stream);
-      [connection socketDisconnected];
-      break;
+    
+    connection_.readStream = readStream;
+    connection_.writeStream = writeStream;
+    [connection_ socketDidAccept];
   }
-}
 
-void SocketAcceptCallback(CFSocketRef socket,
-                          CFSocketCallBackType callbackType,
-                          CFDataRef address,
-                          const void* data,
-                          void* connectionRaw)
-{
-  assert(callbackType == kCFSocketAcceptCallBack);
-  NetworkConnection* connection = (NetworkConnection*)connectionRaw;
+  static void ReadStreamCallback(CFReadStreamRef stream,
+                                 CFStreamEventType eventType,
+                                 void* self)
+  {
+    static_cast<NetworkCallbackController*>(self)->OnReadStreamEvent(stream, eventType);
+  }
 
-  CFReadStreamRef readStream;
-  CFWriteStreamRef writeStream;
-  
-  // Create the streams on the socket.
-  CFStreamCreatePairWithSocket(kCFAllocatorDefault,
-                               *(CFSocketNativeHandle*)data,  // Socket handle.
-                               &readStream,  // Read stream in-pointer.
-                               &writeStream);  // Write stream in-pointer.
-  
-  // Create struct to register callbacks for the stream.
-  CFStreamClientContext context;
-  context.version = 0;
-  context.info = connection;
-  context.retain = NULL;
-  context.release = NULL;
-  context.copyDescription = NULL;
-  
-  // Set the client of the read stream.
-  CFOptionFlags readFlags =
-      kCFStreamEventOpenCompleted |
-      kCFStreamEventHasBytesAvailable |
-      kCFStreamEventErrorOccurred |
-      kCFStreamEventEndEncountered;
-  if (CFReadStreamSetClient(readStream, readFlags, ReadStreamCallback, &context))
-    // Schedule in run loop to do asynchronous communication with the engine.
-    CFReadStreamScheduleWithRunLoop(readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-  else
-    return;
-  
-  // Open the stream now that it's scheduled on the run loop.
-  if (!CFReadStreamOpen(readStream))
+  void OnReadStreamEvent(CFReadStreamRef stream, CFStreamEventType eventType)
   {
-    CFStreamError error = CFReadStreamGetError(readStream);
-    NSLog(@"error! %@", error);
-    return;
+    switch (eventType)
+    {
+      case kCFStreamEventHasBytesAvailable:
+        [connection_ readStreamHasData];
+        break;
+        
+      case kCFStreamEventErrorOccurred:
+      {
+        ReportError(CFReadStreamCopyError(stream));
+        UnscheduleReadStream();
+        break;
+      }
+        
+      case kCFStreamEventEndEncountered:
+        UnscheduleReadStream();
+        [connection_ socketDisconnected];
+        break;
+    };
   }
-  
-  // Set the client of the write stream.
-  CFOptionFlags writeFlags =
-      kCFStreamEventOpenCompleted |
-      kCFStreamEventCanAcceptBytes |
-      kCFStreamEventErrorOccurred |
-      kCFStreamEventEndEncountered;
-  if (CFWriteStreamSetClient(writeStream, writeFlags, WriteStreamCallback, &context))
-    // Schedule it in the run loop to receive error information.
-    CFWriteStreamScheduleWithRunLoop(writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
-  else
-    return;
-  
-  // Open the write stream.
-  if (!CFWriteStreamOpen(writeStream))
+
+  void UnscheduleReadStream()
   {
-    CFStreamError error = CFWriteStreamGetError(writeStream);
-    NSLog(@"error! %@", error);
-    return;
+    CFReadStreamUnscheduleFromRunLoop(connection_.readStream, runLoop_, kCFRunLoopCommonModes);
+    CFReadStreamClose(connection_.readStream);
+    CFRelease(connection_.readStream);    
+    connection_.readStream = NULL;
   }
-  
-  connection.readStream = readStream;
-  connection.writeStream = writeStream;
-  [connection socketDidAccept];
-}
+
+  static void WriteStreamCallback(CFWriteStreamRef stream,
+                                  CFStreamEventType eventType,
+                                  void* self)
+  {
+    static_cast<NetworkCallbackController*>(self)->OnWriteStreamEvent(stream, eventType);
+  }
+
+  void OnWriteStreamEvent(CFWriteStreamRef stream, CFStreamEventType eventType)
+  {
+    switch (eventType)
+    {
+      case kCFStreamEventCanAcceptBytes:
+        [connection_ sendQueuedWrites];
+        break;
+        
+      case kCFStreamEventErrorOccurred:
+      {
+        ReportError(CFWriteStreamCopyError(stream));
+        UnscheduleWriteStream();
+        break;
+      }
+        
+      case kCFStreamEventEndEncountered:
+        UnscheduleReadStream();
+        [connection_ socketDisconnected];
+        break;
+    }
+  }
+  void UnscheduleWriteStream()
+  {
+    CFWriteStreamUnscheduleFromRunLoop(connection_.writeStream, runLoop_, kCFRunLoopCommonModes);
+    CFWriteStreamClose(connection_.writeStream);
+    CFRelease(connection_.writeStream);
+    connection_.writeStream = NULL;
+  }
+
+ private:
+  void ReportError(CFErrorRef error)
+  {
+    [connection_ errorEncountered:[(NSError*)error description]];
+    CFRelease(error);
+  }
+
+  NetworkConnection* connection_;  // Weak, owns this.
+  CFRunLoopRef runLoop_;  // Weak.
+};
 
 // Other Run Loop Callbacks ////////////////////////////////////////////////////
 
@@ -248,14 +280,11 @@ void PerformQuitSignal(void* info)
 
   thread_ = [NSThread currentThread];
   runLoop_ = [NSRunLoop currentRunLoop];
+  callbackController_ = new NetworkCallbackController(self);
 
   // Pass ourselves to the callback so we don't have to use ugly globals.
-  CFSocketContext context;
-  context.version = 0;
-  context.info = self;
-  context.retain = NULL;
-  context.release = NULL;
-  context.copyDescription = NULL;
+  CFSocketContext context = { 0 };
+  context.info = callbackController_;
   
   // Create the address structure.
   struct sockaddr_in address;
@@ -276,7 +305,7 @@ void PerformQuitSignal(void* info)
     socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
                                                 &signature,  // Socket signature.
                                                 kCFSocketAcceptCallBack,  // Callback types.
-                                                SocketAcceptCallback,  // Callout function pointer.
+                                                &NetworkCallbackController::SocketAcceptCallback,  // Callout function pointer.
                                                 &context);  // Context to pass to callout.
     if (!socket_) {
       [self errorEncountered:@"Could not open socket."];
@@ -296,7 +325,6 @@ void PerformQuitSignal(void* info)
 
   // Create a source that is used to quit.
   CFRunLoopSourceContext quitContext = { 0 };
-  quitContext.version = 0;
   quitContext.info = self;
   quitContext.perform = PerformQuitSignal;
   quitSource_ = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &quitContext);
@@ -306,6 +334,8 @@ void PerformQuitSignal(void* info)
 
   thread_ = nil;
   runLoop_ = nil;
+  delete callbackController_;
+  callbackController_ = NULL;
 
   CFRunLoopSourceInvalidate(quitSource_);
   CFRelease(quitSource_);

@@ -16,6 +16,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+#ifdef __cplusplus
+class NetworkCallbackController;
+#else
+@class NetworkCallbackController;
+#endif
+
 @protocol NetworkConnectionDelegate;
 @class LoggingController;
 
@@ -36,6 +42,9 @@
 
   // Reference to the message loop that the socket runs on. Weak.
   NSRunLoop* runLoop_;
+
+  // Internal class that manages CFNetwork callbacks. Strong.
+  NetworkCallbackController* callbackController_;
 
   // The raw CFSocket on which the two streams are based. Strong.
   CFSocketRef socket_;
