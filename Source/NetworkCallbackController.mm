@@ -73,9 +73,9 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
   
   // Set the client of the read stream.
   CFOptionFlags readFlags = kCFStreamEventOpenCompleted |
-  kCFStreamEventHasBytesAvailable |
-  kCFStreamEventErrorOccurred |
-  kCFStreamEventEndEncountered;
+                            kCFStreamEventHasBytesAvailable |
+                            kCFStreamEventErrorOccurred |
+                            kCFStreamEventEndEncountered;
   if (CFReadStreamSetClient(readStream, readFlags, &NetworkCallbackController::ReadStreamCallback, &context))
     // Schedule in run loop to do asynchronous communication with the engine.
     CFReadStreamScheduleWithRunLoop(readStream, runLoop_, kCFRunLoopCommonModes);
@@ -90,9 +90,9 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
   
   // Set the client of the write stream.
   CFOptionFlags writeFlags = kCFStreamEventOpenCompleted |
-  kCFStreamEventCanAcceptBytes |
-  kCFStreamEventErrorOccurred |
-  kCFStreamEventEndEncountered;
+                             kCFStreamEventCanAcceptBytes |
+                             kCFStreamEventErrorOccurred |
+                             kCFStreamEventEndEncountered;
   if (CFWriteStreamSetClient(writeStream, writeFlags, &NetworkCallbackController::WriteStreamCallback, &context))
     // Schedule it in the run loop to receive error information.
     CFWriteStreamScheduleWithRunLoop(writeStream, runLoop_, kCFRunLoopCommonModes);
