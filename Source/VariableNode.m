@@ -111,4 +111,9 @@
   return self.type;
 }
 
+- (NSString*)description
+{
+  return [NSString stringWithFormat:@"<VariableNode %p : %@>", self, self.fullName];
+}
+
 @end
