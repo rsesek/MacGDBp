@@ -89,6 +89,8 @@
     return ([connection isConnected] && [stackController.stack count] > 1);
   else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
     return [connection isConnected];
+  else if (action == @selector(stop:))
+    return [connection isConnected] && [connection attached];
   
   return [[self window] validateUserInterfaceItem:anItem];
 }
@@ -199,6 +201,14 @@
     selectedVariable = [[variablesTreeController selectedObjects] objectAtIndex:0];
   
   [connection stepOver];
+}
+
+/**
+ * Forwards the detach/"stop" message to the back end.
+ */
+- (IBAction)stop:(id)sender
+{
+  [connection detach];
 }
 
 - (void)fetchChildProperties:(VariableNode*)node

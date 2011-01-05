@@ -137,6 +137,18 @@
 }
 
 /**
+ * Ends the current debugging session.
+ */
+- (void)detach
+{
+  [connection_ sendCommandWithFormat:@"detach"];
+  active_ = NO;
+  self.status = @"Stopped";
+  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
+    [delegate debuggerDisconnected];
+}
+
+/**
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */

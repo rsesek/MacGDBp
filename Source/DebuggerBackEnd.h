@@ -80,6 +80,9 @@
 - (void)stepIn;
 - (void)stepOut;
 - (void)stepOver;
+- (void)detach;
+
+// Breakpoint management.
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (void)removeBreakpoint:(Breakpoint*)bp;
 

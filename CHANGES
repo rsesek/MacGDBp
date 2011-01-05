@@ -9,6 +9,7 @@ highlighted.
 - New: #165  "Reconnect" is now removed and instead the debugger is either attached or detached.
 - Change: MacGDBp should no longer become unresponsive while waiting for Xdebug data
 - Change: MacGDBp should no longer corrupt text data returned from Xdebug
+- New: #210  Add a "Stop" button to detach the debugger from the current session
 
 
 1.3
