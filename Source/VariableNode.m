@@ -28,7 +28,7 @@
 @property (copy) NSString* className;
 @property (copy) NSString* type;
 @property (copy) NSString* value;
-@property (retain) NSMutableArray* children;
+@property (retain) NSArray* children;
 @property (copy) NSString* address;
 
 @end
