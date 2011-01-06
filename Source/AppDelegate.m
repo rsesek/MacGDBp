@@ -52,6 +52,12 @@
   return (AppDelegate*)[NSApp delegate];
 }
 
+- (void)applicationWillTerminate:(NSNotification*)notification
+{
+  [[NSUserDefaults standardUserDefaults] setBool:self.debugger.connection.attached
+                                          forKey:@"DebuggerAttached"];
+}
+
 /**
  * Shows the debugger window
  */

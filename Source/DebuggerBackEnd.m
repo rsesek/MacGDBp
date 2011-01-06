@@ -61,6 +61,8 @@
     connection_ = [[NetworkConnection alloc] initWithPort:aPort];
     connection_.delegate = self;
     [connection_ connect];
+
+    attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
   }
   return self;
 }
