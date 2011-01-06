@@ -45,4 +45,7 @@
 
 @interface NSObject (BSSourceViewDelegate)
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file;
+
+// Whether to accept a file drop.
+- (BOOL)sourceView:(BSSourceView*)sv acceptsDropOfFile:(NSString*)fileName;
 @end

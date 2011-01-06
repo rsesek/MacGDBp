@@ -216,6 +216,9 @@
   [[textView textContainer] setHeightTracksTextView:NO];
   [textView setAutoresizingMask:NSViewNotSizable];
   [scrollView setDocumentView:textView];
+
+  NSArray* types = [NSArray arrayWithObject:NSFilenamesPboardType];
+  [self registerForDraggedTypes:types];
 }
 
 /**
@@ -233,6 +236,36 @@
     return;
   }
   [textView setString:contents];
+}
+
+/**
+ * Validates an initiated drag operation.
+ */
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+  if ([delegate respondsToSelector:@selector(sourceView:acceptsDropOfFile:)])
+    return NSDragOperationCopy;
+  return NSDragOperationNone;
+}
+
+/**
+ * Performs a dragging operation of files to set the contents of the file.
+ */
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+  NSPasteboard* pboard = [sender draggingPasteboard];
+  if ([[pboard types] containsObject:NSFilenamesPboardType]) {
+    NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
+    if ([files count]) {
+      NSString* filename = [files objectAtIndex:0];
+      if ([delegate respondsToSelector:@selector(sourceView:acceptsDropOfFile:)] &&
+          [delegate sourceView:self acceptsDropOfFile:filename]) {
+        [self setFile:filename];
+        return YES;
+      }
+    }
+  }
+  return NO;
 }
 
 @end

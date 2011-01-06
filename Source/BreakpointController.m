@@ -111,4 +111,12 @@
   [[sourceView numberView] setNeedsDisplay:YES];
 }
 
+/**
+ * Accepts a file dragged to set the contents of the display.
+ */
+- (BOOL)sourceView:(BSSourceView*)sv acceptsDropOfFile:(NSString*)filename
+{
+  return YES;
+}
+
 @end
