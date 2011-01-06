@@ -67,14 +67,13 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp;
 {
-  if (![breakpoints containsObject:bp]) {
+  if (![breakpoints containsObject:bp])
+  {
     [breakpoints addObject:bp];
-    if (bp.line > 0) {
-      [connection addBreakpoint:bp];
-
-      [savedBreakpoints addObject:[bp dictionary]];
-      [[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
-    }
+    [connection addBreakpoint:bp];
+    
+    [savedBreakpoints addObject:[bp dictionary]];
+    [[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
     
     [self updateDisplaysForFile:[bp file]];
   }
@@ -90,12 +89,11 @@
     if ([b line] == line && [[b file] isEqualToString:file])
     {
       [breakpoints removeObject:b];
-      if (b.line > 0)
-        [connection removeBreakpoint:b];
-
+      [connection removeBreakpoint:b];
+      
       [savedBreakpoints removeObject:[b dictionary]];
       [[NSUserDefaults standardUserDefaults] setValue:savedBreakpoints forKey:@"Breakpoints"];
-
+      
       [self updateDisplaysForFile:file];
       return b;
     }
@@ -111,7 +109,7 @@
   NSMutableArray* matches = [NSMutableArray array];
   for (Breakpoint* b in breakpoints)
   {
-    if ([[b file] isEqualToString:file] && [b line] > 0)
+    if ([[b file] isEqualToString:file])
     {
       [matches addObject:b];
     }
