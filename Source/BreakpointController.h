@@ -18,7 +18,7 @@
 #import "BreakpointManager.h"
 #import "BSSourceView.h"
 
-@interface BreakpointController : NSWindowController
+@interface BreakpointController : NSWindowController<BSSourceViewDelegate>
 {
   BreakpointManager* manager;
   

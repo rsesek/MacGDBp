@@ -18,6 +18,8 @@
 #import "BSLineNumberView.h"
 #import "BSSourceViewTextView.h"
 
+@protocol BSSourceViewDelegate;
+
 @interface BSSourceView : NSView
 {
   BSLineNumberView* numberView;
@@ -27,7 +29,7 @@
   NSString* file;
   int markedLine;
   
-  id delegate;
+  id<BSSourceViewDelegate> delegate;
 }
 
 @property(readwrite, assign) BSLineNumberView* numberView;
@@ -43,7 +45,12 @@
 
 @end
 
-@interface NSObject (BSSourceViewDelegate)
+// Delegate ////////////////////////////////////////////////////////////////////
+
+@protocol BSSourceViewDelegate <NSObject>
+@optional
+
+// Notifies the delegate that the gutter was clicked at a certain line.
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file;
 
 // Whether to accept a file drop.
