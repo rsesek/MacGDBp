@@ -43,6 +43,8 @@
  */
 - (void)awakeFromNib
 {
+  NSArray* dragTypes = [NSArray arrayWithObject:NSFilenamesPboardType];
+  [tableView_ registerForDraggedTypes:dragTypes];
 }
 
 /**
@@ -86,7 +88,8 @@
   
   Breakpoint* bp = [selection objectAtIndex:0];
   [sourceView_ setFile:[bp file]];
-  [sourceView_ scrollToLine:[bp line]];
+  if ([bp line] > 0)
+    [sourceView_ scrollToLine:[bp line]];
   [[sourceView_ numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
 }
 
@@ -99,6 +102,8 @@
     writeRowsWithIndexes:(NSIndexSet*)rowIndexes
     toPasteboard:(NSPasteboard*)pboard
 {
+  NSLog(@"begin");
+  return [[pboard types] containsObject:NSFilenamesPboardType];
 }
 
 /**
@@ -109,6 +114,14 @@
                  proposedRow:(NSInteger)row
        proposedDropOperation:(NSTableViewDropOperation)operation
 {
+  NSLog(@"validate");
+  NSPasteboard* pboard = [info draggingPasteboard];
+  if ([[pboard types] containsObject:NSFilenamesPboardType]) {
+    NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
+    if ([files count])
+      return NSDragOperationGeneric;
+  }
+  return NSDragOperationNone;
 }
 
 /**
@@ -119,6 +132,21 @@
               row:(NSInteger)row
     dropOperation:(NSTableViewDropOperation)operation
 {
+  NSLog(@"accept");
+  BOOL valid = [self tableView:aTableView
+                  validateDrop:info
+                   proposedRow:row
+         proposedDropOperation:operation] == NSDragOperationGeneric;
+  if (valid) {
+    NSPasteboard* pboard = [info draggingPasteboard];
+    NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
+    for (NSString* file in files) {
+      Breakpoint* bp = [[[Breakpoint alloc] initWithLine:0 inFile:file] autorelease];
+      [manager addBreakpoint:bp];
+    }
+    return YES;
+  }
+  return NO;
 }
 
 #pragma mark BSSourceView Delegate
