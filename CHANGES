@@ -5,7 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: After clicking on a stack frame with a virtual file, the debugger front end would hang
 - Fix: Crash on clicking "Install & Relaunch" from Sparkle
-- New: #210  Add a "Stop" button to detach the debugger from the current session
+- New: #210, #195  Add a "Stop" button to detach the debugger from the current session
 - New: #209  Drag a file onto the source view in the Breakpoints window to load the contents
 
 
