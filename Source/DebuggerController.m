@@ -85,13 +85,14 @@
 {
   SEL action = [anItem action];
   
-  if (action == @selector(stepOut:))
+  if (action == @selector(stepOut:)) {
     return ([connection isConnected] && [stackController.stack count] > 1);
-  else if (action == @selector(stepIn:) || action == @selector(stepOver:) || action == @selector(run:))
+  } else if (action == @selector(stepIn:) ||
+             action == @selector(stepOver:) ||
+             action == @selector(run:) ||
+             action == @selector(stop:)) {
     return [connection isConnected];
-  else if (action == @selector(stop:))
-    return [connection isConnected] && [connection attached];
-  
+  }
   return [[self window] validateUserInterfaceItem:anItem];
 }
 
