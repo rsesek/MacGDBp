@@ -120,11 +120,9 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
       break;
       
     case kCFStreamEventErrorOccurred:
-    {
       ReportError(CFReadStreamCopyError(stream));
       UnscheduleReadStream();
       break;
-    }
       
     case kCFStreamEventEndEncountered:
       UnscheduleReadStream();
@@ -143,11 +141,9 @@ void NetworkCallbackController::OnWriteStreamEvent(CFWriteStreamRef stream,
       break;
       
     case kCFStreamEventErrorOccurred:
-    {
       ReportError(CFWriteStreamCopyError(stream));
       UnscheduleWriteStream();
       break;
-    }
       
     case kCFStreamEventEndEncountered:
       UnscheduleReadStream();

@@ -16,6 +16,8 @@
 
 @class LogEntry;
 
+// This is the private interface for the NetworkConnection class. This is shared
+// by the C++ NetworkCallbackController to communicate.
 @interface NetworkConnection ()
 
 @property (assign) CFSocketRef socket;
