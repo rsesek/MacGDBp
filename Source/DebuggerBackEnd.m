@@ -215,12 +215,6 @@
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
 
-- (void)connectionDidAccept:(NetworkConnection*)cx
-{
-  if (!self.attached)
-    [connection_ sendCommandWithFormat:@"detach"];
-}
-
 - (void)errorEncountered:(NSString*)error
 {
   [delegate errorEncountered:error];
@@ -231,6 +225,11 @@
  */
 - (void)handleInitialResponse:(NSXMLDocument*)response
 {
+  if (!self.attached) {
+    [connection_ sendCommandWithFormat:@"detach"];
+    return;
+  }
+
   active_ = YES;
 
   // Register any breakpoints that exist offline.
