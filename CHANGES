@@ -11,6 +11,7 @@ MacGDBp                                                               CHANGE LOG
 - New: #209  Drag a file onto the source view in the Breakpoints window to load
   the contents
 - Fix: #197  Add a menu item and keyboard shortcut for the "Attached" control
+- Fix: #208  Variable selection and expansion state not saved across steps
 
 
 1.4 Beta 1
