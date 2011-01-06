@@ -20,7 +20,9 @@
 
 @implementation BreakpointController
 
-@synthesize sourceView, arrayController;
+@synthesize tableView = tableView_;
+@synthesize arrayController = arrayController_;
+@synthesize sourceView = sourceView_;
 
 /**
  * Constructor
@@ -37,6 +39,13 @@
 }
 
 /**
+ * Awake from NIB.
+ */
+- (void)awakeFromNib
+{
+}
+
+/**
  * Adds a breakpoint by calling up a file chooser and selecting a file for
  * breaking in
  */
@@ -45,11 +54,9 @@
   NSOpenPanel* panel = [NSOpenPanel openPanel];
   
   if ([panel runModal] != NSOKButton)
-  {
     return;
-  }
   
-  [sourceView setFile:[panel filename]];
+  [sourceView_ setFile:[panel filename]];
 }
 
 /**
@@ -57,16 +64,12 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
-  NSArray* selection = [arrayController selectedObjects];
+  NSArray* selection = [arrayController_ selectedObjects];
   if ([selection count] < 1)
-  {
     return;
-  }
-  
+
   for (Breakpoint* bp in selection)
-  {
     [manager removeBreakpointAt:[bp line] inFile:[bp file]];
-  }
 }
 
 #pragma mark NSTableView Delegate
@@ -77,16 +80,45 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-  NSArray* selection = [arrayController selectedObjects];
+  NSArray* selection = [arrayController_ selectedObjects];
   if ([selection count] < 1)
-  {
     return;
-  }
   
   Breakpoint* bp = [selection objectAtIndex:0];
-  [sourceView setFile:[bp file]];
-  [sourceView scrollToLine:[bp line]];
-  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+  [sourceView_ setFile:[bp file]];
+  [sourceView_ scrollToLine:[bp line]];
+  [[sourceView_ numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+}
+
+#pragma mark NSTableView Data Source
+
+/**
+ * Handles the beginning of a drag operation.
+ */
+- (BOOL)tableView:(NSTableView*)aTableView
+    writeRowsWithIndexes:(NSIndexSet*)rowIndexes
+    toPasteboard:(NSPasteboard*)pboard
+{
+}
+
+/**
+ * Validates the drag operation.
+ */
+- (NSDragOperation)tableView:(NSTableView*)aTableView
+                validateDrop:(id<NSDraggingInfo>)info
+                 proposedRow:(NSInteger)row
+       proposedDropOperation:(NSTableViewDropOperation)operation
+{
+}
+
+/**
+ * Incorporates the dropped data.
+ */
+- (BOOL)tableView:(NSTableView*)aTableView
+       acceptDrop:(id<NSDraggingInfo>)info
+              row:(NSInteger)row
+    dropOperation:(NSTableViewDropOperation)operation
+{
 }
 
 #pragma mark BSSourceView Delegate
@@ -96,19 +128,16 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-  if ([manager hasBreakpointAt:line inFile:file])
-  {
+  if ([manager hasBreakpointAt:line inFile:file]) {
     [manager removeBreakpointAt:line inFile:file];
-  }
-  else
-  {
+  } else {
     Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
     [manager addBreakpoint:bp];
     [bp release];
   }
   
-  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
-  [[sourceView numberView] setNeedsDisplay:YES];
+  [[sourceView_ numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
+  [[sourceView_ numberView] setNeedsDisplay:YES];
 }
 
 @end
