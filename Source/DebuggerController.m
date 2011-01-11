@@ -315,7 +315,7 @@
 {
   NSString* selection = [selectedVariable fullName];
 
-  for (int i = 0; i < [variablesOutlineView numberOfRows]; i++) {
+  for (NSInteger i = 0; i < [variablesOutlineView numberOfRows]; i++) {
     NSTreeNode* node = [variablesOutlineView itemAtRow:i];
     NSString* fullName = [[node representedObject] fullName];
     
