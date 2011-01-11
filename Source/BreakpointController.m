@@ -94,7 +94,7 @@
 /**
  * The gutter was clicked, which indicates that a breakpoint needs to be changed
  */
-- (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
+- (void)gutterClickedAtLine:(NSUInteger)line forFile:(NSString*)file
 {
   if ([manager hasBreakpointAt:line inFile:file])
   {

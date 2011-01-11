@@ -27,7 +27,7 @@
   NSScrollView* scrollView;
   
   NSString* file;
-  int markedLine;
+  NSUInteger markedLine;
   
   id<BSSourceViewDelegate> delegate;
 }
@@ -36,12 +36,12 @@
 @property(readwrite, assign) BSSourceViewTextView* textView;
 @property(readwrite, assign) NSScrollView* scrollView;
 @property(readwrite, nonatomic, assign) NSString* file;
-@property(readwrite, assign) int markedLine;
+@property(readwrite, assign) NSUInteger markedLine;
 @property(readwrite, assign) id delegate;
 
 - (void)setFile:(NSString*)f;
 - (void)setString:(NSString*)source asFile:(NSString*)path;
-- (void)scrollToLine:(int)line;
+- (void)scrollToLine:(NSUInteger)line;
 
 @end
 
@@ -51,7 +51,7 @@
 @optional
 
 // Notifies the delegate that the gutter was clicked at a certain line.
-- (void)gutterClickedAtLine:(int)line forFile:(NSString*)file;
+- (void)gutterClickedAtLine:(NSUInteger)line forFile:(NSString*)file;
 
 // Whether to accept a file drop.
 - (BOOL)sourceView:(BSSourceView*)sv acceptsDropOfFile:(NSString*)fileName;

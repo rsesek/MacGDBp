@@ -152,14 +152,14 @@
 /**
  * Tells the text view to scroll to a certain line
  */
-- (void)scrollToLine:(int)line
+- (void)scrollToLine:(NSUInteger)line
 {
   if ([[textView textStorage] length] == 0)
     return;
   
   // go through the document until we find the NSRange for the line we want
   int rangeIndex = 0;
-  for (int i = 0; i < line; i++)
+  for (NSUInteger i = 0; i < line; i++)
   {
     rangeIndex = NSMaxRange([[textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
   }
@@ -175,7 +175,7 @@
  */
 - (void)setupViews
 {
-  int gutterWidth = 30;
+  NSUInteger gutterWidth = 30;
   
   // setup the line number view
   NSRect numberFrame = [self bounds];
