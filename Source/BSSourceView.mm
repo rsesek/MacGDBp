@@ -181,13 +181,8 @@
  */
 - (void)setupViews
 {
-  int gutterWidth = 30;
-  
   // Create the scroll view.
-  NSRect scrollFrame = [self bounds];
-  scrollFrame.origin.x = gutterWidth;
-  scrollFrame.size.width = scrollFrame.size.width - gutterWidth;
-  scrollView_ = [[[NSScrollView alloc] initWithFrame:scrollFrame] autorelease];
+  scrollView_ = [[[NSScrollView alloc] initWithFrame:[self bounds]] autorelease];
   [scrollView_ setHasHorizontalScroller:YES];
   [scrollView_ setHasVerticalScroller:YES];
   [scrollView_ setAutohidesScrollers:YES];
