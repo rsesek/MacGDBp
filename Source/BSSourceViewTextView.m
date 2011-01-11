@@ -28,7 +28,7 @@
 {
   [super drawRect:rect];
   
-  unsigned i = 0, line = 1;
+  NSUInteger i = 0, line = 1;
   while (i < [[self layoutManager] numberOfGlyphs])
   {
     NSRange fragRange;
