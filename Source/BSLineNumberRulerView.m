@@ -32,4 +32,16 @@
   [self setClientView:[[self scrollView] documentView]];
 }
 
+- (void)drawHashMarksAndLabelsInRect:(NSRect)rect
+{
+  // Draw the background color.
+  [[NSColor colorWithDeviceRed:0.871 green:0.871 blue:0.871 alpha:1] set];
+  [NSBezierPath fillRect:rect];
+
+  // Draw the right stroke.
+  [[NSColor grayColor] setStroke];
+  [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))
+                            toPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+}
+
 @end
