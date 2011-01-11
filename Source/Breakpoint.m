@@ -19,17 +19,19 @@
 
 @implementation Breakpoint
 
-@synthesize file, line, debuggerId;
+@synthesize file = file_;
+@synthesize line = line_;
+@synthesize debuggerId = debuggerId_;
 
 /**
  * Initializes a breakpoint with a file and line
  */
-- (id)initWithLine:(int)l inFile:(NSString*)f
+- (id)initWithLine:(NSUInteger)l inFile:(NSString*)f
 {
   if (self = [super init])
   {
-    file = [f retain];
-    line = l;
+    file_ = [f retain];
+    line_ = l;
   }
   return self;
 }
@@ -39,7 +41,7 @@
  */
 - (void)dealloc
 {
-  [file release];
+  [file_ release];
   [super dealloc];
 }
 
@@ -50,8 +52,8 @@
 {
   if (self = [super init])
   {
-    file = [[dict valueForKey:@"file"] retain];
-    line = [[dict valueForKey:@"line"] intValue];
+    file_ = [[dict valueForKey:@"file"] retain];
+    line_ = [[dict valueForKey:@"line"] intValue];
   }
   return self;
 }
@@ -83,7 +85,7 @@
  */
 - (BOOL)isEqual:(id)obj
 {
-  return ([[obj file] isEqualToString:file] && [obj line] == line);
+  return ([[obj file] isEqualToString:self.file] && [obj line] == self.line);
 }
 
 /**
@@ -91,7 +93,7 @@
  */
 - (NSUInteger)hash
 {
-  return ([file hash] << 8) + line;
+  return ([self.file hash] << 8) + self.line;
 }
 
 /**
@@ -99,7 +101,11 @@
  */
 - (NSDictionary*)dictionary
 {
-  return [NSDictionary dictionaryWithObjectsAndKeys:file, @"file", [NSNumber numberWithInt:line], @"line", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+      self.file, @"file",
+      [NSNumber numberWithInt:self.line], @"line",
+      nil
+  ];
 }
 
 /**
@@ -107,7 +113,7 @@
  */
 - (NSString*)description
 {
-  return [NSString stringWithFormat:@"%@:%i", file, line];
+  return [NSString stringWithFormat:@"%@:%i", self.file, self.line];
 }
 
 @end

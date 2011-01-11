@@ -16,19 +16,20 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+// This represents a breakpoint at a certain file and line number. It also
+// maintains the identifier that the backend assigns to the breakpoint.
 @interface Breakpoint : NSObject
 {
-  NSString* file;
-  int line;
-  int debuggerId;
+  NSString* file_;
+  NSUInteger line_;
+  NSUInteger debuggerId_;
 }
 
-@property(readonly) NSString* file;
-@property(readonly) int line;
-@property(readwrite, assign) int debuggerId;
+@property (readonly) NSString* file;
+@property (readonly) NSUInteger line;
+@property (readwrite, assign) NSUInteger debuggerId;
 
-- (id)initWithLine:(int)l inFile:(NSString*)f;
+- (id)initWithLine:(NSUInteger)l inFile:(NSString*)f;
 - (id)initWithDictionary:(NSDictionary*)dict;
 
 - (NSString*)transformedPath;
