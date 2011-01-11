@@ -525,7 +525,7 @@ void PerformQuitSignal(void* info)
   BOOL done = NO;
   
   char* string = (char*)[command UTF8String];
-  int stringLength = strlen(string);
+  size_t stringLength = strlen(string);
   
   // Busy wait while writing. BAADD. Should background this operation.
   while (!done)
@@ -533,7 +533,7 @@ void PerformQuitSignal(void* info)
     if (CFWriteStreamCanAcceptBytes(writeStream_))
     {
       // Include the NULL byte in the string when we write.
-      int bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)string, stringLength + 1);
+      CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)string, stringLength + 1);
       if (bytesWritten < 0)
       {
         NSLog(@"write error");
