@@ -16,6 +16,8 @@
 
 #import "BSSourceView.h"
 
+#include "BSLineNumberRulerView.h"
+
 @interface BSSourceView (Private)
 - (void)setupViews;
 - (void)errorHighlightingFile:(NSNotification*)notif;
@@ -24,7 +26,12 @@
 
 @implementation BSSourceView
 
-@synthesize numberView, textView, scrollView, markedLine, delegate, file;
+@synthesize textView = textView_;
+@synthesize scrollView = scrollView_;
+@synthesize markers = markers_;
+@synthesize markedLine;
+@synthesize delegate;
+@synthesize file;
 
 /**
  * Initializes the source view with the path of a file
@@ -51,9 +58,8 @@
 {
   [file release];
   
-  [numberView removeFromSuperview];
-  [scrollView removeFromSuperview];
-  [textView removeFromSuperview];
+  [scrollView_ removeFromSuperview];
+  [textView_ removeFromSuperview];
   
   [super dealloc];
 }
@@ -71,7 +77,7 @@
   
   if (![[NSFileManager defaultManager] fileExistsAtPath:f])
   {
-    [textView setString:@""];
+    [textView_ setString:@""];
     return;
   }
 
@@ -92,7 +98,7 @@
     
     NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
     NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
-    [[textView textStorage] setAttributedString:source];
+    [[textView_ textStorage] setAttributedString:source];
     [source release];
   }
   @catch (NSException* exception)
@@ -113,7 +119,7 @@
   [source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
   if (error)
   {
-    [textView setString:source];
+    [textView_ setString:source];
     return;
   }
   
@@ -154,20 +160,20 @@
  */
 - (void)scrollToLine:(int)line
 {
-  if ([[textView textStorage] length] == 0)
+  if ([[textView_ textStorage] length] == 0)
     return;
   
   // go through the document until we find the NSRange for the line we want
   int rangeIndex = 0;
   for (int i = 0; i < line; i++)
   {
-    rangeIndex = NSMaxRange([[textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
+    rangeIndex = NSMaxRange([[textView_ string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
   }
   
   // now get the true start/end markers for it
   unsigned lineStart, lineEnd;
-  [[textView string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
-  [textView scrollRangeToVisible:[[textView string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+  [[textView_ string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
+  [textView_ scrollRangeToVisible:[[textView_ string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 }
 
 /**
@@ -177,45 +183,43 @@
 {
   int gutterWidth = 30;
   
-  // setup the line number view
-  NSRect numberFrame = [self bounds];
-  numberFrame.origin = NSMakePoint(0.0, 0.0);
-  numberFrame.size.width = gutterWidth;
-  numberView = [[BSLineNumberView alloc] initWithFrame:numberFrame];
-  [numberView setAutoresizingMask:NSViewHeightSizable];
-  [numberView setSourceView:self];
-  [self addSubview:numberView];
-  
-  // create the scroll view
+  // Create the scroll view.
   NSRect scrollFrame = [self bounds];
   scrollFrame.origin.x = gutterWidth;
   scrollFrame.size.width = scrollFrame.size.width - gutterWidth;
-  scrollView = [[NSScrollView alloc] initWithFrame:scrollFrame];
-  [scrollView setHasHorizontalScroller:YES];
-  [scrollView setHasVerticalScroller:YES];
-  [scrollView setAutohidesScrollers:YES];
-  [scrollView setBorderType:NSBezelBorder];
-  [scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
-  [[scrollView contentView] setAutoresizesSubviews:YES];
-  [self addSubview:scrollView];
-  
+  scrollView_ = [[[NSScrollView alloc] initWithFrame:scrollFrame] autorelease];
+  [scrollView_ setHasHorizontalScroller:YES];
+  [scrollView_ setHasVerticalScroller:YES];
+  [scrollView_ setAutohidesScrollers:YES];
+  [scrollView_ setBorderType:NSBezelBorder];
+  [scrollView_ setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
+  [[scrollView_ contentView] setAutoresizesSubviews:YES];
+  [self addSubview:scrollView_];
+
+  // Set up the ruler.
+  BSLineNumberRulerView* lineNumberView =
+      [[[BSLineNumberRulerView alloc] initWithScrollView:scrollView_] autorelease];
+  [scrollView_ setVerticalRulerView:lineNumberView];  
+  [scrollView_ setHasHorizontalRuler:NO];
+  [scrollView_ setHasVerticalRuler:YES];
+  [scrollView_ setRulersVisible:YES];
+
   // add the text view to the scroll view
   NSRect textFrame;
   textFrame.origin = NSMakePoint(0.0, 0.0);
-  textFrame.size = [scrollView contentSize];
-  textView = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
-  [textView setSourceView:self];
-  [textView setEditable:NO];
-  [textView setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
-  [textView setHorizontallyResizable:YES];
-  [textView setVerticallyResizable:YES];
-  [textView setMinSize:textFrame.size];
-  [textView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-  [[textView textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-  [[textView textContainer] setWidthTracksTextView:NO];
-  [[textView textContainer] setHeightTracksTextView:NO];
-  [textView setAutoresizingMask:NSViewNotSizable];
-  [scrollView setDocumentView:textView];
+  textFrame.size = [scrollView_ contentSize];
+  textView_ = [[[NSTextView alloc] initWithFrame:textFrame] autorelease];
+  [textView_ setEditable:NO];
+  [textView_ setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+  [textView_ setHorizontallyResizable:YES];
+  [textView_ setVerticallyResizable:YES];
+  [textView_ setMinSize:textFrame.size];
+  [textView_ setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[textView_ textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[textView_ textContainer] setWidthTracksTextView:NO];
+  [[textView_ textContainer] setHeightTracksTextView:NO];
+  [textView_ setAutoresizingMask:NSViewNotSizable];
+  [scrollView_ setDocumentView:textView_];
 
   NSArray* types = [NSArray arrayWithObject:NSFilenamesPboardType];
   [self registerForDraggedTypes:types];
@@ -235,7 +239,7 @@
     NSLog(@"Error reading file at %@: %@", filePath, error);
     return;
   }
-  [textView setString:contents];
+  [textView_ setString:contents];
 }
 
 /**

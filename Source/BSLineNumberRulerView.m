@@ -14,15 +14,22 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#import <Cocoa/Cocoa.h>
+#import "BSLineNumberRulerView.h"
 
-@class BSSourceView;
 
-@interface BSSourceViewTextView : NSTextView
+@implementation BSLineNumberRulerView
+
+- (id)initWithScrollView:(NSScrollView*)scrollView
 {
-  BSSourceView* sourceView;
+  if (self = [super initWithScrollView:scrollView orientation:NSVerticalRuler]) {
+    [self setClientView:[scrollView documentView]];
+  }
+  return self;
 }
 
-@property(readwrite, assign) BSSourceView* sourceView;
+- (void)awakeFromNib
+{
+  [self setClientView:[[self scrollView] documentView]];
+}
 
 @end

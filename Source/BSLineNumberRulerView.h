@@ -15,23 +15,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BreakpointManager.h"
 
-@class BSSourceView;
-@protocol BSSourceViewDelegate;
-
-@interface BreakpointController : NSWindowController<BSSourceViewDelegate>
+// The NSRulerView that draws line numbers on the BSSourceView.
+@interface BSLineNumberRulerView : NSRulerView
 {
-  BreakpointManager* manager;
-  
-  IBOutlet NSArrayController* arrayController;
-  IBOutlet BSSourceView* sourceView;
+
 }
 
-@property(readonly) BSSourceView* sourceView;
-@property(readonly) NSArrayController* arrayController;
-
-- (IBAction)addBreakpoint:(id)sender;
-- (IBAction)removeBreakpoint:(id)sender;
+// Designated initializer.
+- (id)initWithScrollView:(NSScrollView*)scrollView;
 
 @end

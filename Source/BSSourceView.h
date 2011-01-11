@@ -15,29 +15,34 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#include <vector>
+
 #import "BSLineNumberView.h"
-#import "BSSourceViewTextView.h"
 
 @protocol BSSourceViewDelegate;
 
 @interface BSSourceView : NSView
 {
-  BSLineNumberView* numberView;
-  BSSourceViewTextView* textView;
-  NSScrollView* scrollView;
-  
+ @private
+  NSTextView* textView_;
+  NSScrollView* scrollView_;
+
+  std::vector<NSUInteger> lineIndex_;
+
+  NSSet* markers_;
+
   NSString* file;
   int markedLine;
-  
+
   id<BSSourceViewDelegate> delegate;
 }
 
-@property(readwrite, assign) BSLineNumberView* numberView;
-@property(readwrite, assign) BSSourceViewTextView* textView;
-@property(readwrite, assign) NSScrollView* scrollView;
-@property(readwrite, nonatomic, assign) NSString* file;
-@property(readwrite, assign) int markedLine;
-@property(readwrite, assign) id delegate;
+@property (assign) NSTextView* textView;
+@property (assign) NSScrollView* scrollView;
+@property (retain) NSSet* markers;
+@property (nonatomic, assign) NSString* file;
+@property (assign) int markedLine;
+@property (assign) id delegate;
 
 - (void)setFile:(NSString*)f;
 - (void)setString:(NSString*)source asFile:(NSString*)path;

@@ -22,9 +22,8 @@
 		1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */; };
 		1E6B5947116106FE001189D2 /* LoggingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6B5946116106FE001189D2 /* LoggingController.m */; };
 		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
-		1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.m */; };
-		1E7188690D839F6300969277 /* BSSourceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.m */; };
-		1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188670D839F6300969277 /* BSSourceViewTextView.m */; };
+		1E7188680D839F6300969277 /* BSLineNumberView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.mm */; };
+		1E7188690D839F6300969277 /* BSSourceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.mm */; };
 		1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E822CDC0DA28AC30027A23F /* Breakpoint.m */; };
 		1E9582620E252474001A3D89 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9582600E252474001A3D89 /* Preferences.xib */; };
 		1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9582660E2524AD001A3D89 /* PreferencesController.m */; };
@@ -37,6 +36,7 @@
 		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
 		1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965512BBC6A700A8D984 /* README.bluestatic */; };
 		1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965612BBC6A700A8D984 /* README.chromium */; };
+		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -92,11 +92,9 @@
 		1E6B5946116106FE001189D2 /* LoggingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoggingController.m; path = Source/LoggingController.m; sourceTree = "<group>"; };
 		1E6B594B11610993001189D2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Log.xib; sourceTree = "<group>"; };
 		1E7188620D839F6300969277 /* BSLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberView.h; path = Source/BSLineNumberView.h; sourceTree = "<group>"; };
-		1E7188630D839F6300969277 /* BSLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSLineNumberView.m; path = Source/BSLineNumberView.m; sourceTree = "<group>"; };
-		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
-		1E7188650D839F6300969277 /* BSSourceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceView.m; path = Source/BSSourceView.m; sourceTree = "<group>"; };
-		1E7188660D839F6300969277 /* BSSourceViewTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceViewTextView.h; path = Source/BSSourceViewTextView.h; sourceTree = "<group>"; };
-		1E7188670D839F6300969277 /* BSSourceViewTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceViewTextView.m; path = Source/BSSourceViewTextView.m; sourceTree = "<group>"; };
+		1E7188630D839F6300969277 /* BSLineNumberView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberView.mm; path = Source/BSLineNumberView.mm; sourceTree = "<group>"; };
+		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
+		1E7188650D839F6300969277 /* BSSourceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSSourceView.mm; path = Source/BSSourceView.mm; sourceTree = "<group>"; };
 		1E822CDB0DA28AC30027A23F /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = Source/Breakpoint.h; sourceTree = "<group>"; };
 		1E822CDC0DA28AC30027A23F /* Breakpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Breakpoint.m; path = Source/Breakpoint.m; sourceTree = "<group>"; };
 		1E9582610E252474001A3D89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Preferences.xib; sourceTree = "<group>"; };
@@ -115,6 +113,8 @@
 		1EC6965412BBC6A700A8D984 /* modp_b64_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64_data.h; sourceTree = "<group>"; };
 		1EC6965512BBC6A700A8D984 /* README.bluestatic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.bluestatic; sourceTree = "<group>"; };
 		1EC6965612BBC6A700A8D984 /* README.chromium */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.chromium; sourceTree = "<group>"; };
+		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
+		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSLineNumberRulerView.m; path = Source/BSLineNumberRulerView.m; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -252,11 +252,11 @@
 				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
 				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 				1E7188620D839F6300969277 /* BSLineNumberView.h */,
-				1E7188630D839F6300969277 /* BSLineNumberView.m */,
+				1E7188630D839F6300969277 /* BSLineNumberView.mm */,
 				1E7188640D839F6300969277 /* BSSourceView.h */,
-				1E7188650D839F6300969277 /* BSSourceView.m */,
-				1E7188660D839F6300969277 /* BSSourceViewTextView.h */,
-				1E7188670D839F6300969277 /* BSSourceViewTextView.m */,
+				1E7188650D839F6300969277 /* BSSourceView.mm */,
+				1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */,
+				1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.m */,
 			);
 			name = "Source View";
 			sourceTree = "<group>";
@@ -447,9 +447,8 @@
 				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
-				1E7188680D839F6300969277 /* BSLineNumberView.m in Sources */,
-				1E7188690D839F6300969277 /* BSSourceView.m in Sources */,
-				1E71886A0D839F6300969277 /* BSSourceViewTextView.m in Sources */,
+				1E7188680D839F6300969277 /* BSLineNumberView.mm in Sources */,
+				1E7188690D839F6300969277 /* BSSourceView.mm in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
 				1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */,
@@ -462,6 +461,7 @@
 				1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */,
 				1EFBE63012C515C200F96D6E /* NetworkConnection.mm in Sources */,
 				1EFBE66B12C51E3900F96D6E /* NetworkCallbackController.mm in Sources */,
+				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
