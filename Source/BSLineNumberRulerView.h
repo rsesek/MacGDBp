@@ -15,14 +15,18 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#include <vector>
 
 // The NSRulerView that draws line numbers on the BSSourceView.
 @interface BSLineNumberRulerView : NSRulerView
 {
-
+ @private
+  std::vector<NSUInteger> lineIndex_;
 }
 
 // Designated initializer.
 - (id)initWithScrollView:(NSScrollView*)scrollView;
+
+- (void)performLayout;
 
 @end

@@ -15,19 +15,18 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#include <vector>
 
 #import "BSLineNumberView.h"
 
+@class BSLineNumberRulerView;
 @protocol BSSourceViewDelegate;
 
 @interface BSSourceView : NSView
 {
  @private
   NSTextView* textView_;
+  BSLineNumberRulerView* ruler_;
   NSScrollView* scrollView_;
-
-  std::vector<NSUInteger> lineIndex_;
 
   NSSet* markers_;
 

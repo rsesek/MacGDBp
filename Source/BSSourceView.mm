@@ -22,7 +22,6 @@
 - (void)setupViews;
 - (void)errorHighlightingFile:(NSNotification*)notif;
 - (void)setPlainTextStringFromFile:(NSString*)filePath;
-- (void)computeLineIndex;
 @end
 
 @implementation BSSourceView
@@ -108,7 +107,7 @@
     [self setPlainTextStringFromFile:f];
   }
 
-  [self computeLineIndex];
+  [ruler_ performLayout];
 }
 
 /**
@@ -139,7 +138,7 @@
     file = [path copy];
   }
 
-  [self computeLineIndex];
+  [ruler_ performLayout];
 }
 
 /**
@@ -196,14 +195,6 @@
   [[scrollView_ contentView] setAutoresizesSubviews:YES];
   [self addSubview:scrollView_];
 
-  // Set up the ruler.
-  BSLineNumberRulerView* lineNumberView =
-      [[[BSLineNumberRulerView alloc] initWithScrollView:scrollView_] autorelease];
-  [scrollView_ setVerticalRulerView:lineNumberView];  
-  [scrollView_ setHasHorizontalRuler:NO];
-  [scrollView_ setHasVerticalRuler:YES];
-  [scrollView_ setRulersVisible:YES];
-
   // add the text view to the scroll view
   NSRect textFrame;
   textFrame.origin = NSMakePoint(0.0, 0.0);
@@ -220,6 +211,13 @@
   [[textView_ textContainer] setHeightTracksTextView:NO];
   [textView_ setAutoresizingMask:NSViewNotSizable];
   [scrollView_ setDocumentView:textView_];
+
+  // Set up the ruler.
+  ruler_ = [[[BSLineNumberRulerView alloc] initWithScrollView:scrollView_] autorelease];
+  [scrollView_ setVerticalRulerView:ruler_];
+  [scrollView_ setHasHorizontalRuler:NO];
+  [scrollView_ setHasVerticalRuler:YES];
+  [scrollView_ setRulersVisible:YES];
 
   NSArray* types = [NSArray arrayWithObject:NSFilenamesPboardType];
   [self registerForDraggedTypes:types];
@@ -240,34 +238,6 @@
     return;
   }
   [textView_ setString:contents];
-}
-
-/**
- * Iterates over the text storage system and computes a map of line numbers to
- * first character index for a line's frame rectangle.
- */
-- (void)computeLineIndex
-{
-  lineIndex_.clear();
-
-  NSString* text = [textView_ string];
-  NSUInteger stringLength = [text length];
-  NSUInteger index = 0;
-
-  while (index < stringLength) {
-    lineIndex_.push_back(index);
-    index = NSMaxRange([text lineRangeForRange:NSMakeRange(index, 0)]);
-  }
-
-  NSUInteger lineEnd, contentEnd;
-  [text getLineStart:NULL
-                 end:&lineEnd
-         contentsEnd:&contentEnd
-            forRange:NSMakeRange(lineIndex_.back(), 0)];
-  if (contentEnd < lineEnd)
-    lineIndex_.push_back(index);
-
-  NSLog(@"line count = %d", lineIndex_.size());
 }
 
 // Drag Handlers ///////////////////////////////////////////////////////////////

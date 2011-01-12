@@ -16,6 +16,10 @@
 
 #import "BSLineNumberRulerView.h"
 
+@interface BSLineNumberRulerView (Private)
+- (void)computeLineIndex;
+@end
+
 
 @implementation BSLineNumberRulerView
 
@@ -42,6 +46,45 @@
   [[NSColor grayColor] setStroke];
   [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))
                             toPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+}
+
+- (void)performLayout
+{
+  [self computeLineIndex];
+}
+
+// Private /////////////////////////////////////////////////////////////////////
+
+/**
+ * Iterates over the text storage system and computes a map of line numbers to
+ * first character index for a line's frame rectangle.
+ */
+- (void)computeLineIndex
+{
+  lineIndex_.clear();
+
+  NSView* view = [self clientView];
+  if (![view isKindOfClass:[NSTextView class]])
+    return;
+
+  NSString* text = [(NSTextView*)view string];
+  NSUInteger stringLength = [text length];
+  NSUInteger index = 0;
+
+  while (index < stringLength) {
+    lineIndex_.push_back(index);
+    index = NSMaxRange([text lineRangeForRange:NSMakeRange(index, 0)]);
+  }
+
+  NSUInteger lineEnd, contentEnd;
+  [text getLineStart:NULL
+                 end:&lineEnd
+         contentsEnd:&contentEnd
+            forRange:NSMakeRange(lineIndex_.back(), 0)];
+  if (contentEnd < lineEnd)
+    lineIndex_.push_back(index);
+
+  NSLog(@"line count = %d", lineIndex_.size());
 }
 
 @end
