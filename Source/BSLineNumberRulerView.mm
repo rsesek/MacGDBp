@@ -18,6 +18,8 @@
 
 #include <algorithm>
 
+#include "BSSourceView.h"
+
 @interface BSLineNumberRulerView (Private)
 - (void)computeLineIndex;
 - (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line;
@@ -37,10 +39,12 @@ const CGFloat kRulerRightPadding = 2.5;
 
 @implementation BSLineNumberRulerView
 
-- (id)initWithScrollView:(NSScrollView*)scrollView
+- (id)initWithSourceView:(BSSourceView*)sourceView
 {
-  if (self = [super initWithScrollView:scrollView orientation:NSVerticalRuler]) {
-    [self setClientView:[scrollView documentView]];
+  if (self = [super initWithScrollView:[sourceView scrollView]
+                           orientation:NSVerticalRuler]) {
+    sourceView_ = sourceView;
+    [self setClientView:[[sourceView_ scrollView] documentView]];
     [self setRuleThickness:kDefaultWidth];
   }
   return self;
@@ -48,7 +52,7 @@ const CGFloat kRulerRightPadding = 2.5;
 
 - (void)awakeFromNib
 {
-  [self setClientView:[[self scrollView] documentView]];
+  [self setClientView:[[sourceView_ scrollView] documentView]];
   [self setRuleThickness:kDefaultWidth];
 }
 
@@ -64,10 +68,7 @@ const CGFloat kRulerRightPadding = 2.5;
                             toPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
 
   // Get some common elements of the source view.
-  NSView* view = [self clientView];
-  if (![view isKindOfClass:[NSTextView class]])
-    return;
-  NSTextView* textView = (NSTextView*)view;
+  NSTextView* textView = [sourceView_ textView];
   NSLayoutManager* layoutManager = [textView layoutManager];
   NSTextContainer* textContainer = [textView textContainer];
   NSRect visibleRect = [[[self scrollView] contentView] bounds];
@@ -137,11 +138,7 @@ const CGFloat kRulerRightPadding = 2.5;
 {
   lineIndex_.clear();
 
-  NSView* view = [self clientView];
-  if (![view isKindOfClass:[NSTextView class]])
-    return;
-
-  NSString* text = [(NSTextView*)view string];
+  NSString* text = [[sourceView_ textView] string];
   NSUInteger stringLength = [text length];
   NSUInteger index = 0;
 

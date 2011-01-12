@@ -213,7 +213,7 @@
   [scrollView_ setDocumentView:textView_];
 
   // Set up the ruler.
-  ruler_ = [[[BSLineNumberRulerView alloc] initWithScrollView:scrollView_] autorelease];
+  ruler_ = [[[BSLineNumberRulerView alloc] initWithSourceView:self] autorelease];
   [scrollView_ setVerticalRulerView:ruler_];
   [scrollView_ setHasHorizontalRuler:NO];
   [scrollView_ setHasVerticalRuler:YES];

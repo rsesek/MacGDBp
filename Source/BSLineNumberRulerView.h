@@ -17,15 +17,21 @@
 #import <Cocoa/Cocoa.h>
 #include <vector>
 
+@class BSSourceView;
+
 // The NSRulerView that draws line numbers on the BSSourceView.
 @interface BSLineNumberRulerView : NSRulerView
 {
  @private
+  BSSourceView* sourceView_;  // Weak, owns this.
+
+  // A vector (thus 0-based) map of line numbers (indices) to character indices
+  // in the text storage.
   std::vector<NSUInteger> lineIndex_;
 }
 
 // Designated initializer.
-- (id)initWithScrollView:(NSScrollView*)scrollView;
+- (id)initWithSourceView:(BSSourceView*)sourceView;
 
 - (void)performLayout;
 
