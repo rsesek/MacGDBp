@@ -24,6 +24,7 @@
 - (void)computeLineIndex;
 - (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line;
 - (NSDictionary*)fontAttributes;
+- (void)drawProgramCounterInRect:(NSRect)rect;
 @end
 
 // Constants {{
@@ -113,6 +114,11 @@ const CGFloat kRulerRightPadding = 2.5;
                                    NSWidth(rect) - kRulerRightPadding,
                                    NSHeight(frameRects[0]));
       [lineNumberString drawInRect:drawRect];
+
+      if (sourceView_.markedLine == lineNumber) {
+        drawRect.origin.x = NSMinX(rect);
+        [self drawProgramCounterInRect:drawRect];
+      }
     }
   }
 }
@@ -182,6 +188,23 @@ const CGFloat kRulerRightPadding = 2.5;
       [NSColor grayColor], NSForegroundColorAttributeName,
       nil
   ];
+}
+
+/**
+ * Draws the program counter (a red arrow) in the specified rectangle.
+ */
+- (void)drawProgramCounterInRect:(NSRect)rect
+{
+  [[NSGraphicsContext currentContext] saveGraphicsState];
+
+  NSImage* image = [NSImage imageNamed:@"ProgramCounter.pdf"];
+  NSSize imageSize = [image size];
+  [image drawInRect:rect
+           fromRect:NSMakeRect(0, 0, imageSize.width, imageSize.height)
+          operation:NSCompositeSourceOver
+           fraction:1.0];
+
+  [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
 @end
