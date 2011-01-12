@@ -22,6 +22,7 @@
 - (void)setupViews;
 - (void)errorHighlightingFile:(NSNotification*)notif;
 - (void)setPlainTextStringFromFile:(NSString*)filePath;
+- (void)computeLineIndex;
 @end
 
 @implementation BSSourceView
@@ -106,6 +107,8 @@
     // If the PHP executable is not available then the NSTask will throw an exception
     [self setPlainTextStringFromFile:f];
   }
+
+  [self computeLineIndex];
 }
 
 /**
@@ -135,6 +138,8 @@
     [file release];
     file = [path copy];
   }
+
+  [self computeLineIndex];
 }
 
 /**
@@ -236,6 +241,36 @@
   }
   [textView_ setString:contents];
 }
+
+/**
+ * Iterates over the text storage system and computes a map of line numbers to
+ * first character index for a line's frame rectangle.
+ */
+- (void)computeLineIndex
+{
+  lineIndex_.clear();
+
+  NSString* text = [textView_ string];
+  NSUInteger stringLength = [text length];
+  NSUInteger index = 0;
+
+  while (index < stringLength) {
+    lineIndex_.push_back(index);
+    index = NSMaxRange([text lineRangeForRange:NSMakeRange(index, 0)]);
+  }
+
+  NSUInteger lineEnd, contentEnd;
+  [text getLineStart:NULL
+                 end:&lineEnd
+         contentsEnd:&contentEnd
+            forRange:NSMakeRange(lineIndex_.back(), 0)];
+  if (contentEnd < lineEnd)
+    lineIndex_.push_back(index);
+
+  NSLog(@"line count = %d", lineIndex_.size());
+}
+
+// Drag Handlers ///////////////////////////////////////////////////////////////
 
 /**
  * Validates an initiated drag operation.
