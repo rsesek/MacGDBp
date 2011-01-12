@@ -16,9 +16,20 @@
 
 #import "BSLineNumberRulerView.h"
 
+#include <algorithm>
+
 @interface BSLineNumberRulerView (Private)
 - (void)computeLineIndex;
+- (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line;
+- (NSDictionary*)fontAttributes;
 @end
+
+// Constants {{
+
+// The default width of the ruler.
+const CGFloat kDefaultWidth = 30.0;
+
+// }}
 
 
 @implementation BSLineNumberRulerView
@@ -27,6 +38,7 @@
 {
   if (self = [super initWithScrollView:scrollView orientation:NSVerticalRuler]) {
     [self setClientView:[scrollView documentView]];
+    [self setRuleThickness:kDefaultWidth];
   }
   return self;
 }
@@ -34,6 +46,7 @@
 - (void)awakeFromNib
 {
   [self setClientView:[[self scrollView] documentView]];
+  [self setRuleThickness:kDefaultWidth];
 }
 
 - (void)drawHashMarksAndLabelsInRect:(NSRect)rect
@@ -46,11 +59,68 @@
   [[NSColor grayColor] setStroke];
   [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))
                             toPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
+
+  // Get some common elements of the source view.
+  NSView* view = [self clientView];
+  if (![view isKindOfClass:[NSTextView class]])
+    return;
+  NSTextView* textView = (NSTextView*)view;
+  NSLayoutManager* layoutManager = [textView layoutManager];
+  NSTextContainer* textContainer = [textView textContainer];
+  NSRect visibleRect = [[[self scrollView] contentView] bounds];
+
+  // Get the visible glyph range, as NSRulerView only draws in the visible rect.
+  NSRange visibleGlyphRange = [layoutManager glyphRangeForBoundingRect:visibleRect
+                                                       inTextContainer:textContainer];
+  NSRange characterRange = [layoutManager characterRangeForGlyphRange:visibleGlyphRange
+                                                     actualGlyphRange:NULL];
+
+  // Go through the lines.
+  const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
+  const CGFloat yOffset = [textView textContainerInset].height;
+
+  size_t lineCount = lineIndex_.size();
+  std::vector<NSUInteger>::iterator element =
+      std::lower_bound(lineIndex_.begin(),
+                       lineIndex_.end(),
+                       characterRange.location);
+  for (NSUInteger line = std::distance(lineIndex_.begin(), element);
+       line < lineCount; ++line) {
+    NSUInteger firstCharacterIndex = lineIndex_[line];
+    NSLog(@"line = %d @ %d / %d", line, firstCharacterIndex, lineCount);
+    // Stop after iterating past the end of the visible range.
+    if (firstCharacterIndex > NSMaxRange(characterRange))
+      break;
+
+    NSUInteger rectCount;
+    NSRectArray frameRects = [layoutManager rectArrayForCharacterRange:NSMakeRange(firstCharacterIndex, 0)
+                                          withinSelectedCharacterRange:kNullRange
+                                                       inTextContainer:textContainer
+                                                             rectCount:&rectCount];
+    if (frameRects) {
+      NSUInteger lineNumber = line + 1;
+      NSAttributedString* lineNumberString =
+          [self attributedStringForLineNumber:lineNumber];
+      NSSize stringSize = [lineNumberString size];
+
+      CGFloat yCoord = yOffset + NSMinY(frameRects[0]) - NSMinY(visibleRect);
+      [lineNumberString drawInRect:NSMakeRect(NSWidth(rect) - stringSize.width,
+                                              yCoord,
+                                              NSWidth(rect),
+                                              NSHeight(frameRects[0]))];
+    }
+  }
 }
 
 - (void)performLayout
 {
   [self computeLineIndex];
+
+  // Determine the width of the ruler based on the line count.
+  NSUInteger lastElement = lineIndex_.back() + 1;
+  NSAttributedString* lastElementString = [self attributedStringForLineNumber:lastElement];
+  NSSize boundingSize = [lastElementString size];
+  [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
 }
 
 // Private /////////////////////////////////////////////////////////////////////
@@ -85,6 +155,30 @@
     lineIndex_.push_back(index);
 
   NSLog(@"line count = %d", lineIndex_.size());
+}
+
+/**
+ * Takes in a line number and returns a formatted attributed string, usable
+ * for drawing.
+ */
+- (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line
+{
+  NSString* format = [NSString stringWithFormat:@"%d", line];
+  return [[[NSAttributedString alloc] initWithString:format
+                                          attributes:[self fontAttributes]] autorelease];
+}
+
+/**
+ * Returns the dictionary for an NSAttributedString with which the line numbers
+ * will be drawn.
+ */
+- (NSDictionary*)fontAttributes
+{
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSFont fontWithName:@"Monaco" size:9.0], NSFontAttributeName,
+      [NSColor grayColor], NSForegroundColorAttributeName,
+      nil
+  ];
 }
 
 @end
