@@ -29,6 +29,9 @@
 // The default width of the ruler.
 const CGFloat kDefaultWidth = 30.0;
 
+// Padding between the right edge of the ruler and the line number string.
+const CGFloat kRulerRightPadding = 2.5;
+
 // }}
 
 
@@ -104,10 +107,11 @@ const CGFloat kDefaultWidth = 30.0;
       NSSize stringSize = [lineNumberString size];
 
       CGFloat yCoord = yOffset + NSMinY(frameRects[0]) - NSMinY(visibleRect);
-      [lineNumberString drawInRect:NSMakeRect(NSWidth(rect) - stringSize.width,
-                                              yCoord,
-                                              NSWidth(rect),
-                                              NSHeight(frameRects[0]))];
+      NSRect drawRect = NSMakeRect(NSWidth(rect) - stringSize.width - kRulerRightPadding,
+                                   yCoord + (NSHeight(frameRects[0]) - stringSize.height) / 2.0,
+                                   NSWidth(rect) - kRulerRightPadding,
+                                   NSHeight(frameRects[0]));
+      [lineNumberString drawInRect:drawRect];
     }
   }
 }
