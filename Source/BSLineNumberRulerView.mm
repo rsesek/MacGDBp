@@ -126,6 +126,8 @@ const CGFloat kRulerRightPadding = 2.5;
   NSAttributedString* lastElementString = [self attributedStringForLineNumber:lastElement];
   NSSize boundingSize = [lastElementString size];
   [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
+
+  [self setNeedsDisplay:YES];
 }
 
 // Private /////////////////////////////////////////////////////////////////////

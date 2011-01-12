@@ -178,6 +178,8 @@
   unsigned lineStart, lineEnd;
   [[textView_ string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
   [textView_ scrollRangeToVisible:[[textView_ string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
+
+  [scrollView_ setNeedsDisplay:YES];
 }
 
 /**
