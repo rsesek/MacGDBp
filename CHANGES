@@ -1,6 +1,12 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+1.5
+#####################
+- Fix: #128  Clicking on the line number will now always set the correct
+  breakpoint
+
+
 1.4 Beta 2
 #####################
 - Fix: After clicking on a stack frame with a virtual file, the debugger front
