@@ -185,7 +185,8 @@ const CGFloat kRulerRightPadding = 2.5;
   NSPoint point = [theEvent locationInWindow];
   point = [self convertPoint:point fromView:nil];
   NSUInteger line = [self lineNumberAtPoint:point];
-  [sourceView_.delegate gutterClickedAtLine:line forFile:sourceView_.file];
+  if (line != NSNotFound)
+    [sourceView_.delegate gutterClickedAtLine:line forFile:sourceView_.file];
 }
 
 // Private /////////////////////////////////////////////////////////////////////
