@@ -18,12 +18,14 @@
 
 #include <algorithm>
 
-#include "BSSourceView.h"
+#import "Breakpoint.h"
+#import "BSSourceView.h"
 
 @interface BSLineNumberRulerView (Private)
 - (void)computeLineIndex;
 - (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line;
 - (NSDictionary*)fontAttributes;
+- (void)drawBreakpointInRect:(NSRect)rect;
 - (void)drawProgramCounterInRect:(NSRect)rect;
 @end
 
@@ -80,6 +82,10 @@ const CGFloat kRulerRightPadding = 2.5;
   NSRange characterRange = [layoutManager characterRangeForGlyphRange:visibleGlyphRange
                                                      actualGlyphRange:NULL];
 
+  // Load any markers. The superview takes care of filtering out for just the
+  // curently displayed file.
+  NSSet* markers = [sourceView_ markers];
+
   // Go through the lines.
   const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
   const CGFloat yOffset = [textView textContainerInset].height;
@@ -92,7 +98,6 @@ const CGFloat kRulerRightPadding = 2.5;
   for (NSUInteger line = std::distance(lineIndex_.begin(), element);
        line < lineCount; ++line) {
     NSUInteger firstCharacterIndex = lineIndex_[line];
-    NSLog(@"line = %d @ %d / %d", line, firstCharacterIndex, lineCount);
     // Stop after iterating past the end of the visible range.
     if (firstCharacterIndex > NSMaxRange(characterRange))
       break;
@@ -115,8 +120,16 @@ const CGFloat kRulerRightPadding = 2.5;
                                    NSHeight(frameRects[0]));
       [lineNumberString drawInRect:drawRect];
 
+      // Draw any markers. Adjust the drawRect to be the entire width of the
+      // ruler, rather than just the width of the string.
+      drawRect.origin.x = NSMinX(rect);
+
+      Breakpoint* test = [[[Breakpoint alloc] initWithLine:lineNumber
+                                                    inFile:[sourceView_ file]] autorelease];
+      if ([markers containsObject:test]) {
+        [self drawBreakpointInRect:drawRect];
+      }
       if (sourceView_.markedLine == lineNumber) {
-        drawRect.origin.x = NSMinX(rect);
         [self drawProgramCounterInRect:drawRect];
       }
     }
@@ -162,8 +175,6 @@ const CGFloat kRulerRightPadding = 2.5;
             forRange:NSMakeRange(lineIndex_.back(), 0)];
   if (contentEnd < lineEnd)
     lineIndex_.push_back(index);
-
-  NSLog(@"line count = %d", lineIndex_.size());
 }
 
 /**
@@ -188,6 +199,32 @@ const CGFloat kRulerRightPadding = 2.5;
       [NSColor grayColor], NSForegroundColorAttributeName,
       nil
   ];
+}
+
+/**
+ * Draws a breakpoint (a blue arrow) in the specified rectangle.
+ */
+- (void)drawBreakpointInRect:(NSRect)rect
+{
+  [[NSGraphicsContext currentContext] saveGraphicsState];
+
+  NSBezierPath* path = [NSBezierPath bezierPath];
+  
+  [path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
+  [path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right
+  [path lineToPoint:NSMakePoint(rect.size.width - 2, rect.origin.y + (rect.size.height / 2))]; // point
+  [path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)]; // lower right
+  [path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + rect.size.height - 2)]; // lower left
+  [path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 1)]; // upper left
+  
+  [[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0] set];
+  [path fill];
+  
+  [[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0] set];
+  [path setLineWidth:2];
+  [path stroke];
+
+  [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
 /**
