@@ -15,10 +15,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BreakpointManager.h"
 
-@class BSSourceView;
-@protocol BSSourceViewDelegate;
+#import "BreakpointManager.h"
+#import "BSSourceView.h"
 
 @interface BreakpointController : NSWindowController<BSSourceViewDelegate>
 {

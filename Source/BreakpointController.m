@@ -17,7 +17,6 @@
 #import "BreakpointController.h"
 
 #import "AppDelegate.h"
-#import "BSSourceView.h"
 
 @implementation BreakpointController
 
