@@ -90,7 +90,7 @@ const CGFloat kRulerRightPadding = 2.5;
   const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
   const CGFloat yOffset = [textView textContainerInset].height;
 
-  size_t lineCount = lineIndex_.size();
+  const size_t lineCount = lineIndex_.size();
   std::vector<NSUInteger>::iterator element =
       std::lower_bound(lineIndex_.begin(),
                        lineIndex_.end(),
@@ -147,6 +147,45 @@ const CGFloat kRulerRightPadding = 2.5;
   [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
 
   [self setNeedsDisplay:YES];
+}
+
+- (NSUInteger)lineNumberAtPoint:(NSPoint)point
+{
+  // Get some common elements of the source view.
+  NSTextView* textView = [sourceView_ textView];
+  NSLayoutManager* layoutManager = [textView layoutManager];
+  NSTextContainer* textContainer = [textView textContainer];
+  NSRect visibleRect = [[[self scrollView] contentView] bounds];
+  point.y += NSMinY(visibleRect);  // Adjust for scroll offset.
+
+  const CGFloat kWidth = NSWidth([self bounds]);
+  const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
+  const size_t lineCount = lineIndex_.size();
+  for (NSUInteger line = 0; line < lineCount; ++line) {
+    NSUInteger firstCharacterIndex = lineIndex_[line];
+
+    NSUInteger rectCount;
+    NSRectArray frameRects =
+        [layoutManager rectArrayForCharacterRange:NSMakeRange(firstCharacterIndex, 0)
+                     withinSelectedCharacterRange:kNullRange
+                                  inTextContainer:textContainer
+                                        rectCount:&rectCount];
+    for (NSUInteger i = 0; i < rectCount; ++i) {
+      frameRects[i].size.width = kWidth;
+      if (NSPointInRect(point, frameRects[i])) {
+        return line + 1;
+      }
+    }
+  }
+  return NSNotFound;
+}
+
+- (void)mouseDown:(NSEvent*)theEvent
+{
+  NSPoint point = [theEvent locationInWindow];
+  point = [self convertPoint:point fromView:nil];
+  NSUInteger line = [self lineNumberAtPoint:point];
+  [sourceView_.delegate gutterClickedAtLine:line forFile:sourceView_.file];
 }
 
 // Private /////////////////////////////////////////////////////////////////////

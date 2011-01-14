@@ -33,6 +33,11 @@
 // Designated initializer.
 - (id)initWithSourceView:(BSSourceView*)sourceView;
 
+// Performs layout and redraws the line number view.
 - (void)performLayout;
+
+// Returns the line number (1-based) at the given point. |point| should be in
+// the receiver's coordinate system.
+- (NSUInteger)lineNumberAtPoint:(NSPoint)point;
 
 @end
