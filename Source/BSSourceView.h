@@ -16,8 +16,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "BSLineNumberView.h"
-
 @class BSLineNumberRulerView;
 @protocol BSSourceViewDelegate;
 

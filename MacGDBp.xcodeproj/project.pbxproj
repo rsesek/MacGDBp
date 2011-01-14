@@ -22,7 +22,6 @@
 		1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */; };
 		1E6B5947116106FE001189D2 /* LoggingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6B5946116106FE001189D2 /* LoggingController.m */; };
 		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
-		1E7188680D839F6300969277 /* BSLineNumberView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188630D839F6300969277 /* BSLineNumberView.mm */; };
 		1E7188690D839F6300969277 /* BSSourceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.mm */; };
 		1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E822CDC0DA28AC30027A23F /* Breakpoint.m */; };
 		1E9582620E252474001A3D89 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9582600E252474001A3D89 /* Preferences.xib */; };
@@ -91,8 +90,6 @@
 		1E6B5945116106FE001189D2 /* LoggingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoggingController.h; path = Source/LoggingController.h; sourceTree = "<group>"; };
 		1E6B5946116106FE001189D2 /* LoggingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoggingController.m; path = Source/LoggingController.m; sourceTree = "<group>"; };
 		1E6B594B11610993001189D2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Log.xib; sourceTree = "<group>"; };
-		1E7188620D839F6300969277 /* BSLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberView.h; path = Source/BSLineNumberView.h; sourceTree = "<group>"; };
-		1E7188630D839F6300969277 /* BSLineNumberView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberView.mm; path = Source/BSLineNumberView.mm; sourceTree = "<group>"; };
 		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
 		1E7188650D839F6300969277 /* BSSourceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSSourceView.mm; path = Source/BSSourceView.mm; sourceTree = "<group>"; };
 		1E822CDB0DA28AC30027A23F /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = Source/Breakpoint.h; sourceTree = "<group>"; };
@@ -251,8 +248,6 @@
 			children = (
 				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
 				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
-				1E7188620D839F6300969277 /* BSLineNumberView.h */,
-				1E7188630D839F6300969277 /* BSLineNumberView.mm */,
 				1E7188640D839F6300969277 /* BSSourceView.h */,
 				1E7188650D839F6300969277 /* BSSourceView.mm */,
 				1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */,
@@ -447,7 +442,6 @@
 				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
 				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
-				1E7188680D839F6300969277 /* BSLineNumberView.mm in Sources */,
 				1E7188690D839F6300969277 /* BSSourceView.mm in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
