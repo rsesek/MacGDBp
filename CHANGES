@@ -12,7 +12,7 @@ MacGDBp                                                               CHANGE LOG
   the contents
 - Fix: #197  Add a menu item and keyboard shortcut for the "Attached" control
 - Fix: #208  Variable selection and expansion state not saved across steps
-- Fix: The attached state is now remebered in preferences
+- Fix: The attached state is now remembered in preferences
 
 
 1.4 Beta 1
