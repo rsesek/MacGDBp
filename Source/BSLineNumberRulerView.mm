@@ -197,12 +197,21 @@ const CGFloat kRulerRightPadding = 2.5;
 {
   [[NSGraphicsContext currentContext] saveGraphicsState];
 
-  NSImage* image = [NSImage imageNamed:@"ProgramCounter.pdf"];
-  NSSize imageSize = [image size];
-  [image drawInRect:rect
-           fromRect:NSMakeRect(0, 0, imageSize.width, imageSize.height)
-          operation:NSCompositeSourceOver
-           fraction:1.0];
+  const CGFloat kArrowWidth = 10.0;
+  const CGFloat kMaxX = NSMaxX(rect);
+  const CGFloat kMidY = NSMidY(rect);
+
+  NSBezierPath* path = [NSBezierPath bezierPath];
+  [path moveToPoint:NSMakePoint(kMaxX, kMidY)];
+  [path lineToPoint:NSMakePoint(kMaxX - kArrowWidth, NSMaxY(rect))];
+  [path lineToPoint:NSMakePoint(kMaxX - kArrowWidth, NSMinY(rect))];
+  [path lineToPoint:NSMakePoint(kMaxX, kMidY)];
+
+  [[[NSColor redColor] colorWithAlphaComponent:0.5] set];
+  [path fill];
+
+  [[NSColor redColor] setStroke];
+  [path stroke];
 
   [[NSGraphicsContext currentContext] restoreGraphicsState];
 }

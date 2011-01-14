@@ -37,7 +37,6 @@
 		1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965512BBC6A700A8D984 /* README.bluestatic */; };
 		1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965612BBC6A700A8D984 /* README.chromium */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
-		1EDA9F2F12DE690600596211 /* ProgramCounter.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1EDA9F2E12DE690600596211 /* ProgramCounter.pdf */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -116,7 +115,6 @@
 		1EC6965612BBC6A700A8D984 /* README.chromium */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.chromium; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
-		1EDA9F2E12DE690600596211 /* ProgramCounter.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = ProgramCounter.pdf; path = Icons/ProgramCounter.pdf; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -201,7 +199,6 @@
 				1E027F090D36F23F00885DEE /* StepOver.png */,
 				1EEBFC360D358F1B008F835B /* StepOut.png */,
 				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
-				1EDA9F2E12DE690600596211 /* ProgramCounter.pdf */,
 			);
 			name = "Toolbar Icons";
 			sourceTree = "<group>";
@@ -418,7 +415,6 @@
 				1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */,
 				1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */,
 				1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */,
-				1EDA9F2F12DE690600596211 /* ProgramCounter.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
