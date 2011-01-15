@@ -210,13 +210,6 @@ void PerformQuitSignal(void* info)
  */
 - (void)socketDisconnected
 {
-  if (connected_) {
-    // The state still is connected, which means that we did not get here
-    // through normal disconnected procedure (a call to |-close|, followed by
-    // the downing of the socket and the stream, which also produces this
-    // messsage). Instead, the stream callbacks encountered EOF unexpectedly.
-    //[self close];
-  }
   if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
     [delegate_ connectionDidClose:self];
 }
