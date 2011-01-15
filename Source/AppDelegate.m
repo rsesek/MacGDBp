@@ -16,6 +16,8 @@
 
 #import "AppDelegate.h"
 
+#import <Sparkle/Sparkle.h>
+
 @implementation AppDelegate
 
 @synthesize debugger;
@@ -50,6 +52,22 @@
 + (AppDelegate*)instance
 {
   return (AppDelegate*)[NSApp delegate];
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification*)notification
+{
+  // Record whether this user ever used the beta VersionCast feed. In the
+  // future, we will use this bit to query for unstable releases after the user
+  // has upgraded to a stable version.
+  NSString* const kUsesUnstableVersionCast = @"UnstableVersionCast";
+  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+
+  BOOL usesUnstable = [defaults boolForKey:kUsesUnstableVersionCast];
+  NSURL* feedURL = [[SUUpdater sharedUpdater] feedURL];
+  usesUnstable = usesUnstable ||
+      [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
+  NSLog(@"usesUnstable = %d", usesUnstable);
+  [defaults setBool:usesUnstable forKey:kUsesUnstableVersionCast];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)notification
