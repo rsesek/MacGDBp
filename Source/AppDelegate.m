@@ -66,7 +66,6 @@
   NSURL* feedURL = [[SUUpdater sharedUpdater] feedURL];
   usesUnstable = usesUnstable ||
       [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
-  NSLog(@"usesUnstable = %d", usesUnstable);
   [defaults setBool:usesUnstable forKey:kUsesUnstableVersionCast];
 }
 
