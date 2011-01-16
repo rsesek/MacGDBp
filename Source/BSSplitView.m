@@ -26,22 +26,23 @@
  */
 - (void)drawDividerInRect:(NSRect)rect
 {
-  // draw the gradient
+  // Draw the gradient.
   NSColor* startColor = [NSColor colorWithDeviceRed:0.875 green:0.875 blue:0.875 alpha:1.0];
   NSColor* endColor = [NSColor colorWithDeviceRed:0.812 green:0.812 blue:0.812 alpha:1.0];
   NSGradient* gradient = [[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor];
   [gradient drawInRect:rect angle:([self isVertical] ? 0.0 : 90.0)];
   [gradient release];
   
-  // draw the stroke
+  // Stroke the divider.
   [[NSColor colorWithDeviceRed:0.667 green:0.667 blue:0.667 alpha:1.0] setStroke];
   [NSBezierPath setDefaultLineWidth:0.5];
   [NSBezierPath strokeRect:rect];
   
-  // draw the dimple
+  // Draw the dimple image.
   NSImage* dimple = [NSImage imageNamed:@"dimple.png"];
   NSSize dmpSize = [dimple size];
-  NSPoint origin = NSMakePoint((rect.size.width / 2) + rect.origin.x - (dmpSize.width / 2), (rect.size.height / 2) + rect.origin.y + (dmpSize.height / 2));
+  NSPoint origin = NSMakePoint(NSMidX(rect) - (dmpSize.width / 2),
+                               NSMidY(rect) + (dmpSize.height / 2));
   [dimple compositeToPoint:origin operation:NSCompositeSourceOver];
 }
 
