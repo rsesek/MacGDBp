@@ -252,17 +252,23 @@ const CGFloat kRulerRightPadding = 2.5;
   [[NSGraphicsContext currentContext] saveGraphicsState];
 
   NSBezierPath* path = [NSBezierPath bezierPath];
-  
-  [path moveToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 2)]; // initial origin
-  [path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + 2)]; // upper right
-  [path lineToPoint:NSMakePoint(rect.size.width - 2, rect.origin.y + (rect.size.height / 2))]; // point
-  [path lineToPoint:NSMakePoint(rect.size.width - 7, rect.origin.y + rect.size.height - 2)]; // lower right
-  [path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + rect.size.height - 2)]; // lower left
-  [path lineToPoint:NSMakePoint(rect.origin.x + 2, rect.origin.y + 1)]; // upper left
-  
+
+  const CGFloat kPadding = 2.0;
+  const CGFloat kArrowWidth = 7.0;
+  const CGFloat minX = NSMinX(rect) + kPadding;
+  const CGFloat maxX = NSMaxX(rect);
+  const CGFloat minY = NSMinY(rect) + kPadding;
+
+  [path moveToPoint:NSMakePoint(minX, minY)]; // initial origin
+  [path lineToPoint:NSMakePoint(maxX - kArrowWidth, minY)]; // upper right
+  [path lineToPoint:NSMakePoint(maxX - kPadding, NSMidY(rect))]; // point
+  [path lineToPoint:NSMakePoint(maxX - kArrowWidth, NSMaxY(rect) - kPadding)]; // lower right
+  [path lineToPoint:NSMakePoint(minX, NSMaxY(rect) - kPadding)]; // lower left
+  [path lineToPoint:NSMakePoint(minX, minY - 1)]; // upper left
+
   [[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0] set];
   [path fill];
-  
+
   [[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0] set];
   [path setLineWidth:2];
   [path stroke];
