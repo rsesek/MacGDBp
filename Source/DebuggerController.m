@@ -209,7 +209,7 @@
  */
 - (IBAction)stop:(id)sender
 {
-  [connection detach];
+  [connection stop];
 }
 
 - (void)fetchChildProperties:(VariableNode*)node

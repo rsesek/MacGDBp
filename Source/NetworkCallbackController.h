@@ -15,6 +15,7 @@
  */
 
 #import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 
 @class NetworkConnection;
 
@@ -29,6 +30,13 @@ class NetworkCallbackController
   // thread.
   NetworkCallbackController(NetworkConnection* connection);
 
+  // Creates a socket and schedules it on the current run loop.
+  void OpenConnection(NSUInteger port);
+
+  // Closes down the read/write streams.
+  void CloseConnection();
+
+ private:
   // These static methods forward an invocation to the instance methods. The
   // last void pointer, named |self|, is the instance of this class.
   static void SocketAcceptCallback(CFSocketRef socket,
@@ -43,7 +51,6 @@ class NetworkCallbackController
                                   CFStreamEventType eventType,
                                   void* self);
 
- private:
   void OnSocketAccept(CFSocketRef socket,
                       CFDataRef address,
                       const void* data);
@@ -57,7 +64,10 @@ class NetworkCallbackController
 
   // Messages the NetworkConnection's delegate and takes ownership of |error|.
   void ReportError(CFErrorRef error);
-  
+
+  // The actual socket.
+  CFSocketRef socket_;  // Strong.
+
   NetworkConnection* connection_;  // Weak, owns this.
   CFRunLoopRef runLoop_;  // Weak.
 };

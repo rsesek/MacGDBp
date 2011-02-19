@@ -139,6 +139,18 @@
 }
 
 /**
+ * Halts execution of the script.
+ */
+- (void)stop
+{
+  [connection_ close];
+  active_ = NO;
+  self.status = @"Stopped";
+  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
+    [delegate debuggerDisconnected];
+}
+
+/**
  * Ends the current debugging session.
  */
 - (void)detach

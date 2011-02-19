@@ -16,6 +16,9 @@
 
 #import "NetworkCallbackController.h"
 
+#import <sys/socket.h>
+#import <netinet/in.h>
+
 #import "NetworkConnection.h"
 #import "NetworkConnectionPrivate.h"
 
@@ -23,6 +26,63 @@ NetworkCallbackController::NetworkCallbackController(NetworkConnection* connecti
     : connection_(connection),
       runLoop_(CFRunLoopGetCurrent())
 {
+}
+
+void NetworkCallbackController::OpenConnection(NSUInteger port)
+{
+  // Pass ourselves to the callback so we don't have to use ugly globals.
+  CFSocketContext context = { 0 };
+  context.info = this;
+  
+  // Create the address structure.
+  struct sockaddr_in address;
+  memset(&address, 0, sizeof(address));
+  address.sin_len = sizeof(address);
+  address.sin_family = AF_INET;
+  address.sin_port = htons(port);
+  address.sin_addr.s_addr = htonl(INADDR_ANY);    
+  
+  // Create the socket signature.
+  CFSocketSignature signature;
+  signature.protocolFamily = PF_INET;
+  signature.socketType = SOCK_STREAM;
+  signature.protocol = IPPROTO_TCP;
+  signature.address = (CFDataRef)[NSData dataWithBytes:&address length:sizeof(address)];
+  
+  do {
+    socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
+                                                &signature,  // Socket signature.
+                                                kCFSocketAcceptCallBack,  // Callback types.
+                                                &NetworkCallbackController::SocketAcceptCallback,  // Callout function pointer.
+                                                &context);  // Context to pass to callout.
+    if (!socket_) {
+      [connection_ errorEncountered:@"Could not open socket."];
+      sleep(1);
+    }
+  } while (!socket_);
+  
+  // Allow old, yet-to-be recycled sockets to be reused.
+  BOOL yes = YES;
+  setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(BOOL));
+  setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(BOOL));
+  
+  // Schedule the socket on the run loop.
+  CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket_, 0);
+  CFRunLoopAddSource(runLoop_, source, kCFRunLoopCommonModes);
+  CFRelease(source);  
+}
+
+void NetworkCallbackController::CloseConnection()
+{
+  if (socket_) {
+    NSLog(@"invalidating socket %d", close(CFSocketGetNative(socket_)));
+    CFSocketInvalidate(socket_);
+    NSLog(@"socket is valid %d", CFSocketIsValid(socket_));
+    CFRelease(socket_);
+    socket_ = NULL;
+  }  
+  UnscheduleReadStream();
+  UnscheduleWriteStream();
 }
 
 // Static Methods //////////////////////////////////////////////////////////////
@@ -116,15 +176,18 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
   switch (eventType)
   {
     case kCFStreamEventHasBytesAvailable:
-      [connection_ readStreamHasData];
+      if (connection_.readStream)
+        [connection_ readStreamHasData];
       break;
       
     case kCFStreamEventErrorOccurred:
+      NSLog(@"%s error", __PRETTY_FUNCTION__);
       ReportError(CFReadStreamCopyError(stream));
       UnscheduleReadStream();
       break;
       
     case kCFStreamEventEndEncountered:
+      NSLog(@"%s end", __PRETTY_FUNCTION__);
       UnscheduleReadStream();
       [connection_ socketDisconnected];
       break;

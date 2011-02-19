@@ -17,9 +17,6 @@
 #import "NetworkConnection.h"
 #import "NetworkConnectionPrivate.h"
 
-#import <sys/socket.h>
-#import <netinet/in.h>
-
 #import "AppDelegate.h"
 #import "LoggingController.h"
 #include "NetworkCallbackController.h"
@@ -40,7 +37,6 @@ void PerformQuitSignal(void* info)
 @synthesize connected = connected_;
 @synthesize delegate = delegate_;
 
-@synthesize socket = socket_;
 @synthesize readStream = readStream_;
 @synthesize lastReadTransaction = lastReadTransaction_;
 @synthesize currentPacket = currentPacket_;
@@ -88,53 +84,14 @@ void PerformQuitSignal(void* info)
   runLoop_ = [NSRunLoop currentRunLoop];
   callbackController_ = new NetworkCallbackController(self);
 
-  // Pass ourselves to the callback so we don't have to use ugly globals.
-  CFSocketContext context = { 0 };
-  context.info = callbackController_;
-  
-  // Create the address structure.
-  struct sockaddr_in address;
-  memset(&address, 0, sizeof(address));
-  address.sin_len = sizeof(address);
-  address.sin_family = AF_INET;
-  address.sin_port = htons(port_);
-  address.sin_addr.s_addr = htonl(INADDR_ANY);    
-  
-  // Create the socket signature.
-  CFSocketSignature signature;
-  signature.protocolFamily = PF_INET;
-  signature.socketType = SOCK_STREAM;
-  signature.protocol = IPPROTO_TCP;
-  signature.address = (CFDataRef)[NSData dataWithBytes:&address length:sizeof(address)];
-
-  do {
-    socket_ = CFSocketCreateWithSocketSignature(kCFAllocatorDefault,
-                                                &signature,  // Socket signature.
-                                                kCFSocketAcceptCallBack,  // Callback types.
-                                                &NetworkCallbackController::SocketAcceptCallback,  // Callout function pointer.
-                                                &context);  // Context to pass to callout.
-    if (!socket_) {
-      [self errorEncountered:@"Could not open socket."];
-      sleep(1);
-    }
-  } while (!socket_);
-  
-  // Allow old, yet-to-be recycled sockets to be reused.
-  BOOL yes = YES;
-  setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(BOOL));
-  setsockopt(CFSocketGetNative(socket_), SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(BOOL));
-  
-  // Schedule the socket on the run loop.
-  CFRunLoopSourceRef source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket_, 0);
-  CFRunLoopAddSource([runLoop_ getCFRunLoop], source, kCFRunLoopCommonModes);
-  CFRelease(source);
-
   // Create a source that is used to quit.
   CFRunLoopSourceContext quitContext = { 0 };
   quitContext.info = self;
   quitContext.perform = PerformQuitSignal;
   quitSource_ = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &quitContext);
   CFRunLoopAddSource([runLoop_ getCFRunLoop], quitSource_, kCFRunLoopCommonModes);
+
+  callbackController_->OpenConnection(port_);
 
   CFRunLoopRun();
 
@@ -195,14 +152,8 @@ void PerformQuitSignal(void* info)
   if (runLoop_) {
     CFRunLoopStop([runLoop_ getCFRunLoop]);
   }
-  
-  // The socket goes down, so do the streams, which clean themselves up.
-  if (socket_) {
-    NSLog(@"invalidating socket");
-    CFSocketInvalidate(socket_);
-    CFRelease(socket_);
-    socket_ = NULL;
-  }
+
+  callbackController_->CloseConnection();
 }
 
 /**

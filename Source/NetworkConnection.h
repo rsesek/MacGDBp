@@ -46,9 +46,6 @@ class NetworkCallbackController;
   // Internal class that manages CFNetwork callbacks. Strong.
   NetworkCallbackController* callbackController_;
 
-  // The raw CFSocket on which the two streams are based. Strong.
-  CFSocketRef socket_;
-  
   // The read stream that is scheduled on the main run loop. Weak.
   CFReadStreamRef readStream_;
   

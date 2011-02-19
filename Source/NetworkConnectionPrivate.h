@@ -20,7 +20,6 @@
 // by the C++ NetworkCallbackController to communicate.
 @interface NetworkConnection ()
 
-@property (assign) CFSocketRef socket;
 @property (assign) CFReadStreamRef readStream;
 @property NSUInteger lastReadTransaction;
 @property (retain) NSMutableString* currentPacket;
