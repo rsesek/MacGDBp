@@ -43,7 +43,7 @@
   // The value of the node is base64 encoded.
   if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
     const char* src = [[self stringValue] UTF8String];
-    int srclen = [[self stringValue] length];
+    NSUInteger srclen = [[self stringValue] length];
 
     int destlen = modp_b64_decode_len(srclen);
     char* dest = malloc(destlen);

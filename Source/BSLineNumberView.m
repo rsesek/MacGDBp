@@ -66,7 +66,7 @@
   
   lineNumberRange = NSMakeRange(0, 0);
   
-  unsigned i = 0, line = 1;
+  NSUInteger i = 0, line = 1;
   while (i < [[[sourceView textView] layoutManager] numberOfGlyphs])
   {
     NSRange fragRange;
@@ -107,8 +107,8 @@
   
   NSPoint clickLoc = [self convertPoint:[event locationInWindow] fromView:nil];
   
-  unsigned line = 1;
-  unsigned i = 0;
+  NSUInteger line = 1;
+  NSUInteger i = 0;
   while (i < [[textView layoutManager] numberOfGlyphs])
   {
     NSRange fragRange;

@@ -82,7 +82,7 @@
 /**
  * Removes a breakpoint at a given line/file combination, or nil if nothing was removed
  */
-- (Breakpoint*)removeBreakpointAt:(int)line inFile:(NSString*)file
+- (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file
 {
   for (Breakpoint* b in breakpoints)
   {
@@ -121,7 +121,7 @@
 /**
  * Checks to see if a given file has a breakpoint on a given line
  */
-- (BOOL)hasBreakpointAt:(int)line inFile:(NSString*)file
+- (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file
 {
   return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
 }

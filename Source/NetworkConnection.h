@@ -78,8 +78,8 @@ class NetworkCallbackController;
   // Information about the current read loop. We append to |currentPacket_|
   // until |currentPacketSize_| has reached |packetSize_|.
   NSMutableString* currentPacket_;
-  int packetSize_;
-  int currentPacketIndex_;
+  NSInteger packetSize_;
+  NSInteger currentPacketIndex_;
 
   // The delegate. All methods are executed on the main thread.
   NSObject<NetworkConnectionDelegate>* delegate_;
