@@ -28,7 +28,7 @@ class NetworkCallbackController
   // This object should be constructed on the thread which the streams are
   // to be scheduled on. It will hold a weak reference to the run loop on that
   // thread.
-  NetworkCallbackController(NetworkConnection* connection);
+  explicit NetworkCallbackController(NetworkConnection* connection);
 
   // Creates a socket and schedules it on the current run loop.
   void OpenConnection(NSUInteger port);

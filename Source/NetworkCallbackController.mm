@@ -75,9 +75,7 @@ void NetworkCallbackController::OpenConnection(NSUInteger port)
 void NetworkCallbackController::CloseConnection()
 {
   if (socket_) {
-    NSLog(@"invalidating socket %d", close(CFSocketGetNative(socket_)));
     CFSocketInvalidate(socket_);
-    NSLog(@"socket is valid %d", CFSocketIsValid(socket_));
     CFRelease(socket_);
     socket_ = NULL;
   }  
@@ -181,13 +179,11 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
       break;
       
     case kCFStreamEventErrorOccurred:
-      NSLog(@"%s error", __PRETTY_FUNCTION__);
       ReportError(CFReadStreamCopyError(stream));
       UnscheduleReadStream();
       break;
       
     case kCFStreamEventEndEncountered:
-      NSLog(@"%s end", __PRETTY_FUNCTION__);
       UnscheduleReadStream();
       [connection_ socketDisconnected];
       break;
