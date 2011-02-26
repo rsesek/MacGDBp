@@ -81,7 +81,6 @@
 - (IBAction)showDebuggerWindow:(id)sender
 {
   [[debugger window] makeKeyAndOrderFront:self];
-  NSLog(@"logg %@", [loggingController_ window]);
 }
 
 /**
