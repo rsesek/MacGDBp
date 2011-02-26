@@ -1,6 +1,11 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+1.5
+#####################
+- New: Now a 64-bit binary (along with x86 and PPC)
+
+
 1.4 Beta 2
 #####################
 - Fix: After clicking on a stack frame with a virtual file, the debugger front
