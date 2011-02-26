@@ -36,10 +36,10 @@
   // Set of Breakpoint objects.
   NSSet* markers_;
 
-  NSString* file;
-  int markedLine;
+  NSString* file_;
+  int markedLine_;
 
-  id<BSSourceViewDelegate> delegate;
+  id<BSSourceViewDelegate> delegate_;
 }
 
 @property (readonly) NSTextView* textView;

@@ -30,17 +30,16 @@
 @synthesize textView = textView_;
 @synthesize scrollView = scrollView_;
 @synthesize markers = markers_;
-@synthesize markedLine;
-@synthesize delegate;
-@synthesize file;
+@synthesize markedLine = markedLine_;
+@synthesize delegate = delegate_;
+@synthesize file = file_;
 
 /**
  * Initializes the source view with the path of a file
  */
 - (id)initWithFrame:(NSRect)frame
 {
-  if (self = [super initWithFrame:frame])
-  {
+  if (self = [super initWithFrame:frame]) {
     [self setupViews];
     [[NSNotificationCenter defaultCenter]
       addObserver:self
@@ -57,7 +56,7 @@
  */
 - (void)dealloc
 {
-  [file release];
+  [file_ release];
   
   [scrollView_ removeFromSuperview];
   [textView_ removeFromSuperview];
@@ -70,20 +69,17 @@
  */
 - (void)setFile:(NSString*)f
 {
-  if (file != f)
-  {
-    [file release];
-    file = [f retain];
+  if (file_ != f) {
+    [file_ release];
+    file_ = [f retain];
   }
   
-  if (![[NSFileManager defaultManager] fileExistsAtPath:f])
-  {
+  if (![[NSFileManager defaultManager] fileExistsAtPath:f]) {
     [textView_ setString:@""];
     return;
   }
 
-  @try
-  {
+  @try {
     // Attempt to use the PHP CLI to highlight the source file as HTML
     NSPipe* outPipe = [NSPipe pipe];
     NSPipe* errPipe = [NSPipe pipe];
@@ -101,9 +97,7 @@
     NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
     [[textView_ textStorage] setAttributedString:source];
     [source release];
-  }
-  @catch (NSException* exception)
-  {
+  } @catch (NSException* exception) {
     // If the PHP executable is not available then the NSTask will throw an exception
     [self setPlainTextStringFromFile:f];
   }
@@ -120,8 +114,7 @@
   NSError* error = nil;
   NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
   [source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
-  if (error)
-  {
+  if (error) {
     [textView_ setString:source];
     return;
   }
@@ -133,10 +126,9 @@
   [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
   
   // plop in our fake path so nobody knows the difference
-  if (path != file)
-  {
-    [file release];
-    file = [path copy];
+  if (path != file_) {
+    [file_ release];
+    file_ = [path copy];
   }
 
   [ruler_ performLayout];
@@ -149,7 +141,7 @@
 {
   NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
   if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
-    [self setPlainTextStringFromFile:file];
+    [self setPlainTextStringFromFile:file_];
 }
 
 /**
@@ -170,16 +162,18 @@
   
   // go through the document until we find the NSRange for the line we want
   int rangeIndex = 0;
-  for (int i = 0; i < line; i++)
-  {
+  for (int i = 0; i < line; i++) {
     rangeIndex = NSMaxRange([[textView_ string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
   }
   
   // now get the true start/end markers for it
   unsigned lineStart, lineEnd;
-  [[textView_ string] getLineStart:&lineStart end:NULL contentsEnd:&lineEnd forRange:NSMakeRange(rangeIndex - 1, 0)];
-  [textView_ scrollRangeToVisible:[[textView_ string] lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
-
+  [[textView_ string] getLineStart:&lineStart
+                               end:NULL
+                       contentsEnd:&lineEnd
+                          forRange:NSMakeRange(rangeIndex - 1, 0)];
+  [textView_ scrollRangeToVisible:[[textView_ string]
+                lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
   [scrollView_ setNeedsDisplay:YES];
 }
 
@@ -251,7 +245,7 @@
  */
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
-  if ([delegate respondsToSelector:@selector(sourceView:acceptsDropOfFile:)])
+  if ([delegate_ respondsToSelector:@selector(sourceView:acceptsDropOfFile:)])
     return NSDragOperationCopy;
   return NSDragOperationNone;
 }
@@ -266,8 +260,8 @@
     NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
     if ([files count]) {
       NSString* filename = [files objectAtIndex:0];
-      if ([delegate respondsToSelector:@selector(sourceView:acceptsDropOfFile:)] &&
-          [delegate sourceView:self acceptsDropOfFile:filename]) {
+      if ([delegate_ respondsToSelector:@selector(sourceView:acceptsDropOfFile:)] &&
+          [delegate_ sourceView:self acceptsDropOfFile:filename]) {
         [self setFile:filename];
         return YES;
       }
