@@ -60,10 +60,11 @@
     [[BreakpointManager sharedManager] setConnection:self];
     connection_ = [[NetworkConnection alloc] initWithPort:aPort];
     connection_.delegate = self;
-    if (self.attached)
-      [connection_ connect];
 
     attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
+
+    if (self.attached)
+      [connection_ connect];
   }
   return self;
 }
