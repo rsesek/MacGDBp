@@ -18,6 +18,7 @@
 
 @class BSLineNumberRulerView;
 @protocol BSSourceViewDelegate;
+@class BSSourceViewTextView;
 
 // A BSSourceView is a view that contains an NSTextView that also has a line
 // number ruler. This class wraps synchronization management between the text
@@ -28,7 +29,7 @@
 @interface BSSourceView : NSView
 {
  @private
-  NSTextView* textView_;
+  BSSourceViewTextView* textView_;
   BSLineNumberRulerView* ruler_;
   NSScrollView* scrollView_;
 

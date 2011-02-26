@@ -16,7 +16,8 @@
 
 #import "BSSourceView.h"
 
-#include "BSLineNumberRulerView.h"
+#import "BSLineNumberRulerView.h"
+#import "BSSourceViewTextView.h"
 
 @interface BSSourceView (Private)
 - (void)setupViews;
@@ -201,7 +202,8 @@
   NSRect textFrame;
   textFrame.origin = NSMakePoint(0.0, 0.0);
   textFrame.size = [scrollView_ contentSize];
-  textView_ = [[[NSTextView alloc] initWithFrame:textFrame] autorelease];
+  textView_ = [[[BSSourceViewTextView alloc] initWithFrame:textFrame] autorelease];
+  [textView_ setSourceView:self];
   [textView_ setEditable:NO];
   [textView_ setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
   [textView_ setHorizontallyResizable:YES];

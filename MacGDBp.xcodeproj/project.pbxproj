@@ -13,6 +13,7 @@
 		1E02C5710C610158006F1752 /* DebuggerBackEnd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerBackEnd.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
 		1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E0AFBB80FC2518700C67031 /* HUDIcon.png */; };
+		1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E2F0A6812D5371B00EBF675 /* Stop.png */; };
 		1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */; };
@@ -77,6 +78,8 @@
 		1E02C5F50C610724006F1752 /* DebuggerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerController.m; path = Source/DebuggerController.m; sourceTree = "<group>"; };
 		1E0724E111B47BCC0017AD3C /* NetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkConnection.h; path = Source/NetworkConnection.h; sourceTree = "<group>"; };
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
+		1E1181481319805E003BFEF1 /* BSSourceViewTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceViewTextView.h; path = Source/BSSourceViewTextView.h; sourceTree = "<group>"; };
+		1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceViewTextView.m; path = Source/BSSourceViewTextView.m; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E2F0A6812D5371B00EBF675 /* Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Stop.png; path = Icons/Stop.png; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
@@ -252,6 +255,8 @@
 				1E7188650D839F6300969277 /* BSSourceView.mm */,
 				1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */,
 				1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */,
+				1E1181481319805E003BFEF1 /* BSSourceViewTextView.h */,
+				1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */,
 			);
 			name = "Source View";
 			sourceTree = "<group>";
@@ -456,6 +461,7 @@
 				1EFBE63012C515C200F96D6E /* NetworkConnection.mm in Sources */,
 				1EFBE66B12C51E3900F96D6E /* NetworkCallbackController.mm in Sources */,
 				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */,
+				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
