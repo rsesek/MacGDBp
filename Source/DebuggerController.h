@@ -15,10 +15,11 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BSSourceView.h"
 #import "DebuggerBackEnd.h"
 #import "StackController.h"
 #include "VariableNode.h"
+
+@class BSSourceView;
 
 @interface DebuggerController : NSWindowController <DebuggerBackEndDelegate>
 {

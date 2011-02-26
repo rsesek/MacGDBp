@@ -15,8 +15,8 @@
  */
 
 #import "BreakpointController.h"
-#import "AppDelegate.h"
 
+#import "AppDelegate.h"
 
 @implementation BreakpointController
 
@@ -86,7 +86,7 @@
   Breakpoint* bp = [selection objectAtIndex:0];
   [sourceView setFile:[bp file]];
   [sourceView scrollToLine:[bp line]];
-  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+  [sourceView setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
 }
 
 #pragma mark BSSourceView Delegate
@@ -107,8 +107,8 @@
     [bp release];
   }
   
-  [[sourceView numberView] setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
-  [[sourceView numberView] setNeedsDisplay:YES];
+  [sourceView setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
+  [sourceView setNeedsDisplay:YES];
 }
 
 /**

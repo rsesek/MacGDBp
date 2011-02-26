@@ -15,18 +15,32 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#include <vector>
 
 @class BSSourceView;
 
-@interface BSLineNumberView : NSView
+// The NSRulerView that draws line numbers on the BSSourceView. The design of
+// this class draws heavily on the work of Noodlesoft:
+//   http://www.noodlesoft.com/blog/2008/10/05/displaying-line-numbers-with-nstextview/
+// However, all code is original.
+@interface BSLineNumberRulerView : NSRulerView
 {
-  BSSourceView* sourceView;
-  NSRange lineNumberRange;
-  NSSet* markers;
+ @private
+  BSSourceView* sourceView_;  // Weak, owns this.
+
+  // A vector (thus 0-based) map of line numbers (indices) to character indices
+  // in the text storage.
+  std::vector<NSUInteger> lineIndex_;
 }
 
-@property(readwrite, assign) BSSourceView* sourceView;
-@property(readonly) NSRange lineNumberRange;
-@property(readwrite, retain) NSSet* markers;
+// Designated initializer.
+- (id)initWithSourceView:(BSSourceView*)sourceView;
+
+// Performs layout and redraws the line number view.
+- (void)performLayout;
+
+// Returns the line number (1-based) at the given point. |point| should be in
+// the receiver's coordinate system.
+- (NSUInteger)lineNumberAtPoint:(NSPoint)point;
 
 @end

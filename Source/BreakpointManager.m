@@ -137,9 +137,9 @@
   AppDelegate* appDel = [NSApp delegate];
   [[[appDel breakpoint] arrayController] rearrangeObjects];
   [[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
-  [[[[appDel breakpoint] sourceView] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  [[[appDel breakpoint] sourceView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
   [[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
-  [[[[appDel debugger] sourceViewer] numberView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  [[[appDel debugger] sourceViewer] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
 }
 
 @end

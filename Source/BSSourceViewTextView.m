@@ -15,38 +15,34 @@
  */
 
 #import "BSSourceViewTextView.h"
+
 #import "BSSourceView.h"
 
 @implementation BSSourceViewTextView
 
-@synthesize sourceView;
+@synthesize sourceView = sourceView_;
 
-/**
- * Override -[drawRect:] so we can tell the line numbers to draw
- */
 - (void)drawRect:(NSRect)rect
 {
   [super drawRect:rect];
-  
+
+  NSLayoutManager* layoutManager = [self layoutManager];
   NSUInteger i = 0, line = 1;
-  while (i < [[self layoutManager] numberOfGlyphs])
-  {
+  while (i < [layoutManager numberOfGlyphs]) {
     NSRange fragRange;
-    NSRect fragRect = [self convertRect:[[self layoutManager] lineFragmentRectForGlyphAtIndex:i effectiveRange:&fragRange] fromView:self];
-    fragRect.origin.x = rect.origin.x; // horizontal scrolling matters not
-    
-    if ([sourceView markedLine] == line)
-    {
+    NSRect fragRect = [layoutManager lineFragmentRectForGlyphAtIndex:i
+                                                      effectiveRange:&fragRange];
+    if ([sourceView_ markedLine] == line) {
+      fragRect = [self convertRect:fragRect fromView:self];
+      fragRect.origin.x = rect.origin.x;  // Flush all the way to the edge.
       [[[NSColor redColor] colorWithAlphaComponent:0.25] set];
       [NSBezierPath fillRect:fragRect];
       break;
     }
-    
+
     i += fragRange.length;
-    line++;
+    ++line;
   }
-  
-  [[sourceView numberView] setNeedsDisplay:YES];
 }
 
 @end

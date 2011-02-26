@@ -15,29 +15,38 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BSLineNumberView.h"
-#import "BSSourceViewTextView.h"
 
+@class BSLineNumberRulerView;
 @protocol BSSourceViewDelegate;
+@class BSSourceViewTextView;
 
-@interface BSSourceView : NSView
-{
-  BSLineNumberView* numberView;
-  BSSourceViewTextView* textView;
-  NSScrollView* scrollView;
-  
-  NSString* file;
-  NSUInteger markedLine;
-  
-  id<BSSourceViewDelegate> delegate;
+// A BSSourceView is a view that contains an NSTextView that also has a line
+// number ruler. This class wraps synchronization management between the text
+// field and the line numbmering and marker drawing.
+//
+// Rather than setting the string of the text view directly, use the provided
+// methods to load from a file path or to load a string as a virtual file.
+@interface BSSourceView : NSView {
+ @private
+  BSSourceViewTextView* textView_;
+  BSLineNumberRulerView* ruler_;
+  NSScrollView* scrollView_;
+
+  // Set of Breakpoint objects.
+  NSSet* markers_;
+
+  NSString* file_;
+  NSUInteger markedLine_;
+
+  id<BSSourceViewDelegate> delegate_;
 }
 
-@property(readwrite, assign) BSLineNumberView* numberView;
-@property(readwrite, assign) BSSourceViewTextView* textView;
-@property(readwrite, assign) NSScrollView* scrollView;
-@property(readwrite, nonatomic, assign) NSString* file;
-@property(readwrite, assign) NSUInteger markedLine;
-@property(readwrite, assign) id delegate;
+@property (readonly) NSTextView* textView;
+@property (readonly) NSScrollView* scrollView;
+@property (retain) NSSet* markers;
+@property (nonatomic, assign) NSString* file;
+@property (assign) NSUInteger markedLine;
+@property (assign) id delegate;
 
 - (void)setFile:(NSString*)f;
 - (void)setString:(NSString*)source asFile:(NSString*)path;

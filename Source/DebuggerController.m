@@ -15,9 +15,11 @@
  */
 
 #import "DebuggerController.h"
-#import "NSXMLElementAdditions.h"
+
 #import "AppDelegate.h"
+#import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "NSXMLElementAdditions.h"
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;
@@ -290,7 +292,7 @@
     [sourceViewer setString:frame.source asFile:filename];
     
     NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
-    [[sourceViewer numberView] setMarkers:breakpoints];
+    [sourceViewer setMarkers:breakpoints];
   }
   
   [sourceViewer setMarkedLine:frame.lineNumber];
@@ -349,8 +351,8 @@
     [bp release];
   }
   
-  [[sourceViewer numberView] setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
-  [[sourceViewer numberView] setNeedsDisplay:YES];
+  [sourceViewer setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
+  [sourceViewer setNeedsDisplay:YES];
 }
 
 #pragma mark GDBpConnectionDelegate

@@ -16,10 +16,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
+// A split view that performs custom drawing to get a gradient on the divider.
 @interface BSSplitView : NSSplitView
-{
-
-}
-
 @end
