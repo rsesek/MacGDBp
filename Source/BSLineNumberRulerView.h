@@ -19,7 +19,10 @@
 
 @class BSSourceView;
 
-// The NSRulerView that draws line numbers on the BSSourceView.
+// The NSRulerView that draws line numbers on the BSSourceView. The design of
+// this class draws heavily on the work of Noodlesoft:
+//   http://www.noodlesoft.com/blog/2008/10/05/displaying-line-numbers-with-nstextview/
+// However, all code is original.
 @interface BSLineNumberRulerView : NSRulerView
 {
  @private
