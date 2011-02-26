@@ -57,13 +57,13 @@ class NetworkCallbackController;
 
   // An ever-increasing integer that gives each transaction a unique ID for the
   // debugging engine.
-  NSUInteger transactionID;
+  NSInteger transactionID;
   
   // The most recently received transaction ID.
-  NSUInteger lastReadTransaction_;
+  NSInteger lastReadTransaction_;
   
   // The last transactionID written to the stream.
-  NSUInteger lastWrittenTransaction_;
+  NSInteger lastWrittenTransaction_;
   
   // To prevent blocked writing, we enqueue all writes and then wait for the
   // write stream to tell us it's ready. We store the pending commands in this

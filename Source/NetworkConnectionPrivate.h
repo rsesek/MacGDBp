@@ -21,10 +21,10 @@
 @interface NetworkConnection ()
 
 @property (assign) CFReadStreamRef readStream;
-@property NSUInteger lastReadTransaction;
+@property NSInteger lastReadTransaction;
 @property (retain) NSMutableString* currentPacket;
 @property (assign) CFWriteStreamRef writeStream;
-@property NSUInteger lastWrittenTransaction;
+@property NSInteger lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
 - (void)runNetworkThread;

@@ -309,7 +309,7 @@ void PerformQuitSignal(void* info)
   {
     // Find the NULL separator, or the end of the string.
     NSUInteger partLength = 0;
-    for (NSUInteger i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
+    for (CFIndex i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
     
     // If there is not a current packet, set some state.
     if (!self.currentPacket)
@@ -483,7 +483,7 @@ void PerformQuitSignal(void* info)
         NSLog(@"write error");
       }
       // Incomplete write.
-      else if (bytesWritten < strlen(string))
+      else if (bytesWritten < static_cast<CFIndex>(strlen(string)))
       {
         // Adjust the buffer and wait for another chance to write.
         stringLength -= bytesWritten;
