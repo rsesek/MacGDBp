@@ -60,7 +60,8 @@
     [[BreakpointManager sharedManager] setConnection:self];
     connection_ = [[NetworkConnection alloc] initWithPort:aPort];
     connection_.delegate = self;
-    [connection_ connect];
+    if (self.attached)
+      [connection_ connect];
 
     attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
   }
@@ -97,6 +98,20 @@
 - (BOOL)isConnected
 {
   return [connection_ connected] && active_;
+}
+
+/**
+ * Sets the attached state of the debugger. This will open and close the
+ * connection as appropriate.
+ */
+- (void)setAttached:(BOOL)attached {
+  if (attached != attached_) {
+    if (!attached)
+      [connection_ close];
+    else
+      [connection_ connect];
+  }
+  attached_ = attached;
 }
 
 // Commands ////////////////////////////////////////////////////////////////////

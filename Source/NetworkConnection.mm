@@ -103,6 +103,7 @@ void PerformQuitSignal(void* info)
   CFRunLoopSourceInvalidate(quitSource_);
   CFRelease(quitSource_);
   quitSource_ = NULL;
+  NSLog(@"stopping network thread");
 
   [pool release];
 }

@@ -65,7 +65,7 @@
 }
 
 @property (readonly, copy) NSString* status;
-@property (assign) BOOL attached;
+@property (nonatomic, assign) BOOL attached;
 @property (assign) id <DebuggerBackEndDelegate> delegate;
 
 // initializer
