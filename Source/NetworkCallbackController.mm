@@ -213,6 +213,8 @@ void NetworkCallbackController::OnWriteStreamEvent(CFWriteStreamRef stream,
 
 void NetworkCallbackController::UnscheduleReadStream()
 {
+  if (!connection_.readStream)
+    return;
   CFReadStreamUnscheduleFromRunLoop(connection_.readStream, runLoop_, kCFRunLoopCommonModes);
   CFReadStreamClose(connection_.readStream);
   CFRelease(connection_.readStream);    
@@ -221,6 +223,8 @@ void NetworkCallbackController::UnscheduleReadStream()
 
 void NetworkCallbackController::UnscheduleWriteStream()
 {
+  if (!connection_.writeStream)
+    return;
   CFWriteStreamUnscheduleFromRunLoop(connection_.writeStream, runLoop_, kCFRunLoopCommonModes);
   CFWriteStreamClose(connection_.writeStream);
   CFRelease(connection_.writeStream);
