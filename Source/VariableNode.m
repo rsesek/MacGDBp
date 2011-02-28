@@ -82,7 +82,11 @@
     // Other child nodes may be the string value.
     if ([child isKindOfClass:[NSXMLElement class]]) {
       VariableNode* node = [[VariableNode alloc] initWithXMLNode:(NSXMLElement*)child];
-      [children_ addObject:[node autorelease]];
+      // Don't include the CLASSNAME property as that information is retreeived
+      // elsewhere.
+      if (![node.name isEqualToString:@"CLASSNAME"])
+        [children_ addObject:node];
+      [node release];
     }
   }
 }
@@ -90,7 +94,7 @@
 - (NSArray*)dynamicChildren
 {
   NSArray* children = self.children;
-  if (![self isLeaf] && [children count] < 1) {
+  if (![self isLeaf] && (NSInteger)[children count] < self.childCount) {
     // If this node has children but they haven't been loaded from the backend,
     // request them asynchronously.
     [[AppDelegate instance].debugger fetchChildProperties:self];
