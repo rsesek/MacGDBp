@@ -46,8 +46,7 @@ void PerformQuitSignal(void* info)
 
 - (id)initWithPort:(NSUInteger)aPort
 {
-  if (self = [super init])
-  {
+  if (self = [super init]) {
     port_ = aPort;
   }
   return self;
@@ -305,15 +304,13 @@ void PerformQuitSignal(void* info)
   
   // The read loop works by going through the buffer until all the bytes have
   // been processed.
-  while (bufferOffset < bytesRead)
-  {
+  while (bufferOffset < bytesRead) {
     // Find the NULL separator, or the end of the string.
     NSUInteger partLength = 0;
     for (CFIndex i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
     
     // If there is not a current packet, set some state.
-    if (!self.currentPacket)
-    {
+    if (!self.currentPacket) {
       // Read the message header: the size.  This will be |partLength| bytes.
       packetSize_ = atoi(charBuffer + bufferOffset);
       currentPacketIndex_ = 0;
@@ -336,8 +333,7 @@ void PerformQuitSignal(void* info)
     bufferOffset += partLength + 1;
     
     // If this read finished the packet, handle it and reset.
-    if (currentPacketIndex_ >= packetSize_)
-    {
+    if (currentPacketIndex_ >= packetSize_) {
       [self handlePacket:[[currentPacket_ retain] autorelease]];
       self.currentPacket = nil;
       packetSize_ = 0;
@@ -354,85 +350,40 @@ void PerformQuitSignal(void* info)
 {
   // Test if we can convert it into an NSXMLDocument.
   NSError* error = nil;
-  NSXMLDocument* xmlTest = [[NSXMLDocument alloc] initWithXMLString:currentPacket_ options:NSXMLDocumentTidyXML error:&error];
-  
-  // Try to recover if we encountered an error.
-  if (!xmlTest)
-  {
-    // We do not want to starve the write queue, so manually parse out the
-    // transaction ID.
-    NSRange location = [currentPacket_ rangeOfString:@"transaction_id"];
-    if (location.location != NSNotFound)
-    {
-      NSUInteger start = location.location + location.length;
-      NSUInteger end = start;
-      
-      NSCharacterSet* numericSet = [NSCharacterSet decimalDigitCharacterSet];
-      
-      // Loop over the characters after the attribute name to extract the ID.
-      while (end < [currentPacket_ length])
-      {
-        unichar c = [currentPacket_ characterAtIndex:end];
-        if ([numericSet characterIsMember:c])
-        {
-          // If this character is numeric, extend the range to substring.
-          ++end;
-        }
-        else
-        {
-          if (start == end)
-          {
-            // If this character is nonnumeric and we have nothing in the
-            // range, skip this character.
-            ++start;
-            ++end;
-          }
-          else
-          {
-            // We've moved past the numeric ID so we should stop searching.
-            break;
-          }
-        }
-      }
-      
-      // If we were able to extract the transaction ID, update the last read.
-      NSRange substringRange = NSMakeRange(start, end - start);
-      NSString* transactionStr = [currentPacket_ substringWithRange:substringRange];
-      if ([transactionStr length])
-        lastReadTransaction_ = [transactionStr intValue];
-    }
-    
-    // Otherwise, assume +1 and hope it works.
-    ++lastReadTransaction_;
-  } else /*if (!reconnect_)*/ {
-    // See if the transaction can be parsed out.
-    NSInteger transaction = [self transactionIDFromResponse:xmlTest];
-    if (transaction < lastReadTransaction_) {
-      NSLog(@"tx = %d vs %d", transaction, lastReadTransaction_);
-      NSLog(@"out of date transaction %@", packet);
-      return;
-    }
-    
-    if (transaction != lastWrittenTransaction_)
-      NSLog(@"txn %d <> %d last written, %d last read", transaction, lastWrittenTransaction_, lastReadTransaction_);
-    
-    lastReadTransaction_ = transaction;
+  NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:currentPacket_
+                                                        options:NSXMLDocumentTidyXML
+                                                          error:&error];
+  // TODO: Remove this assert before stable release. Flush out any possible
+  // issues during testing.
+  assert(xml);
+
+  // Validate the transaction.
+  NSInteger transaction = [self transactionIDFromResponse:xml];
+  if (transaction < lastReadTransaction_) {
+    NSLog(@"Transaction #%d is out of date (lastRead = %d). Dropping packet: %@",
+        transaction, lastReadTransaction_, packet);
+    return;
   }
-  
+  if (transaction != lastWrittenTransaction_) {
+    NSLog(@"Transaction #%d received out of order. lastRead = %d, lastWritten = %d. Continuing.",
+        transaction, lastReadTransaction_, lastWrittenTransaction_);
+  }
+
+  lastReadTransaction_ = transaction;
+
   // Log this receive event.
   LogEntry* log = [self recordReceive:currentPacket_];
   log.error = error;
-  
+
   // Finally, dispatch the handler for this response.
-  [self handleResponse:[xmlTest autorelease]];  
+  [self handleResponse:[xml autorelease]];  
 }
 
 - (void)handleResponse:(NSXMLDocument*)response
 {
   // Check and see if there's an error.
   NSArray* error = [[response rootElement] elementsForName:@"error"];
-  if ([error count] > 0)
-  {
+  if ([error count] > 0) {
     NSLog(@"Xdebug error: %@", error);
     NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
     [self errorEncountered:errorMessage];
@@ -472,30 +423,25 @@ void PerformQuitSignal(void* info)
   size_t stringLength = strlen(string);
   
   // Busy wait while writing. BAADD. Should background this operation.
-  while (!done)
-  {
-    if (CFWriteStreamCanAcceptBytes(writeStream_))
-    {
+  while (!done) {
+    if (CFWriteStreamCanAcceptBytes(writeStream_)){
       // Include the NULL byte in the string when we write.
       CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)string, stringLength + 1);
-      if (bytesWritten < 0)
-      {
-        NSLog(@"write error");
+      if (bytesWritten < 0) {
+        CFErrorRef error = CFWriteStreamCopyError(writeStream_);
+        NSLog(@"Write stream error: %@", error);
+        CFRelease(error);
       }
       // Incomplete write.
-      else if (bytesWritten < static_cast<CFIndex>(strlen(string)))
-      {
+      else if (bytesWritten < static_cast<CFIndex>(strlen(string))) {
         // Adjust the buffer and wait for another chance to write.
         stringLength -= bytesWritten;
         memmove(string, string + bytesWritten, stringLength);
       }
-      else
-      {
+      else {
         done = YES;
-        
         // We need to scan the string to find the transactionID.
-        if (transaction == NSNotFound)
-        {
+        if (transaction == NSNotFound) {
           NSLog(@"sent %@ without a transaction ID", command);
           continue;
         }
@@ -503,7 +449,7 @@ void PerformQuitSignal(void* info)
       }
     }
   }
-  
+
   // Log this trancation.
   [self recordSend:command];
 }
@@ -516,17 +462,15 @@ void PerformQuitSignal(void* info)
 {
   if (!connected_)
     return;
-  
+
   [writeQueueLock_ lock];
-  if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0)
-  {
+  if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0) {
     NSString* command = [queuedWrites_ objectAtIndex:0];
-    
+
     // We don't want to block because this is called from the main thread.
     // |-performSend:| busy waits when the stream is not ready. Bail out
     // before we do that becuase busy waiting is BAD.
-    if (CFWriteStreamCanAcceptBytes(writeStream_))
-    {
+    if (CFWriteStreamCanAcceptBytes(writeStream_)) {
       [self performSend:command];
       [queuedWrites_ removeObjectAtIndex:0];
     }
