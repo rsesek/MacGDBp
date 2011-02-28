@@ -8,6 +8,11 @@ MacGDBp                                                               CHANGE LOG
   breakpoint
 
 
+1.4.1
+#####################
+- Fix: Objects with nested objects wouldn't always load their child keys
+
+
 1.4 Beta 2
 #####################
 - Fix: After clicking on a stack frame with a virtual file, the debugger front
