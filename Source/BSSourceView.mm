@@ -227,7 +227,7 @@
  */
 - (void)setPlainTextStringFromFile:(NSString*)filePath
 {
-  NSError* error;
+  NSError* error = nil;
   NSString* contents = [NSString stringWithContentsOfFile:filePath
                                                  encoding:NSUTF8StringEncoding
                                                     error:&error];
