@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: Objects with nested objects wouldn't always load their child keys
 - Fix: #213  Crash when unchecking "Attached" when the debugger is inactive
+- Fix: #219  Crash when highlighting source fails
 
 
 1.4 Beta 2
