@@ -27,6 +27,9 @@
 - (NSDictionary*)fontAttributes;
 - (void)drawBreakpointInRect:(NSRect)rect;
 - (void)drawProgramCounterInRect:(NSRect)rect;
+- (void)drawMarkerInRect:(NSRect)rect
+               fillColor:(NSColor*)fill
+             strokeColor:(NSColor*)stroke;
 @end
 
 // Constants {{
@@ -249,6 +252,28 @@ const CGFloat kRulerRightPadding = 2.5;
  */
 - (void)drawBreakpointInRect:(NSRect)rect
 {
+  [self drawMarkerInRect:rect
+               fillColor:[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0]
+             strokeColor:[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0]];
+}
+
+/**
+ * Draws the program counter (a red arrow) in the specified rectangle.
+ */
+- (void)drawProgramCounterInRect:(NSRect)rect
+{
+  [self drawMarkerInRect:rect
+               fillColor:[[NSColor redColor] colorWithAlphaComponent:0.5]
+             strokeColor:[NSColor redColor]];
+}
+
+/**
+ * Draws the arrow shape in a given color.
+ */
+- (void)drawMarkerInRect:(NSRect)rect
+               fillColor:(NSColor*)fill
+             strokeColor:(NSColor*)stroke
+{
   [[NSGraphicsContext currentContext] saveGraphicsState];
 
   NSBezierPath* path = [NSBezierPath bezierPath];
@@ -266,37 +291,11 @@ const CGFloat kRulerRightPadding = 2.5;
   [path lineToPoint:NSMakePoint(minX, NSMaxY(rect) - kPadding)]; // lower left
   [path lineToPoint:NSMakePoint(minX, minY - 1)]; // upper left
 
-  [[NSColor colorWithDeviceRed:0.004 green:0.557 blue:0.851 alpha:1.0] set];
+  [fill set];
   [path fill];
 
-  [[NSColor colorWithDeviceRed:0.0 green:0.404 blue:0.804 alpha:1.0] set];
+  [stroke set];
   [path setLineWidth:2];
-  [path stroke];
-
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-}
-
-/**
- * Draws the program counter (a red arrow) in the specified rectangle.
- */
-- (void)drawProgramCounterInRect:(NSRect)rect
-{
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-
-  const CGFloat kArrowWidth = 10.0;
-  const CGFloat kMaxX = NSMaxX(rect);
-  const CGFloat kMidY = NSMidY(rect);
-
-  NSBezierPath* path = [NSBezierPath bezierPath];
-  [path moveToPoint:NSMakePoint(kMaxX, kMidY)];
-  [path lineToPoint:NSMakePoint(kMaxX - kArrowWidth, NSMaxY(rect))];
-  [path lineToPoint:NSMakePoint(kMaxX - kArrowWidth, NSMinY(rect))];
-  [path lineToPoint:NSMakePoint(kMaxX, kMidY)];
-
-  [[[NSColor redColor] colorWithAlphaComponent:0.5] set];
-  [path fill];
-
-  [[NSColor redColor] setStroke];
   [path stroke];
 
   [[NSGraphicsContext currentContext] restoreGraphicsState];
