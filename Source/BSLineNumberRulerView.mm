@@ -264,7 +264,7 @@ const CGFloat kRulerRightPadding = 2.5;
 {
   [self drawMarkerInRect:rect
                fillColor:[[NSColor redColor] colorWithAlphaComponent:0.5]
-             strokeColor:[NSColor redColor]];
+             strokeColor:[NSColor colorWithDeviceRed:0.788 green:0 blue:0 alpha:1.0]];
 }
 
 /**
