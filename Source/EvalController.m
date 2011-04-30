@@ -50,4 +50,10 @@
 {
 }
 
+- (IBAction)closeWindow:(id)sender
+{
+  [self close];
+  [NSApp endSheet:[self window]];
+}
+
 @end

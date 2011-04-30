@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "EvalController.h"
 #import "NSXMLElementAdditions.h"
 
 @interface DebuggerController (Private)
@@ -107,6 +108,16 @@
     [inspector makeKeyAndOrderFront:sender];
   else
     [inspector orderOut:sender];
+}
+
+/**
+ * Runs the eval window sheet.
+ */
+- (IBAction)showEvalWindow:(id)sender
+{
+  // The |controller| will release itself on close.
+  EvalController* controller = [[EvalController alloc] initWithBackEnd:connection];
+  [controller runModalForWindow:[self window]];
 }
 
 /**
