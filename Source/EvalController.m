@@ -49,6 +49,7 @@
          returnCode:(NSInteger)returnCode
         contextInfo:(void*)contextInfo
 {
+  [self autorelease];
 }
 
 - (IBAction)closeWindow:(id)sender
