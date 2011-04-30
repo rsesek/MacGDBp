@@ -33,6 +33,7 @@
 {
   self.dataField = nil;
   self.resultField = nil;
+  [super dealloc];
 }
 
 - (void)runModalForWindow:(NSWindow*)parent
