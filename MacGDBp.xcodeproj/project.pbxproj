@@ -13,6 +13,8 @@
 		1E02C5710C610158006F1752 /* DebuggerBackEnd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerBackEnd.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
 		1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E0AFBB80FC2518700C67031 /* HUDIcon.png */; };
+		1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E108E3F136CC8B9002E34E0 /* EvalController.m */; };
+		1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E108E41136CC9A0002E34E0 /* Eval.xib */; };
 		1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E2F0A6812D5371B00EBF675 /* Stop.png */; };
@@ -78,6 +80,9 @@
 		1E02C5F50C610724006F1752 /* DebuggerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerController.m; path = Source/DebuggerController.m; sourceTree = "<group>"; };
 		1E0724E111B47BCC0017AD3C /* NetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkConnection.h; path = Source/NetworkConnection.h; sourceTree = "<group>"; };
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
+		1E108E3E136CC8B9002E34E0 /* EvalController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvalController.h; path = Source/EvalController.h; sourceTree = "<group>"; };
+		1E108E3F136CC8B9002E34E0 /* EvalController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EvalController.m; path = Source/EvalController.m; sourceTree = "<group>"; };
+		1E108E42136CC9A0002E34E0 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Eval.xib; sourceTree = "<group>"; };
 		1E1181481319805E003BFEF1 /* BSSourceViewTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceViewTextView.h; path = Source/BSSourceViewTextView.h; sourceTree = "<group>"; };
 		1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceViewTextView.m; path = Source/BSSourceViewTextView.m; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
@@ -237,8 +242,9 @@
 		1E416FFB0D36F827009A53A2 /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				1EEBFBE30D34C793008F835B /* Debugger.xib */,
 				1E416FF60D36F821009A53A2 /* MainMenu.xib */,
+				1EEBFBE30D34C793008F835B /* Debugger.xib */,
+				1E108E41136CC9A0002E34E0 /* Eval.xib */,
 				1E1E53010DF9B89800D334F9 /* Breakpoints.xib */,
 				1E9582600E252474001A3D89 /* Preferences.xib */,
 				1E6B594A11610993001189D2 /* Log.xib */,
@@ -277,6 +283,8 @@
 			children = (
 				1E02C5F40C610724006F1752 /* DebuggerController.h */,
 				1E02C5F50C610724006F1752 /* DebuggerController.m */,
+				1E108E3E136CC8B9002E34E0 /* EvalController.h */,
+				1E108E3F136CC8B9002E34E0 /* EvalController.m */,
 				1EB7BED30ECF3CA90033283A /* StackFrame.h */,
 				1EB7BED40ECF3CA90033283A /* StackFrame.m */,
 				1EBF4D5B0EE35F0700B62769 /* StackController.h */,
@@ -415,6 +423,7 @@
 				1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */,
 				1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */,
 				1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */,
+				1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +471,7 @@
 				1EFBE66B12C51E3900F96D6E /* NetworkCallbackController.mm in Sources */,
 				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */,
 				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
+				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +484,14 @@
 				089C165DFE840E0CC02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1E108E41136CC9A0002E34E0 /* Eval.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E108E42136CC9A0002E34E0 /* English */,
+			);
+			name = Eval.xib;
 			sourceTree = "<group>";
 		};
 		1E1E53010DF9B89800D334F9 /* Breakpoints.xib */ = {
