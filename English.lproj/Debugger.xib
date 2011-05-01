@@ -12,7 +12,7 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="471"/>
+			<integer value="46"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -74,13 +74,13 @@
 								<object class="NSMutableString" key="NSToolbarItemIdentifier">
 									<characters key="NS.bytes">05157554-5CF3-45B4-9306-239A1F7E8130</characters>
 								</object>
-								<string key="NSToolbarItemLabel">Evaluate Code</string>
-								<string key="NSToolbarItemPaletteLabel">Evaluate</string>
+								<string key="NSToolbarItemLabel">Evaluate Script</string>
+								<string key="NSToolbarItemPaletteLabel">Evaluate Script</string>
 								<string key="NSToolbarItemToolTip"/>
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">NSNetwork</string>
+									<string key="NSResourceName">NSAdvanced</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -104,6 +104,7 @@
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {83, 18}}</string>
 									<reference key="NSSuperview"/>
+									<reference key="NSWindow"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="660002690">
 										<int key="NSCellFlags">-2080244224</int>
@@ -209,7 +210,7 @@
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">StepOut.png</string>
+									<string key="NSResourceName">StepOut</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -231,7 +232,7 @@
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">HUDIcon.png</string>
+									<string key="NSResourceName">HUDIcon</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -253,7 +254,7 @@
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">StepIn.png</string>
+									<string key="NSResourceName">StepIn</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -275,7 +276,7 @@
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">Run.png</string>
+									<string key="NSResourceName">Run</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -297,7 +298,7 @@
 								<nil key="NSToolbarItemView"/>
 								<object class="NSCustomResource" key="NSToolbarItemImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">StepOver.png</string>
+									<string key="NSResourceName">StepOver</string>
 								</object>
 								<nil key="NSToolbarItemTarget"/>
 								<nil key="NSToolbarItemAction"/>
@@ -443,6 +444,7 @@
 						<reference ref="341963234"/>
 						<reference ref="1015206233"/>
 						<reference ref="1015206233"/>
+						<reference ref="809192869"/>
 						<reference ref="909415165"/>
 						<reference ref="499700426"/>
 						<reference ref="53808834"/>
@@ -702,6 +704,7 @@
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="307722252"/>
 													<string key="NSAction">_doScroller:</string>
+													<double key="NSCurValue">0.0053050397877984082</double>
 													<double key="NSPercent">0.34494770000000002</double>
 												</object>
 												<object class="NSClipView" id="1056278854">
@@ -929,7 +932,6 @@
 													<int key="NSsFlags">1</int>
 													<reference key="NSTarget" ref="312219739"/>
 													<string key="NSAction">_doScroller:</string>
-													<double key="NSCurValue">0.0078534031413612579</double>
 													<double key="NSPercent">0.99738899999999997</double>
 												</object>
 												<object class="NSClipView" id="692479241">
@@ -2326,7 +2328,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{442, 589}, {617, 227}}</string>
+					<string>{{442, 816}, {617, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{418, 770}, {617, 0}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3226,30 +3228,30 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>HUDIcon.png</string>
+				<string>HUDIcon</string>
+				<string>NSAdvanced</string>
 				<string>NSMenuCheckmark</string>
 				<string>NSMenuMixedState</string>
-				<string>NSNetwork</string>
 				<string>NSSwitch</string>
 				<string>NSToolbarCustomizeToolbarItemImage</string>
-				<string>Run.png</string>
-				<string>StepIn.png</string>
-				<string>StepOut.png</string>
-				<string>StepOver.png</string>
+				<string>Run</string>
+				<string>StepIn</string>
+				<string>StepOut</string>
+				<string>StepOver</string>
 				<string>Stop</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{128, 128}</string>
+				<string>{32, 32}</string>
+				<string>{32, 32}</string>
 				<string>{9, 8}</string>
 				<string>{7, 2}</string>
-				<string>{32, 32}</string>
 				<string>{15, 15}</string>
 				<string>{32, 32}</string>
-				<string>{128, 128}</string>
-				<string>{128, 128}</string>
-				<string>{128, 128}</string>
-				<string>{128, 128}</string>
+				<string>{256, 256}</string>
+				<string>{256, 256}</string>
+				<string>{256, 256}</string>
+				<string>{256, 256}</string>
 				<string>{256, 256}</string>
 			</object>
 		</object>
