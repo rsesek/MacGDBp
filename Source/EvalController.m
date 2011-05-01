@@ -52,6 +52,11 @@
   [self autorelease];
 }
 
+- (IBAction)evaluateScript:(id)sender
+{
+  NSLog(@"will evluate: %@", [self.dataField stringValue]);
+}
+
 - (IBAction)closeWindow:(id)sender
 {
   [self close];

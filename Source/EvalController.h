@@ -34,6 +34,7 @@
 
 - (void)runModalForWindow:(NSWindow*)parent;
 
+- (IBAction)evaluateScript:(id)sender;
 - (IBAction)closeWindow:(id)sender;
 
 @end
