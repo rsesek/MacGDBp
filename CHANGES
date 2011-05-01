@@ -7,6 +7,7 @@ MacGDBp                                                               CHANGE LOG
 - Fix: #128  Clicking on the line number will now always set the correct
   breakpoint
 - New: #190  Evaluation of arbitrary script/code fragments
+- New: #168  Recursively display objects and arrays in the variable inspector
 
 
 1.4.1
