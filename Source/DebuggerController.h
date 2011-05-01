@@ -56,6 +56,7 @@
 @property(readonly) NSWindow* inspector;
 
 - (IBAction)showInspectorWindow:(id)sender;
+- (IBAction)showEvalWindow:(id)sender;
 
 - (void)resetDisplays;
 

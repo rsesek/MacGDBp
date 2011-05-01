@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "EvalController.h"
 #import "NSXMLElementAdditions.h"
 
 @interface DebuggerController (Private)
@@ -92,7 +93,8 @@
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
-             action == @selector(stop:)) {
+             action == @selector(stop:) ||
+             action == @selector(showEvalWindow:)) {
     return [connection isConnected];
   }
   return [[self window] validateUserInterfaceItem:anItem];
@@ -107,6 +109,16 @@
     [inspector makeKeyAndOrderFront:sender];
   else
     [inspector orderOut:sender];
+}
+
+/**
+ * Runs the eval window sheet.
+ */
+- (IBAction)showEvalWindow:(id)sender
+{
+  // The |controller| will release itself on close.
+  EvalController* controller = [[EvalController alloc] initWithBackEnd:connection];
+  [controller runModalForWindow:[self window]];
 }
 
 /**
@@ -389,6 +401,11 @@
     [variablesTreeController rearrangeObjects];
     [pendingProperties_ removeObjectForKey:key];
   }
+}
+
+- (void)scriptWasEvaluatedWithResult:(NSString*)result
+{
+  [EvalController scriptWasEvaluatedWithResult:result];
 }
 
 @end

@@ -6,6 +6,7 @@ MacGDBp                                                               CHANGE LOG
 - New: Now a 64-bit binary (along with x86 and PPC)
 - Fix: #128  Clicking on the line number will now always set the correct
   breakpoint
+- New: #190  Evaluation of arbitrary script/code fragments
 
 
 1.4.1

@@ -87,6 +87,9 @@
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (void)removeBreakpoint:(Breakpoint*)bp;
 
+// Evaluates a given string in the current execution context.
+- (void)evalScript:(NSString*)str;
+
 // Gets a property by name from the debugger engine. Returns a transaction ID
 // which used in the delegate callback. Properties must be retrieved at a
 // certain stack depth.
@@ -123,6 +126,9 @@
 
 // Callback from |-getProperty:|.
 - (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction;
+
+// Callback for the result of |-evalScript:|.
+- (void)scriptWasEvaluatedWithResult:(NSString*)result;
 
 @end
 
