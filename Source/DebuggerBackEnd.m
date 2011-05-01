@@ -35,6 +35,7 @@
 - (void)contextsReceived:(NSXMLDocument*)response;
 - (void)variablesReceived:(NSXMLDocument*)response;
 - (void)propertiesReceived:(NSXMLDocument*)response;
+- (void)evalScriptReceived:(NSXMLDocument*)response;
 
 @end
 
@@ -253,8 +254,10 @@
 
   char* encodedString = malloc(modp_b64_encode_len([str length]));
   modp_b64_encode(encodedString, [str UTF8String], [str length]);
-  [connection_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
+  NSNumber* tx = [connection_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
   free(encodedString);
+
+  [self recordCallback:@selector(evalScriptReceived:) forTransaction:tx];
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////
@@ -503,6 +506,14 @@
   [parent setChildren:nil];
   
   [delegate receivedProperties:children forTransaction:transaction];
+}
+
+/**
+ * Callback from a |-evalScript:| request.
+ */
+- (void)evalScriptReceived:(NSXMLDocument*)response
+{
+  [delegate scriptWasEvaluatedWithResult:[response stringValue]];
 }
 
 /**

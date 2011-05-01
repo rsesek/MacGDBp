@@ -73,7 +73,7 @@ static EvalController* g_activeEvalController = nil;
 
 + (void)scriptWasEvaluatedWithResult:(NSString*)result
 {
-  g_activeEvalController.resultField.value = result;
+  [g_activeEvalController.resultField setStringValue:result];
 }
 
 @end
