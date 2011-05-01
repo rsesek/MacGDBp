@@ -513,7 +513,9 @@
  */
 - (void)evalScriptReceived:(NSXMLDocument*)response
 {
-  [delegate scriptWasEvaluatedWithResult:[response stringValue]];
+  NSXMLElement* parent = (NSXMLElement*)[[response rootElement] childAtIndex:0];
+  NSString* value = [parent base64DecodedValue];
+  [delegate scriptWasEvaluatedWithResult:value];
 }
 
 /**
