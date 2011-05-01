@@ -16,6 +16,8 @@
 
 #import "EvalController.h"
 
+#import "DebuggerBackEnd.h"
+
 @implementation EvalController
 
 @synthesize dataField = dataField_;
@@ -54,7 +56,8 @@
 
 - (IBAction)evaluateScript:(id)sender
 {
-  NSLog(@"will evluate: %@", [self.dataField stringValue]);
+  NSString* code = [self.dataField stringValue];
+  [backEnd_ evalScript:code];
 }
 
 - (IBAction)closeWindow:(id)sender

@@ -17,6 +17,7 @@
 #import "DebuggerBackEnd.h"
 
 #import "AppDelegate.h"
+#import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
 
 // GDBpConnection (Private) ////////////////////////////////////////////////////
@@ -240,6 +241,20 @@
     return;
   
   [connection_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
+}
+
+/**
+ * Sends a string to be evaluated by the engine.
+ */
+- (void)evalScript:(NSString*)str
+{
+  if (![connection_ connected])
+    return;
+
+  char* encodedString = malloc(modp_b64_encode_len([str length]));
+  modp_b64_encode(encodedString, [str UTF8String], [str length]);
+  [connection_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
+  free(encodedString);
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////

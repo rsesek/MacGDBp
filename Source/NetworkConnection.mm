@@ -206,6 +206,31 @@ void PerformQuitSignal(void* info)
 }
 
 /**
+ * Certain commands expect encoded data to be the the last, unnamed parameter
+ * of the command. In these cases, inserting the transaction ID at the end is
+ * incorrect, so clients use this method to have |{txn}| replaced with the
+ * transaction ID.
+ */
+- (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ...
+{
+  // Collect varargs and format command.
+  va_list args;
+  va_start(args, format);
+  NSString* command = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+  va_end(args);  
+
+  NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
+  NSString* taggedCommand = [command stringByReplacingOccurrencesOfString:@"{txn}"
+                                                               withString:[callbackKey stringValue]];
+  [self performSelector:@selector(send:)
+               onThread:thread_
+             withObject:taggedCommand
+          waitUntilDone:connected_];
+  
+  return callbackKey;
+}
+
+/**
  * Given a file path, this returns a file:// URI and escapes any spaces for the
  * debugger engine.
  */
