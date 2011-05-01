@@ -93,7 +93,8 @@
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
-             action == @selector(stop:)) {
+             action == @selector(stop:) ||
+             action == @selector(showEvalWindow:)) {
     return [connection isConnected];
   }
   return [[self window] validateUserInterfaceItem:anItem];
