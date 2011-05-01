@@ -37,8 +37,6 @@
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EC6965712BBC6A700A8D984 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965112BBC6A700A8D984 /* LICENSE */; };
 		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
-		1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965512BBC6A700A8D984 /* README.bluestatic */; };
-		1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965612BBC6A700A8D984 /* README.chromium */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
@@ -119,8 +117,6 @@
 		1EC6965212BBC6A700A8D984 /* modp_b64.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modp_b64.cc; sourceTree = "<group>"; };
 		1EC6965312BBC6A700A8D984 /* modp_b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64.h; sourceTree = "<group>"; };
 		1EC6965412BBC6A700A8D984 /* modp_b64_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64_data.h; sourceTree = "<group>"; };
-		1EC6965512BBC6A700A8D984 /* README.bluestatic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.bluestatic; sourceTree = "<group>"; };
-		1EC6965612BBC6A700A8D984 /* README.chromium */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.chromium; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
@@ -307,8 +303,6 @@
 				1EC6965212BBC6A700A8D984 /* modp_b64.cc */,
 				1EC6965312BBC6A700A8D984 /* modp_b64.h */,
 				1EC6965412BBC6A700A8D984 /* modp_b64_data.h */,
-				1EC6965512BBC6A700A8D984 /* README.bluestatic */,
-				1EC6965612BBC6A700A8D984 /* README.chromium */,
 			);
 			path = modp_b64;
 			sourceTree = "<group>";
@@ -425,8 +419,6 @@
 				1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */,
 				1E6B594C11610993001189D2 /* Log.xib in Resources */,
 				1EC6965712BBC6A700A8D984 /* LICENSE in Resources */,
-				1EC6965912BBC6A700A8D984 /* README.bluestatic in Resources */,
-				1EC6965A12BBC6A700A8D984 /* README.chromium in Resources */,
 				1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */,
 				1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */,
 			);
