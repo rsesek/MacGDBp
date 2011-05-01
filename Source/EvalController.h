@@ -37,4 +37,10 @@
 - (IBAction)evaluateScript:(id)sender;
 - (IBAction)closeWindow:(id)sender;
 
+// Callback from the DebuggerBackEnd that is routed through the
+// DebuggerController. This will message the current EvalController if it is
+// running modally. If the controller is not running, the message will be
+// dropped.
++ (void)scriptWasEvaluatedWithResult:(NSString*)result;
+
 @end

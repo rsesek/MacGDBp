@@ -18,6 +18,8 @@
 
 #import "DebuggerBackEnd.h"
 
+static EvalController* g_activeEvalController = nil;
+
 @implementation EvalController
 
 @synthesize dataField = dataField_;
@@ -40,6 +42,8 @@
 
 - (void)runModalForWindow:(NSWindow*)parent
 {
+  assert(!g_activeEvalController);
+  g_activeEvalController = self;
   [NSApp beginSheet:[self window]
      modalForWindow:parent
       modalDelegate:self
@@ -51,6 +55,7 @@
          returnCode:(NSInteger)returnCode
         contextInfo:(void*)contextInfo
 {
+  g_activeEvalController = nil;
   [self autorelease];
 }
 
@@ -64,6 +69,11 @@
 {
   [self close];
   [NSApp endSheet:[self window]];
+}
+
++ (void)scriptWasEvaluatedWithResult:(NSString*)result
+{
+  g_activeEvalController.resultField.value = result;
 }
 
 @end

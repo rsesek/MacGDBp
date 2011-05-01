@@ -127,5 +127,8 @@
 // Callback from |-getProperty:|.
 - (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction;
 
+// Callback for the result of |-evalScript:|.
+- (void)scriptWasEvaluatedWithResult:(NSString*)result;
+
 @end
 
