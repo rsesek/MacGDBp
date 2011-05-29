@@ -46,12 +46,6 @@ class NetworkCallbackController;
   // Internal class that manages CFNetwork callbacks. Strong.
   NetworkCallbackController* callbackController_;
 
-  // The read stream that is scheduled on the main run loop. Weak.
-  CFReadStreamRef readStream_;
-  
-  // The write stream. Weak.
-  CFWriteStreamRef writeStream_;
-
   // Run loop source used to quit the thread. Strong.
   CFRunLoopSourceRef quitSource_;
 

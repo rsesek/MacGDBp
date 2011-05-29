@@ -23,7 +23,9 @@
 #import "NetworkConnectionPrivate.h"
 
 NetworkCallbackController::NetworkCallbackController(NetworkConnection* connection)
-    : connection_(connection),
+    : readStream_(NULL),
+      writeStream_(NULL),
+      connection_(connection),
       runLoop_(CFRunLoopGetCurrent())
 {
 }
@@ -83,6 +85,43 @@ void NetworkCallbackController::CloseConnection()
   UnscheduleWriteStream();
 }
 
+BOOL NetworkCallbackController::WriteStreamCanAcceptBytes()
+{
+  return CFWriteStreamCanAcceptBytes(writeStream_);
+}
+
+BOOL NetworkCallbackController::WriteString(NSString* string)
+{
+  BOOL done = NO;
+
+  char* cString = const_cast<char*>([string UTF8String]);
+  size_t stringLength = strlen(cString);
+
+  // Busy wait while writing. BAADD. Should background this operation.
+  while (!done) {
+    if (WriteStreamCanAcceptBytes()) {
+      // Include the NULL byte in the string when we write.
+      CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)cString, stringLength + 1);
+      if (bytesWritten < 0) {
+        CFErrorRef error = CFWriteStreamCopyError(writeStream_);
+        ReportError(error);
+        break;
+      }
+      // Incomplete write.
+      else if (bytesWritten < static_cast<CFIndex>(strlen(cString))) {
+        // Adjust the buffer and wait for another chance to write.
+        stringLength -= bytesWritten;
+        memmove(string, string + bytesWritten, stringLength);
+      }
+      else {
+        done = YES;
+      }
+    }
+  }
+
+  return done;
+}
+
 // Static Methods //////////////////////////////////////////////////////////////
 
 void NetworkCallbackController::SocketAcceptCallback(CFSocketRef socket,
@@ -116,14 +155,11 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
                                                CFDataRef address,
                                                const void* data)
 {
-  CFReadStreamRef readStream;
-  CFWriteStreamRef writeStream;
-  
   // Create the streams on the socket.
   CFStreamCreatePairWithSocket(kCFAllocatorDefault,
                                *(CFSocketNativeHandle*)data,  // Socket handle.
-                               &readStream,  // Read stream in-pointer.
-                               &writeStream);  // Write stream in-pointer.
+                               &readStream_,  // Read stream in-pointer.
+                               &writeStream_);  // Write stream in-pointer.
   
   // Create struct to register callbacks for the stream.
   CFStreamClientContext context = { 0 };
@@ -134,15 +170,15 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
                             kCFStreamEventHasBytesAvailable |
                             kCFStreamEventErrorOccurred |
                             kCFStreamEventEndEncountered;
-  if (CFReadStreamSetClient(readStream, readFlags, &NetworkCallbackController::ReadStreamCallback, &context))
+  if (CFReadStreamSetClient(readStream_, readFlags, &NetworkCallbackController::ReadStreamCallback, &context))
     // Schedule in run loop to do asynchronous communication with the engine.
-    CFReadStreamScheduleWithRunLoop(readStream, runLoop_, kCFRunLoopCommonModes);
+    CFReadStreamScheduleWithRunLoop(readStream_, runLoop_, kCFRunLoopCommonModes);
   else
     return;
   
   // Open the stream now that it's scheduled on the run loop.
-  if (!CFReadStreamOpen(readStream)) {
-    ReportError(CFReadStreamCopyError(readStream));
+  if (!CFReadStreamOpen(readStream_)) {
+    ReportError(CFReadStreamCopyError(readStream_));
     return;
   }
   
@@ -151,20 +187,18 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
                              kCFStreamEventCanAcceptBytes |
                              kCFStreamEventErrorOccurred |
                              kCFStreamEventEndEncountered;
-  if (CFWriteStreamSetClient(writeStream, writeFlags, &NetworkCallbackController::WriteStreamCallback, &context))
+  if (CFWriteStreamSetClient(writeStream_, writeFlags, &NetworkCallbackController::WriteStreamCallback, &context))
     // Schedule it in the run loop to receive error information.
-    CFWriteStreamScheduleWithRunLoop(writeStream, runLoop_, kCFRunLoopCommonModes);
+    CFWriteStreamScheduleWithRunLoop(writeStream_, runLoop_, kCFRunLoopCommonModes);
   else
     return;
   
   // Open the write stream.
-  if (!CFWriteStreamOpen(writeStream)) {
-    ReportError(CFWriteStreamCopyError(writeStream));
+  if (!CFWriteStreamOpen(writeStream_)) {
+    ReportError(CFWriteStreamCopyError(writeStream_));
     return;
   }
   
-  connection_.readStream = readStream;
-  connection_.writeStream = writeStream;
   [connection_ socketDidAccept];
 }
 
@@ -174,8 +208,8 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
   switch (eventType)
   {
     case kCFStreamEventHasBytesAvailable:
-      if (connection_.readStream)
-        [connection_ readStreamHasData];
+      if (readStream_)
+        [connection_ readStreamHasData:stream];
       break;
       
     case kCFStreamEventErrorOccurred:
@@ -213,22 +247,22 @@ void NetworkCallbackController::OnWriteStreamEvent(CFWriteStreamRef stream,
 
 void NetworkCallbackController::UnscheduleReadStream()
 {
-  if (!connection_.readStream)
+  if (!readStream_)
     return;
-  CFReadStreamUnscheduleFromRunLoop(connection_.readStream, runLoop_, kCFRunLoopCommonModes);
-  CFReadStreamClose(connection_.readStream);
-  CFRelease(connection_.readStream);    
-  connection_.readStream = NULL;
+  CFReadStreamUnscheduleFromRunLoop(readStream_, runLoop_, kCFRunLoopCommonModes);
+  CFReadStreamClose(readStream_);
+  CFRelease(readStream_);
+  readStream_ = NULL;
 }
 
 void NetworkCallbackController::UnscheduleWriteStream()
 {
-  if (!connection_.writeStream)
+  if (!writeStream_)
     return;
-  CFWriteStreamUnscheduleFromRunLoop(connection_.writeStream, runLoop_, kCFRunLoopCommonModes);
-  CFWriteStreamClose(connection_.writeStream);
-  CFRelease(connection_.writeStream);
-  connection_.writeStream = NULL;
+  CFWriteStreamUnscheduleFromRunLoop(writeStream_, runLoop_, kCFRunLoopCommonModes);
+  CFWriteStreamClose(writeStream_);
+  CFRelease(writeStream_);
+  writeStream_ = NULL;
 }
 
 void NetworkCallbackController::ReportError(CFErrorRef error)

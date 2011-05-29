@@ -20,10 +20,8 @@
 // by the C++ NetworkCallbackController to communicate.
 @interface NetworkConnection ()
 
-@property (assign) CFReadStreamRef readStream;
 @property NSInteger lastReadTransaction;
 @property (retain) NSMutableString* currentPacket;
-@property (assign) CFWriteStreamRef writeStream;
 @property NSInteger lastWrittenTransaction;
 @property (retain) NSMutableArray* queuedWrites;
 
@@ -31,7 +29,7 @@
 
 - (void)socketDidAccept;
 - (void)socketDisconnected;
-- (void)readStreamHasData;
+- (void)readStreamHasData:(CFReadStreamRef)stream;
 
 // These methods MUST be called on the network thread as they are not threadsafe.
 - (void)send:(NSString*)command;

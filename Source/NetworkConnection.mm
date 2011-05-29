@@ -36,11 +36,8 @@ void PerformQuitSignal(void* info)
 @synthesize port = port_;
 @synthesize connected = connected_;
 @synthesize delegate = delegate_;
-
-@synthesize readStream = readStream_;
 @synthesize lastReadTransaction = lastReadTransaction_;
 @synthesize currentPacket = currentPacket_;
-@synthesize writeStream = writeStream_;
 @synthesize lastWrittenTransaction = lastWrittenTransaction_;
 @synthesize queuedWrites = queuedWrites_;
 
@@ -171,7 +168,7 @@ void PerformQuitSignal(void* info)
  */
 - (void)send:(NSString*)command
 {
-  if (lastReadTransaction_ >= lastWrittenTransaction_ && CFWriteStreamCanAcceptBytes(writeStream_)) {
+  if (lastReadTransaction_ >= lastWrittenTransaction_ && callbackController_->WriteStreamCanAcceptBytes()) {
     [self performSend:command];
   } else {
     [writeQueueLock_ lock];
@@ -319,12 +316,12 @@ void PerformQuitSignal(void* info)
 /**
  * Callback from the CFReadStream that there is data waiting to be read.
  */
-- (void)readStreamHasData
+- (void)readStreamHasData:(CFReadStreamRef)stream
 {
   const NSUInteger kBufferSize = 1024;
   UInt8 buffer[kBufferSize];
   CFIndex bufferOffset = 0;  // Starting point in |buffer| to work with.
-  CFIndex bytesRead = CFReadStreamRead(readStream_, buffer, kBufferSize);
+  CFIndex bytesRead = CFReadStreamRead(stream, buffer, kBufferSize);
   const char* charBuffer = (const char*)buffer;
   
   // The read loop works by going through the buffer until all the bytes have
@@ -441,38 +438,13 @@ void PerformQuitSignal(void* info)
   NSInteger transaction = [self transactionIDFromCommand:command];
   if (transaction != NSNotFound && transaction < lastWrittenTransaction_)
     return;
-  
-  BOOL done = NO;
-  
-  char* string = (char*)[command UTF8String];
-  size_t stringLength = strlen(string);
-  
-  // Busy wait while writing. BAADD. Should background this operation.
-  while (!done) {
-    if (CFWriteStreamCanAcceptBytes(writeStream_)){
-      // Include the NULL byte in the string when we write.
-      CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)string, stringLength + 1);
-      if (bytesWritten < 0) {
-        CFErrorRef error = CFWriteStreamCopyError(writeStream_);
-        NSLog(@"Write stream error: %@", error);
-        CFRelease(error);
-      }
-      // Incomplete write.
-      else if (bytesWritten < static_cast<CFIndex>(strlen(string))) {
-        // Adjust the buffer and wait for another chance to write.
-        stringLength -= bytesWritten;
-        memmove(string, string + bytesWritten, stringLength);
-      }
-      else {
-        done = YES;
-        // We need to scan the string to find the transactionID.
-        if (transaction == NSNotFound) {
-          NSLog(@"sent %@ without a transaction ID", command);
-          continue;
-        }
-        lastWrittenTransaction_ = transaction;
-      }
+
+  if (callbackController_->WriteString(command)) {
+    // We need to scan the string to find the transactionID.
+    if (transaction == NSNotFound) {
+      NSLog(@"sent %@ without a transaction ID", command);
     }
+    lastWrittenTransaction_ = transaction;
   }
 
   // Log this trancation.
@@ -495,7 +467,7 @@ void PerformQuitSignal(void* info)
     // We don't want to block because this is called from the main thread.
     // |-performSend:| busy waits when the stream is not ready. Bail out
     // before we do that becuase busy waiting is BAD.
-    if (CFWriteStreamCanAcceptBytes(writeStream_)) {
+    if (callbackController_->WriteStreamCanAcceptBytes()) {
       [self performSend:command];
       [queuedWrites_ removeObjectAtIndex:0];
     }

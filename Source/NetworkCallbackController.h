@@ -36,6 +36,14 @@ class NetworkCallbackController
   // Closes down the read/write streams.
   void CloseConnection();
 
+  // Checks whether the write stream is ready for writing.
+  BOOL WriteStreamCanAcceptBytes();
+
+  // Writes the string to the write stream. This will block, so be sure to check
+  // if it can write before calling this. Returns YES if the string was
+  // successfully written.
+  BOOL WriteString(NSString* string);
+
  private:
   // These static methods forward an invocation to the instance methods. The
   // last void pointer, named |self|, is the instance of this class.
@@ -67,6 +75,11 @@ class NetworkCallbackController
 
   // The actual socket.
   CFSocketRef socket_;  // Strong.
+
+  // The read and write streams that are scheduled on the |runLoop_|. Both are
+  // weak and are owned by the run loop source.
+  CFReadStreamRef readStream_;
+  CFWriteStreamRef writeStream_;
 
   NetworkConnection* connection_;  // Weak, owns this.
   CFRunLoopRef runLoop_;  // Weak.
