@@ -87,7 +87,7 @@ void NetworkCallbackController::CloseConnection()
 
 BOOL NetworkCallbackController::WriteStreamCanAcceptBytes()
 {
-  return CFWriteStreamCanAcceptBytes(writeStream_);
+  return writeStream_ && CFWriteStreamCanAcceptBytes(writeStream_);
 }
 
 BOOL NetworkCallbackController::WriteString(NSString* string)
