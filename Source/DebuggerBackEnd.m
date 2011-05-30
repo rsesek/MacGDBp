@@ -164,8 +164,6 @@
   [connection_ close];
   active_ = NO;
   self.status = @"Stopped";
-  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [delegate debuggerDisconnected];
 }
 
 /**
@@ -176,8 +174,6 @@
   [connection_ sendCommandWithFormat:@"detach"];
   active_ = NO;
   self.status = @"Stopped";
-  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [delegate debuggerDisconnected];
 }
 
 /**
