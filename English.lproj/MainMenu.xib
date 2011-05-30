@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10H574</string>
+		<string key="IBDocument.SystemVersion">10J869</string>
 		<string key="IBDocument.InterfaceBuilderVersion">804</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
@@ -596,6 +596,15 @@
 									<reference key="NSOnImage" ref="501814074"/>
 									<reference key="NSMixedImage" ref="682415215"/>
 								</object>
+								<object class="NSMenuItem" id="419233777">
+									<reference key="NSMenu" ref="155987990"/>
+									<string key="NSTitle">Evaluate</string>
+									<string key="NSKeyEquiv">E</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="501814074"/>
+									<reference key="NSMixedImage" ref="682415215"/>
+								</object>
 								<object class="NSMenuItem" id="339620362">
 									<reference key="NSMenu" ref="155987990"/>
 									<string key="NSTitle">Attached</string>
@@ -1100,6 +1109,14 @@
 						</object>
 					</object>
 					<int key="connectionID">314</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">showEvalWindow:</string>
+						<reference key="source" ref="614736281"/>
+						<reference key="destination" ref="419233777"/>
+					</object>
+					<int key="connectionID">317</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1631,6 +1648,7 @@
 							<reference ref="1023629900"/>
 							<reference ref="306360942"/>
 							<reference ref="339620362"/>
+							<reference ref="419233777"/>
 						</object>
 						<reference key="parent" ref="634527412"/>
 					</object>
@@ -1677,6 +1695,11 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">313</int>
 						<reference key="object" ref="339620362"/>
+						<reference key="parent" ref="155987990"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">316</int>
+						<reference key="object" ref="419233777"/>
 						<reference key="parent" ref="155987990"/>
 					</object>
 				</object>
@@ -1808,6 +1831,7 @@
 					<string>308.IBPluginDependency</string>
 					<string>310.IBPluginDependency</string>
 					<string>313.IBPluginDependency</string>
+					<string>316.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.ImportedFromIB2</string>
 					<string>56.IBPluginDependency</string>
@@ -1876,7 +1900,7 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{663, 391}, {253, 223}}</string>
+					<string>{{598, 240}, {250, 223}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1908,11 +1932,11 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{821, 573}, {208, 163}}</string>
+					<string>{{727, 300}, {208, 163}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{162, 542}, {183, 203}}</string>
+					<string>{{556, 260}, {180, 203}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1935,7 +1959,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{642, 340}, {160, 123}}</string>
+					<string>{{642, 320}, {160, 143}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1974,7 +1999,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">314</int>
+			<int key="maxID">317</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2084,13 +2109,13 @@
 					<string key="className">BSSourceView</string>
 					<string key="superclassName">NSView</string>
 					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">delegate</string>
+						<string key="NS.key.0">delegate_</string>
 						<string key="NS.object.0">id</string>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">delegate</string>
+						<string key="NS.key.0">delegate_</string>
 						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">delegate</string>
+							<string key="name">delegate_</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</object>
@@ -2188,6 +2213,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>attachedToggled:</string>
 							<string>run:</string>
+							<string>showEvalWindow:</string>
 							<string>showInspectorWindow:</string>
 							<string>stepIn:</string>
 							<string>stepOut:</string>
@@ -2196,6 +2222,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2211,6 +2238,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>attachedToggled:</string>
 							<string>run:</string>
+							<string>showEvalWindow:</string>
 							<string>showInspectorWindow:</string>
 							<string>stepIn:</string>
 							<string>stepOut:</string>
@@ -2225,6 +2253,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">run:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showEvalWindow:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
