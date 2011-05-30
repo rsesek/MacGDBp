@@ -65,6 +65,10 @@ class NetworkCallbackController
   void OnReadStreamEvent(CFReadStreamRef stream, CFStreamEventType eventType);
   void OnWriteStreamEvent(CFWriteStreamRef stream, CFStreamEventType eventType);
 
+  // Closes down the listening socket but keeps the streams alive. This can be
+  // called multiple times, even if the socket is NULL.
+  void CloseSocket();
+
   // Removes the read or write stream from the run loop, closes the stream,
   // releases the reference.
   void UnscheduleReadStream();
@@ -74,7 +78,7 @@ class NetworkCallbackController
   void ReportError(CFErrorRef error);
 
   // The actual socket.
-  CFSocketRef socket_;  // Strong.
+  CFSocketRef listeningSocket_;  // Strong.
 
   // The read and write streams that are scheduled on the |runLoop_|. Both are
   // weak and are owned by the run loop source.
