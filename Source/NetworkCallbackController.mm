@@ -23,7 +23,9 @@
 #import "NetworkConnectionPrivate.h"
 
 NetworkCallbackController::NetworkCallbackController(NetworkConnection* connection)
-    : readStream_(NULL),
+    : listeningSocket_(NULL),
+      socketHandle_(NULL),
+      readStream_(NULL),
       writeStream_(NULL),
       connection_(connection),
       runLoop_(CFRunLoopGetCurrent())
@@ -77,7 +79,10 @@ void NetworkCallbackController::OpenConnection(NSUInteger port)
 
 void NetworkCallbackController::CloseConnection()
 {
-  CloseSocket();
+  if (socketHandle_) {
+    close(socketHandle_);
+    //socketHandle_ = NULL;
+  }
   UnscheduleReadStream();
   UnscheduleWriteStream();
 }
@@ -152,9 +157,11 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
                                                CFDataRef address,
                                                const void* data)
 {
+  socketHandle_ = *(CFSocketNativeHandle*)data;
+
   // Create the streams on the socket.
   CFStreamCreatePairWithSocket(kCFAllocatorDefault,
-                               *(CFSocketNativeHandle*)data,  // Socket handle.
+                               socketHandle_,  // Socket handle.
                                &readStream_,  // Read stream in-pointer.
                                &writeStream_);  // Write stream in-pointer.
   
@@ -218,6 +225,7 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
       
     case kCFStreamEventEndEncountered:
       UnscheduleReadStream();
+      CloseConnection();
       [connection_ socketDisconnected];
       break;
   };

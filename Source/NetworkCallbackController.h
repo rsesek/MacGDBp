@@ -77,8 +77,12 @@ class NetworkCallbackController
   // Messages the NetworkConnection's delegate and takes ownership of |error|.
   void ReportError(CFErrorRef error);
 
-  // The actual socket.
+  // The socket that listens for incoming connections from the engine.
   CFSocketRef listeningSocket_;  // Strong.
+
+  // The child socket from the |listeningSocket_| that is connected to the
+  // engine. The streams are attached to this socket.
+  CFSocketNativeHandle socketHandle_;
 
   // The read and write streams that are scheduled on the |runLoop_|. Both are
   // weak and are owned by the run loop source.
