@@ -79,21 +79,11 @@ void NetworkCallbackController::OpenConnection(NSUInteger port)
 
 void NetworkCallbackController::CloseConnection()
 {
-  NSUInteger closeCount = 0;
-
-  if (readStream_) {
-    UnscheduleReadStream();
-    ++closeCount;
-  }
-  if (writeStream_) {
-    UnscheduleWriteStream();
-    ++closeCount;
-  }
+  UnscheduleReadStream();
+  UnscheduleWriteStream();
 
   if (socketHandle_) {
-    for ( ; closeCount > 0; --closeCount)
-      close(socketHandle_);
-
+    close(socketHandle_);
     socketHandle_ = NULL;
     [connection_ socketDisconnected];
   }
@@ -169,6 +159,9 @@ void NetworkCallbackController::OnSocketAccept(CFSocketRef socket,
                                                CFDataRef address,
                                                const void* data)
 {
+  // Keep a reference to the socket handle of the child socket. Do not create
+  // a CFSocket with this because doing so prohibits the use of streams. The
+  // kCFSocketDataCallBack would have to be used instead.
   socketHandle_ = *(CFSocketNativeHandle*)data;
 
   // Create the streams on the socket.
