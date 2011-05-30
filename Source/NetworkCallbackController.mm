@@ -79,12 +79,24 @@ void NetworkCallbackController::OpenConnection(NSUInteger port)
 
 void NetworkCallbackController::CloseConnection()
 {
-  if (socketHandle_) {
-    close(socketHandle_);
-    //socketHandle_ = NULL;
+  NSUInteger closeCount = 0;
+
+  if (readStream_) {
+    UnscheduleReadStream();
+    ++closeCount;
   }
-  UnscheduleReadStream();
-  UnscheduleWriteStream();
+  if (writeStream_) {
+    UnscheduleWriteStream();
+    ++closeCount;
+  }
+
+  if (socketHandle_) {
+    for ( ; closeCount > 0; --closeCount)
+      close(socketHandle_);
+
+    socketHandle_ = NULL;
+    [connection_ socketDisconnected];
+  }
 }
 
 BOOL NetworkCallbackController::WriteStreamCanAcceptBytes()
@@ -220,13 +232,11 @@ void NetworkCallbackController::OnReadStreamEvent(CFReadStreamRef stream,
       
     case kCFStreamEventErrorOccurred:
       ReportError(CFReadStreamCopyError(stream));
-      UnscheduleReadStream();
+      CloseConnection();
       break;
       
     case kCFStreamEventEndEncountered:
-      UnscheduleReadStream();
       CloseConnection();
-      [connection_ socketDisconnected];
       break;
   };
 }
@@ -242,12 +252,11 @@ void NetworkCallbackController::OnWriteStreamEvent(CFWriteStreamRef stream,
       
     case kCFStreamEventErrorOccurred:
       ReportError(CFWriteStreamCopyError(stream));
-      UnscheduleWriteStream();
+      CloseConnection();
       break;
       
     case kCFStreamEventEndEncountered:
-      UnscheduleReadStream();
-      [connection_ socketDisconnected];
+      CloseConnection();
       break;
   }
 }

@@ -100,6 +100,9 @@ void PerformQuitSignal(void* info)
   CFRelease(quitSource_);
   quitSource_ = NULL;
 
+  if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
+    [delegate_ connectionDidClose:self];
+
   [pool release];
 }
 
@@ -157,8 +160,7 @@ void PerformQuitSignal(void* info)
  */
 - (void)socketDisconnected
 {
-  if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
-    [delegate_ connectionDidClose:self];
+  [self close];
 }
 
 /**

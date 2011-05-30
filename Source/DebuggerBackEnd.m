@@ -290,6 +290,19 @@
   // TODO: update the status.
 }
 
+/**
+ * Called when the connection is finally closed. This will reopen the listening
+ * socket if the debugger remains attached.
+ */
+- (void)connectionDidClose:(NetworkConnection*)connection
+{
+  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
+    [delegate debuggerDisconnected];
+
+  if (self.attached)
+    [connection_ connect];
+}
+
 - (void)handleResponse:(NSXMLDocument*)response
 {
   NSInteger transactionID = [connection_ transactionIDFromResponse:response];
