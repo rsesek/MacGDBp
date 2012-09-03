@@ -9,6 +9,8 @@ MacGDBp                                                               CHANGE LOG
 - New: #190  Evaluation of arbitrary script/code fragments
 - New: #168  Recursively display objects and arrays in the variable inspector
 - Fix: #223  Unable to reattach debugger in certain circumstances
+- Fix: #236  Crash when adding breakpoints on 10.8 (patch from Paul Mitchell
+  and Sam Fleming)
 
 
 1.4.1
