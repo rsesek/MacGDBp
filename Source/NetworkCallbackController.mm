@@ -115,7 +115,7 @@ BOOL NetworkCallbackController::WriteString(NSString* string)
       else if (bytesWritten < static_cast<CFIndex>(strlen(cString))) {
         // Adjust the buffer and wait for another chance to write.
         stringLength -= bytesWritten;
-        memmove(string, string + bytesWritten, stringLength);
+        cString += bytesWritten;
       }
       else {
         done = YES;
