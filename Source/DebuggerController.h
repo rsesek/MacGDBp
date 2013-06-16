@@ -21,7 +21,7 @@
 
 @class BSSourceView;
 
-@interface DebuggerController : NSWindowController <DebuggerBackEndDelegate>
+@interface DebuggerController : NSWindowController <DebuggerBackEndDelegate, NSWindowDelegate>
 {
   DebuggerBackEnd* connection;
   
