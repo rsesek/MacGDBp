@@ -42,8 +42,11 @@
   NSImage* dimple = [NSImage imageNamed:@"dimple.png"];
   NSSize dmpSize = [dimple size];
   NSPoint origin = NSMakePoint(NSMidX(rect) - (dmpSize.width / 2),
-                               NSMidY(rect) + (dmpSize.height / 2));
-  [dimple compositeToPoint:origin operation:NSCompositeSourceOver];
+                               NSMidY(rect) - (dmpSize.height / 2));
+  [dimple drawAtPoint:origin
+             fromRect:NSZeroRect
+            operation:NSCompositeSourceOver
+             fraction:1.0];
 }
 
 /**
