@@ -96,34 +96,46 @@ BOOL NetworkCallbackController::WriteStreamCanAcceptBytes()
 
 BOOL NetworkCallbackController::WriteString(NSString* string)
 {
-  BOOL done = NO;
+  // TODO: May need to negotiate with the server as to the string encoding.
+  const NSStringEncoding kEncoding = NSUTF8StringEncoding;
+  // Add space for the NUL byte.
+  NSUInteger maxBufferSize = [string maximumLengthOfBytesUsingEncoding:kEncoding] + 1;
 
-  char* cString = const_cast<char*>([string UTF8String]);
-  size_t stringLength = strlen(cString);
+  UInt8* buffer = new UInt8[maxBufferSize];
+  bzero(buffer, maxBufferSize);
+
+  NSUInteger bufferSize = 0;
+  if (![string getBytes:buffer
+              maxLength:maxBufferSize
+             usedLength:&bufferSize
+               encoding:kEncoding
+                options:0
+                  range:NSMakeRange(0, [string length])
+         remainingRange:NULL]) {
+    delete [] buffer;
+    return NO;
+  }
+
+  // Include a NUL byte.
+  ++bufferSize;
 
   // Busy wait while writing. BAADD. Should background this operation.
-  while (!done) {
+  NSUInteger totalWritten = 0;
+  while (totalWritten < bufferSize) {
     if (WriteStreamCanAcceptBytes()) {
       // Include the NULL byte in the string when we write.
-      CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, (UInt8*)cString, stringLength + 1);
+      CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, buffer + totalWritten, bufferSize - totalWritten);
       if (bytesWritten < 0) {
         CFErrorRef error = CFWriteStreamCopyError(writeStream_);
         ReportError(error);
         break;
       }
-      // Incomplete write.
-      else if (bytesWritten < static_cast<CFIndex>(strlen(cString))) {
-        // Adjust the buffer and wait for another chance to write.
-        stringLength -= bytesWritten;
-        cString += bytesWritten;
-      }
-      else {
-        done = YES;
-      }
+      totalWritten += bytesWritten;
     }
   }
 
-  return done;
+  delete [] buffer;
+  return YES;
 }
 
 // Static Methods //////////////////////////////////////////////////////////////
