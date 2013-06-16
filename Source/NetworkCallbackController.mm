@@ -119,11 +119,11 @@ BOOL NetworkCallbackController::WriteString(NSString* string)
   // Include a NUL byte.
   ++bufferSize;
 
-  // Busy wait while writing. BAADD. Should background this operation.
+  // Write the packet out, and spin in a busy wait loop if the stream is not ready. This
+  // method is only ever called in response to a stream ready event.
   NSUInteger totalWritten = 0;
   while (totalWritten < bufferSize) {
     if (WriteStreamCanAcceptBytes()) {
-      // Include the NULL byte in the string when we write.
       CFIndex bytesWritten = CFWriteStreamWrite(writeStream_, buffer + totalWritten, bufferSize - totalWritten);
       if (bytesWritten < 0) {
         CFErrorRef error = CFWriteStreamCopyError(writeStream_);
