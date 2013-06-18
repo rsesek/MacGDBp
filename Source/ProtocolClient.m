@@ -116,6 +116,8 @@
                     onThread:_delegateThread
                   withObject:self
                waitUntilDone:NO];
+  [_messageQueue release];
+  _messageQueue = nil;
 }
 
 // If the write stream is ready, the delegate controls whether or not the next
