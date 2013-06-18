@@ -164,7 +164,8 @@
   [self performSelector:@selector(postReceivedMessage:)
                onThread:_delegateThread
              withObject:xml
-          waitUntilDone:NO];
+          waitUntilDone:NO
+                  modes:@[ NSDefaultRunLoopMode ]];
 }
 
 // Private /////////////////////////////////////////////////////////////////////
