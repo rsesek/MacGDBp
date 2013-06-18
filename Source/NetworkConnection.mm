@@ -43,9 +43,9 @@
 
 - (id)initWithPort:(NSUInteger)aPort
 {
-  if (self = [super init]) {
+  if (self = [super initWithDelegate:self]) {
     port_ = aPort;
-    _ideClient = [[ProtocolClient alloc] initWithDelegate:self];
+    _ideClient = self;
   }
   return self;
 }
