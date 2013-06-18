@@ -161,16 +161,12 @@
   
   if ([[[response rootElement] name] isEqualToString:@"init"]) {
     connected_ = YES;
-    [delegate_ performSelectorOnMainThread:@selector(handleInitialResponse:)
-                                withObject:response
-                             waitUntilDone:NO];
+    [delegate_ handleInitialResponse:response];
     return;
   }
   
   if ([delegate_ respondsToSelector:@selector(handleResponse:)])
-    [delegate_ performSelectorOnMainThread:@selector(handleResponse:)
-                                withObject:response
-                             waitUntilDone:NO];
+    [delegate_ handleResponse:response];
 }
 
 @end

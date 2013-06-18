@@ -329,9 +329,11 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
     return;
   }
 
+  _child = child;
+
   // Create the streams on the socket.
   CFStreamCreatePairWithSocket(kCFAllocatorDefault,
-                               socket,  // Socket handle.
+                               _child,  // Socket handle.
                                &_readStream,  // Read stream in-pointer.
                                &_writeStream);  // Write stream in-pointer.
 

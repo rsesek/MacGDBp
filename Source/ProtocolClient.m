@@ -60,6 +60,7 @@
   NSNumber* callbackKey = [NSNumber numberWithInt:_nextID++];
   NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey];
 
+  assert(_messageQueue);
   [_messageQueue sendMessage:taggedCommand];
   return callbackKey;
 }
