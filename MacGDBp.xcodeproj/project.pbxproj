@@ -39,6 +39,7 @@
 		1EC6965712BBC6A700A8D984 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965112BBC6A700A8D984 /* LICENSE */; };
 		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
+		1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE841176FEA80003622C3 /* MessageQueue.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -121,6 +122,8 @@
 		1EC6965412BBC6A700A8D984 /* modp_b64_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64_data.h; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
+		1EEBE840176FEA80003622C3 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageQueue.h; path = Source/MessageQueue.h; sourceTree = "<group>"; };
+		1EEBE841176FEA80003622C3 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageQueue.m; path = Source/MessageQueue.m; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -161,6 +164,7 @@
 				1E02C3D30C60EC2C006F1752 /* AppDelegate.h */,
 				1E02C3D40C60EC2C006F1752 /* AppDelegate.m */,
 				1E9582640E252480001A3D89 /* Preferences */,
+				1EEBE83F176FEA5C003622C3 /* Protocol */,
 				1E1E52C10DF9B1FB00D334F9 /* Connection */,
 				1EB7BEB90ECF3BC60033283A /* Debugger */,
 				1E1E52C00DF9B1E700D334F9 /* Breakpoints */,
@@ -308,6 +312,15 @@
 				1EC6965412BBC6A700A8D984 /* modp_b64_data.h */,
 			);
 			path = modp_b64;
+			sourceTree = "<group>";
+		};
+		1EEBE83F176FEA5C003622C3 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				1EEBE840176FEA80003622C3 /* MessageQueue.h */,
+				1EEBE841176FEA80003622C3 /* MessageQueue.m */,
+			);
+			name = Protocol;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* MacGDBp */ = {
@@ -474,6 +487,7 @@
 				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
 				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,
 				1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */,
+				1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
