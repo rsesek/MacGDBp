@@ -319,6 +319,9 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
     if (_messageSize >= _totalMessageSize) {
       [_delegate didReceiveMessage:[_message autorelease]];
       _message = nil;
+
+      // Process any outgoing messages.
+      [self dequeueAndSend];
     }
   }
 }
