@@ -232,8 +232,8 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
     return;
 
   NSString* message = [_queue objectAtIndex:0];
-  [_queue removeObjectAtIndex:0];
   [self performSend:message];
+  [_queue removeObjectAtIndex:0];
 }
 
 - (void)performSend:(NSString*)message {
