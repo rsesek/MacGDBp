@@ -40,6 +40,7 @@
 		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
 		1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE841176FEA80003622C3 /* MessageQueue.m */; };
+		1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE844176FFE04003622C3 /* ProtocolClient.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
@@ -124,6 +125,8 @@
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
 		1EEBE840176FEA80003622C3 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageQueue.h; path = Source/MessageQueue.h; sourceTree = "<group>"; };
 		1EEBE841176FEA80003622C3 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageQueue.m; path = Source/MessageQueue.m; sourceTree = "<group>"; };
+		1EEBE843176FFE04003622C3 /* ProtocolClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolClient.h; path = Source/ProtocolClient.h; sourceTree = "<group>"; };
+		1EEBE844176FFE04003622C3 /* ProtocolClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProtocolClient.m; path = Source/ProtocolClient.m; sourceTree = "<group>"; };
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
@@ -319,6 +322,8 @@
 			children = (
 				1EEBE840176FEA80003622C3 /* MessageQueue.h */,
 				1EEBE841176FEA80003622C3 /* MessageQueue.m */,
+				1EEBE843176FFE04003622C3 /* ProtocolClient.h */,
+				1EEBE844176FFE04003622C3 /* ProtocolClient.m */,
 			);
 			name = Protocol;
 			sourceTree = "<group>";
@@ -488,6 +493,7 @@
 				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,
 				1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */,
 				1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */,
+				1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
