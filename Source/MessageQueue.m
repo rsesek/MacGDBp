@@ -297,7 +297,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
       // Read the message header: the size.  This will be |partLength| bytes.
       _totalMessageSize = atoi(charBuffer + bufferOffset);
       _messageSize = 0;
-      _message = [NSMutableString stringWithCapacity:_totalMessageSize];
+      _message = [[NSMutableString alloc] initWithCapacity:_totalMessageSize];
       bufferOffset += partLength + 1;  // Pass over the NUL byte.
       continue;  // Spin the loop to begin reading actual data.
     }
