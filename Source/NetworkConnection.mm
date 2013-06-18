@@ -15,19 +15,23 @@
  */
 
 #import "NetworkConnection.h"
-#import "NetworkConnectionPrivate.h"
 
 #import "AppDelegate.h"
 #import "LoggingController.h"
-#include "NetworkCallbackController.h"
 
-// Other Run Loop Callbacks ////////////////////////////////////////////////////
+// This is the private interface for the NetworkConnection class. This is shared
+// by the C++ NetworkCallbackController to communicate.
+@interface NetworkConnection (Private)
 
-void PerformQuitSignal(void* info)
-{
-  NetworkConnection* obj = (NetworkConnection*)info;
-  [obj performQuitSignal];
-}
+- (void)handleResponse:(NSXMLDocument*)response;
+
+// Threadsafe wrappers for the delegate's methods.
+- (void)errorEncountered:(NSString*)error;
+- (LogEntry*)recordSend:(NSString*)command;
+- (LogEntry*)recordReceive:(NSString*)command;
+
+@end
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -36,23 +40,14 @@ void PerformQuitSignal(void* info)
 @synthesize port = port_;
 @synthesize connected = connected_;
 @synthesize delegate = delegate_;
-@synthesize lastReadTransaction = lastReadTransaction_;
-@synthesize currentPacket = currentPacket_;
-@synthesize lastWrittenTransaction = lastWrittenTransaction_;
-@synthesize queuedWrites = queuedWrites_;
 
 - (id)initWithPort:(NSUInteger)aPort
 {
   if (self = [super init]) {
     port_ = aPort;
+    _ideClient = [[ProtocolClient alloc] initWithDelegate:self];
   }
   return self;
-}
-
-- (void)dealloc
-{
-  self.currentPacket = nil;
-  [super dealloc];
 }
 
 /**
@@ -60,173 +55,35 @@ void PerformQuitSignal(void* info)
  */
 - (void)connect
 {
-  if (thread_ && !connected_) {
-    // A thread has been detached but the socket has yet to connect. Do not
-    // spawn a new thread otherwise multiple threads will be blocked on the same
-    // socket.
-    return;
-  }
-  [NSThread detachNewThreadSelector:@selector(runNetworkThread) toTarget:self withObject:nil];
+  [_ideClient connectOnPort:port_];
 }
 
-/**
- * Creates, connects to, and schedules a CFSocket.
- */
-- (void)runNetworkThread
-{
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-  thread_ = [NSThread currentThread];
-  runLoop_ = [NSRunLoop currentRunLoop];
-  callbackController_ = new NetworkCallbackController(self);
-
-  // Create a source that is used to quit.
-  CFRunLoopSourceContext quitContext = { 0 };
-  quitContext.info = self;
-  quitContext.perform = PerformQuitSignal;
-  quitSource_ = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &quitContext);
-  CFRunLoopAddSource([runLoop_ getCFRunLoop], quitSource_, kCFRunLoopCommonModes);
-
-  callbackController_->OpenConnection(port_);
-
-  CFRunLoopRun();
-
-  thread_ = nil;
-  runLoop_ = nil;
-  delete callbackController_;
-  callbackController_ = NULL;
-
-  CFRunLoopSourceInvalidate(quitSource_);
-  CFRelease(quitSource_);
-  quitSource_ = NULL;
-
-  if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
-    [delegate_ connectionDidClose:self];
-
-  [pool release];
-}
-
-/**
- * Called by SocketWrapper after the connection is successful. This immediately calls
- * -[SocketWrapper receive] to clear the way for communication, though the information
- * could be useful server information that we don't use right now.
- */
-- (void)socketDidAccept
-{
-  connected_ = YES;
-  transactionID = 1;
-  lastReadTransaction_ = 0;
-  lastWrittenTransaction_ = 0;
-  self.queuedWrites = [NSMutableArray array];
-  writeQueueLock_ = [NSRecursiveLock new];
-  if ([delegate_ respondsToSelector:@selector(connectionDidAccept:)])
-    [delegate_ performSelectorOnMainThread:@selector(connectionDidAccept:)
-                                withObject:self
-                             waitUntilDone:NO];
-}
-
-/**
- * Closes a socket and releases the ref.
- */
 - (void)close
 {
-  if (thread_) {
-    [thread_ cancel];
-  }
-  if (runLoop_ && quitSource_) {
-    CFRunLoopSourceSignal(quitSource_);
-    CFRunLoopWakeUp([runLoop_ getCFRunLoop]);
-  }
+  [_ideClient disconnect];
 }
 
-/**
- * Quits the run loop and stops the thread.
- */
-- (void)performQuitSignal
+- (void)debuggerEngineConnected:(ProtocolClient*)client
 {
-  self.queuedWrites = nil;
-  connected_ = NO;
-  [writeQueueLock_ release];
-
-  if (runLoop_) {
-    CFRunLoopStop([runLoop_ getCFRunLoop]);
-  }
-
-  callbackController_->CloseConnection();
+  if ([delegate_ respondsToSelector:@selector(connectionDidAccept:)])
+    [delegate_ connectionDidAccept:self];
 }
 
-/**
- * Notification that the socket disconnected.
- */
-- (void)socketDisconnected
+- (void)debuggerEngineDisconnected:(ProtocolClient*)client
 {
-  [self close];
+  if ([delegate_ respondsToSelector:@selector(connectionDidClose:)])
+    [delegate_ connectionDidClose:self];
 }
 
-/**
- * Writes a command into the write stream. If the stream is ready for writing,
- * we do so immediately. If not, the command is queued and will be written
- * when the stream is ready.
- */
-- (void)send:(NSString*)command
+- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message
 {
-  if (lastReadTransaction_ >= lastWrittenTransaction_ && callbackController_->WriteStreamCanAcceptBytes()) {
-    [self performSend:command];
-  } else {
-    [writeQueueLock_ lock];
-    [queuedWrites_ addObject:command];
-    [writeQueueLock_ unlock];
-  }
-  [self sendQueuedWrites];
+  [self handleResponse:message];
 }
 
-/**
- * This will send a command to the debugger engine. It will append the
- * transaction ID automatically. It accepts a NSString command along with a
- * a variable number of arguments to substitute into the command, a la
- * +[NSString stringWithFormat:]. Returns the transaction ID as a NSNumber.
- */
-- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...
+- (void)dealloc
 {
-  // Collect varargs and format command.
-  va_list args;
-  va_start(args, format);
-  NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
-  va_end(args);
-  
-  NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
-  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey];
-  [self performSelector:@selector(send:)
-               onThread:thread_
-             withObject:taggedCommand
-          waitUntilDone:connected_];
-  
-  return callbackKey;
-}
-
-/**
- * Certain commands expect encoded data to be the the last, unnamed parameter
- * of the command. In these cases, inserting the transaction ID at the end is
- * incorrect, so clients use this method to have |{txn}| replaced with the
- * transaction ID.
- */
-- (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ...
-{
-  // Collect varargs and format command.
-  va_list args;
-  va_start(args, format);
-  NSString* command = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
-  va_end(args);  
-
-  NSNumber* callbackKey = [NSNumber numberWithInt:transactionID++];
-  NSString* taggedCommand = [command stringByReplacingOccurrencesOfString:@"{txn}"
-                                                               withString:[callbackKey stringValue]];
-  [self performSelector:@selector(send:)
-               onThread:thread_
-             withObject:taggedCommand
-          waitUntilDone:connected_];
-  
-  return callbackKey;
+  [_ideClient release];
+  [super dealloc];
 }
 
 /**
@@ -251,27 +108,6 @@ void PerformQuitSignal(void* info)
   return urlString;
 }
 
-/**
- * Returns the transaction_id from an NSXMLDocument.
- */
-- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response
-{
-  return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
-}
-
-/**
- * Scans a command string for the transaction ID component. If it is not found,
- * returns NSNotFound.
- */
-- (NSInteger)transactionIDFromCommand:(NSString*)command
-{
-  NSRange occurrence = [command rangeOfString:@"-i "];
-  if (occurrence.location == NSNotFound)
-    return NSNotFound;
-  NSString* transaction = [command substringFromIndex:occurrence.location + occurrence.length];
-  return [transaction intValue];
-}
-
 // Private /////////////////////////////////////////////////////////////////////
 #pragma mark Private
 
@@ -293,8 +129,8 @@ void PerformQuitSignal(void* info)
 {
   LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newSendEntry:command];
-  entry.lastReadTransactionID = lastReadTransaction_;
-  entry.lastWrittenTransactionID = lastWrittenTransaction_;
+  entry.lastReadTransactionID = _lastReadID;
+  entry.lastWrittenTransactionID = _lastWrittenID;
   [logger performSelectorOnMainThread:@selector(recordEntry:)
                            withObject:entry
                         waitUntilDone:NO];
@@ -305,102 +141,12 @@ void PerformQuitSignal(void* info)
 {
   LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newReceiveEntry:command];
-  entry.lastReadTransactionID = lastReadTransaction_;
-  entry.lastWrittenTransactionID = lastWrittenTransaction_;
+  entry.lastReadTransactionID = _lastReadID;
+  entry.lastWrittenTransactionID = _lastWrittenID;
   [logger performSelectorOnMainThread:@selector(recordEntry:)
                            withObject:entry
                         waitUntilDone:NO];
   return [entry autorelease];
-}
-
-// Stream Managers /////////////////////////////////////////////////////////////
-
-/**
- * Callback from the CFReadStream that there is data waiting to be read.
- */
-- (void)readStreamHasData:(CFReadStreamRef)stream
-{
-  const NSUInteger kBufferSize = 1024;
-  UInt8 buffer[kBufferSize];
-  CFIndex bufferOffset = 0;  // Starting point in |buffer| to work with.
-  CFIndex bytesRead = CFReadStreamRead(stream, buffer, kBufferSize);
-  const char* charBuffer = (const char*)buffer;
-  
-  // The read loop works by going through the buffer until all the bytes have
-  // been processed.
-  while (bufferOffset < bytesRead) {
-    // Find the NULL separator, or the end of the string.
-    NSUInteger partLength = 0;
-    for (CFIndex i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
-    
-    // If there is not a current packet, set some state.
-    if (!self.currentPacket) {
-      // Read the message header: the size.  This will be |partLength| bytes.
-      packetSize_ = atoi(charBuffer + bufferOffset);
-      currentPacketIndex_ = 0;
-      self.currentPacket = [NSMutableString stringWithCapacity:packetSize_];
-      bufferOffset += partLength + 1;  // Pass over the NULL byte.
-      continue;  // Spin the loop to begin reading actual data.
-    }
-    
-    // Substring the byte stream and append it to the packet string.
-    CFStringRef bufferString = CFStringCreateWithBytes(kCFAllocatorDefault,
-                                                       buffer + bufferOffset,  // Byte pointer, offset by start index.
-                                                       partLength,  // Length.
-                                                       kCFStringEncodingUTF8,
-                                                       true);
-    [self.currentPacket appendString:(NSString*)bufferString];
-    CFRelease(bufferString);
-    
-    // Advance counters.
-    currentPacketIndex_ += partLength;
-    bufferOffset += partLength + 1;
-    
-    // If this read finished the packet, handle it and reset.
-    if (currentPacketIndex_ >= packetSize_) {
-      [self handlePacket:[[currentPacket_ retain] autorelease]];
-      self.currentPacket = nil;
-      packetSize_ = 0;
-      currentPacketIndex_ = 0;
-    }
-  }
-}
-
-/**
- * Performs the packet handling of a raw string XML packet. From this point on,
- * the packets are associated with a transaction and are then dispatched.
- */
-- (void)handlePacket:(NSString*)packet
-{
-  // Test if we can convert it into an NSXMLDocument.
-  NSError* error = nil;
-  NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:currentPacket_
-                                                        options:NSXMLDocumentTidyXML
-                                                          error:&error];
-  // TODO: Remove this assert before stable release. Flush out any possible
-  // issues during testing.
-  assert(xml);
-
-  // Validate the transaction.
-  NSInteger transaction = [self transactionIDFromResponse:xml];
-  if (transaction < lastReadTransaction_) {
-    NSLog(@"Transaction #%d is out of date (lastRead = %d). Dropping packet: %@",
-        transaction, lastReadTransaction_, packet);
-    return;
-  }
-  if (transaction != lastWrittenTransaction_) {
-    NSLog(@"Transaction #%d received out of order. lastRead = %d, lastWritten = %d. Continuing.",
-        transaction, lastReadTransaction_, lastWrittenTransaction_);
-  }
-
-  lastReadTransaction_ = transaction;
-
-  // Log this receive event.
-  LogEntry* log = [self recordReceive:currentPacket_];
-  log.error = error;
-
-  // Finally, dispatch the handler for this response.
-  [self handleResponse:[xml autorelease]];  
 }
 
 - (void)handleResponse:(NSXMLDocument*)response
@@ -425,56 +171,6 @@ void PerformQuitSignal(void* info)
     [delegate_ performSelectorOnMainThread:@selector(handleResponse:)
                                 withObject:response
                              waitUntilDone:NO];
-  
-  [self sendQueuedWrites];
-}
-
-/**
- * This performs a blocking send. This should ONLY be called when we know we
- * have write access to the stream. We will busy wait in case we don't do a full
- * send.
- */
-- (void)performSend:(NSString*)command
-{
-  // If this is an out-of-date transaction, do not bother sending it.
-  NSInteger transaction = [self transactionIDFromCommand:command];
-  if (transaction != NSNotFound && transaction < lastWrittenTransaction_)
-    return;
-
-  if (callbackController_->WriteString(command)) {
-    // We need to scan the string to find the transactionID.
-    if (transaction == NSNotFound) {
-      NSLog(@"sent %@ without a transaction ID", command);
-    }
-    lastWrittenTransaction_ = transaction;
-  }
-
-  // Log this trancation.
-  [self recordSend:command];
-}
-
-/**
- * Checks if there are unsent commands in the |queuedWrites_| queue and sends
- * them if it's OK to do so. This will not block.
- */
-- (void)sendQueuedWrites
-{
-  if (!connected_)
-    return;
-
-  [writeQueueLock_ lock];
-  if (lastReadTransaction_ >= lastWrittenTransaction_ && [queuedWrites_ count] > 0) {
-    NSString* command = [queuedWrites_ objectAtIndex:0];
-
-    // We don't want to block because this is called from the main thread.
-    // |-performSend:| busy waits when the stream is not ready. Bail out
-    // before we do that becuase busy waiting is BAD.
-    if (callbackController_->WriteStreamCanAcceptBytes()) {
-      [self performSend:command];
-      [queuedWrites_ removeObjectAtIndex:0];
-    }
-  }
-  [writeQueueLock_ unlock];
 }
 
 @end

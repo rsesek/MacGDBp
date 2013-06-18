@@ -24,7 +24,7 @@
 // debugger engine and receives XML packets in response. This class ensures
 // proper sequencing of the messages.
 @interface ProtocolClient : NSObject<MessageQueueDelegate> {
- @private
+ //@private
   MessageQueue* _messageQueue;
 
   NSRecursiveLock* _lock;

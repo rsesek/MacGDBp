@@ -16,11 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#ifdef __cplusplus
-class NetworkCallbackController;
-#else
-@class NetworkCallbackController;
-#endif
+#import "ProtocolClient.h"
 
 @protocol NetworkConnectionDelegate;
 @class LoggingController;
@@ -29,51 +25,15 @@ class NetworkCallbackController;
 // the intricacies of network and stream programming. Almost all the work this
 // class does is on a background thread, which is created when the connection is
 // asked to connect and shutdown when asked to close.
-@interface NetworkConnection : NSObject
+@interface NetworkConnection : ProtocolClient<ProtocolClientDelegate>
 {
   // The port to connect on.
   NSUInteger port_;
-  
+
+  ProtocolClient* _ideClient;
+
   // If the connection to the debugger engine is currently active.
   BOOL connected_;
-
-  // The thread on which network operations are performed. Weak.
-  NSThread* thread_;
-
-  // Reference to the message loop that the socket runs on. Weak.
-  NSRunLoop* runLoop_;
-
-  // Internal class that manages CFNetwork callbacks. Strong.
-  NetworkCallbackController* callbackController_;
-
-  // Run loop source used to quit the thread. Strong.
-  CFRunLoopSourceRef quitSource_;
-
-  // An ever-increasing integer that gives each transaction a unique ID for the
-  // debugging engine.
-  NSInteger transactionID;
-  
-  // The most recently received transaction ID.
-  NSInteger lastReadTransaction_;
-  
-  // The last transactionID written to the stream.
-  NSInteger lastWrittenTransaction_;
-  
-  // To prevent blocked writing, we enqueue all writes and then wait for the
-  // write stream to tell us it's ready. We store the pending commands in this
-  // array. We use this as a queue (FIFO), with index 0 being first.
-  NSMutableArray* queuedWrites_;
-  
-  // We send queued writes in multiple places, sometimes off a run loop event.
-  // Because of this, we need to ensure that only one client is dequeing and
-  // sending at a time.
-  NSRecursiveLock* writeQueueLock_;
-  
-  // Information about the current read loop. We append to |currentPacket_|
-  // until |currentPacketSize_| has reached |packetSize_|.
-  NSMutableString* currentPacket_;
-  NSInteger packetSize_;
-  NSInteger currentPacketIndex_;
 
   // The delegate. All methods are executed on the main thread.
   NSObject<NetworkConnectionDelegate>* delegate_;
@@ -88,18 +48,7 @@ class NetworkCallbackController;
 - (void)connect;
 - (void)close;
 
-// This sends the given command format to the debugger. This method is thread
-// safe and schedules the request on the |runLoop_|.
-- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
-
-// Sends a command to the debugger. The command must have a substring |{txn}|
-// within it, which will be replaced with the transaction ID. Use this if
-// |-sendCommandWithFormat:|'s insertion of the transaction ID is incorrect.
-- (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ...;
-
 - (NSString*)escapedURIPath:(NSString*)path;
-- (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
-- (NSInteger)transactionIDFromCommand:(NSString*)command;
 
 @end
 
