@@ -16,6 +16,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ThreadSafeDeleage.h"
+
 @protocol MessageQueueDelegate;
 
 // MessageQueue operates a listening socket, that is connected to another
@@ -38,7 +40,7 @@
   NSMutableArray* _queue;
 
   // The delegate for this class.
-  id<MessageQueueDelegate> _delegate;
+  ThreadSafeDeleage<MessageQueueDelegate>* _delegate;
 
   // The socket that listens for new incoming connections.
   CFSocketRef _socket;

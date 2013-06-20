@@ -88,13 +88,18 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   if ((self = [super init])) {
     _port = port;
     _queue = [[NSMutableArray alloc] init];
-    _delegate = delegate;
+    _delegate = (ThreadSafeDeleage<MessageQueueDelegate>*)
+        [[ThreadSafeDeleage alloc] initWithObject:delegate
+                                         protocol:@protocol(MessageQueueDelegate)
+                                           thread:[NSThread currentThread]
+                                            modes:@[ NSDefaultRunLoopMode ]];
   }
   return self;
 }
 
 - (void)dealloc {
   [_queue release];
+  [_delegate release];
   [super dealloc];
 }
 
@@ -225,7 +230,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   if (![_queue count])
     return;
 
-  if (![_delegate shouldSendMessage])
+  if (![(id<MessageQueueDelegate>)_delegate.object shouldSendMessage])
     return;
 
   if (!CFWriteStreamCanAcceptBytes(_writeStream))
