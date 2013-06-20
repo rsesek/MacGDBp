@@ -70,6 +70,7 @@
 
 - (void)forwardInvocation:(NSInvocation*)invocation {
   if ([_object respondsToSelector:[invocation selector]]) {
+    [invocation retainArguments];
     [self performSelector:@selector(dispatchInvocation:)
                  onThread:_thread
                withObject:invocation
