@@ -16,10 +16,6 @@
 
 #import "ProtocolClient.h"
 
-@interface ProtocolClient (Private)
-- (void)postReceivedMessage:(NSXMLDocument*)message;
-@end
-
 @implementation ProtocolClient
 
 - (id)initWithDelegate:(NSObject<ProtocolClientDelegate>*)delegate {
@@ -94,30 +90,24 @@
 
 // MessageQueueDelegate ////////////////////////////////////////////////////////
 
-- (void)messageQueueError:(NSError*)error {
+- (void)messageQueue:(MessageQueue*)queue error:(NSError*)error {
   NSLog(@"error = %@", error);
 }
 
-- (void)clientDidConnect:(MessageQueue*)queue {
+- (void)messageQueueDidConnect:(MessageQueue*)queue {
   [_lock lock];
   _nextID = 0;
   _lastReadID = 0;
   _lastWrittenID = 0;
   [_lock unlock];
 
-  [_delegate performSelector:@selector(debuggerEngineConnected:)
-                    onThread:_delegateThread
-                  withObject:self
-               waitUntilDone:NO];
+  [_delegate debuggerEngineConnected:self];
 }
 
-- (void)clientDidDisconnect:(MessageQueue*)queue {
-  [_delegate performSelector:@selector(debuggerEngineDisconnected:)
-                    onThread:_delegateThread
-                  withObject:self
-               waitUntilDone:NO];
+- (void)messageQueueDidDisconnect:(MessageQueue*)queue {
   [_messageQueue release];
   _messageQueue = nil;
+  [_delegate debuggerEngineDisconnected:self];
 }
 
 // If the write stream is ready, the delegate controls whether or not the next
@@ -130,7 +120,7 @@
 }
 
 // Callback for when a message has been sent.
-- (void)didSendMessage:(NSString*)message {
+- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message {
   NSInteger tag = [self transactionIDFromCommand:message];
   [_lock lock];
   _lastWrittenID = tag;
@@ -138,14 +128,14 @@
 }
 
 // Callback with the message content when one has been receieved.
-- (void)didReceiveMessage:(NSString*)message {
+- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message {
   // Test if we can convert it into an NSXMLDocument.
   NSError* error = nil;
   NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:message
                                                         options:NSXMLDocumentTidyXML
                                                           error:&error];
   if (error) {
-    [self messageQueueError:error];
+    [self messageQueue:queue error:error];
     return;
   }
 
@@ -163,17 +153,7 @@
 
   _lastReadID = transaction;
 
-  [self performSelector:@selector(postReceivedMessage:)
-               onThread:_delegateThread
-             withObject:xml
-          waitUntilDone:NO
-                  modes:@[ NSDefaultRunLoopMode ]];
-}
-
-// Private /////////////////////////////////////////////////////////////////////
-
-- (void)postReceivedMessage:(NSXMLDocument*)message {
-  [_delegate debuggerEngine:self receivedMessage:message];
+  [_delegate debuggerEngine:self receivedMessage:xml];
 }
 
 @end

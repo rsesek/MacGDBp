@@ -80,24 +80,21 @@
 
 // Delegate ////////////////////////////////////////////////////////////////////
 
-// The delegate for the message queue. These methods may be called on any thread.
+// The delegate for the message queue. These methods are called from the thread
+// on which the MessageQueue was initialized.
 @protocol MessageQueueDelegate <NSObject>
 // Callback for any errors that the MessageQueue encounters.
-- (void)messageQueueError:(NSError*)error;
+- (void)messageQueue:(MessageQueue*)queue error:(NSError*)error;
 
 // Called when the listening socket has accepted a child socket.
-- (void)clientDidConnect:(MessageQueue*)queue;
+- (void)messageQueueDidConnect:(MessageQueue*)queue;
 
 // Called when the child socket has been disconnected.
-- (void)clientDidDisconnect:(MessageQueue*)queue;
-
-// If the write stream is ready, the delegate controls whether or not the next
-// pending message should be sent via the result of this method.
-- (BOOL)shouldSendMessage;
+- (void)messageQueueDidDisconnect:(MessageQueue*)queue;
 
 // Callback for when a message has been sent.
-- (void)didSendMessage:(NSString*)message;
+- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message;
 
 // Callback with the message content when one has been receieved.
-- (void)didReceiveMessage:(NSString*)message;
+- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message;
 @end

@@ -213,7 +213,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   }
 
   _connected = NO;
-  [_delegate clientDidDisconnect:self];
+  [_delegate messageQueueDidDisconnect:self];
 }
 
 - (void)stopRunLoop {
@@ -228,9 +228,6 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 
 - (void)dequeueAndSend {
   if (![_queue count])
-    return;
-
-  if (![(id<MessageQueueDelegate>)_delegate.object shouldSendMessage])
     return;
 
   if (!CFWriteStreamCanAcceptBytes(_writeStream))
@@ -278,7 +275,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
     totalWritten += bytesWritten;
   }
 
-  [_delegate didSendMessage:message];
+  [_delegate messageQueue:self didSendMessage:message];
 
   free(buffer);
 }
@@ -322,7 +319,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 
     // If this read finished the packet, handle it and reset.
     if (_messageSize >= _totalMessageSize) {
-      [_delegate didReceiveMessage:[_message autorelease]];
+      [_delegate messageQueue:self didReceiveMessage:[_message autorelease]];
       _message = nil;
 
       // Process any outgoing messages.
@@ -384,7 +381,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   }
 
   _connected = YES;
-  [_delegate clientDidConnect:self];
+  [_delegate messageQueueDidConnect:self];
 
   CFSocketInvalidate(_socket);
   CFRelease(_socket);
