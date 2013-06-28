@@ -16,6 +16,9 @@
 
 #import "ProtocolClient.h"
 
+#import "AppDelegate.h"
+#import "LoggingController.h"
+
 @implementation ProtocolClient
 
 - (id)initWithDelegate:(NSObject<ProtocolClientDelegate>*)delegate {
@@ -120,15 +123,29 @@
 }
 
 // Callback for when a message has been sent.
-- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message {
+- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message
+{
   NSInteger tag = [self transactionIDFromCommand:message];
   [_lock lock];
   _lastWrittenID = tag;
   [_lock unlock];
+
+  LoggingController* logger = [[AppDelegate instance] loggingController];
+  LogEntry* entry = [LogEntry newSendEntry:message];
+  entry.lastReadTransactionID = _lastReadID;
+  entry.lastWrittenTransactionID = _lastWrittenID;
+  [logger recordEntry:entry];
 }
 
 // Callback with the message content when one has been receieved.
-- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message {
+- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message
+{
+  LoggingController* logger = [[AppDelegate instance] loggingController];
+  LogEntry* entry = [LogEntry newReceiveEntry:message];
+  entry.lastReadTransactionID = _lastReadID;
+  entry.lastWrittenTransactionID = _lastWrittenID;
+  [logger recordEntry:entry];
+
   // Test if we can convert it into an NSXMLDocument.
   NSError* error = nil;
   NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:message
@@ -152,6 +169,7 @@
   }
 
   _lastReadID = transaction;
+  entry.lastReadTransactionID = _lastReadID;
 
   [_delegate debuggerEngine:self receivedMessage:xml];
 }

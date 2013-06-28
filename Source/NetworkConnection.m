@@ -16,9 +16,6 @@
 
 #import "NetworkConnection.h"
 
-#import "AppDelegate.h"
-#import "LoggingController.h"
-
 // This is the private interface for the NetworkConnection class. This is shared
 // by the C++ NetworkCallbackController to communicate.
 @interface NetworkConnection (Private)
@@ -27,8 +24,6 @@
 
 // Threadsafe wrappers for the delegate's methods.
 - (void)errorEncountered:(NSString*)error;
-- (LogEntry*)recordSend:(NSString*)command;
-- (LogEntry*)recordReceive:(NSString*)command;
 
 @end
 
@@ -123,30 +118,6 @@
   [delegate_ performSelectorOnMainThread:@selector(errorEncountered:)
                               withObject:error
                            waitUntilDone:NO];
-}
-
-- (LogEntry*)recordSend:(NSString*)command
-{
-  LoggingController* logger = [[AppDelegate instance] loggingController];
-  LogEntry* entry = [LogEntry newSendEntry:command];
-  entry.lastReadTransactionID = _lastReadID;
-  entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger performSelectorOnMainThread:@selector(recordEntry:)
-                           withObject:entry
-                        waitUntilDone:NO];
-  return [entry autorelease];
-}
-
-- (LogEntry*)recordReceive:(NSString*)command
-{
-  LoggingController* logger = [[AppDelegate instance] loggingController];
-  LogEntry* entry = [LogEntry newReceiveEntry:command];
-  entry.lastReadTransactionID = _lastReadID;
-  entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger performSelectorOnMainThread:@selector(recordEntry:)
-                           withObject:entry
-                        waitUntilDone:NO];
-  return [entry autorelease];
 }
 
 - (void)handleResponse:(NSXMLDocument*)response

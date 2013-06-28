@@ -50,7 +50,6 @@
 
 @synthesize direction = direction_;
 @synthesize contents = contents_;
-@synthesize error = error_;
 @synthesize lastWrittenTransactionID = lastWrittenTransactionID_;
 @synthesize lastReadTransactionID = lastReadTransactionID_;
 
@@ -73,7 +72,6 @@
 - (void)dealloc
 {
   self.contents = nil;
-  self.error = nil;
   self.lastWrittenTransactionID = 0;
   self.lastReadTransactionID = 0;
   [super dealloc];
