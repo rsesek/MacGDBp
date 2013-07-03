@@ -48,6 +48,9 @@
 // message cannot be read in one pass.
 - (void)readMessageFromStream;
 
+// Converts a CFErrorRef to an NSError and passes it to the delegate.
+- (void)reportError:(CFErrorRef)error;
+
 // Forwarding methods from the CoreFoundation callbacks.
 - (void)listenSocket:(CFSocketRef)socket acceptedSocket:(CFSocketNativeHandle)child;
 - (void)readStream:(CFReadStreamRef)stream handleEvent:(CFStreamEventType)event;
@@ -267,8 +270,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   while (totalWritten < bufferSize) {
     CFIndex bytesWritten = CFWriteStreamWrite(_writeStream, buffer + totalWritten, bufferSize - totalWritten);
     if (bytesWritten < 0) {
-      CFErrorRef error = CFWriteStreamCopyError(_writeStream);
-      //ReportError(error);
+      [self reportError:CFWriteStreamCopyError(_writeStream)];
       break;
     }
     totalWritten += bytesWritten;
@@ -358,7 +360,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 
   // Open the stream now that it's scheduled on the run loop.
   if (!CFReadStreamOpen(_readStream)) {
-    //ReportError(CFReadStreamCopyError(readStream_));
+    [self reportError:CFReadStreamCopyError(_readStream)];
     return;
   }
 
@@ -375,7 +377,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 
   // Open the write stream.
   if (!CFWriteStreamOpen(_writeStream)) {
-//    ReportError(CFWriteStreamCopyError(_writeStream));
+    [self reportError:CFWriteStreamCopyError(_writeStream)];
     return;
   }
 
@@ -385,6 +387,12 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   CFSocketInvalidate(_socket);
   CFRelease(_socket);
   _socket = NULL;
+}
+
+- (void)reportError:(CFErrorRef)error
+{
+  [_delegate messageQueue:self error:(NSError*)error];
+  CFRelease(error);
 }
 
 - (void)readStream:(CFReadStreamRef)stream handleEvent:(CFStreamEventType)event
@@ -397,7 +405,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
       break;
 
     case kCFStreamEventErrorOccurred:
-      //ReportError(CFReadStreamCopyError(stream));
+      [self reportError:CFReadStreamCopyError(stream)];
       [self stopRunLoop];
       break;
 
@@ -420,7 +428,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
       break;
 
     case kCFStreamEventErrorOccurred:
-      //ReportError(CFWriteStreamCopyError(stream));
+      [self reportError:CFWriteStreamCopyError(stream)];
       [self stopRunLoop];
       break;
 
