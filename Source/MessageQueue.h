@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "ThreadSafeDeleage.h"
+#import "BSProtocolThreadInvoker.h"
 
 @protocol MessageQueueDelegate;
 
@@ -40,7 +40,7 @@
   NSMutableArray* _queue;
 
   // The delegate for this class.
-  ThreadSafeDeleage<MessageQueueDelegate>* _delegate;
+  BSProtocolThreadInvoker<MessageQueueDelegate>* _delegate;
 
   // The socket that listens for new incoming connections.
   CFSocketRef _socket;

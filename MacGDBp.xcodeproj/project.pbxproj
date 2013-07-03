@@ -24,7 +24,7 @@
 		1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E416FF60D36F821009A53A2 /* MainMenu.xib */; };
 		1E42F1D70F53317B008412DB /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 1E42F1D60F53317B008412DB /* dsa_pub.pem */; };
 		1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
-		1E5C32AA177296DF00F4377B /* ThreadSafeDeleage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5C32A9177296DF00F4377B /* ThreadSafeDeleage.m */; };
+		1E5C32AA177296DF00F4377B /* BSProtocolThreadInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5C32A9177296DF00F4377B /* BSProtocolThreadInvoker.m */; };
 		1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */; };
 		1E6B5947116106FE001189D2 /* LoggingController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6B5946116106FE001189D2 /* LoggingController.m */; };
 		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
@@ -98,8 +98,8 @@
 		1E42F1D60F53317B008412DB /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointManager.h; path = Source/BreakpointManager.h; sourceTree = "<group>"; };
 		1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointManager.m; path = Source/BreakpointManager.m; sourceTree = "<group>"; };
-		1E5C32A8177296DF00F4377B /* ThreadSafeDeleage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadSafeDeleage.h; path = Source/ThreadSafeDeleage.h; sourceTree = "<group>"; };
-		1E5C32A9177296DF00F4377B /* ThreadSafeDeleage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThreadSafeDeleage.m; path = Source/ThreadSafeDeleage.m; sourceTree = "<group>"; };
+		1E5C32A8177296DF00F4377B /* BSProtocolThreadInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSProtocolThreadInvoker.h; path = Source/BSProtocolThreadInvoker.h; sourceTree = "<group>"; };
+		1E5C32A9177296DF00F4377B /* BSProtocolThreadInvoker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSProtocolThreadInvoker.m; path = Source/BSProtocolThreadInvoker.m; sourceTree = "<group>"; };
 		1E67E6FB0F3C052000E68F1B /* PreferencesPathsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesPathsArrayController.h; path = Source/PreferencesPathsArrayController.h; sourceTree = "<group>"; };
 		1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesPathsArrayController.m; path = Source/PreferencesPathsArrayController.m; sourceTree = "<group>"; };
 		1E6B5945116106FE001189D2 /* LoggingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoggingController.h; path = Source/LoggingController.h; sourceTree = "<group>"; };
@@ -320,8 +320,8 @@
 				1EEBE841176FEA80003622C3 /* MessageQueue.m */,
 				1EEBE843176FFE04003622C3 /* ProtocolClient.h */,
 				1EEBE844176FFE04003622C3 /* ProtocolClient.m */,
-				1E5C32A8177296DF00F4377B /* ThreadSafeDeleage.h */,
-				1E5C32A9177296DF00F4377B /* ThreadSafeDeleage.m */,
+				1E5C32A8177296DF00F4377B /* BSProtocolThreadInvoker.h */,
+				1E5C32A9177296DF00F4377B /* BSProtocolThreadInvoker.m */,
 			);
 			name = Protocol;
 			sourceTree = "<group>";
@@ -491,7 +491,7 @@
 				1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */,
 				1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */,
 				1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */,
-				1E5C32AA177296DF00F4377B /* ThreadSafeDeleage.m in Sources */,
+				1E5C32AA177296DF00F4377B /* BSProtocolThreadInvoker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

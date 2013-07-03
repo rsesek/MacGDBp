@@ -16,8 +16,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ThreadSafeDeleage : NSObject
+// BSProtocolThreadInvoker will forward all messages that are part of |protocol|
+// to its target |object| on the specified |thread| in the optional modes. This
+// allows a client to hold this as a delegate and write thread-safe code with
+// minimal work. The class also protects against the target |object| reentering
+// itself; if it or something it calls runs a nested run loop, the messages
+// will be queued until it would no longer reenter the object.
+@interface BSProtocolThreadInvoker : NSObject
 
+// The target object to which messages will be sent.
 @property(readonly, atomic) NSObject* object;
 
 - (id)initWithObject:(NSObject*)object

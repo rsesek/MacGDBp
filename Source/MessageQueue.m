@@ -88,11 +88,10 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
   if ((self = [super init])) {
     _port = port;
     _queue = [[NSMutableArray alloc] init];
-    _delegate = (ThreadSafeDeleage<MessageQueueDelegate>*)
-        [[ThreadSafeDeleage alloc] initWithObject:delegate
+    _delegate = (BSProtocolThreadInvoker<MessageQueueDelegate>*)
+        [[BSProtocolThreadInvoker alloc] initWithObject:delegate
                                          protocol:@protocol(MessageQueueDelegate)
-                                           thread:[NSThread currentThread]
-                                            modes:@[ NSDefaultRunLoopMode ]];
+                                           thread:[NSThread currentThread]];
   }
   return self;
 }
