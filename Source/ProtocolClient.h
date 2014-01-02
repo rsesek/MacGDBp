@@ -56,6 +56,10 @@
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
 - (NSInteger)transactionIDFromCommand:(NSString*)command;
 
+// Given a path to a file, creates a URI for it that is suitable for sending to
+// the debugger engine.
++ (NSString*)escapedFilePathURI:(NSString*)path;
+
 @end
 
 // Delegate ////////////////////////////////////////////////////////////////////

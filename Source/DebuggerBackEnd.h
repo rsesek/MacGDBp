@@ -17,7 +17,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "Breakpoint.h"
-#import "NetworkConnection.h"
+#import "ProtocolClient.h"
 #import "StackFrame.h"
 
 @protocol DebuggerBackEndDelegate;
@@ -30,10 +30,11 @@
 // primary unit that this class deals with is the StackFrame; clients should
 // maintain a stack structure and the BackEnd will inform the delegate when
 // a new frame is created or the stack should be destroyed.
-@interface DebuggerBackEnd : NSObject <NetworkConnectionDelegate>
+@interface DebuggerBackEnd : NSObject <ProtocolClientDelegate>
 {
   // The connection to the debugger engine.
-  NetworkConnection* connection_;
+  NSUInteger port_;
+  ProtocolClient* client_;
   
   // Human-readable status of the connection.
   NSString* status;

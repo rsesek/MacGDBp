@@ -91,6 +91,23 @@
   return [transaction intValue];
 }
 
++ (NSString*)escapedFilePathURI:(NSString*)path {
+  // Custon GDBp paths are fine.
+  if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
+    return path;
+
+  // Create a temporary URL that will escape all the nasty characters.
+  NSURL* url = [NSURL fileURLWithPath:path];
+  NSString* urlString = [url absoluteString];
+
+  // Remove the host because this is a file:// URL;
+  urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
+
+  // Escape % for use in printf-style NSString formatters.
+  urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+  return urlString;
+}
+
 // MessageQueueDelegate ////////////////////////////////////////////////////////
 
 - (void)messageQueue:(MessageQueue*)queue error:(NSError*)error {

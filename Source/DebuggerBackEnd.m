@@ -60,13 +60,13 @@
     callTable_ = [NSMutableDictionary new];
 
     [[BreakpointManager sharedManager] setConnection:self];
-    connection_ = [[NetworkConnection alloc] initWithPort:aPort];
-    connection_.delegate = self;
+    port_ = aPort;
+    client_ = [[ProtocolClient alloc] initWithDelegate:self];
 
     attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
 
     if (self.attached)
-      [connection_ connect];
+      [client_ connectOnPort:port_];
   }
   return self;
 }
@@ -76,7 +76,7 @@
  */
 - (void)dealloc
 {
-  [connection_ close];
+  [client_ release];
   [stackFrames_ release];
   [callTable_ release];
   [callbackContext_ release];
@@ -92,7 +92,7 @@
  */
 - (NSUInteger)port
 {
-  return [connection_ port];
+  return port_;
 }
 
 /**
@@ -100,7 +100,7 @@
  */
 - (BOOL)isConnected
 {
-  return [connection_ connected] && active_;
+  return active_;
 }
 
 /**
@@ -110,9 +110,9 @@
 - (void)setAttached:(BOOL)attached {
   if (attached != attached_) {
     if (!attached)
-      [connection_ close];
+      [client_ connectOnPort:port_];
     else
-      [connection_ connect];
+      [client_ disconnect];
   }
   attached_ = attached;
 }
@@ -125,7 +125,7 @@
  */
 - (void)run
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"run"];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"run"];
   [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
@@ -134,7 +134,7 @@
  */
 - (void)stepIn
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_into"];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"step_into"];
   [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
@@ -143,7 +143,7 @@
  */
 - (void)stepOut
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_out"];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"step_out"];
   [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
@@ -152,7 +152,7 @@
  */
 - (void)stepOver
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_over"];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"step_over"];
   [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
 }
 
@@ -161,7 +161,7 @@
  */
 - (void)stop
 {
-  [connection_ close];
+  [client_ disconnect];
   active_ = NO;
   self.status = @"Stopped";
 }
@@ -171,7 +171,7 @@
  */
 - (void)detach
 {
-  [connection_ sendCommandWithFormat:@"detach"];
+  [client_ sendCommandWithFormat:@"detach"];
   active_ = NO;
   self.status = @"Stopped";
 }
@@ -182,7 +182,7 @@
  */
 - (NSInteger)getChildrenOfProperty:(VariableNode*)property atDepth:(NSInteger)depth;
 {
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -d %d -n %@", depth, [property fullName]];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"property_get -d %d -n %@", depth, [property fullName]];
   [self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
   return [tx intValue];
 }
@@ -198,13 +198,13 @@
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {
     NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-    transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
+    transaction = [client_ sendCommandWithFormat:@"source -f %@", escapedFilename];
     [self recordCallback:@selector(setSource:) forTransaction:transaction];
     [callbackContext_ setObject:routingNumber forKey:transaction];
   }
   
   // Get the names of all the contexts.
-  transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
+  transaction = [client_ sendCommandWithFormat:@"context_names -d %d", frame.index];
   [self recordCallback:@selector(contextsReceived:) forTransaction:transaction];
   [callbackContext_ setObject:routingNumber forKey:transaction];
   
@@ -220,11 +220,11 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp
 {
-  if (![connection_ connected])
+  if (!active_)
     return;
   
-  NSString* file = [connection_ escapedURIPath:[bp transformedPath]];
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
+  NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
   [self recordCallback:@selector(breakpointReceived:) forTransaction:tx];
   [callbackContext_ setObject:bp forKey:tx];
 }
@@ -234,10 +234,10 @@
  */
 - (void)removeBreakpoint:(Breakpoint*)bp
 {
-  if (![connection_ connected])
+  if (!active_)
     return;
   
-  [connection_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
+  [client_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 /**
@@ -245,15 +245,56 @@
  */
 - (void)evalScript:(NSString*)str
 {
-  if (![connection_ connected])
+  if (!active_)
     return;
 
   char* encodedString = malloc(modp_b64_encode_len([str length]));
   modp_b64_encode(encodedString, [str UTF8String], [str length]);
-  NSNumber* tx = [connection_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
+  NSNumber* tx = [client_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
   free(encodedString);
 
   [self recordCallback:@selector(evalScriptReceived:) forTransaction:tx];
+}
+
+// Protocol Client Delegate ////////////////////////////////////////////////////
+#pragma mark Protocol Client Delegate
+
+- (void)debuggerEngineConnected:(ProtocolClient*)client
+{
+  active_ = YES;
+}
+
+/**
+ * Called when the connection is finally closed. This will reopen the listening
+ * socket if the debugger remains attached.
+ */
+- (void)debuggerEngineDisconnected:(ProtocolClient*)client
+{
+  active_ = NO;
+
+  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
+    [delegate debuggerDisconnected];
+
+  if (self.attached)
+    [client_ connectOnPort:port_];
+}
+
+- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message
+{
+  // Check and see if there's an error.
+  NSArray* error = [[message rootElement] elementsForName:@"error"];
+  if ([error count] > 0) {
+    NSLog(@"Xdebug error: %@", error);
+    NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
+    [self errorEncountered:errorMessage];
+  }
+
+  if ([[[message rootElement] name] isEqualToString:@"init"]) {
+    [self handleInitialResponse:message];
+    return;
+  }
+
+  [self handleResponse:message];
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////
@@ -270,7 +311,7 @@
 - (void)handleInitialResponse:(NSXMLDocument*)response
 {
   if (!self.attached) {
-    [connection_ sendCommandWithFormat:@"detach"];
+    [client_ sendCommandWithFormat:@"detach"];
     return;
   }
 
@@ -286,22 +327,9 @@
   // TODO: update the status.
 }
 
-/**
- * Called when the connection is finally closed. This will reopen the listening
- * socket if the debugger remains attached.
- */
-- (void)connectionDidClose:(NetworkConnection*)connection
-{
-  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [delegate debuggerDisconnected];
-
-  if (self.attached)
-    [connection_ connect];
-}
-
 - (void)handleResponse:(NSXMLDocument*)response
 {
-  NSInteger transactionID = [connection_ transactionIDFromResponse:response];
+  NSInteger transactionID = [client_ transactionIDFromResponse:response];
   NSNumber* key = [NSNumber numberWithInt:transactionID];
   NSString* callbackStr = [callTable_ objectForKey:key];
   if (callbackStr)
@@ -323,7 +351,7 @@
     [delegate debuggerDisconnected];
     active_ = NO;
   } else if ([status isEqualToString:@"Stopping"]) {
-    [connection_ sendCommandWithFormat:@"stop"];
+    [client_ sendCommandWithFormat:@"stop"];
     active_ = NO;
   }
 }
@@ -343,7 +371,7 @@
   if ([delegate respondsToSelector:@selector(clobberStack)])
     [delegate clobberStack];
   [stackFrames_ removeAllObjects];
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"stack_depth"];
+  NSNumber* tx = [client_ sendCommandWithFormat:@"stack_depth"];
   [self recordCallback:@selector(rebuildStack:) forTransaction:tx];
   stackFirstTransactionID_ = [tx intValue];
 }
@@ -356,7 +384,7 @@
 {
   NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
   
-  if (stackFirstTransactionID_ == [connection_ transactionIDFromResponse:response])
+  if (stackFirstTransactionID_ == [client_ transactionIDFromResponse:response])
     stackDepth_ = depth;
   
   // We now need to alloc a bunch of stack frames and get the basic information
@@ -364,7 +392,7 @@
   for (NSInteger i = 0; i < depth; i++)
   {
     // Use the transaction ID to create a routing path.
-    NSNumber* routingID = [connection_ sendCommandWithFormat:@"stack_get -d %d", i];
+    NSNumber* routingID = [client_ sendCommandWithFormat:@"stack_get -d %d", i];
     [self recordCallback:@selector(getStackFrame:) forTransaction:routingID];
     [stackFrames_ setObject:[[StackFrame new] autorelease] forKey:routingID];
   }
@@ -377,7 +405,7 @@
 - (void)getStackFrame:(NSXMLDocument*)response
 {
   // Get the routing information.
-  NSInteger routingID = [connection_ transactionIDFromResponse:response];
+  NSInteger routingID = [client_ transactionIDFromResponse:response];
   if (routingID < stackFirstTransactionID_)
     return;
   NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
@@ -412,7 +440,7 @@
  */
 - (void)setSource:(NSXMLDocument*)response
 {
-  NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
+  NSNumber* transaction = [NSNumber numberWithInt:[client_ transactionIDFromResponse:response]];
   if ([transaction intValue] < stackFirstTransactionID_)
     return;
   NSNumber* routingNumber = [callbackContext_ objectForKey:transaction];
@@ -437,7 +465,7 @@
 - (void)contextsReceived:(NSXMLDocument*)response
 {
   // Get the stack frame's routing ID and use it again.
-  NSNumber* receivedTransaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
+  NSNumber* receivedTransaction = [NSNumber numberWithInt:[client_ transactionIDFromResponse:response]];
   if ([receivedTransaction intValue] < stackFirstTransactionID_)
     return;
   NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
@@ -453,7 +481,7 @@
     NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
     
     // Fetch each context's variables.
-    NSNumber* tx = [connection_ sendCommandWithFormat:@"context_get -d %d -c %d", frame.index, cid];
+    NSNumber* tx = [client_ sendCommandWithFormat:@"context_get -d %d -c %d", frame.index, cid];
     [self recordCallback:@selector(variablesReceived:) forTransaction:tx];
     [callbackContext_ setObject:routingID forKey:tx];
   }
@@ -465,7 +493,7 @@
 - (void)variablesReceived:(NSXMLDocument*)response
 {
   // Get the stack frame's routing ID and use it again.
-  NSInteger transaction = [connection_ transactionIDFromResponse:response];
+  NSInteger transaction = [client_ transactionIDFromResponse:response];
   if (transaction < stackFirstTransactionID_)
     return;
   NSNumber* receivedTransaction = [NSNumber numberWithInt:transaction];
@@ -499,7 +527,7 @@
  */
 - (void)propertiesReceived:(NSXMLDocument*)response
 {
-  NSInteger transaction = [connection_ transactionIDFromResponse:response];
+  NSInteger transaction = [client_ transactionIDFromResponse:response];
   
   /*
    <response>
@@ -532,7 +560,7 @@
  */
 - (void)breakpointReceived:(NSXMLDocument*)response
 {
-  NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
+  NSNumber* transaction = [NSNumber numberWithInt:[client_ transactionIDFromResponse:response]];
   Breakpoint* bp = [callbackContext_ objectForKey:transaction];
   if (!bp)
     return;
