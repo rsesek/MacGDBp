@@ -197,8 +197,7 @@
 
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {
-    NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-    transaction = [client_ sendCommandWithFormat:@"source -f %@", escapedFilename];
+    transaction = [client_ sendCommandWithFormat:@"source -f %@", frame.filename];
     [self recordCallback:@selector(setSource:) forTransaction:transaction];
     [callbackContext_ setObject:routingNumber forKey:transaction];
   }
