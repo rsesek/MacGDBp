@@ -130,15 +130,6 @@
   [_delegate debuggerEngineDisconnected:self];
 }
 
-// If the write stream is ready, the delegate controls whether or not the next
-// pending message should be sent via the result of this method.
-- (BOOL)shouldSendMessage {
-  [_lock lock];
-  BOOL r = _lastReadID >= _lastWrittenID;
-  [_lock unlock];
-  return r;
-}
-
 // Callback for when a message has been sent.
 - (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message
 {
