@@ -108,12 +108,14 @@
  * connection as appropriate.
  */
 - (void)setAttached:(BOOL)attached {
-  if (attached != attached_) {
-    if (!attached)
-      [client_ connectOnPort:port_];
-    else
-      [client_ disconnect];
-  }
+  if (attached == attached_)
+    return;
+
+  if (attached_)
+    [client_ disconnect];
+  else
+    [client_ connectOnPort:port_];
+
   attached_ = attached;
 }
 

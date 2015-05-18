@@ -33,6 +33,9 @@
   NSThread* _thread;
   NSRunLoop* _runLoop;
 
+  // Whether or not the run loop should quit.
+  BOOL _shouldQuit;
+
   // Whether or not the message queue is connected to a client.
   BOOL _connected;
 

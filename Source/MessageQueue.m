@@ -140,6 +140,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
     _runLoop = [NSRunLoop currentRunLoop];
 
     _connected = NO;
+    _shouldQuit = NO;
     [self scheduleListenSocket];
 
     // Use CFRunLoop instead of NSRunLoop because the latter has no programmatic
@@ -178,8 +179,12 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
                                           &MessageQueueSocketAccept,  // Callback function.
                                           &context);  // Context to pass to callout.
     if (!_socket) {
+      // Pump the run loop while waiting for the socket to be reusued. If told
+      // to quit while waiting, then break out of the loop.
+      if (CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1, FALSE) && _shouldQuit)
+        return;
+      NSLog(@"Could not open socket");
       //[connection_ errorEncountered:@"Could not open socket."];
-      sleep(1);
     }
   } while (!_socket);
 
@@ -219,6 +224,7 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 }
 
 - (void)stopRunLoop {
+  _shouldQuit = YES;
   [self disconnectClient];
   CFRunLoopStop([_runLoop getCFRunLoop]);
 }
@@ -366,9 +372,9 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 
   // Set the client of the write stream.
   CFOptionFlags writeFlags = kCFStreamEventOpenCompleted |
-  kCFStreamEventCanAcceptBytes |
-  kCFStreamEventErrorOccurred |
-  kCFStreamEventEndEncountered;
+                             kCFStreamEventCanAcceptBytes |
+                             kCFStreamEventErrorOccurred |
+                             kCFStreamEventEndEncountered;
   if (CFWriteStreamSetClient(_writeStream, writeFlags, &MessageQueueWriteEvent, &context))
     // Schedule it in the run loop to receive error information.
     CFWriteStreamScheduleWithRunLoop(_writeStream, [_runLoop getCFRunLoop], kCFRunLoopCommonModes);
