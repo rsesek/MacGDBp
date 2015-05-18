@@ -200,6 +200,12 @@ static void MessageQueueWriteEvent(CFWriteStreamRef stream,
 }
 
 - (void)disconnectClient {
+  if (_socket) {
+    CFSocketInvalidate(_socket);
+    CFRelease(_socket);
+    _socket = NULL;
+  }
+
   if (_readStream) {
     CFReadStreamUnscheduleFromRunLoop(_readStream, [_runLoop getCFRunLoop], kCFRunLoopCommonModes);
     CFReadStreamClose(_readStream);
