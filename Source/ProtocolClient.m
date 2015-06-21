@@ -101,7 +101,9 @@
   NSString* urlString = [url absoluteString];
 
   // Remove the host because this is a file:// URL;
-  urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
+  NSString* host = [url host];
+  if (host)
+    urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
 
   // Escape % for use in printf-style NSString formatters.
   urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
