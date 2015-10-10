@@ -158,6 +158,9 @@
 
 // Closes down the listening socket, the child socket, and the streams.
 - (void)disconnectClient {
+  if (!_connected)
+    return;
+
   if (_readSource) {
     dispatch_source_cancel(_readSource);
     dispatch_release(_readSource);
