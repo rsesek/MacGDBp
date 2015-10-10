@@ -58,11 +58,6 @@
   // returns a response to the debugger, we will dispatch the response XML to
   // the selector, based on transaction_id.
   NSMutableDictionary* callTable_;
-
-  // This stores additional context information for the callback selector.
-  // This dictionary is keyed by the same transaction IDs in |callTable_|, but
-  // also stores some other object that can be accessed in the callback.
-  NSMutableDictionary* callbackContext_;
 }
 
 @property (readonly, copy) NSString* status;
