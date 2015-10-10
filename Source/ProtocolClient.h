@@ -48,7 +48,9 @@ typedef void (^ProtocolClientMessageHandler)(NSXMLDocument*);
 // Sends a command to the debugger. The command must have a substring |{txn}|
 // within it, which will be replaced with the transaction ID. Use this if
 // |-sendCommandWithFormat:|'s insertion of the transaction ID is incorrect.
-- (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ...;
+- (void)sendCustomCommandWithFormat:(NSString*)format
+                            handler:(ProtocolClientMessageHandler)handler,
+                            ...;
 
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response;
 - (NSInteger)transactionIDFromCommand:(NSString*)command;

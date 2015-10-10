@@ -97,20 +97,24 @@
   [_messageQueue sendMessage:taggedCommand];
 }
 
-- (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ... {
+- (void)sendCustomCommandWithFormat:(NSString*)format
+                            handler:(ProtocolClientMessageHandler)handler, ... {
   // Collect varargs and format command.
   va_list args;
-  va_start(args, format);
-  NSString* command = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+  va_start(args, handler);
+  NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
   va_end(args);
 
-  NSNumber* callbackKey = [NSNumber numberWithInt:_nextID++];
-  NSString* taggedCommand = [command stringByReplacingOccurrencesOfString:@"{txn}"
-                                                               withString:[callbackKey stringValue]];
+  int transaction = _nextID++;
+  NSString* taggedCommand =
+      [command stringByReplacingOccurrencesOfString:@"{txn}"
+                                         withString:[NSString stringWithFormat:@"%d", transaction]];
 
+  assert(_messageQueue);
+  [_dispatchTable setObject:[[handler copy] autorelease] forKey:@(transaction)];
   [_messageQueue sendMessage:taggedCommand];
-  return callbackKey;
 }
+
 
 - (NSInteger)transactionIDFromResponse:(NSXMLDocument*)response {
   return [[[[response rootElement] attributeForName:@"transaction_id"] stringValue] intValue];
