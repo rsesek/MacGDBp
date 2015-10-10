@@ -31,7 +31,6 @@
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
 - (void)getStackFrame:(NSXMLDocument*)response;
-- (void)propertiesReceived:(NSXMLDocument*)response;
 
 @end
 
@@ -176,11 +175,27 @@
  * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
  * that requested it so that the child can be attached.
  */
-- (NSInteger)getChildrenOfProperty:(VariableNode*)property atDepth:(NSInteger)depth;
+- (void)getChildrenOfProperty:(VariableNode*)property
+                      atDepth:(NSInteger)depth
+                     callback:(void (^)(NSArray*))callback
 {
-  NSNumber* tx = [client_ sendCommandWithFormat:@"property_get -d %d -n %@", depth, [property fullName]];
-  [self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
-  return [tx intValue];
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    /*
+     <response>
+       <property> <!-- this is the one we requested -->
+         <property ... /> <!-- these are what we want -->
+       </property>
+     </repsonse>
+     */
+
+    // Detach all the children so we can insert them into another document.
+    NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
+    NSArray* children = [parent children];
+    [parent setChildren:nil];
+
+    callback(children);
+  };
+  [client_ sendCommandWithFormat:@"property_get -d %d -n %@" handler:handler, depth, [property fullName]];
 }
 
 - (void)loadStackFrame:(StackFrame*)frame
@@ -471,29 +486,6 @@
     };
     [client_ sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
   }
-}
-
-/**
- * Callback from a |-getProperty:| request.
- */
-- (void)propertiesReceived:(NSXMLDocument*)response
-{
-  NSInteger transaction = [client_ transactionIDFromResponse:response];
-  
-  /*
-   <response>
-     <property> <!-- this is the one we requested -->
-       <property ... /> <!-- these are what we want -->
-     </property>
-   </repsonse>
-   */
-  
-  // Detach all the children so we can insert them into another document.
-  NSXMLElement* parent = (NSXMLElement*)[[response rootElement] childAtIndex:0];
-  NSArray* children = [parent children];
-  [parent setChildren:nil];
-  
-  [delegate receivedProperties:children forTransaction:transaction];
 }
 
 // Private /////////////////////////////////////////////////////////////////////

@@ -41,7 +41,6 @@
   if (self = [super initWithWindowNibName:@"Debugger"])
   {
     stackController = [[StackController alloc] init];
-    pendingProperties_ = [[NSMutableDictionary alloc] init];
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
@@ -65,7 +64,6 @@
   [connection release];
   [expandedVariables release];
   [stackController release];
-  [pendingProperties_ release];
   [super dealloc];
 }
 
@@ -233,8 +231,10 @@
     return;
   assert([selection count] == 1);
   NSInteger depth = [[selection objectAtIndex:0] index];
-  NSInteger txn = [connection getChildrenOfProperty:node atDepth:depth];
-  [pendingProperties_ setObject:node forKey:[NSNumber numberWithInt:txn]];
+  [connection getChildrenOfProperty:node atDepth:depth callback:^(NSArray* properties) {
+    [node setChildrenFromXMLChildren:properties];
+    [variablesTreeController rearrangeObjects];
+  }];
 }
 
 /**
@@ -372,7 +372,6 @@
 - (void)clobberStack
 {
   aboutToClobber_ = YES;
-  [pendingProperties_ removeAllObjects];
 }
 
 - (void)newStackFrame:(StackFrame*)frame
@@ -390,17 +389,6 @@
 - (void)sourceUpdated:(StackFrame*)frame
 {
   [self updateSourceViewer];
-}
-
-- (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction
-{
-  NSNumber* key = [NSNumber numberWithInt:transaction];
-  VariableNode* node = [pendingProperties_ objectForKey:key];
-  if (node) {
-    [node setChildrenFromXMLChildren:properties];
-    [variablesTreeController rearrangeObjects];
-    [pendingProperties_ removeObjectForKey:key];
-  }
 }
 
 - (void)scriptWasEvaluatedWithResult:(NSString*)result

@@ -29,10 +29,6 @@
   // so upon receipt of the first new stack frame.
   BOOL aboutToClobber_;
 
-  // Dictionary of transcations to tree nodes that are used when properties
-  // are requested from the backend.
-  NSMutableDictionary* pendingProperties_;
-
   IBOutlet NSButton* attachedCheckbox_;
 
   StackController* stackController;
