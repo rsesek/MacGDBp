@@ -27,8 +27,11 @@
   // state of the debugger.
   id<ProtocolClientDelegate> _delegate;  // weak
 
+  // A map between transaction ID and handler block for that message.
+  NSMutableDictionary<NSNumber*, ProtocolClientMessageHandler>* _dispatchTable;
+
   // The next transaction ID to assign.
-  NSInteger _nextID;
+  int _nextID;
 
   // Records the last read and written transaction IDs. These are only used in
   // creating LogEntry objects.
@@ -39,11 +42,13 @@
 - (id)initWithDelegate:(id<ProtocolClientDelegate>)delegate {
   if ((self = [super init])) {
     _delegate = delegate;
+    _dispatchTable = [[NSMutableDictionary alloc] init];
   }
   return self;
 }
 
 - (void)dealloc {
+  [_dispatchTable release];
   [super dealloc];
 }
 
@@ -74,6 +79,22 @@
   assert(_messageQueue);
   [_messageQueue sendMessage:taggedCommand];
   return callbackKey;
+}
+
+- (void)sendCommandWithFormat:(NSString*)format
+                      handler:(ProtocolClientMessageHandler)handler, ... {
+  // Collect varargs and format command.
+  va_list args;
+  va_start(args, handler);
+  NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
+  va_end(args);
+
+  int transaction = _nextID++;
+  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %d", [command autorelease], transaction];
+
+  assert(_messageQueue);
+  [_dispatchTable setObject:[[handler copy] autorelease] forKey:@(transaction)];
+  [_messageQueue sendMessage:taggedCommand];
 }
 
 - (NSNumber*)sendCustomCommandWithFormat:(NSString*)format, ... {
@@ -139,12 +160,12 @@
 - (void)messageQueueDidDisconnect:(MessageQueue*)queue {
   [_messageQueue release];
   _messageQueue = nil;
+  [_dispatchTable removeAllObjects];
   [_delegate debuggerEngineDisconnected:self];
 }
 
 // Callback for when a message has been sent.
-- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message
-{
+- (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message {
   NSInteger tag = [self transactionIDFromCommand:message];
   _lastWrittenID = tag;
 
@@ -156,15 +177,15 @@
 }
 
 // Callback with the message content when one has been receieved.
-- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message
-{
+- (void)messageQueue:(MessageQueue*)queue didReceiveMessage:(NSString*)message {
+  // Record this message in the transaction log.
   LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newReceiveEntry:message];
   entry.lastReadTransactionID = _lastReadID;
   entry.lastWrittenTransactionID = _lastWrittenID;
   [logger recordEntry:entry];
 
-  // Test if we can convert it into an NSXMLDocument.
+  // Parse the XML and test for errors.
   NSError* error = nil;
   NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:message
                                                         options:NSXMLDocumentTidyXML
@@ -173,11 +194,28 @@
     [self messageQueue:queue error:error];
     return;
   }
+  int transactionID = [self transactionIDFromResponse:xml];
 
-  _lastReadID = [self transactionIDFromResponse:xml];
+  _lastReadID = transactionID;
   entry.lastReadTransactionID = _lastReadID;
 
-  [_delegate debuggerEngine:self receivedMessage:xml];
+  if ([[[xml rootElement] elementsForName:@"error"] count] > 0) {
+    // Handle back-end errors.
+    [_delegate protocolClient:self receivedErrorMessage:xml];
+  } else if ([[[xml rootElement] name] isEqualToString:@"init"]) {
+    // Handle the initial connection message.
+    [_delegate protocolClient:self receivedInitialMessage:xml];
+  } else {
+    // Dispatch the handler for the message.
+    ProtocolClientMessageHandler handler = [_dispatchTable objectForKey:@(transactionID)];
+    if (handler) {
+      handler(xml);
+      [_dispatchTable removeObjectForKey:@(transactionID)];
+    } else {
+      // TODO(rsesek): Remove this path once the backend rewrite is complete.
+      [_delegate debuggerEngine:self receivedMessage:xml];
+    }
+  }
 }
 
 @end

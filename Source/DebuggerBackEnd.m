@@ -134,10 +134,10 @@
 /**
  * Tells the debugger to step into the current command.
  */
-- (void)stepIn
-{
-  NSNumber* tx = [client_ sendCommandWithFormat:@"step_into"];
-  [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
+- (void)stepIn {
+  [client_ sendCommandWithFormat:@"step_into" handler:^(NSXMLDocument* message) {
+    [self debuggerStep:message];
+  }];
 }
 
 /**
@@ -280,21 +280,20 @@
     [client_ connectOnPort:port_];
 }
 
-- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message
-{
-  // Check and see if there's an error.
+- (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message {
+  [self handleInitialResponse:message];
+}
+
+- (void)protocolClient:(ProtocolClient*)client receivedErrorMessage:(NSXMLDocument*)message {
   NSArray* error = [[message rootElement] elementsForName:@"error"];
   if ([error count] > 0) {
     NSLog(@"Xdebug error: %@", error);
     NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
     [self errorEncountered:errorMessage];
   }
+}
 
-  if ([[[message rootElement] name] isEqualToString:@"init"]) {
-    [self handleInitialResponse:message];
-    return;
-  }
-
+- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message {
   [self handleResponse:message];
 }
 

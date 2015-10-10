@@ -20,6 +20,8 @@
 
 @protocol ProtocolClientDelegate;
 
+typedef void (^ProtocolClientMessageHandler)(NSXMLDocument*);
+
 // ProtocolClient sends string commands to a DBGP <http://www.xdebug.org/docs-dbgp.php>
 // debugger engine and receives XML packets in response. This class ensures
 // proper sequencing of the messages.
@@ -35,6 +37,13 @@
 // This sends the given command format to the debugger. This method is thread
 // safe and schedules the request on the |runLoop_|.
 - (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
+
+// Sends a command with the given |format| to the debugger. When a response is
+// received, |handler| is invoked. If an error occurs or the connection is
+// interrupted, the delegate will be notified.
+- (void)sendCommandWithFormat:(NSString*)format
+                      handler:(ProtocolClientMessageHandler)handler,
+                      ...;
 
 // Sends a command to the debugger. The command must have a substring |{txn}|
 // within it, which will be replaced with the transaction ID. Use this if
@@ -57,6 +66,7 @@
 @protocol ProtocolClientDelegate
 - (void)debuggerEngineConnected:(ProtocolClient*)client;
 - (void)debuggerEngineDisconnected:(ProtocolClient*)client;
-
+- (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message;
+- (void)protocolClient:(ProtocolClient*)client receivedErrorMessage:(NSXMLDocument*)message;
 - (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message;
 @end
