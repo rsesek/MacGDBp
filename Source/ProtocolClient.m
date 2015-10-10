@@ -166,19 +166,7 @@
     return;
   }
 
-  // Validate the transaction.
-  NSInteger transaction = [self transactionIDFromResponse:xml];
-  if (transaction < _lastReadID) {
-    NSLog(@"Transaction #%d is out of date (lastRead = %d). Dropping packet: %@",
-          transaction, _lastReadID, message);
-    return;
-  }
-  if (transaction != _lastWrittenID) {
-    NSLog(@"Transaction #%d received out of order. lastRead = %d, lastWritten = %d. Continuing.",
-          transaction, _lastReadID, _lastWrittenID);
-  }
-
-  _lastReadID = transaction;
+  _lastReadID = [self transactionIDFromResponse:xml];
   entry.lastReadTransactionID = _lastReadID;
 
   [_delegate debuggerEngine:self receivedMessage:xml];
