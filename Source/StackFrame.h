@@ -24,11 +24,6 @@
   BOOL loaded_;
 
   /**
-   * The routing ID used to receive response information from the engine.
-   */
-  NSUInteger routingID_;
-  
-  /**
    * The position in the stack
    */
   NSUInteger index_;
@@ -60,7 +55,6 @@
 }
 
 @property BOOL loaded;
-@property NSUInteger routingID;
 @property (readwrite) NSUInteger index;
 @property (copy) NSString* filename;
 @property (copy) NSString* source;

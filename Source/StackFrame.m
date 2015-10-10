@@ -19,7 +19,6 @@
 @implementation StackFrame
 
 @synthesize loaded = loaded_;
-@synthesize routingID = routingID_;
 @synthesize index = index_;
 @synthesize filename = filename_;
 @synthesize source = source_;

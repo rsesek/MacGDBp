@@ -395,7 +395,6 @@
       frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
       frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
       frame.function = [[xmlframe attributeForName:@"where"] stringValue];
-      frame.routingID = receivedTransaction;
 
       // Only get the complete frame for the first level. The other frames will get
       // information loaded lazily when the user clicks on one.
