@@ -30,7 +30,6 @@
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
-- (void)getStackFrame:(NSXMLDocument*)response;
 
 @end
 
@@ -48,9 +47,7 @@
  */
 - (id)initWithPort:(NSUInteger)aPort
 {
-  if (self = [super init])
-  {
-    stackFrames_ = [[NSMutableDictionary alloc] init];
+  if (self = [super init]) {
     callTable_ = [NSMutableDictionary new];
 
     [[BreakpointManager sharedManager] setConnection:self];
@@ -71,7 +68,6 @@
 - (void)dealloc
 {
   [client_ release];
-  [stackFrames_ release];
   [callTable_ release];
   [super dealloc];
 }
@@ -378,8 +374,7 @@
  * Step in/out/over and run all take this path. We first get the status of the
  * debugger and then request fresh stack information.
  */
-- (void)debuggerStep:(NSXMLDocument*)response
-{
+- (void)debuggerStep:(NSXMLDocument*)response {
   [self updateStatus:response];
   if (![self isConnected])
     return;
@@ -388,68 +383,53 @@
   // are coming. Also remove all existing stack routes and request a new stack.
   if ([delegate respondsToSelector:@selector(clobberStack)])
     [delegate clobberStack];
-  [stackFrames_ removeAllObjects];
-  NSNumber* tx = [client_ sendCommandWithFormat:@"stack_depth"];
-  [self recordCallback:@selector(rebuildStack:) forTransaction:tx];
-  stackFirstTransactionID_ = [tx intValue];
+
+  [client_ sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
+    stackFirstTransactionID_ = [client_ transactionIDFromResponse:message];
+    [self rebuildStack:message];
+  }];
 }
 
 /**
  * We ask for the stack_depth and now we clobber the stack and start rebuilding
  * it.
  */
-- (void)rebuildStack:(NSXMLDocument*)response
-{
+- (void)rebuildStack:(NSXMLDocument*)response {
   NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
-  
+
   if (stackFirstTransactionID_ == [client_ transactionIDFromResponse:response])
     stackDepth_ = depth;
-  
+
   // We now need to alloc a bunch of stack frames and get the basic information
   // for them.
-  for (NSInteger i = 0; i < depth; i++)
-  {
+  for (NSInteger i = 0; i < depth; i++) {
     // Use the transaction ID to create a routing path.
-    NSNumber* routingID = [client_ sendCommandWithFormat:@"stack_get -d %d", i];
-    [self recordCallback:@selector(getStackFrame:) forTransaction:routingID];
-    [stackFrames_ setObject:[[StackFrame new] autorelease] forKey:routingID];
-  }
-}
+    ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+      NSInteger receivedTransaction = [client_ transactionIDFromResponse:message];
+      if (receivedTransaction < stackFirstTransactionID_)
+        return;
 
-/**
- * The initial rebuild of the stack frame. We now have enough to initialize
- * a StackFrame object.
- */
-- (void)getStackFrame:(NSXMLDocument*)response
-{
-  // Get the routing information.
-  NSInteger routingID = [client_ transactionIDFromResponse:response];
-  if (routingID < stackFirstTransactionID_)
-    return;
-  NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
-  
-  // Make sure we initialized this frame in our last |-rebuildStack:|.
-  StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
-  if (!frame)
-    return;
-  
-  NSXMLElement* xmlframe = [[[response rootElement] children] objectAtIndex:0];
-  
-  // Initialize the stack frame.
-  frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
-  frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
-  frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
-  frame.function = [[xmlframe attributeForName:@"where"] stringValue];
-  frame.routingID = routingID;
+      StackFrame* frame = [[[StackFrame alloc] init] autorelease];
+      NSXMLElement* xmlframe = (NSXMLElement*)[[[message rootElement] children] objectAtIndex:0];
 
-  // Only get the complete frame for the first level. The other frames will get
-  // information loaded lazily when the user clicks on one.
-  if (frame.index == 0) {
-    [self loadStackFrame:frame];
+      // Initialize the stack frame.
+      frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
+      frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
+      frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
+      frame.function = [[xmlframe attributeForName:@"where"] stringValue];
+      frame.routingID = receivedTransaction;
+
+      // Only get the complete frame for the first level. The other frames will get
+      // information loaded lazily when the user clicks on one.
+      if (frame.index == 0) {
+        [self loadStackFrame:frame];
+      }
+
+      if ([self.delegate respondsToSelector:@selector(newStackFrame:)])
+        [self.delegate newStackFrame:frame];
+    };
+    [client_ sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
   }
-  
-  if ([delegate respondsToSelector:@selector(newStackFrame:)])
-    [delegate newStackFrame:frame];
 }
 
 /**
