@@ -24,43 +24,7 @@
 // program with which it exchanges UTF8 string messages. A message contains two
 // parts, both terminated by '\0'. The first is an ASCII integer number that is
 // the length of the second part. The second part is the actual string message.
-@interface MessageQueue : NSObject {
- @private
-  // The port number on which to open a listening socket.
-  NSUInteger _port;
-
-  // The thread and its run loop on which this class primarily operates.
-  NSThread* _thread;
-  NSRunLoop* _runLoop;
-
-  // Whether or not the run loop should quit.
-  BOOL _shouldQuit;
-
-  // Whether or not the message queue is connected to a client.
-  BOOL _connected;
-
-  // A queue of messages that are waiting to be sent.
-  NSMutableArray* _queue;
-
-  // The delegate for this class.
-  BSProtocolThreadInvoker<MessageQueueDelegate>* _delegate;
-
-  // The socket that listens for new incoming connections.
-  CFSocketRef _socket;
-
-  // The child socket that has been accepted from |_socket|.
-  CFSocketNativeHandle _child;
-
-  // The read and write streams that are created on the |_child| socket.
-  CFReadStreamRef _readStream;
-  CFWriteStreamRef _writeStream;
-
-  // When a message is being read, this temporary buffer is used to build up
-  // the complete message from successive reads.
-  NSMutableString* _message;
-  NSUInteger _totalMessageSize;
-  NSUInteger _messageSize;
-}
+@interface MessageQueue : NSObject
 
 // Creates a new MessasgeQueue that will listen on |port| and report information
 // to its |delegate|.
