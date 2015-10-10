@@ -23,21 +23,9 @@
 // ProtocolClient sends string commands to a DBGP <http://www.xdebug.org/docs-dbgp.php>
 // debugger engine and receives XML packets in response. This class ensures
 // proper sequencing of the messages.
-@interface ProtocolClient : NSObject<MessageQueueDelegate> {
- @private
-  MessageQueue* _messageQueue;
+@interface ProtocolClient : NSObject<MessageQueueDelegate>
 
-  NSRecursiveLock* _lock;
-  NSInteger _nextID;
-
-  NSInteger _lastReadID;
-  NSInteger _lastWrittenID;
-
-  NSObject<ProtocolClientDelegate>* _delegate;
-  NSThread* _delegateThread;
-}
-
-- (id)initWithDelegate:(NSObject<ProtocolClientDelegate>*)delegate;
+- (id)initWithDelegate:(id<ProtocolClientDelegate>)delegate;
 
 - (BOOL)isConnected;
 

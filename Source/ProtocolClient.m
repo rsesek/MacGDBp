@@ -19,19 +19,31 @@
 #import "AppDelegate.h"
 #import "LoggingController.h"
 
-@implementation ProtocolClient
+@implementation ProtocolClient {
+  // The object responsible for the actual communication with the debug server.
+  MessageQueue* _messageQueue;
 
-- (id)initWithDelegate:(NSObject<ProtocolClientDelegate>*)delegate {
+  // The delegate of this class, which receives high-level messages about the
+  // state of the debugger.
+  id<ProtocolClientDelegate> _delegate;  // weak
+
+  // The next transaction ID to assign.
+  NSInteger _nextID;
+
+  // Records the last read and written transaction IDs. These are only used in
+  // creating LogEntry objects.
+  NSInteger _lastReadID;
+  NSInteger _lastWrittenID;
+}
+
+- (id)initWithDelegate:(id<ProtocolClientDelegate>)delegate {
   if ((self = [super init])) {
     _delegate = delegate;
-    _delegateThread = [NSThread currentThread];
-    _lock = [[NSRecursiveLock alloc] init];
   }
   return self;
 }
 
 - (void)dealloc {
-  [_lock release];
   [super dealloc];
 }
 
@@ -117,11 +129,9 @@
 }
 
 - (void)messageQueueDidConnect:(MessageQueue*)queue {
-  [_lock lock];
   _nextID = 0;
   _lastReadID = 0;
   _lastWrittenID = 0;
-  [_lock unlock];
 
   [_delegate debuggerEngineConnected:self];
 }
@@ -136,9 +146,7 @@
 - (void)messageQueue:(MessageQueue*)queue didSendMessage:(NSString*)message
 {
   NSInteger tag = [self transactionIDFromCommand:message];
-  [_lock lock];
   _lastWrittenID = tag;
-  [_lock unlock];
 
   LoggingController* logger = [[AppDelegate instance] loggingController];
   LogEntry* entry = [LogEntry newSendEntry:message];
