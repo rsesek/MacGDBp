@@ -18,16 +18,15 @@
 
 @implementation StackFrame
 
-@synthesize loaded = loaded_;
-@synthesize index = index_;
-@synthesize filename = filename_;
-@synthesize source = source_;
-@synthesize lineNumber = lineNumber_;
-@synthesize function = function_;
-@synthesize variables = variables_;
+@synthesize loaded;
+@synthesize index;
+@synthesize filename;
+@synthesize source;
+@synthesize lineNumber;
+@synthesize function;
+@synthesize variables;
 
-- (void)dealloc
-{
+- (void)dealloc {
   self.filename = nil;
   self.source = nil;
   self.function = nil;
@@ -35,20 +34,11 @@
   [super dealloc];
 }
 
-/**
- * Determines whether or not the given frame was shifted, rather than jumped. Essentially,
- * this checks if it's in the same file/function.
- */
-- (BOOL)isShiftedFrame:(StackFrame*)frame
-{
+- (BOOL)isShiftedFrame:(StackFrame*)frame {
   return ([self.filename isEqualToString:frame.filename] && [self.function isEqualToString:frame.function]);
 }
 
-/**
- * Returns a human-readable representation
- */
-- (NSString*)description
-{
+- (NSString*)description {
   return [NSString stringWithFormat:@"#%d %@ [%@:%d]", self.index, self.function, self.filename, self.lineNumber];
 }
 

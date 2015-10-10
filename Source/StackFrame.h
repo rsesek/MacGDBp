@@ -16,52 +16,48 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class VariableNode;
+
 @interface StackFrame : NSObject
-{
-  /**
-   * Whether or not the stack frame has been fully loaded.
-   */
-  BOOL loaded_;
 
-  /**
-   * The position in the stack
-   */
-  NSUInteger index_;
-  
-  /**
-   * File the current frame is in
-   */
-  NSString* filename_;
-  
-  /**
-   * Cached, highlighted version of the source
-   */
-  NSString* source_;
-  
-  /**
-   * Line number of the source the frame points to
-   */
-  NSUInteger lineNumber_;
-  
-  /**
-   * Current-executing function
-   */
-  NSString* function_;
-  
-  /**
-   * Variable list
-   */
-  NSArray* variables_;
-}
+/**
+ * Whether or not the stack frame has been fully loaded.
+ */
+@property(nonatomic) BOOL loaded;
 
-@property BOOL loaded;
-@property (readwrite) NSUInteger index;
-@property (copy) NSString* filename;
-@property (copy) NSString* source;
-@property (readwrite) NSUInteger lineNumber;
-@property (copy) NSString* function;
-@property (retain) NSArray* variables;
+/**
+ * The position in the stack
+ */
+@property(readwrite, nonatomic) NSUInteger index;
 
+/**
+ * File the current frame is in
+ */
+@property(copy, nonatomic) NSString* filename;
+
+/**
+ * Cached, highlighted version of the source
+ */
+@property(copy, nonatomic) NSString* source;
+
+/**
+ * Line number of the source the frame points to
+ */
+@property(readwrite, nonatomic) NSUInteger lineNumber;
+
+/**
+ * Current-executing function
+ */
+@property(copy, nonatomic) NSString* function;
+
+/**
+ * Variable list
+ */
+@property(retain, nonatomic) NSArray<VariableNode*>* variables;
+
+/**
+ * Whether or not this is the same stack scope as |frame|.
+ */
 - (BOOL)isShiftedFrame:(StackFrame*)frame;
 
 @end
