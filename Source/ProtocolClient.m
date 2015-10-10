@@ -66,19 +66,14 @@
   [_messageQueue disconnect];
 }
 
-- (NSNumber*)sendCommandWithFormat:(NSString*)format, ... {
+- (void)sendCommandWithFormat:(NSString*)format, ... {
   // Collect varargs and format command.
   va_list args;
   va_start(args, format);
   NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
   va_end(args);
 
-  NSNumber* callbackKey = [NSNumber numberWithInt:_nextID++];
-  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %@", [command autorelease], callbackKey];
-
-  assert(_messageQueue);
-  [_messageQueue sendMessage:taggedCommand];
-  return callbackKey;
+  [self sendCommandWithFormat:command handler:^(NSXMLDocument* message){}];
 }
 
 - (void)sendCommandWithFormat:(NSString*)format
@@ -212,13 +207,8 @@
   } else {
     // Dispatch the handler for the message.
     ProtocolClientMessageHandler handler = [_dispatchTable objectForKey:@(transactionID)];
-    if (handler) {
-      handler(xml);
-      [_dispatchTable removeObjectForKey:@(transactionID)];
-    } else {
-      // TODO(rsesek): Remove this path once the backend rewrite is complete.
-      [_delegate debuggerEngine:self receivedMessage:xml];
-    }
+    handler(xml);
+    [_dispatchTable removeObjectForKey:@(transactionID)];
   }
 }
 

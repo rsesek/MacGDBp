@@ -53,11 +53,6 @@
   NSInteger stackDepth_;
   // The earliest transaction ID for the current build of |stackFrames_|.
   NSInteger stackFirstTransactionID_;
-
-  // Callback table. This maps transaction IDs to selectors. When the engine
-  // returns a response to the debugger, we will dispatch the response XML to
-  // the selector, based on transaction_id.
-  NSMutableDictionary* callTable_;
 }
 
 @property (readonly, copy) NSString* status;

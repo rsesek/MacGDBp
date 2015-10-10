@@ -34,9 +34,8 @@ typedef void (^ProtocolClientMessageHandler)(NSXMLDocument*);
 - (void)connectOnPort:(NSUInteger)port;
 - (void)disconnect;
 
-// This sends the given command format to the debugger. This method is thread
-// safe and schedules the request on the |runLoop_|.
-- (NSNumber*)sendCommandWithFormat:(NSString*)format, ...;
+// Sends a one-way command to the debugger, when no response is required.
+- (void)sendCommandWithFormat:(NSString*)format, ...;
 
 // Sends a command with the given |format| to the debugger. When a response is
 // received, |handler| is invoked. If an error occurs or the connection is
@@ -70,5 +69,4 @@ typedef void (^ProtocolClientMessageHandler)(NSXMLDocument*);
 - (void)debuggerEngineDisconnected:(ProtocolClient*)client;
 - (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message;
 - (void)protocolClient:(ProtocolClient*)client receivedErrorMessage:(NSXMLDocument*)message;
-- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message;
 @end

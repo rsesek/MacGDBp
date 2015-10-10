@@ -25,8 +25,6 @@
 @interface DebuggerBackEnd ()
 @property (readwrite, copy) NSString* status;
 
-- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn;
-
 - (void)updateStatus:(NSXMLDocument*)response;
 - (void)debuggerStep:(NSXMLDocument*)response;
 - (void)rebuildStack:(NSXMLDocument*)response;
@@ -48,8 +46,6 @@
 - (id)initWithPort:(NSUInteger)aPort
 {
   if (self = [super init]) {
-    callTable_ = [NSMutableDictionary new];
-
     [[BreakpointManager sharedManager] setConnection:self];
     port_ = aPort;
     client_ = [[ProtocolClient alloc] initWithDelegate:self];
@@ -68,7 +64,6 @@
 - (void)dealloc
 {
   [client_ release];
-  [callTable_ release];
   [super dealloc];
 }
 
@@ -307,10 +302,6 @@
   }
 }
 
-- (void)debuggerEngine:(ProtocolClient*)client receivedMessage:(NSXMLDocument*)message {
-  [self handleResponse:message];
-}
-
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
 
@@ -340,19 +331,6 @@
   
   // TODO: update the status.
 }
-
-- (void)handleResponse:(NSXMLDocument*)response
-{
-  NSInteger transactionID = [client_ transactionIDFromResponse:response];
-  NSNumber* key = [NSNumber numberWithInt:transactionID];
-  NSString* callbackStr = [callTable_ objectForKey:key];
-  if (callbackStr)
-  {
-    SEL callback = NSSelectorFromString(callbackStr);
-    [self performSelector:callback withObject:response];
-  }
-  [callTable_ removeObjectForKey:key];
-}  
 
 /**
  * Receiver for status updates. This just freshens up the UI.
@@ -466,13 +444,6 @@
     };
     [client_ sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
   }
-}
-
-// Private /////////////////////////////////////////////////////////////////////
-
-- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn
-{
-  [callTable_ setObject:NSStringFromSelector(callback) forKey:txn];
 }
 
 @end
