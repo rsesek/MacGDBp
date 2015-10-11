@@ -20,53 +20,45 @@
 #import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
 
-// GDBpConnection (Private) ////////////////////////////////////////////////////
-
 @interface DebuggerBackEnd ()
-@property (readwrite, copy) NSString* status;
-
-- (void)updateStatus:(NSXMLDocument*)response;
-- (void)debuggerStep:(NSXMLDocument*)response;
-- (void)rebuildStack:(NSXMLDocument*)response;
-
+@property(readwrite, copy, nonatomic) NSString* status;
 @end
 
-// GDBpConnection //////////////////////////////////////////////////////////////
+@implementation DebuggerBackEnd {
+  // The connection to the debugger engine.
+  NSUInteger _port;
+  ProtocolClient* _client;
 
-@implementation DebuggerBackEnd
+  // Whether or not a debugging session is currently active.
+  BOOL _active;
 
-@synthesize status;
-@synthesize attached = attached_;
-@synthesize delegate;
+  // The earliest transaction ID for the current build of |stackFrames_|.
+  NSInteger stackFirstTransactionID_;
+}
 
-/**
- * Creates a new DebuggerBackEnd and initializes the socket from the given connection
- * paramters.
- */
+@synthesize status = _status;
+@synthesize autoAttach = _autoAttach;
+@synthesize delegate = _delegate;
+
 - (id)initWithPort:(NSUInteger)aPort
 {
   if (self = [super init]) {
     [[BreakpointManager sharedManager] setConnection:self];
-    port_ = aPort;
-    client_ = [[ProtocolClient alloc] initWithDelegate:self];
+    _port = aPort;
+    _client = [[ProtocolClient alloc] initWithDelegate:self];
 
-    attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
+    _autoAttach = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
 
-    if (self.attached)
-      [client_ connectOnPort:port_];
+    if (self.autoAttach)
+      [_client connectOnPort:_port];
   }
   return self;
 }
 
-/**
- * Deallocates the object
- */
-- (void)dealloc
-{
-  [client_ release];
+- (void)dealloc {
+  [_client release];
   [super dealloc];
 }
-
 
 // Getters /////////////////////////////////////////////////////////////////////
 #pragma mark Getters
@@ -74,33 +66,31 @@
 /**
  * Gets the port number
  */
-- (NSUInteger)port
-{
-  return port_;
+- (NSUInteger)port {
+  return _port;
 }
 
 /**
  * Returns whether or not we have an active connection
  */
-- (BOOL)isConnected
-{
-  return active_;
+- (BOOL)isConnected {
+  return _active;
 }
 
 /**
  * Sets the attached state of the debugger. This will open and close the
  * connection as appropriate.
  */
-- (void)setAttached:(BOOL)attached {
-  if (attached == attached_)
+- (void)setAutoAttach:(BOOL)flag {
+  if (flag == _autoAttach)
     return;
 
-  if (attached_)
-    [client_ disconnect];
+  if (_autoAttach)
+    [_client disconnect];
   else
-    [client_ connectOnPort:port_];
+    [_client connectOnPort:_port];
 
-  attached_ = attached;
+  _autoAttach = flag;
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
@@ -110,7 +100,7 @@
  * Tells the debugger to continue running the script. Returns the current stack frame.
  */
 - (void)run {
-  [client_ sendCommandWithFormat:@"run" handler:^(NSXMLDocument* message) {
+  [_client sendCommandWithFormat:@"run" handler:^(NSXMLDocument* message) {
     [self debuggerStep:message];
   }];
 }
@@ -119,7 +109,7 @@
  * Tells the debugger to step into the current command.
  */
 - (void)stepIn {
-  [client_ sendCommandWithFormat:@"step_into" handler:^(NSXMLDocument* message) {
+  [_client sendCommandWithFormat:@"step_into" handler:^(NSXMLDocument* message) {
     [self debuggerStep:message];
   }];
 }
@@ -128,7 +118,7 @@
  * Tells the debugger to step out of the current context
  */
 - (void)stepOut {
-  [client_ sendCommandWithFormat:@"step_out" handler:^(NSXMLDocument* message) {
+  [_client sendCommandWithFormat:@"step_out" handler:^(NSXMLDocument* message) {
     [self debuggerStep:message];
   }];
 }
@@ -137,7 +127,7 @@
  * Tells the debugger to step over the current function
  */
 - (void)stepOver {
-  [client_ sendCommandWithFormat:@"step_over" handler:^(NSXMLDocument* message) {
+  [_client sendCommandWithFormat:@"step_over" handler:^(NSXMLDocument* message) {
     [self debuggerStep:message];
   }];
 }
@@ -145,20 +135,18 @@
 /**
  * Halts execution of the script.
  */
-- (void)stop
-{
-  [client_ disconnect];
-  active_ = NO;
+- (void)stop {
+  [_client disconnect];
+  _active = NO;
   self.status = @"Stopped";
 }
 
 /**
  * Ends the current debugging session.
  */
-- (void)detach
-{
-  [client_ sendCommandWithFormat:@"detach"];
-  active_ = NO;
+- (void)detach {
+  [_client sendCommandWithFormat:@"detach"];
+  _active = NO;
   self.status = @"Stopped";
 }
 
@@ -168,8 +156,7 @@
  */
 - (void)getChildrenOfProperty:(VariableNode*)property
                       atDepth:(NSInteger)depth
-                     callback:(void (^)(NSArray*))callback
-{
+                     callback:(void (^)(NSArray*))callback {
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     /*
      <response>
@@ -186,18 +173,17 @@
 
     callback(children);
   };
-  [client_ sendCommandWithFormat:@"property_get -d %d -n %@" handler:handler, depth, [property fullName]];
+  [_client sendCommandWithFormat:@"property_get -d %d -n %@" handler:handler, depth, [property fullName]];
 }
 
-- (void)loadStackFrame:(StackFrame*)frame
-{
+- (void)loadStackFrame:(StackFrame*)frame {
   if (frame.loaded)
     return;
 
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-      int receivedTransaction = [client_ transactionIDFromResponse:message];
+      int receivedTransaction = [_client transactionIDFromResponse:message];
       if (receivedTransaction < stackFirstTransactionID_)
         return;
 
@@ -205,14 +191,14 @@
       if ([self.delegate respondsToSelector:@selector(sourceUpdated:)])
         [self.delegate sourceUpdated:frame];
     };
-    [client_ sendCommandWithFormat:@"source -f %@" handler:handler, frame.filename];
+    [_client sendCommandWithFormat:@"source -f %@" handler:handler, frame.filename];
   }
 
   // Get the names of all the contexts.
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     [self loadContexts:message forFrame:frame];
   };
-  [client_ sendCommandWithFormat:@"context_names -d %d" handler:handler, frame.index];
+  [_client sendCommandWithFormat:@"context_names -d %d" handler:handler, frame.index];
 
   // This frame will be fully loaded.
   frame.loaded = YES;
@@ -224,35 +210,32 @@
 /**
  * Send an add breakpoint command
  */
-- (void)addBreakpoint:(Breakpoint*)bp
-{
-  if (!active_)
+- (void)addBreakpoint:(Breakpoint*)bp {
+  if (!_active)
     return;
   
   NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     [bp setDebuggerId:[[[[message rootElement] attributeForName:@"id"] stringValue] intValue]];
   };
-  [client_ sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
+  [_client sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
 }
 
 /**
  * Removes a breakpoint
  */
-- (void)removeBreakpoint:(Breakpoint*)bp
-{
-  if (!active_)
+- (void)removeBreakpoint:(Breakpoint*)bp {
+  if (!_active)
     return;
   
-  [client_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
+  [_client sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 /**
  * Sends a string to be evaluated by the engine.
  */
-- (void)evalScript:(NSString*)str
-{
-  if (!active_)
+- (void)evalScript:(NSString*)str {
+  if (!_active)
     return;
 
   char* encodedString = malloc(modp_b64_encode_len([str length]));
@@ -262,31 +245,29 @@
     NSString* value = [parent base64DecodedValue];
     [self.delegate scriptWasEvaluatedWithResult:value];
   };
-  [client_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s" handler:handler, encodedString];
+  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %s" handler:handler, encodedString];
   free(encodedString);
 }
 
 // Protocol Client Delegate ////////////////////////////////////////////////////
 #pragma mark Protocol Client Delegate
 
-- (void)debuggerEngineConnected:(ProtocolClient*)client
-{
-  active_ = YES;
+- (void)debuggerEngineConnected:(ProtocolClient*)client {
+  _active = YES;
 }
 
 /**
  * Called when the connection is finally closed. This will reopen the listening
  * socket if the debugger remains attached.
  */
-- (void)debuggerEngineDisconnected:(ProtocolClient*)client
-{
-  active_ = NO;
+- (void)debuggerEngineDisconnected:(ProtocolClient*)client {
+  _active = NO;
 
-  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [delegate debuggerDisconnected];
+  if ([self.delegate respondsToSelector:@selector(debuggerDisconnected)])
+    [self.delegate debuggerDisconnected];
 
-  if (self.attached)
-    [client_ connectOnPort:port_];
+  if (self.autoAttach)
+    [_client connectOnPort:_port];
 }
 
 - (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message {
@@ -305,29 +286,27 @@
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
 
-- (void)errorEncountered:(NSString*)error
-{
-  [delegate errorEncountered:error];
+- (void)errorEncountered:(NSString*)error {
+  [self.delegate errorEncountered:error];
 }
 
 /**
  * Initial packet received. We've started a brand-new connection to the engine.
  */
-- (void)handleInitialResponse:(NSXMLDocument*)response
-{
-  if (!self.attached) {
-    [client_ sendCommandWithFormat:@"detach"];
+- (void)handleInitialResponse:(NSXMLDocument*)response {
+  if (!self.autoAttach) {
+    [_client sendCommandWithFormat:@"detach"];
     return;
   }
 
-  active_ = YES;
+  _active = YES;
 
   // Register any breakpoints that exist offline.
   for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
     [self addBreakpoint:bp];
   
   // Load the debugger to make it look active.
-  [delegate debuggerConnected];
+  [self.delegate debuggerConnected];
   
   // TODO: update the status.
 }
@@ -335,16 +314,15 @@
 /**
  * Receiver for status updates. This just freshens up the UI.
  */
-- (void)updateStatus:(NSXMLDocument*)response
-{
+- (void)updateStatus:(NSXMLDocument*)response {
   self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
-  active_ = YES;
-  if (!status || [status isEqualToString:@"Stopped"]) {
-    [delegate debuggerDisconnected];
-    active_ = NO;
-  } else if ([status isEqualToString:@"Stopping"]) {
-    [client_ sendCommandWithFormat:@"stop"];
-    active_ = NO;
+  _active = YES;
+  if (!_status || [_status isEqualToString:@"Stopped"]) {
+    [_delegate debuggerDisconnected];
+    _active = NO;
+  } else if ([_status isEqualToString:@"Stopping"]) {
+    [_client sendCommandWithFormat:@"stop"];
+    _active = NO;
   }
 }
 
@@ -359,11 +337,11 @@
 
   // If this is the run command, tell the delegate that a bunch of updates
   // are coming. Also remove all existing stack routes and request a new stack.
-  if ([delegate respondsToSelector:@selector(clobberStack)])
-    [delegate clobberStack];
+  if ([self.delegate respondsToSelector:@selector(clobberStack)])
+    [self.delegate clobberStack];
 
-  [client_ sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
-    stackFirstTransactionID_ = [client_ transactionIDFromResponse:message];
+  [_client sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
+    stackFirstTransactionID_ = [_client transactionIDFromResponse:message];
     [self rebuildStack:message];
   }];
 }
@@ -375,15 +353,12 @@
 - (void)rebuildStack:(NSXMLDocument*)response {
   NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
 
-  if (stackFirstTransactionID_ == [client_ transactionIDFromResponse:response])
-    stackDepth_ = depth;
-
   // We now need to alloc a bunch of stack frames and get the basic information
   // for them.
   for (NSInteger i = 0; i < depth; i++) {
     // Use the transaction ID to create a routing path.
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-      NSInteger receivedTransaction = [client_ transactionIDFromResponse:message];
+      NSInteger receivedTransaction = [_client transactionIDFromResponse:message];
       if (receivedTransaction < stackFirstTransactionID_)
         return;
 
@@ -405,7 +380,7 @@
       if ([self.delegate respondsToSelector:@selector(newStackFrame:)])
         [self.delegate newStackFrame:frame];
     };
-    [client_ sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
+    [_client sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
   }
 }
 
@@ -414,7 +389,7 @@
  * contents of each one of these contexts.
  */
 - (void)loadContexts:(NSXMLDocument*)response forFrame:(StackFrame*)frame {
-  int receivedTransaction = [client_ transactionIDFromResponse:response];
+  int receivedTransaction = [_client transactionIDFromResponse:response];
   if (receivedTransaction < stackFirstTransactionID_)
     return;
 
@@ -441,7 +416,7 @@
 
       frame.variables = variables;
     };
-    [client_ sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
+    [_client sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
   }
 }
 

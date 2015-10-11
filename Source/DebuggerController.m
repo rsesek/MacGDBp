@@ -76,7 +76,7 @@
   [[self window] setTitle:[NSString stringWithFormat:@"MacGDBp @ %d", [connection port]]];
   [sourceViewer setDelegate:self];
   [stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
-  self.connection.attached = [attachedCheckbox_ state] == NSOnState;
+  self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 }
 
 /**
@@ -154,7 +154,7 @@
 - (void)debuggerConnected
 {
   [errormsg setHidden:YES];
-  if (!self.connection.attached)
+  if (!self.connection.autoAttach)
     return;
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
     [self stepIn:self];
@@ -180,7 +180,7 @@
 
 - (IBAction)attachedToggled:(id)sender
 {
-  connection.attached = [sender state] == NSOnState;
+  connection.autoAttach = [sender state] == NSOnState;
 }
 
 /**

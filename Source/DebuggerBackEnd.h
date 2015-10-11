@@ -30,34 +30,16 @@
 // primary unit that this class deals with is the StackFrame; clients should
 // maintain a stack structure and the BackEnd will inform the delegate when
 // a new frame is created or the stack should be destroyed.
-@interface DebuggerBackEnd : NSObject <ProtocolClientDelegate>
-{
-  // The connection to the debugger engine.
-  NSUInteger port_;
-  ProtocolClient* client_;
-  
-  // Human-readable status of the connection.
-  NSString* status;
-  BOOL active_;
+@interface DebuggerBackEnd : NSObject<ProtocolClientDelegate>
 
-  // Whether the debugger should detach immediately after being contacted by the
-  // backend. YES means all debugger connections will be dropped.
-  BOOL attached_;
-  
-  // The connection's delegate.
-  id <DebuggerBackEndDelegate> delegate;
-  
-  // A dictionary that maps routingIDs to StackFrame objects.
-  NSMutableDictionary* stackFrames_;
-  // The stack depth for the current build of |stackFrames_|.
-  NSInteger stackDepth_;
-  // The earliest transaction ID for the current build of |stackFrames_|.
-  NSInteger stackFirstTransactionID_;
-}
+// Human-readable status of the connection.
+@property(readonly, copy, nonatomic) NSString* status;
 
-@property (readonly, copy) NSString* status;
-@property (nonatomic, assign) BOOL attached;
-@property (assign) id <DebuggerBackEndDelegate> delegate;
+// Whether the debugger should detach immediately after being contacted by the
+// backend. YES means all debugger connections will be dropped.
+@property(assign, nonatomic) BOOL autoAttach;
+
+@property(assign, nonatomic) id<DebuggerBackEndDelegate> delegate;
 
 // initializer
 - (id)initWithPort:(NSUInteger)aPort;
