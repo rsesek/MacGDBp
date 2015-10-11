@@ -61,7 +61,7 @@
 - (void)removeBreakpoint:(Breakpoint*)bp;
 
 // Evaluates a given string in the current execution context.
-- (void)evalScript:(NSString*)str;
+- (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback;
 
 // Gets a property by name from the debugger engine. Properties must be
 // retrieved at a certain stack depth.
@@ -97,9 +97,6 @@
 // Tells the debugger that new source is available for the given frame.
 // TODO: rename to |-frameUpdated:|.
 - (void)sourceUpdated:(StackFrame*)frame;
-
-// Callback for the result of |-evalScript:|.
-- (void)scriptWasEvaluatedWithResult:(NSString*)result;
 
 @end
 

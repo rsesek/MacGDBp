@@ -391,9 +391,4 @@
   [self updateSourceViewer];
 }
 
-- (void)scriptWasEvaluatedWithResult:(NSString*)result
-{
-  [EvalController scriptWasEvaluatedWithResult:result];
-}
-
 @end

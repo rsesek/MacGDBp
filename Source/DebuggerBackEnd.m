@@ -234,7 +234,7 @@
 /**
  * Sends a string to be evaluated by the engine.
  */
-- (void)evalScript:(NSString*)str {
+- (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback {
   if (!_active)
     return;
 
@@ -243,7 +243,7 @@
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
     NSString* value = [parent base64DecodedValue];
-    [self.delegate scriptWasEvaluatedWithResult:value];
+    callback(value);
   };
   [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %s" handler:handler, encodedString];
   free(encodedString);
