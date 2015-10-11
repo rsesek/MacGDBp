@@ -31,9 +31,6 @@
 
   // Whether or not a debugging session is currently active.
   BOOL _active;
-
-  // The earliest transaction ID for the current build of |stackFrames_|.
-  NSInteger stackFirstTransactionID_;
 }
 
 @synthesize status = _status;
@@ -183,10 +180,6 @@
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-      int receivedTransaction = [_client transactionIDFromResponse:message];
-      if (receivedTransaction < stackFirstTransactionID_)
-        return;
-
       frame.source = [[message rootElement] base64DecodedValue];
       if ([self.delegate respondsToSelector:@selector(sourceUpdated:)])
         [self.delegate sourceUpdated:frame];
@@ -341,7 +334,6 @@
     [self.delegate clobberStack];
 
   [_client sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
-    stackFirstTransactionID_ = [_client transactionIDFromResponse:message];
     [self rebuildStack:message];
   }];
 }
@@ -358,10 +350,6 @@
   for (NSInteger i = 0; i < depth; i++) {
     // Use the transaction ID to create a routing path.
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-      NSInteger receivedTransaction = [_client transactionIDFromResponse:message];
-      if (receivedTransaction < stackFirstTransactionID_)
-        return;
-
       StackFrame* frame = [[[StackFrame alloc] init] autorelease];
       NSXMLElement* xmlframe = (NSXMLElement*)[[[message rootElement] children] objectAtIndex:0];
 
@@ -389,10 +377,6 @@
  * contents of each one of these contexts.
  */
 - (void)loadContexts:(NSXMLDocument*)response forFrame:(StackFrame*)frame {
-  int receivedTransaction = [_client transactionIDFromResponse:response];
-  if (receivedTransaction < stackFirstTransactionID_)
-    return;
-
   NSXMLElement* contextNames = [response rootElement];
   for (NSXMLElement* context in [contextNames children]) {
     NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
