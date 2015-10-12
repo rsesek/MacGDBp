@@ -20,10 +20,13 @@
 #include "VariableNode.h"
 
 @class BSSourceView;
+@class DebuggerModel;
 
 @interface DebuggerController : NSWindowController <DebuggerBackEndDelegate, NSWindowDelegate>
 {
   DebuggerBackEnd* connection;
+
+  DebuggerModel* _model;
   
   // This is true when the |connection| has told us to clobber. We will do
   // so upon receipt of the first new stack frame.

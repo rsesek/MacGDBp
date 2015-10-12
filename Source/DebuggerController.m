@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "DebuggerModel.h"
 #import "EvalController.h"
 #import "NSXMLElementAdditions.h"
 
@@ -44,13 +45,16 @@
 
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
+    _model = [[DebuggerModel alloc] init];
+
     connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]];
     connection.delegate = self;
+    connection.model = _model;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
     [[self window] setDelegate:self];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
+    if ([defaults boolForKey:@"InspectorWindowVisible"])
       [inspector orderFront:self];
   }
   return self;
@@ -62,6 +66,7 @@
 - (void)dealloc
 {
   [connection release];
+  [_model release];
   [expandedVariables release];
   [stackController release];
   [super dealloc];

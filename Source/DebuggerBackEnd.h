@@ -21,6 +21,7 @@
 #import "StackFrame.h"
 
 @protocol DebuggerBackEndDelegate;
+@class DebuggerModel;
 @class VariableNode;
 
 // The DebuggerBackEnd is the communication layer between the application
@@ -38,6 +39,9 @@
 // Whether the debugger should detach immediately after being contacted by the
 // backend. YES means all debugger connections will be dropped.
 @property(assign, nonatomic) BOOL autoAttach;
+
+// The model object to update in response to changes in the debugger.
+@property(assign, nonatomic) DebuggerModel* model;
 
 @property(assign, nonatomic) id<DebuggerBackEndDelegate> delegate;
 

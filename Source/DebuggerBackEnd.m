@@ -17,6 +17,7 @@
 #import "DebuggerBackEnd.h"
 
 #import "AppDelegate.h"
+#import "DebuggerModel.h"
 #import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
 
@@ -35,6 +36,7 @@
 
 @synthesize status = _status;
 @synthesize autoAttach = _autoAttach;
+@synthesize model = _model;
 @synthesize delegate = _delegate;
 
 - (id)initWithPort:(NSUInteger)aPort
@@ -247,6 +249,7 @@
 
 - (void)debuggerEngineConnected:(ProtocolClient*)client {
   _active = YES;
+  [_model onNewConnection];
 }
 
 /**
@@ -317,6 +320,7 @@
     [_client sendCommandWithFormat:@"stop"];
     _active = NO;
   }
+  self.model.status = self.status;
 }
 
 /**
