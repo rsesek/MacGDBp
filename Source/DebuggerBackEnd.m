@@ -332,11 +332,6 @@
   if (![self isConnected])
     return;
 
-  // If this is the run command, tell the delegate that a bunch of updates
-  // are coming. Also remove all existing stack routes and request a new stack.
-  if ([self.delegate respondsToSelector:@selector(clobberStack)])
-    [self.delegate clobberStack];
-
   [_client sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
     [self rebuildStack:message];
   }];
@@ -347,33 +342,39 @@
  * it.
  */
 - (void)rebuildStack:(NSXMLDocument*)response {
-  NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
+  NSUInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
 
-  // We now need to alloc a bunch of stack frames and get the basic information
-  // for them.
-  for (NSInteger i = 0; i < depth; i++) {
-    // Use the transaction ID to create a routing path.
+  // Start with frame 0. If this is a shifted frame, then only it needs to be
+  // re-loaded. If it is not shifted, see if another frame on the stack is equal
+  // to it; if so, then the frames up to that must be discarded. If not, this is
+  // a new stack frame that should be inserted at the top of the stack. Finally,
+  // the sice of the stack is trimmed to |depth| from the bottom.
+
+  __block NSMutableArray* tempStack = [[NSMutableArray alloc] init];
+
+  for (NSUInteger i = 0; i < depth; ++i) {
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-      StackFrame* frame = [[[StackFrame alloc] init] autorelease];
-      NSXMLElement* xmlframe = (NSXMLElement*)[[[message rootElement] children] objectAtIndex:0];
-
-      // Initialize the stack frame.
-      frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
-      frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
-      frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
-      frame.function = [[xmlframe attributeForName:@"where"] stringValue];
-
-      // Only get the complete frame for the first level. The other frames will get
-      // information loaded lazily when the user clicks on one.
-      if (frame.index == 0) {
-        [self loadStackFrame:frame];
+      [tempStack addObject:[self transformXMLToStackFrame:message]];
+      if (i == depth - 1) {
+        [self.model updateStack:[tempStack autorelease]];
       }
-
-      if ([self.delegate respondsToSelector:@selector(newStackFrame:)])
-        [self.delegate newStackFrame:frame];
     };
     [_client sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
   }
+}
+
+/**
+ * Creates a StackFrame object from an NSXMLDocument response from the "stack_get"
+ * command.
+ */
+- (StackFrame*)transformXMLToStackFrame:(NSXMLDocument*)response {
+  NSXMLElement* xmlframe = (NSXMLElement*)[[[response rootElement] children] objectAtIndex:0];
+  StackFrame* frame = [[[StackFrame alloc] init] autorelease];
+  frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
+  frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
+  frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
+  frame.function = [[xmlframe attributeForName:@"where"] stringValue];
+  return frame;
 }
 
 /**

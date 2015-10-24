@@ -30,12 +30,14 @@
 		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
 		1E7188690D839F6300969277 /* BSSourceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.mm */; };
 		1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E822CDC0DA28AC30027A23F /* Breakpoint.m */; };
+		1E8C70A21BDB16A900D333DC /* DebuggerModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */; settings = {ASSET_TAGS = (); }; };
+		1E8C70A31BDB173A00D333DC /* DebuggerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */; settings = {ASSET_TAGS = (); }; };
+		1E8C70A41BDB183300D333DC /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; settings = {ASSET_TAGS = (); }; };
 		1E9582620E252474001A3D89 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9582600E252474001A3D89 /* Preferences.xib */; };
 		1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9582660E2524AD001A3D89 /* PreferencesController.m */; };
 		1E9583200E2531BD001A3D89 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
-		1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EBF4D5C0EE35F0700B62769 /* StackController.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EC6965712BBC6A700A8D984 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965112BBC6A700A8D984 /* LICENSE */; };
 		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
@@ -54,6 +56,16 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1E8C709C1BDB167F00D333DC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = MacGDBp;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		1E9583550E2531E7001A3D89 /* CopyFiles */ = {
@@ -108,14 +120,15 @@
 		1E7188650D839F6300969277 /* BSSourceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSSourceView.mm; path = Source/BSSourceView.mm; sourceTree = "<group>"; };
 		1E822CDB0DA28AC30027A23F /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = Source/Breakpoint.h; sourceTree = "<group>"; };
 		1E822CDC0DA28AC30027A23F /* Breakpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Breakpoint.m; path = Source/Breakpoint.m; sourceTree = "<group>"; };
+		1E8C70971BDB167F00D333DC /* MacGDBp-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MacGDBp-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
+		1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerModelTest.m; path = Source/Tests/DebuggerModelTest.m; sourceTree = "<group>"; };
 		1E9582610E252474001A3D89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Preferences.xib; sourceTree = "<group>"; };
 		1E9582650E2524AD001A3D89 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesController.h; path = Source/PreferencesController.h; sourceTree = "<group>"; };
 		1E9582660E2524AD001A3D89 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesController.m; path = Source/PreferencesController.m; sourceTree = "<group>"; };
 		1E95831F0E2531BD001A3D89 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		1EB7BED30ECF3CA90033283A /* StackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackFrame.h; path = Source/StackFrame.h; sourceTree = "<group>"; };
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
-		1EBF4D5B0EE35F0700B62769 /* StackController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackController.h; path = Source/StackController.h; sourceTree = "<group>"; };
-		1EBF4D5C0EE35F0700B62769 /* StackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackController.m; path = Source/StackController.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
 		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
 		1EC6965112BBC6A700A8D984 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -148,6 +161,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1E8C70941BDB167F00D333DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -198,6 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* MacGDBp.app */,
+				1E8C70971BDB167F00D333DC /* MacGDBp-Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -286,14 +307,13 @@
 			children = (
 				1EECC0B81BC9B1E700FB22D3 /* DebuggerModel.h */,
 				1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */,
+				1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */,
 				1E02C5F40C610724006F1752 /* DebuggerController.h */,
 				1E02C5F50C610724006F1752 /* DebuggerController.m */,
 				1E108E3E136CC8B9002E34E0 /* EvalController.h */,
 				1E108E3F136CC8B9002E34E0 /* EvalController.m */,
 				1EB7BED30ECF3CA90033283A /* StackFrame.h */,
 				1EB7BED40ECF3CA90033283A /* StackFrame.m */,
-				1EBF4D5B0EE35F0700B62769 /* StackController.h */,
-				1EBF4D5C0EE35F0700B62769 /* StackController.m */,
 				1EC1337C127DBB00007946FC /* VariableNode.h */,
 				1EC1337D127DBB00007946FC /* VariableNode.m */,
 				1E109017136DD92D002E34E0 /* StripLineBreaksValueTransformer.h */,
@@ -358,6 +378,7 @@
 				1EEBFD110D359A9F008F835B /* dimple.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -374,6 +395,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1E8C70961BDB167F00D333DC /* MacGDBp-Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E8C709E1BDB167F00D333DC /* Build configuration list for PBXNativeTarget "MacGDBp-Tests" */;
+			buildPhases = (
+				1E8C70931BDB167F00D333DC /* Sources */,
+				1E8C70941BDB167F00D333DC /* Frameworks */,
+				1E8C70951BDB167F00D333DC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1E8C709D1BDB167F00D333DC /* PBXTargetDependency */,
+			);
+			name = "MacGDBp-Tests";
+			productName = "MacGDBp-Tests";
+			productReference = 1E8C70971BDB167F00D333DC /* MacGDBp-Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8D1107260486CEB800E47090 /* MacGDBp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "MacGDBp" */;
@@ -400,6 +439,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				TargetAttributes = {
+					1E8C70961BDB167F00D333DC = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MacGDBp" */;
 			compatibilityVersion = "Xcode 3.1";
@@ -416,11 +460,19 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* MacGDBp */,
+				1E8C70961BDB167F00D333DC /* MacGDBp-Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1E8C70951BDB167F00D333DC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -465,6 +517,16 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1E8C70931BDB167F00D333DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E8C70A41BDB183300D333DC /* StackFrame.m in Sources */,
+				1E8C70A21BDB16A900D333DC /* DebuggerModelTest.m in Sources */,
+				1E8C70A31BDB173A00D333DC /* DebuggerModel.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -481,7 +543,6 @@
 				1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */,
 				1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */,
 				1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */,
-				1EBF4D5D0EE35F0700B62769 /* StackController.m in Sources */,
 				1E67E6FD0F3C052000E68F1B /* PreferencesPathsArrayController.m in Sources */,
 				1EECC0BA1BC9B1E800FB22D3 /* DebuggerModel.m in Sources */,
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
@@ -498,6 +559,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1E8C709D1BDB167F00D333DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* MacGDBp */;
+			targetProxy = 1E8C709C1BDB167F00D333DC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -559,6 +628,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1E8C709F1BDB167F00D333DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.bluestatic.MacGDBp-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		1E8C70A01BDB167F00D333DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.bluestatic.MacGDBp-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -619,6 +728,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1E8C709E1BDB167F00D333DC /* Build configuration list for PBXNativeTarget "MacGDBp-Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E8C709F1BDB167F00D333DC /* Debug */,
+				1E8C70A01BDB167F00D333DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "MacGDBp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

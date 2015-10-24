@@ -16,10 +16,69 @@
 
 #import "DebuggerModel.h"
 
-@implementation DebuggerModel
+#import "StackFrame.h"
+
+@implementation DebuggerModel {
+  NSMutableArray* _stack;
+}
+
+- (instancetype)init {
+  if (self = [super init]) {
+    _stack = [NSMutableArray new];
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [_status release];
+  [_stack release];
+  [super dealloc];
+}
+
+- (NSUInteger)stackDepth {
+  return self.stack.count;
+}
 
 - (void)onNewConnection {
   self.status = nil;
+  [_stack removeAllObjects];
+}
+
+- (void)updateStack:(NSArray<StackFrame*>*)newStack {
+  // Iterate, in reverse order from the bottom to the top, both stacks to find
+  // the point of divergence.
+  NSEnumerator* itNewStack = [newStack reverseObjectEnumerator];
+  NSEnumerator* itOldStack = [self.stack reverseObjectEnumerator];
+
+  StackFrame* frameNew;
+  StackFrame* frameOld = [itOldStack nextObject];
+  NSUInteger oldStackOffset = self.stack.count;
+  while (frameNew = [itNewStack nextObject]) {
+    if ([frameNew isEqual:frameOld]) {
+      --oldStackOffset;
+      frameOld = [itOldStack nextObject];
+    } else {
+      break;
+    }
+  }
+
+  [self willChangeValueForKey:@"stack"];
+
+  // Remove any frames from the top of the stack that are not shared with the
+  // new stack.
+  [_stack removeObjectsInRange:NSMakeRange(0, oldStackOffset)];
+
+  // Continue inserting objects to update the stack with the new frames.
+  while (frameNew) {
+    [_stack insertObject:frameNew atIndex:0];
+    frameNew = [itNewStack nextObject];
+  }
+
+  // Renumber the stack.
+  for (NSUInteger i = 0; i < self.stack.count; ++i)
+    self.stack[i].index = i;
+
+  [self didChangeValueForKey:@"stack"];
 }
 
 @end

@@ -16,7 +16,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "DebuggerBackEnd.h"
-#import "StackController.h"
 #include "VariableNode.h"
 
 @class BSSourceView;
@@ -27,14 +26,9 @@
   DebuggerBackEnd* connection;
 
   DebuggerModel* _model;
-  
-  // This is true when the |connection| has told us to clobber. We will do
-  // so upon receipt of the first new stack frame.
-  BOOL aboutToClobber_;
 
   IBOutlet NSButton* attachedCheckbox_;
 
-  StackController* stackController;
   IBOutlet NSArrayController* stackArrayController;
   
   IBOutlet NSTreeController* variablesTreeController;

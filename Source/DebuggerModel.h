@@ -16,14 +16,24 @@
 
 #import <Foundation/Foundation.h>
 
+@class StackFrame;
+
 @interface DebuggerModel : NSObject
 
 // A human-readable representation of the debugger state. E.g., "Break" or
 // "Stopped".
 @property(copy, nonatomic) NSString* status;
 
+@property(readonly, nonatomic) NSArray<StackFrame*>* stack;
+
+@property(readonly, nonatomic) NSUInteger stackDepth;
+
 // Informs the model that a new connection was initiated. This clears any data
 // in the model.
 - (void)onNewConnection;
+
+// Replaces the current stack with |newStack|. This will attempt to preserve
+// any already loaded frames.
+- (void)updateStack:(NSArray<StackFrame*>*)newStack;
 
 @end

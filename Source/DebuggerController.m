@@ -25,7 +25,6 @@
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;
-- (void)updateStackViewer;
 - (void)expandVariables;
 @end
 
@@ -41,8 +40,6 @@
 {
   if (self = [super initWithWindowNibName:@"Debugger"])
   {
-    stackController = [[StackController alloc] init];
-
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
     _model = [[DebuggerModel alloc] init];
@@ -68,7 +65,6 @@
   [connection release];
   [_model release];
   [expandedVariables release];
-  [stackController release];
   [super dealloc];
 }
 
@@ -92,7 +88,7 @@
   SEL action = [anItem action];
   
   if (action == @selector(stepOut:)) {
-    return ([connection isConnected] && [stackController.stack count] > 1);
+    return ([connection isConnected] && _model.stackDepth > 1);
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
@@ -130,7 +126,6 @@
 - (void)resetDisplays
 {
   [variablesTreeController setContent:nil];
-  [stackController.stack removeAllObjects];
   [stackArrayController rearrangeObjects];
   [[sourceViewer textView] setString:@""];
   sourceViewer.file = nil;
@@ -319,15 +314,6 @@
 }
 
 /**
- * Does some house keeping to the stack viewer
- */
-- (void)updateStackViewer
-{
-  [stackArrayController rearrangeObjects];
-  [stackArrayController setSelectionIndex:0];
-}
-
-/**
  * Expands the variables based on the stored set
  */
 - (void)expandVariables
@@ -373,23 +359,6 @@
 }
 
 #pragma mark GDBpConnectionDelegate
-
-- (void)clobberStack
-{
-  aboutToClobber_ = YES;
-}
-
-- (void)newStackFrame:(StackFrame*)frame
-{
-  if (aboutToClobber_)
-  {
-    [stackController.stack removeAllObjects];
-    aboutToClobber_ = NO;
-  }
-  [stackController push:frame];
-  [self updateStackViewer];
-  [self updateSourceViewer];
-}
 
 - (void)sourceUpdated:(StackFrame*)frame
 {

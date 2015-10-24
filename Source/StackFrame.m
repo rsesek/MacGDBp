@@ -34,6 +34,13 @@
   [super dealloc];
 }
 
+- (BOOL)isEqual:(id)object {
+  if (![object isKindOfClass:[StackFrame class]])
+    return NO;
+  StackFrame* other = (StackFrame*)object;
+  return [self.filename isEqualToString:other.filename] && self.lineNumber == other.lineNumber;
+}
+
 - (BOOL)isShiftedFrame:(StackFrame*)frame {
   return ([self.filename isEqualToString:frame.filename] && [self.function isEqualToString:frame.function]);
 }
