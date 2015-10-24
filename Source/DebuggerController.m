@@ -76,8 +76,27 @@
   [[self window] setExcludedFromWindowsMenu:YES];
   [[self window] setTitle:[NSString stringWithFormat:@"MacGDBp @ %d", [connection port]]];
   [sourceViewer setDelegate:self];
-  [stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
+  [stackArrayController setSortDescriptors:@[ [[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease] ]];
+  [stackArrayController addObserver:self
+                         forKeyPath:@"selectedObjects"
+                            options:NSKeyValueObservingOptionNew
+                            context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
+}
+
+/**
+ * Key-value observation routine.
+ */
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString*,id>*)change
+                       context:(void*)context {
+  if (object == stackArrayController && [keyPath isEqualToString:@"selectedObjects"]) {
+    for (StackFrame* frame in stackArrayController.selectedObjects)
+      [connection loadStackFrame:frame];
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
 }
 
 /**

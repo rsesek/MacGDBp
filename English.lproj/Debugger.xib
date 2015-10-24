@@ -388,7 +388,7 @@
                 <outlet property="delegate" destination="-2" id="92"/>
             </connections>
         </window>
-        <arrayController objectClassName="StackFrame" automaticallyPreparesContent="YES" automaticallyRearrangesObjects="YES" id="36" userLabel="StackController">
+        <arrayController objectClassName="StackFrame" automaticallyPreparesContent="YES" preservesSelection="NO" automaticallyRearrangesObjects="YES" id="36" userLabel="StackController">
             <declaredKeys>
                 <string>filename</string>
                 <string>index</string>
