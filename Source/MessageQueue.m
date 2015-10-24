@@ -52,6 +52,9 @@
   dispatch_source_t _readSource;
   dispatch_source_t _writeSource;
 
+  // Whether |_writeSource| has been suspended through |-dequeueAndSend|.
+  BOOL _writeSuspended;
+
   // When a message is being read, this temporary buffer is used to build up
   // the complete message from successive reads.
   NSMutableString* _message;
@@ -168,6 +171,10 @@
   }
 
   if (_writeSource) {
+    if (_writeSuspended) {
+      _writeSuspended = NO;
+      dispatch_resume(_writeSource);
+    }
     dispatch_source_cancel(_writeSource);
     dispatch_release(_writeSource);
     _writeSource = NULL;
@@ -186,8 +193,21 @@
 
 // If the write stream is ready and there is data to send, sends the next message.
 - (void)dequeueAndSend {
-  if (![_messageQueue count])
+  if ([_messageQueue count] == 0) {
+    // There are no outgoing messages, so suspend the dispatch source to avoid
+    // needless callouts to this method.
+    if (_writeSource) {
+      _writeSuspended = YES;
+      dispatch_suspend(_writeSource);
+    }
     return;
+  } else if (_writeSuspended) {
+    // A new message has arrived with the source suspended. Resume it, which
+    // will arrange for a callout back here when the socket is ready.
+    _writeSuspended = NO;
+    dispatch_resume(_writeSource);
+    return;
+  }
 
   NSString* message = [_messageQueue objectAtIndex:0];
   [self performSend:message];
