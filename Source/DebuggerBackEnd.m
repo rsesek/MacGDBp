@@ -157,8 +157,6 @@
   if ([frame.filename length]) {
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
       frame.source = [[message rootElement] base64DecodedValue];
-      if ([self.delegate respondsToSelector:@selector(sourceUpdated:)])
-        [self.delegate sourceUpdated:frame];
     };
     [_client sendCommandWithFormat:@"source -f %@" handler:handler, frame.filename];
   }

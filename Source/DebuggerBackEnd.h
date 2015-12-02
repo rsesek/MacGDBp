@@ -91,9 +91,5 @@
 // Called when we disconnect.
 - (void)debuggerDisconnected;
 
-// Tells the debugger that new source is available for the given frame.
-// TODO: rename to |-frameUpdated:|.
-- (void)sourceUpdated:(StackFrame*)frame;
-
 @end
 

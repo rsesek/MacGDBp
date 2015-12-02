@@ -81,6 +81,10 @@
                          forKeyPath:@"selectedObjects"
                             options:NSKeyValueObservingOptionNew
                             context:nil];
+  [stackArrayController addObserver:self
+                         forKeyPath:@"selection.source"
+                            options:NSKeyValueObservingOptionNew
+                            context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 }
 
@@ -94,6 +98,8 @@
   if (object == stackArrayController && [keyPath isEqualToString:@"selectedObjects"]) {
     for (StackFrame* frame in stackArrayController.selectedObjects)
       [connection loadStackFrame:frame];
+  } else if (object == stackArrayController && [keyPath isEqualToString:@"selection.source"]) {
+    [self updateSourceViewer];
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
@@ -249,7 +255,6 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-  [self updateSourceViewer];
   // TODO: This is very, very hacky because it's nondeterministic. The issue
   // is that calling |-[NSOutlineView expandItem:]| while the table is still
   // doing its redraw will translate to a no-op. Instead, we need to restructure
@@ -365,13 +370,6 @@
   
   [sourceViewer setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
   [sourceViewer setNeedsDisplay:YES];
-}
-
-#pragma mark GDBpConnectionDelegate
-
-- (void)sourceUpdated:(StackFrame*)frame
-{
-  [self updateSourceViewer];
 }
 
 @end
