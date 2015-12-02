@@ -21,29 +21,19 @@
 // information. The fields of this class are defined by the spec:
 //  http://www.xdebug.org/docs-dbgp.php#properties-variables-and-values
 @interface VariableNode : NSObject
-{
-  NSString* name_;
-  NSString* fullName_;
-  NSString* className_;
-  NSString* type_;
-  NSString* value_;
-  NSMutableArray* children_;
-  NSInteger childCount_;
-  NSString* address_;
-}
 
-@property (readonly, copy) NSString* name;
-@property (readonly, copy) NSString* fullName;
-@property (readonly, copy) NSString* className;
-@property (readonly, copy) NSString* type;
-@property (readonly, copy) NSString* value;
-@property (readonly, retain) NSArray* children;
-@property (readonly) NSInteger childCount;
-@property (readonly, copy) NSString* address;
+@property(readonly, nonatomic) NSString* name;
+@property(readonly, nonatomic) NSString* fullName;
+@property(readonly, nonatomic) NSString* className;
+@property(readonly, nonatomic) NSString* type;
+@property(readonly, nonatomic) NSString* value;
+@property(readonly, nonatomic) NSArray* children;
+@property(readonly, nonatomic) NSInteger childCount;
+@property(readonly, nonatomic) NSString* address;
 
 // Creates and initializes a new VariableNode from the XML response from the
 // debugger backend.
-- (id)initWithXMLNode:(NSXMLElement*)node;
+- (instancetype)initWithXMLNode:(NSXMLElement*)node;
 
 // When properties are asynchrnously loaded, this method can be used to set
 // the children on a node from the list of children from the XML response.
