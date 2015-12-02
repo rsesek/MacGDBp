@@ -401,7 +401,7 @@
                 <binding destination="-2" name="contentArray" keyPath="_model.stack" id="myv-aO-biI"/>
             </connections>
         </arrayController>
-        <treeController objectClassName="VariableNode" editable="NO" childrenKeyPath="dynamicChildren" leafKeyPath="isLeaf" id="59" userLabel="VariablesController">
+        <treeController objectClassName="VariableNode" editable="NO" childrenKeyPath="children" countKeyPath="childCount" leafKeyPath="isLeaf" id="59" userLabel="VariablesController">
             <declaredKeys>
                 <string>value</string>
                 <string>name</string>

@@ -149,32 +149,6 @@
   self.status = @"Stopped";
 }
 
-/**
- * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
- * that requested it so that the child can be attached.
- */
-- (void)getChildrenOfProperty:(VariableNode*)property
-                      atDepth:(NSInteger)depth
-                     callback:(void (^)(NSArray*))callback {
-  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
-    /*
-     <response>
-       <property> <!-- this is the one we requested -->
-         <property ... /> <!-- these are what we want -->
-       </property>
-     </repsonse>
-     */
-
-    // Detach all the children so we can insert them into another document.
-    NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
-    NSArray* children = [parent children];
-    [parent setChildren:nil];
-
-    callback(children);
-  };
-  [_client sendCommandWithFormat:@"property_get -d %d -n %@" handler:handler, depth, [property fullName]];
-}
-
 - (void)loadStackFrame:(StackFrame*)frame {
   if (frame.loaded)
     return;
@@ -197,6 +171,48 @@
 
   // This frame will be fully loaded.
   frame.loaded = YES;
+}
+
+- (void)loadVariableNode:(VariableNode*)variable
+           forStackFrame:(StackFrame*)frame {
+  if (variable.children.count == variable.childCount)
+    return;
+
+  [self loadVariableNode:variable forStackFrame:frame dataPage:0 loadedData:@[]];
+}
+
+- (void)loadVariableNode:(VariableNode*)variable
+           forStackFrame:(StackFrame*)frame
+                dataPage:(unsigned int)dataPage
+              loadedData:(NSArray*)loadedData {
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    /*
+     <response>
+       <property> <!-- this is the one we requested -->
+         <property ... /> <!-- these are what we want -->
+       </property>
+     </repsonse>
+     */
+
+    // Detach all the children so we can insert them into another document.
+    NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
+    NSArray* children = [parent children];
+    [parent setChildren:nil];
+
+    // Check to see if there are more children to load.
+    NSArray* newLoadedData = [loadedData arrayByAddingObjectsFromArray:children];
+
+    unsigned int totalChildren = [[[parent attributeForName:@"numchildren"] stringValue] integerValue];
+    if ([newLoadedData count] < totalChildren) {
+      [self loadVariableNode:variable
+               forStackFrame:frame
+                    dataPage:dataPage + 1
+                  loadedData:newLoadedData];
+    } else {
+      [variable setChildrenFromXMLChildren:newLoadedData];
+    }
+  };
+  [_client sendCommandWithFormat:@"property_get -d %d -n %@ -p %u" handler:handler, frame.index, variable.fullName, dataPage];
 }
 
 // Breakpoint Management ///////////////////////////////////////////////////////

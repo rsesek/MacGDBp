@@ -63,6 +63,4 @@
 - (IBAction)stepOver:(id)sender;
 - (IBAction)stop:(id)sender;
 
-- (void)fetchChildProperties:(VariableNode*)node;
-
 @end

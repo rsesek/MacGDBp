@@ -243,19 +243,6 @@
   [connection stop];
 }
 
-- (void)fetchChildProperties:(VariableNode*)node
-{
-  NSArray* selection = [stackArrayController selectedObjects];
-  if (![selection count])
-    return;
-  assert([selection count] == 1);
-  NSInteger depth = [[selection objectAtIndex:0] index];
-  [connection getChildrenOfProperty:node atDepth:depth callback:^(NSArray* properties) {
-    [node setChildrenFromXMLChildren:properties];
-    [variablesTreeController rearrangeObjects];
-  }];
-}
-
 /**
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
@@ -283,6 +270,9 @@
 {
   NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
   [expandedVariables addObject:[[node representedObject] fullName]];
+
+  [connection loadVariableNode:[node representedObject]
+                 forStackFrame:[[stackArrayController selectedObjects] lastObject]];
 }
 
 /**

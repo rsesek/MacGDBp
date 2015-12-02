@@ -67,14 +67,13 @@
 // Evaluates a given string in the current execution context.
 - (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback;
 
-// Gets a property by name from the debugger engine. Properties must be
-// retrieved at a certain stack depth.
-- (void)getChildrenOfProperty:(VariableNode*)property
-                      atDepth:(NSInteger)depth
-                     callback:(void (^)(NSArray*))callback;
-
 // Takes a partially loaded stack frame and fetches the rest of the information.
 - (void)loadStackFrame:(StackFrame*)frame;
+
+// Ensures that a variable node's immediate children are loaded, and fetches
+// any that are not. This is done within the scope of the given stack frame.
+- (void)loadVariableNode:(VariableNode*)variable
+           forStackFrame:(StackFrame*)frame;
 
 @end
 

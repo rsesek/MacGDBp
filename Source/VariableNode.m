@@ -16,7 +16,6 @@
 
 #import "VariableNode.h"
 
-#import "AppDelegate.h"
 #include "NSXMLElementAdditions.h"
 
 // Private Properties //////////////////////////////////////////////////////////
@@ -78,6 +77,10 @@
 
 - (void)setChildrenFromXMLChildren:(NSArray*)children
 {
+  [self willChangeValueForKey:@"children"];
+
+  [children_ removeAllObjects];
+
   for (NSXMLNode* child in children) {
     // Other child nodes may be the string value.
     if ([child isKindOfClass:[NSXMLElement class]]) {
@@ -89,17 +92,8 @@
       [node release];
     }
   }
-}
 
-- (NSArray*)dynamicChildren
-{
-  NSArray* children = self.children;
-  if (![self isLeaf] && (NSInteger)[children count] < self.childCount) {
-    // If this node has children but they haven't been loaded from the backend,
-    // request them asynchronously.
-    [[AppDelegate instance].debugger fetchChildProperties:self];
-  }
-  return children;
+  [self didChangeValueForKey:@"children"];
 }
 
 - (BOOL)isLeaf

@@ -49,9 +49,6 @@
 // the children on a node from the list of children from the XML response.
 - (void)setChildrenFromXMLChildren:(NSArray*)children;
 
-// Returns the children and requests any unloaded ones.
-- (NSArray*)dynamicChildren;
-
 // Whether or not this is a leaf node (i.e. does not have child properties).
 - (BOOL)isLeaf;
 
