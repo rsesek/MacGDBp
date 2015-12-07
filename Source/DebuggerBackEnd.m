@@ -17,72 +17,36 @@
 #import "DebuggerBackEnd.h"
 
 #import "AppDelegate.h"
+#import "Breakpoint.h"
+#import "DebuggerModel.h"
 #import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
+#import "StackFrame.h"
 
-// GDBpConnection (Private) ////////////////////////////////////////////////////
+@implementation DebuggerBackEnd {
+  // The connection to the debugger engine.
+  NSUInteger _port;
+  ProtocolClient* _client;
+}
 
-@interface DebuggerBackEnd ()
-@property (readwrite, copy) NSString* status;
-
-- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn;
-
-- (void)updateStatus:(NSXMLDocument*)response;
-- (void)debuggerStep:(NSXMLDocument*)response;
-- (void)rebuildStack:(NSXMLDocument*)response;
-- (void)getStackFrame:(NSXMLDocument*)response;
-- (void)setSource:(NSXMLDocument*)response;
-- (void)contextsReceived:(NSXMLDocument*)response;
-- (void)variablesReceived:(NSXMLDocument*)response;
-- (void)propertiesReceived:(NSXMLDocument*)response;
-- (void)evalScriptReceived:(NSXMLDocument*)response;
-
-@end
-
-// GDBpConnection //////////////////////////////////////////////////////////////
-
-@implementation DebuggerBackEnd
-
-@synthesize status;
-@synthesize attached = attached_;
-@synthesize delegate;
-
-/**
- * Creates a new DebuggerBackEnd and initializes the socket from the given connection
- * paramters.
- */
-- (id)initWithPort:(NSUInteger)aPort
+- (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach
 {
-  if (self = [super init])
-  {
-    stackFrames_ = [[NSMutableDictionary alloc] init];
-    callbackContext_ = [NSMutableDictionary new];
-    callTable_ = [NSMutableDictionary new];
-
+  if (self = [super init]) {
     [[BreakpointManager sharedManager] setConnection:self];
-    connection_ = [[NetworkConnection alloc] initWithPort:aPort];
-    connection_.delegate = self;
+    _port = aPort;
+    _client = [[ProtocolClient alloc] initWithDelegate:self];
 
-    attached_ = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
-
-    if (self.attached)
-      [connection_ connect];
+    _autoAttach = doAttach;
+    if (doAttach)
+      [_client connectOnPort:_port];
   }
   return self;
 }
 
-/**
- * Deallocates the object
- */
-- (void)dealloc
-{
-  [connection_ close];
-  [stackFrames_ release];
-  [callTable_ release];
-  [callbackContext_ release];
+- (void)dealloc {
+  [_client release];
   [super dealloc];
 }
-
 
 // Getters /////////////////////////////////////////////////////////////////////
 #pragma mark Getters
@@ -90,31 +54,24 @@
 /**
  * Gets the port number
  */
-- (NSUInteger)port
-{
-  return [connection_ port];
-}
-
-/**
- * Returns whether or not we have an active connection
- */
-- (BOOL)isConnected
-{
-  return [connection_ connected] && active_;
+- (NSUInteger)port {
+  return _port;
 }
 
 /**
  * Sets the attached state of the debugger. This will open and close the
  * connection as appropriate.
  */
-- (void)setAttached:(BOOL)attached {
-  if (attached != attached_) {
-    if (!attached)
-      [connection_ close];
-    else
-      [connection_ connect];
-  }
-  attached_ = attached;
+- (void)setAutoAttach:(BOOL)flag {
+  if (flag == _autoAttach)
+    return;
+
+  if (_autoAttach)
+    [_client disconnect];
+  else
+    [_client connectOnPort:_port];
+
+  _autoAttach = flag;
 }
 
 // Commands ////////////////////////////////////////////////////////////////////
@@ -123,93 +80,117 @@
 /**
  * Tells the debugger to continue running the script. Returns the current stack frame.
  */
-- (void)run
-{
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"run"];
-  [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
+- (void)run {
+  [_client sendCommandWithFormat:@"run" handler:^(NSXMLDocument* message) {
+    [self debuggerStep:message];
+  }];
 }
 
 /**
  * Tells the debugger to step into the current command.
  */
-- (void)stepIn
-{
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_into"];
-  [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
+- (void)stepIn {
+  [_client sendCommandWithFormat:@"step_into" handler:^(NSXMLDocument* message) {
+    [self debuggerStep:message];
+  }];
 }
 
 /**
  * Tells the debugger to step out of the current context
  */
-- (void)stepOut
-{
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_out"];
-  [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
+- (void)stepOut {
+  [_client sendCommandWithFormat:@"step_out" handler:^(NSXMLDocument* message) {
+    [self debuggerStep:message];
+  }];
 }
 
 /**
  * Tells the debugger to step over the current function
  */
-- (void)stepOver
-{
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"step_over"];
-  [self recordCallback:@selector(debuggerStep:) forTransaction:tx];
+- (void)stepOver {
+  [_client sendCommandWithFormat:@"step_over" handler:^(NSXMLDocument* message) {
+    [self debuggerStep:message];
+  }];
 }
 
 /**
  * Halts execution of the script.
  */
-- (void)stop
-{
-  [connection_ close];
-  active_ = NO;
-  self.status = @"Stopped";
+- (void)stop {
+  [_client disconnect];
+  self.model.status = @"Stopped";
 }
 
 /**
  * Ends the current debugging session.
  */
-- (void)detach
-{
-  [connection_ sendCommandWithFormat:@"detach"];
-  active_ = NO;
-  self.status = @"Stopped";
+- (void)detach {
+  [_client sendCommandWithFormat:@"detach"];
+  self.model.status = @"Stopped";
 }
 
-/**
- * Tells the debugger engine to get a specifc property. This also takes in the NSXMLElement
- * that requested it so that the child can be attached.
- */
-- (NSInteger)getChildrenOfProperty:(VariableNode*)property atDepth:(NSInteger)depth;
-{
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"property_get -d %d -n %@", depth, [property fullName]];
-  [self recordCallback:@selector(propertiesReceived:) forTransaction:tx];
-  return [tx intValue];
-}
-
-- (void)loadStackFrame:(StackFrame*)frame
-{
+- (void)loadStackFrame:(StackFrame*)frame {
   if (frame.loaded)
     return;
 
-  NSNumber* routingNumber = [NSNumber numberWithInt:frame.routingID];
-  NSNumber* transaction = nil;
-
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {
-    NSString* escapedFilename = [frame.filename stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-    transaction = [connection_ sendCommandWithFormat:@"source -f %@", escapedFilename];
-    [self recordCallback:@selector(setSource:) forTransaction:transaction];
-    [callbackContext_ setObject:routingNumber forKey:transaction];
+    ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+      frame.source = [[message rootElement] base64DecodedValue];
+    };
+    [_client sendCommandWithFormat:@"source -f %@" handler:handler, frame.filename];
   }
-  
+
   // Get the names of all the contexts.
-  transaction = [connection_ sendCommandWithFormat:@"context_names -d %d", frame.index];
-  [self recordCallback:@selector(contextsReceived:) forTransaction:transaction];
-  [callbackContext_ setObject:routingNumber forKey:transaction];
-  
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    [self loadContexts:message forFrame:frame];
+  };
+  [_client sendCommandWithFormat:@"context_names -d %d" handler:handler, frame.index];
+
   // This frame will be fully loaded.
   frame.loaded = YES;
+}
+
+- (void)loadVariableNode:(VariableNode*)variable
+           forStackFrame:(StackFrame*)frame {
+  if (variable.children.count == variable.childCount)
+    return;
+
+  [self loadVariableNode:variable forStackFrame:frame dataPage:0 loadedData:@[]];
+}
+
+- (void)loadVariableNode:(VariableNode*)variable
+           forStackFrame:(StackFrame*)frame
+                dataPage:(unsigned int)dataPage
+              loadedData:(NSArray*)loadedData {
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    /*
+     <response>
+       <property> <!-- this is the one we requested -->
+         <property ... /> <!-- these are what we want -->
+       </property>
+     </repsonse>
+     */
+
+    // Detach all the children so we can insert them into another document.
+    NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
+    NSArray* children = [parent children];
+    [parent setChildren:nil];
+
+    // Check to see if there are more children to load.
+    NSArray* newLoadedData = [loadedData arrayByAddingObjectsFromArray:children];
+
+    unsigned int totalChildren = [[[parent attributeForName:@"numchildren"] stringValue] integerValue];
+    if ([newLoadedData count] < totalChildren) {
+      [self loadVariableNode:variable
+               forStackFrame:frame
+                    dataPage:dataPage + 1
+                  loadedData:newLoadedData];
+    } else {
+      [variable setChildrenFromXMLChildren:newLoadedData];
+    }
+  };
+  [_client sendCommandWithFormat:@"property_get -d %d -n %@ -p %u" handler:handler, frame.index, variable.fullName, dataPage];
 }
 
 // Breakpoint Management ///////////////////////////////////////////////////////
@@ -218,113 +199,105 @@
 /**
  * Send an add breakpoint command
  */
-- (void)addBreakpoint:(Breakpoint*)bp
-{
-  if (![connection_ connected])
+- (void)addBreakpoint:(Breakpoint*)bp {
+  if (!self.model.connected)
     return;
   
-  NSString* file = [connection_ escapedURIPath:[bp transformedPath]];
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i", file, [bp line]];
-  [self recordCallback:@selector(breakpointReceived:) forTransaction:tx];
-  [callbackContext_ setObject:bp forKey:tx];
+  NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    [bp setDebuggerId:[[[[message rootElement] attributeForName:@"id"] stringValue] intValue]];
+  };
+  [_client sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
 }
 
 /**
  * Removes a breakpoint
  */
-- (void)removeBreakpoint:(Breakpoint*)bp
-{
-  if (![connection_ connected])
+- (void)removeBreakpoint:(Breakpoint*)bp {
+  if (!self.model.connected)
     return;
   
-  [connection_ sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
+  [_client sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
 }
 
 /**
  * Sends a string to be evaluated by the engine.
  */
-- (void)evalScript:(NSString*)str
-{
-  if (![connection_ connected])
+- (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback {
+  if (!self.model.connected)
     return;
 
   char* encodedString = malloc(modp_b64_encode_len([str length]));
   modp_b64_encode(encodedString, [str UTF8String], [str length]);
-  NSNumber* tx = [connection_ sendCustomCommandWithFormat:@"eval -i {txn} -- %s", encodedString];
+  ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+    NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
+    NSString* value = [parent base64DecodedValue];
+    callback(value);
+  };
+  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %s" handler:handler, encodedString];
   free(encodedString);
-
-  [self recordCallback:@selector(evalScriptReceived:) forTransaction:tx];
 }
 
-// Specific Response Handlers //////////////////////////////////////////////////
-#pragma mark Response Handlers
+// Protocol Client Delegate ////////////////////////////////////////////////////
+#pragma mark Protocol Client Delegate
 
-- (void)errorEncountered:(NSString*)error
-{
-  [delegate errorEncountered:error];
-}
-
-/**
- * Initial packet received. We've started a brand-new connection to the engine.
- */
-- (void)handleInitialResponse:(NSXMLDocument*)response
-{
-  if (!self.attached) {
-    [connection_ sendCommandWithFormat:@"detach"];
-    return;
-  }
-
-  active_ = YES;
-
-  // Register any breakpoints that exist offline.
-  for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
-    [self addBreakpoint:bp];
-  
-  // Load the debugger to make it look active.
-  [delegate debuggerConnected];
-  
-  // TODO: update the status.
+- (void)debuggerEngineConnected:(ProtocolClient*)client {
+  [_model onNewConnection];
 }
 
 /**
  * Called when the connection is finally closed. This will reopen the listening
  * socket if the debugger remains attached.
  */
-- (void)connectionDidClose:(NetworkConnection*)connection
-{
-  if ([delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [delegate debuggerDisconnected];
+- (void)debuggerEngineDisconnected:(ProtocolClient*)client {
+  [_model onDisconnect];
 
-  if (self.attached)
-    [connection_ connect];
+  if (self.autoAttach)
+    [_client connectOnPort:_port];
 }
 
-- (void)handleResponse:(NSXMLDocument*)response
-{
-  NSInteger transactionID = [connection_ transactionIDFromResponse:response];
-  NSNumber* key = [NSNumber numberWithInt:transactionID];
-  NSString* callbackStr = [callTable_ objectForKey:key];
-  if (callbackStr)
-  {
-    SEL callback = NSSelectorFromString(callbackStr);
-    [self performSelector:callback withObject:response];
+- (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message {
+  [self handleInitialResponse:message];
+}
+
+- (void)protocolClient:(ProtocolClient*)client receivedErrorMessage:(NSXMLDocument*)message {
+  NSArray* error = [[message rootElement] elementsForName:@"error"];
+  if ([error count] > 0) {
+    NSLog(@"Xdebug error: %@", error);
+    NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
+    _model.lastError = errorMessage;
   }
-  [callTable_ removeObjectForKey:key];
-}  
+}
+
+// Specific Response Handlers //////////////////////////////////////////////////
+#pragma mark Response Handlers
+
+/**
+ * Initial packet received. We've started a brand-new connection to the engine.
+ */
+- (void)handleInitialResponse:(NSXMLDocument*)response {
+  if (!self.autoAttach) {
+    [_client sendCommandWithFormat:@"detach"];
+    return;
+  }
+
+  // Register any breakpoints that exist offline.
+  for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
+    [self addBreakpoint:bp];
+  
+  // TODO: update the status.
+}
 
 /**
  * Receiver for status updates. This just freshens up the UI.
  */
-- (void)updateStatus:(NSXMLDocument*)response
-{
-  self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
-  active_ = YES;
+- (void)updateStatus:(NSXMLDocument*)response {
+  NSString* status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+  self.model.status = status;
   if (!status || [status isEqualToString:@"Stopped"]) {
-    [delegate debuggerDisconnected];
-    active_ = NO;
+    [_model onDisconnect];
   } else if ([status isEqualToString:@"Stopping"]) {
-    [connection_ sendCommandWithFormat:@"stop"];
-    active_ = NO;
+    [_client sendCommandWithFormat:@"stop"];
   }
 }
 
@@ -332,220 +305,82 @@
  * Step in/out/over and run all take this path. We first get the status of the
  * debugger and then request fresh stack information.
  */
-- (void)debuggerStep:(NSXMLDocument*)response
-{
+- (void)debuggerStep:(NSXMLDocument*)response {
   [self updateStatus:response];
-  if (![self isConnected])
+  if (!self.model.connected)
     return;
 
-  // If this is the run command, tell the delegate that a bunch of updates
-  // are coming. Also remove all existing stack routes and request a new stack.
-  if ([delegate respondsToSelector:@selector(clobberStack)])
-    [delegate clobberStack];
-  [stackFrames_ removeAllObjects];
-  NSNumber* tx = [connection_ sendCommandWithFormat:@"stack_depth"];
-  [self recordCallback:@selector(rebuildStack:) forTransaction:tx];
-  stackFirstTransactionID_ = [tx intValue];
+  [_client sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {
+    [self rebuildStack:message];
+  }];
 }
 
 /**
  * We ask for the stack_depth and now we clobber the stack and start rebuilding
  * it.
  */
-- (void)rebuildStack:(NSXMLDocument*)response
-{
-  NSInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
-  
-  if (stackFirstTransactionID_ == [connection_ transactionIDFromResponse:response])
-    stackDepth_ = depth;
-  
-  // We now need to alloc a bunch of stack frames and get the basic information
-  // for them.
-  for (NSInteger i = 0; i < depth; i++)
-  {
-    // Use the transaction ID to create a routing path.
-    NSNumber* routingID = [connection_ sendCommandWithFormat:@"stack_get -d %d", i];
-    [self recordCallback:@selector(getStackFrame:) forTransaction:routingID];
-    [stackFrames_ setObject:[[StackFrame new] autorelease] forKey:routingID];
+- (void)rebuildStack:(NSXMLDocument*)response {
+  NSUInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
+
+  // Send a request to get each frame of the stack, which will be added to this
+  // array. When the final frame arrives, the |tempStack| is released.
+  __block NSMutableArray* tempStack = [[NSMutableArray alloc] init];
+
+  for (NSUInteger i = 0; i < depth; ++i) {
+    ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+      [tempStack addObject:[self transformXMLToStackFrame:message]];
+      if (i == depth - 1) {
+        [self.model updateStack:[tempStack autorelease]];
+      }
+    };
+    [_client sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
   }
 }
 
 /**
- * The initial rebuild of the stack frame. We now have enough to initialize
- * a StackFrame object.
+ * Creates a StackFrame object from an NSXMLDocument response from the "stack_get"
+ * command.
  */
-- (void)getStackFrame:(NSXMLDocument*)response
-{
-  // Get the routing information.
-  NSInteger routingID = [connection_ transactionIDFromResponse:response];
-  if (routingID < stackFirstTransactionID_)
-    return;
-  NSNumber* routingNumber = [NSNumber numberWithInt:routingID];
-  
-  // Make sure we initialized this frame in our last |-rebuildStack:|.
-  StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
-  if (!frame)
-    return;
-  
-  NSXMLElement* xmlframe = [[[response rootElement] children] objectAtIndex:0];
-  
-  // Initialize the stack frame.
+- (StackFrame*)transformXMLToStackFrame:(NSXMLDocument*)response {
+  NSXMLElement* xmlframe = (NSXMLElement*)[[[response rootElement] children] objectAtIndex:0];
+  StackFrame* frame = [[[StackFrame alloc] init] autorelease];
   frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
   frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
   frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
   frame.function = [[xmlframe attributeForName:@"where"] stringValue];
-  frame.routingID = routingID;
-
-  // Only get the complete frame for the first level. The other frames will get
-  // information loaded lazily when the user clicks on one.
-  if (frame.index == 0) {
-    [self loadStackFrame:frame];
-  }
-  
-  if ([delegate respondsToSelector:@selector(newStackFrame:)])
-    [delegate newStackFrame:frame];
-}
-
-/**
- * Callback for setting the source of a file while rebuilding a specific stack
- * frame.
- */
-- (void)setSource:(NSXMLDocument*)response
-{
-  NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
-  if ([transaction intValue] < stackFirstTransactionID_)
-    return;
-  NSNumber* routingNumber = [callbackContext_ objectForKey:transaction];
-  if (!routingNumber)
-    return;
-  
-  [callbackContext_ removeObjectForKey:transaction];
-  StackFrame* frame = [stackFrames_ objectForKey:routingNumber];
-  if (!frame)
-    return;
-  
-  frame.source = [[response rootElement] base64DecodedValue];
-  
-  if ([delegate respondsToSelector:@selector(sourceUpdated:)])
-    [delegate sourceUpdated:frame];
+  return frame;
 }
 
 /**
  * Enumerates all the contexts of a given stack frame. We then in turn get the
  * contents of each one of these contexts.
  */
-- (void)contextsReceived:(NSXMLDocument*)response
-{
-  // Get the stack frame's routing ID and use it again.
-  NSNumber* receivedTransaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
-  if ([receivedTransaction intValue] < stackFirstTransactionID_)
-    return;
-  NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
-  if (!routingID)
-    return;
-  
-  // Get the stack frame by the |routingID|.
-  StackFrame* frame = [stackFrames_ objectForKey:routingID];
-  
+- (void)loadContexts:(NSXMLDocument*)response forFrame:(StackFrame*)frame {
   NSXMLElement* contextNames = [response rootElement];
-  for (NSXMLElement* context in [contextNames children])
-  {
+  for (NSXMLElement* context in [contextNames children]) {
     NSInteger cid = [[[context attributeForName:@"id"] stringValue] intValue];
     
     // Fetch each context's variables.
-    NSNumber* tx = [connection_ sendCommandWithFormat:@"context_get -d %d -c %d", frame.index, cid];
-    [self recordCallback:@selector(variablesReceived:) forTransaction:tx];
-    [callbackContext_ setObject:routingID forKey:tx];
+    ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
+      NSMutableArray* variables = [NSMutableArray array];
+
+      // Merge the frame's existing variables.
+      if (frame.variables)
+        [variables addObjectsFromArray:frame.variables];
+
+      // Add these new variables.
+      NSArray* addVariables = [[message rootElement] children];
+      if (addVariables) {
+        for (NSXMLElement* elm in addVariables) {
+          VariableNode* node = [[VariableNode alloc] initWithXMLNode:elm];
+          [variables addObject:[node autorelease]];
+        }
+      }
+
+      frame.variables = variables;
+    };
+    [_client sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
   }
-}
-
-/**
- * Receives the variables from the context and attaches them to the stack frame.
- */
-- (void)variablesReceived:(NSXMLDocument*)response
-{
-  // Get the stack frame's routing ID and use it again.
-  NSInteger transaction = [connection_ transactionIDFromResponse:response];
-  if (transaction < stackFirstTransactionID_)
-    return;
-  NSNumber* receivedTransaction = [NSNumber numberWithInt:transaction];
-  NSNumber* routingID = [callbackContext_ objectForKey:receivedTransaction];
-  if (!routingID)
-    return;
-  
-  // Get the stack frame by the |routingID|.
-  StackFrame* frame = [stackFrames_ objectForKey:routingID];
-
-  NSMutableArray* variables = [NSMutableArray array];
-
-  // Merge the frame's existing variables.
-  if (frame.variables)
-    [variables addObjectsFromArray:frame.variables];
-
-  // Add these new variables.
-  NSArray* addVariables = [[response rootElement] children];
-  if (addVariables) {
-    for (NSXMLElement* elm in addVariables) {
-      VariableNode* node = [[VariableNode alloc] initWithXMLNode:elm];
-      [variables addObject:[node autorelease]];
-    }
-  }
-
-  frame.variables = variables;
-}
-
-/**
- * Callback from a |-getProperty:| request.
- */
-- (void)propertiesReceived:(NSXMLDocument*)response
-{
-  NSInteger transaction = [connection_ transactionIDFromResponse:response];
-  
-  /*
-   <response>
-     <property> <!-- this is the one we requested -->
-       <property ... /> <!-- these are what we want -->
-     </property>
-   </repsonse>
-   */
-  
-  // Detach all the children so we can insert them into another document.
-  NSXMLElement* parent = (NSXMLElement*)[[response rootElement] childAtIndex:0];
-  NSArray* children = [parent children];
-  [parent setChildren:nil];
-  
-  [delegate receivedProperties:children forTransaction:transaction];
-}
-
-/**
- * Callback from a |-evalScript:| request.
- */
-- (void)evalScriptReceived:(NSXMLDocument*)response
-{
-  NSXMLElement* parent = (NSXMLElement*)[[response rootElement] childAtIndex:0];
-  NSString* value = [parent base64DecodedValue];
-  [delegate scriptWasEvaluatedWithResult:value];
-}
-
-/**
- * Callback for setting a breakpoint.
- */
-- (void)breakpointReceived:(NSXMLDocument*)response
-{
-  NSNumber* transaction = [NSNumber numberWithInt:[connection_ transactionIDFromResponse:response]];
-  Breakpoint* bp = [callbackContext_ objectForKey:transaction];
-  if (!bp)
-    return;
-  
-  [callbackContext_ removeObjectForKey:callbackContext_];
-  [bp setDebuggerId:[[[[response rootElement] attributeForName:@"id"] stringValue] intValue]];
-}
-
-// Private /////////////////////////////////////////////////////////////////////
-
-- (void)recordCallback:(SEL)callback forTransaction:(NSNumber*)txn
-{
-  [callTable_ setObject:NSStringFromSelector(callback) forKey:txn];
 }
 
 @end

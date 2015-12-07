@@ -15,27 +15,21 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerBackEnd.h"
-#import "StackController.h"
+
 #include "VariableNode.h"
 
 @class BSSourceView;
+@class DebuggerBackEnd;
+@class DebuggerModel;
 
-@interface DebuggerController : NSWindowController <DebuggerBackEndDelegate, NSWindowDelegate>
+@interface DebuggerController : NSWindowController <NSWindowDelegate>
 {
   DebuggerBackEnd* connection;
-  
-  // This is true when the |connection| has told us to clobber. We will do
-  // so upon receipt of the first new stack frame.
-  BOOL aboutToClobber_;
 
-  // Dictionary of transcations to tree nodes that are used when properties
-  // are requested from the backend.
-  NSMutableDictionary* pendingProperties_;
+  DebuggerModel* _model;
 
   IBOutlet NSButton* attachedCheckbox_;
 
-  StackController* stackController;
   IBOutlet NSArrayController* stackArrayController;
   
   IBOutlet NSTreeController* variablesTreeController;
@@ -69,7 +63,5 @@
 - (IBAction)stepOut:(id)sender;
 - (IBAction)stepOver:(id)sender;
 - (IBAction)stop:(id)sender;
-
-- (void)fetchChildProperties:(VariableNode*)node;
 
 @end

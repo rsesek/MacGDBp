@@ -56,16 +56,12 @@ typedef enum _LogEntryDirection {
   // The command that was sent or the response.
   NSString* contents_;
 
-  // Any error information.
-  NSError* error_;
-
   // The values of the last read and written transaction IDs.
   NSUInteger lastWrittenTransactionID_;
   NSUInteger lastReadTransactionID_;
 }
 @property (assign) LogEntryDirection direction;
 @property (copy) NSString* contents;
-@property (retain) NSError* error;
 @property (assign) NSUInteger lastWrittenTransactionID;
 @property (assign) NSUInteger lastReadTransactionID;
 

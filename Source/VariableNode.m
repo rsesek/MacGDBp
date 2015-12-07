@@ -16,68 +16,53 @@
 
 #import "VariableNode.h"
 
-#import "AppDelegate.h"
 #include "NSXMLElementAdditions.h"
 
-// Private Properties //////////////////////////////////////////////////////////
+@implementation VariableNode {
+  NSMutableArray* _children;
+}
 
-@interface VariableNode ()
+@synthesize name = _name;
+@synthesize fullName = _fullName;
+@synthesize className = _className;
+@synthesize type = _type;
+@synthesize value = _value;
+@synthesize childCount = _childCount;
+@synthesize address = _address;
 
-@property (copy) NSString* name;
-@property (copy) NSString* fullName;
-@property (copy) NSString* className;
-@property (copy) NSString* type;
-@property (copy) NSString* value;
-@property (retain) NSArray* children;
-@property (copy) NSString* address;
-
-@end
-
-////////////////////////////////////////////////////////////////////////////////
-
-@implementation VariableNode
-
-@synthesize name = name_;
-@synthesize fullName = fullName_;
-@synthesize className = className_;
-@synthesize type = type_;
-@synthesize value = value_;
-@synthesize children = children_;
-@synthesize childCount = childCount_;
-@synthesize address = address_;
-
-- (id)initWithXMLNode:(NSXMLElement*)node
-{
+- (id)initWithXMLNode:(NSXMLElement*)node {
   if (self = [super init]) {
-    self.name       = [[node attributeForName:@"name"] stringValue];
-    self.fullName   = [[node attributeForName:@"fullname"] stringValue];
-    self.className  = [[node attributeForName:@"classname"] stringValue];
-    self.type       = [[node attributeForName:@"type"] stringValue];
-    self.value      = [node base64DecodedValue];
-    self.children   = [NSMutableArray array];
+    _name       = [[[node attributeForName:@"name"] stringValue] copy];
+    _fullName   = [[[node attributeForName:@"fullname"] stringValue] copy];
+    _className  = [[[node attributeForName:@"classname"] stringValue] copy];
+    _type       = [[[node attributeForName:@"type"] stringValue] copy];
+    _value      = [[node base64DecodedValue] copy];
+    _children   = [[NSMutableArray alloc] init];
     if ([node children]) {
       [self setChildrenFromXMLChildren:[node children]];
     }
-    childCount_     = [[[node attributeForName:@"numchildren"] stringValue] integerValue];
-    self.address    = [[node attributeForName:@"address"] stringValue];
+    _childCount = [[[node attributeForName:@"numchildren"] stringValue] integerValue];
+    _address    = [[[node attributeForName:@"address"] stringValue] copy];
   }
   return self;
 }
 
-- (void)dealloc
-{
-  self.name = nil;
-  self.fullName = nil;
-  self.className = nil;
-  self.type = nil;
-  self.value = nil;
-  self.children = nil;
-  self.address = nil;
+- (void)dealloc {
+  [_name release];
+  [_fullName release];
+  [_className release];
+  [_type release];
+  [_value release];
+  [_children release];
+  [_address release];
   [super dealloc];
 }
 
-- (void)setChildrenFromXMLChildren:(NSArray*)children
-{
+- (void)setChildrenFromXMLChildren:(NSArray*)children {
+  [self willChangeValueForKey:@"children"];
+
+  [_children removeAllObjects];
+
   for (NSXMLNode* child in children) {
     // Other child nodes may be the string value.
     if ([child isKindOfClass:[NSXMLElement class]]) {
@@ -85,38 +70,26 @@
       // Don't include the CLASSNAME property as that information is retreeived
       // elsewhere.
       if (![node.name isEqualToString:@"CLASSNAME"])
-        [children_ addObject:node];
+        [_children addObject:node];
       [node release];
     }
   }
+
+  [self didChangeValueForKey:@"children"];
 }
 
-- (NSArray*)dynamicChildren
-{
-  NSArray* children = self.children;
-  if (![self isLeaf] && (NSInteger)[children count] < self.childCount) {
-    // If this node has children but they haven't been loaded from the backend,
-    // request them asynchronously.
-    [[AppDelegate instance].debugger fetchChildProperties:self];
-  }
-  return children;
+- (BOOL)isLeaf {
+  return self.childCount == 0;
 }
 
-- (BOOL)isLeaf
-{
-  return (self.childCount == 0);
-}
-
-- (NSString*)displayType
-{
+- (NSString*)displayType {
   if (self.className != nil) {
     return [NSString stringWithFormat:@"%@ (%@)", self.className, self.type];
   }
   return self.type;
 }
 
-- (NSString*)description
-{
+- (NSString*)description {
   return [NSString stringWithFormat:@"<VariableNode %p : %@>", self, self.fullName];
 }
 

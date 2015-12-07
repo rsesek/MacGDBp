@@ -19,12 +19,14 @@
 #import "AppDelegate.h"
 #import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "DebuggerBackEnd.h"
+#import "DebuggerModel.h"
 #import "EvalController.h"
 #import "NSXMLElementAdditions.h"
+#import "StackFrame.h"
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;
-- (void)updateStackViewer;
 - (void)expandVariables;
 @end
 
@@ -40,18 +42,22 @@
 {
   if (self = [super initWithWindowNibName:@"Debugger"])
   {
-    stackController = [[StackController alloc] init];
-    pendingProperties_ = [[NSMutableDictionary alloc] init];
-
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]];
-    connection.delegate = self;
+    _model = [[DebuggerModel alloc] init];
+    [_model addObserver:self
+             forKeyPath:@"connected"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+
+    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]
+                                            autoAttach:[defaults boolForKey:@"DebuggerAttached"]];
+    connection.model = _model;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
     [[self window] setDelegate:self];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"InspectorWindowVisible"])
+    if ([defaults boolForKey:@"InspectorWindowVisible"])
       [inspector orderFront:self];
   }
   return self;
@@ -63,9 +69,8 @@
 - (void)dealloc
 {
   [connection release];
+  [_model release];
   [expandedVariables release];
-  [stackController release];
-  [pendingProperties_ release];
   [super dealloc];
 }
 
@@ -77,8 +82,38 @@
   [[self window] setExcludedFromWindowsMenu:YES];
   [[self window] setTitle:[NSString stringWithFormat:@"MacGDBp @ %d", [connection port]]];
   [sourceViewer setDelegate:self];
-  [stackArrayController setSortDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease]]];
-  self.connection.attached = [attachedCheckbox_ state] == NSOnState;
+  [stackArrayController setSortDescriptors:@[ [[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease] ]];
+  [stackArrayController addObserver:self
+                         forKeyPath:@"selectedObjects"
+                            options:NSKeyValueObservingOptionNew
+                            context:nil];
+  [stackArrayController addObserver:self
+                         forKeyPath:@"selection.source"
+                            options:NSKeyValueObservingOptionNew
+                            context:nil];
+  self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
+}
+
+/**
+ * Key-value observation routine.
+ */
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString*,id>*)change
+                       context:(void*)context {
+  if (object == stackArrayController && [keyPath isEqualToString:@"selectedObjects"]) {
+    for (StackFrame* frame in stackArrayController.selectedObjects)
+      [connection loadStackFrame:frame];
+  } else if (object == stackArrayController && [keyPath isEqualToString:@"selection.source"]) {
+    [self updateSourceViewer];
+  } else if (object == _model && [keyPath isEqualToString:@"connected"]) {
+    if ([change[NSKeyValueChangeNewKey] boolValue])
+      [self debuggerConnected];
+    else
+      [self debuggerDisconnected];
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
 }
 
 /**
@@ -89,13 +124,13 @@
   SEL action = [anItem action];
   
   if (action == @selector(stepOut:)) {
-    return ([connection isConnected] && [stackController.stack count] > 1);
+    return _model.connected && _model.stackDepth > 1;
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
              action == @selector(stop:) ||
              action == @selector(showEvalWindow:)) {
-    return [connection isConnected];
+    return _model.connected;
   }
   return [[self window] validateUserInterfaceItem:anItem];
 }
@@ -127,7 +162,6 @@
 - (void)resetDisplays
 {
   [variablesTreeController setContent:nil];
-  [stackController.stack removeAllObjects];
   [stackArrayController rearrangeObjects];
   [[sourceViewer textView] setString:@""];
   sourceViewer.file = nil;
@@ -143,20 +177,12 @@
 }
 
 /**
- * Handles a GDBpConnection error
- */
-- (void)errorEncountered:(NSString*)error
-{
-  [self setError:error];
-}
-
-/**
  * Delegate function for GDBpConnection for when the debugger connects.
  */
 - (void)debuggerConnected
 {
   [errormsg setHidden:YES];
-  if (!self.connection.attached)
+  if (!self.connection.autoAttach)
     return;
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
     [self stepIn:self];
@@ -182,7 +208,7 @@
 
 - (IBAction)attachedToggled:(id)sender
 {
-  connection.attached = [sender state] == NSOnState;
+  connection.autoAttach = [sender state] == NSOnState;
 }
 
 /**
@@ -226,24 +252,12 @@
   [connection stop];
 }
 
-- (void)fetchChildProperties:(VariableNode*)node
-{
-  NSArray* selection = [stackArrayController selectedObjects];
-  if (![selection count])
-    return;
-  assert([selection count] == 1);
-  NSInteger depth = [[selection objectAtIndex:0] index];
-  NSInteger txn = [connection getChildrenOfProperty:node atDepth:depth];
-  [pendingProperties_ setObject:node forKey:[NSNumber numberWithInt:txn]];
-}
-
 /**
  * NSTableView delegate method that informs the controller that the stack selection did change and that
  * we should update the source viewer
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-  [self updateSourceViewer];
   // TODO: This is very, very hacky because it's nondeterministic. The issue
   // is that calling |-[NSOutlineView expandItem:]| while the table is still
   // doing its redraw will translate to a no-op. Instead, we need to restructure
@@ -264,6 +278,9 @@
 {
   NSTreeNode* node = [[notif userInfo] objectForKey:@"NSObject"];
   [expandedVariables addObject:[[node representedObject] fullName]];
+
+  [connection loadVariableNode:[node representedObject]
+                 forStackFrame:[[stackArrayController selectedObjects] lastObject]];
 }
 
 /**
@@ -314,15 +331,6 @@
 }
 
 /**
- * Does some house keeping to the stack viewer
- */
-- (void)updateStackViewer
-{
-  [stackArrayController rearrangeObjects];
-  [stackArrayController setSelectionIndex:0];
-}
-
-/**
  * Expands the variables based on the stored set
  */
 - (void)expandVariables
@@ -365,47 +373,6 @@
   
   [sourceViewer setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
   [sourceViewer setNeedsDisplay:YES];
-}
-
-#pragma mark GDBpConnectionDelegate
-
-- (void)clobberStack
-{
-  aboutToClobber_ = YES;
-  [pendingProperties_ removeAllObjects];
-}
-
-- (void)newStackFrame:(StackFrame*)frame
-{
-  if (aboutToClobber_)
-  {
-    [stackController.stack removeAllObjects];
-    aboutToClobber_ = NO;
-  }
-  [stackController push:frame];
-  [self updateStackViewer];
-  [self updateSourceViewer];
-}
-
-- (void)sourceUpdated:(StackFrame*)frame
-{
-  [self updateSourceViewer];
-}
-
-- (void)receivedProperties:(NSArray*)properties forTransaction:(NSInteger)transaction
-{
-  NSNumber* key = [NSNumber numberWithInt:transaction];
-  VariableNode* node = [pendingProperties_ objectForKey:key];
-  if (node) {
-    [node setChildrenFromXMLChildren:properties];
-    [variablesTreeController rearrangeObjects];
-    [pendingProperties_ removeObjectForKey:key];
-  }
-}
-
-- (void)scriptWasEvaluatedWithResult:(NSString*)result
-{
-  [EvalController scriptWasEvaluatedWithResult:result];
 }
 
 @end

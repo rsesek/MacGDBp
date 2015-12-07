@@ -71,7 +71,7 @@
 
 - (void)applicationWillTerminate:(NSNotification*)notification
 {
-  [[NSUserDefaults standardUserDefaults] setBool:self.debugger.connection.attached
+  [[NSUserDefaults standardUserDefaults] setBool:self.debugger.connection.autoAttach
                                           forKey:@"DebuggerAttached"];
 }
 
