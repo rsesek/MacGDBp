@@ -8,7 +8,6 @@
         <customObject id="-2" userLabel="File's Owner" customClass="DebuggerController">
             <connections>
                 <outlet property="attachedCheckbox_" destination="591" id="595"/>
-                <outlet property="errormsg" destination="22" id="244"/>
                 <outlet property="inspector" destination="569" id="581"/>
                 <outlet property="sourceViewer" destination="496" id="503"/>
                 <outlet property="stackArrayController" destination="36" id="563"/>
@@ -39,6 +38,14 @@
                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="hidden" keyPath="model.lastError" id="8zF-cL-aNL">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="value" keyPath="model.lastError" id="GVw-NL-fO9"/>
+                        </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="27">
                         <rect key="frame" x="3" y="0.0" width="196" height="17"/>

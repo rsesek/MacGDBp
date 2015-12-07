@@ -166,14 +166,6 @@
 }
 
 /**
- * Handles a GDBpConnection error
- */
-- (void)errorEncountered:(NSString*)error
-{
-  [self setError:error];
-}
-
-/**
  * Delegate function for GDBpConnection for when the debugger connects.
  */
 - (void)debuggerConnected

@@ -276,6 +276,8 @@
   if ([self.delegate respondsToSelector:@selector(debuggerDisconnected)])
     [self.delegate debuggerDisconnected];
 
+  [_model onDisconnect];
+
   if (self.autoAttach)
     [_client connectOnPort:_port];
 }
@@ -289,16 +291,12 @@
   if ([error count] > 0) {
     NSLog(@"Xdebug error: %@", error);
     NSString* errorMessage = [[[[error objectAtIndex:0] children] objectAtIndex:0] stringValue];
-    [self errorEncountered:errorMessage];
+    _model.lastError = errorMessage;
   }
 }
 
 // Specific Response Handlers //////////////////////////////////////////////////
 #pragma mark Response Handlers
-
-- (void)errorEncountered:(NSString*)error {
-  [self.delegate errorEncountered:error];
-}
 
 /**
  * Initial packet received. We've started a brand-new connection to the engine.

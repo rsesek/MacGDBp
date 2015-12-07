@@ -20,17 +20,28 @@
 
 @interface DebuggerModel : NSObject
 
+// Whether or not the debugger is currently connected.
+@property(readonly, nonatomic) BOOL connected;
+
 // A human-readable representation of the debugger state. E.g., "Break" or
 // "Stopped".
 @property(copy, nonatomic) NSString* status;
 
+// A string representing the last error message, or nil for no error.
+@property(copy, nonatomic) NSString* lastError;
+
+// An array of StackFrame objects for the current call stack.
 @property(readonly, nonatomic) NSArray<StackFrame*>* stack;
 
+// Helper accessor for |stack.count|.
 @property(readonly, nonatomic) NSUInteger stackDepth;
 
 // Informs the model that a new connection was initiated. This clears any data
 // in the model.
 - (void)onNewConnection;
+
+// Informs the model that the connection was terminated.
+- (void)onDisconnect;
 
 // Replaces the current stack with |newStack|. This will attempt to preserve
 // any already loaded frames.

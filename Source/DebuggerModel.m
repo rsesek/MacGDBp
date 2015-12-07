@@ -41,7 +41,12 @@
 
 - (void)onNewConnection {
   self.status = nil;
+  _connected = YES;
   [_stack removeAllObjects];
+}
+
+- (void)onDisconnect {
+  _connected = NO;
 }
 
 - (void)updateStack:(NSArray<StackFrame*>*)newStack {
