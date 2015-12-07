@@ -21,10 +21,6 @@
 #import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
 
-@interface DebuggerBackEnd ()
-@property(readwrite, copy, nonatomic) NSString* status;
-@end
-
 @implementation DebuggerBackEnd {
   // The connection to the debugger engine.
   NSUInteger _port;
@@ -34,7 +30,6 @@
   BOOL _active;
 }
 
-@synthesize status = _status;
 @synthesize autoAttach = _autoAttach;
 @synthesize model = _model;
 
@@ -136,7 +131,7 @@
 - (void)stop {
   [_client disconnect];
   _active = NO;
-  self.status = @"Stopped";
+  self.model.status = @"Stopped";
 }
 
 /**
@@ -145,7 +140,7 @@
 - (void)detach {
   [_client sendCommandWithFormat:@"detach"];
   _active = NO;
-  self.status = @"Stopped";
+  self.model.status = @"Stopped";
 }
 
 - (void)loadStackFrame:(StackFrame*)frame {
@@ -316,13 +311,13 @@
  * Receiver for status updates. This just freshens up the UI.
  */
 - (void)updateStatus:(NSXMLDocument*)response {
-  self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
-  self.model.status = self.status;
+  NSString* status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+  self.model.status = status;
   _active = YES;
-  if (!_status || [_status isEqualToString:@"Stopped"]) {
+  if (!status || [status isEqualToString:@"Stopped"]) {
     [_model onDisconnect];
     _active = NO;
-  } else if ([_status isEqualToString:@"Stopping"]) {
+  } else if ([status isEqualToString:@"Stopping"]) {
     [_client sendCommandWithFormat:@"stop"];
     _active = NO;
   }

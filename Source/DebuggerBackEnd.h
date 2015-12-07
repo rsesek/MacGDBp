@@ -33,9 +33,6 @@
 // a new frame is created or the stack should be destroyed.
 @interface DebuggerBackEnd : NSObject<ProtocolClientDelegate>
 
-// Human-readable status of the connection.
-@property(readonly, copy, nonatomic) NSString* status;
-
 // Whether the debugger should detach immediately after being contacted by the
 // backend. YES means all debugger connections will be dropped.
 @property(assign, nonatomic) BOOL autoAttach;
