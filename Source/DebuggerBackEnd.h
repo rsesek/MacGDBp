@@ -43,8 +43,6 @@
 // The model object to update in response to changes in the debugger.
 @property(assign, nonatomic) DebuggerModel* model;
 
-@property(assign, nonatomic) id<DebuggerBackEndDelegate> delegate;
-
 // initializer
 - (id)initWithPort:(NSUInteger)aPort;
 
@@ -76,16 +74,3 @@
            forStackFrame:(StackFrame*)frame;
 
 @end
-
-// Delegate ////////////////////////////////////////////////////////////////////
-
-@protocol DebuggerBackEndDelegate <NSObject>
-
-// Called when the socket connects. Passed up from SocketWrapper.
-- (void)debuggerConnected;
-
-// Called when we disconnect.
-- (void)debuggerDisconnected;
-
-@end
-

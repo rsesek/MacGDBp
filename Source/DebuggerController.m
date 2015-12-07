@@ -19,6 +19,7 @@
 #import "AppDelegate.h"
 #import "BSSourceView.h"
 #import "BreakpointManager.h"
+#import "DebuggerBackEnd.h"
 #import "DebuggerModel.h"
 #import "EvalController.h"
 #import "NSXMLElementAdditions.h"
@@ -43,9 +44,12 @@
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
     _model = [[DebuggerModel alloc] init];
+    [_model addObserver:self
+             forKeyPath:@"connected"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
 
     connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]];
-    connection.delegate = self;
     connection.model = _model;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
@@ -100,6 +104,11 @@
       [connection loadStackFrame:frame];
   } else if (object == stackArrayController && [keyPath isEqualToString:@"selection.source"]) {
     [self updateSourceViewer];
+  } else if (object == _model && [keyPath isEqualToString:@"connected"]) {
+    if ([change[NSKeyValueChangeNewKey] boolValue])
+      [self debuggerConnected];
+    else
+      [self debuggerDisconnected];
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }

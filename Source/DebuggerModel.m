@@ -18,6 +18,10 @@
 
 #import "StackFrame.h"
 
+@interface DebuggerModel ()
+@property(assign, nonatomic) BOOL connected;
+@end
+
 @implementation DebuggerModel {
   NSMutableArray* _stack;
 }
@@ -41,12 +45,12 @@
 
 - (void)onNewConnection {
   self.status = nil;
-  _connected = YES;
+  self.connected = YES;
   [_stack removeAllObjects];
 }
 
 - (void)onDisconnect {
-  _connected = NO;
+  self.connected = NO;
 }
 
 - (void)updateStack:(NSArray<StackFrame*>*)newStack {

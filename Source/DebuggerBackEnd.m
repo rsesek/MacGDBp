@@ -37,7 +37,6 @@
 @synthesize status = _status;
 @synthesize autoAttach = _autoAttach;
 @synthesize model = _model;
-@synthesize delegate = _delegate;
 
 - (id)initWithPort:(NSUInteger)aPort
 {
@@ -273,9 +272,6 @@
 - (void)debuggerEngineDisconnected:(ProtocolClient*)client {
   _active = NO;
 
-  if ([self.delegate respondsToSelector:@selector(debuggerDisconnected)])
-    [self.delegate debuggerDisconnected];
-
   [_model onDisconnect];
 
   if (self.autoAttach)
@@ -313,9 +309,6 @@
   for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
     [self addBreakpoint:bp];
   
-  // Load the debugger to make it look active.
-  [self.delegate debuggerConnected];
-  
   // TODO: update the status.
 }
 
@@ -324,15 +317,15 @@
  */
 - (void)updateStatus:(NSXMLDocument*)response {
   self.status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
+  self.model.status = self.status;
   _active = YES;
   if (!_status || [_status isEqualToString:@"Stopped"]) {
-    [_delegate debuggerDisconnected];
+    [_model onDisconnect];
     _active = NO;
   } else if ([_status isEqualToString:@"Stopping"]) {
     [_client sendCommandWithFormat:@"stop"];
     _active = NO;
   }
-  self.model.status = self.status;
 }
 
 /**

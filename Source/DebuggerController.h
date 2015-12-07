@@ -15,13 +15,14 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "DebuggerBackEnd.h"
+
 #include "VariableNode.h"
 
 @class BSSourceView;
+@class DebuggerBackEnd;
 @class DebuggerModel;
 
-@interface DebuggerController : NSWindowController <DebuggerBackEndDelegate, NSWindowDelegate>
+@interface DebuggerController : NSWindowController <NSWindowDelegate>
 {
   DebuggerBackEnd* connection;
 
