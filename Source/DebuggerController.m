@@ -122,13 +122,13 @@
   SEL action = [anItem action];
   
   if (action == @selector(stepOut:)) {
-    return ([connection isConnected] && _model.stackDepth > 1);
+    return _model.connected && _model.stackDepth > 1;
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
              action == @selector(stop:) ||
              action == @selector(showEvalWindow:)) {
-    return [connection isConnected];
+    return _model.connected;
   }
   return [[self window] validateUserInterfaceItem:anItem];
 }

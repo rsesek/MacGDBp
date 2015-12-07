@@ -25,9 +25,6 @@
   // The connection to the debugger engine.
   NSUInteger _port;
   ProtocolClient* _client;
-
-  // Whether or not a debugging session is currently active.
-  BOOL _active;
 }
 
 @synthesize autoAttach = _autoAttach;
@@ -61,13 +58,6 @@
  */
 - (NSUInteger)port {
   return _port;
-}
-
-/**
- * Returns whether or not we have an active connection
- */
-- (BOOL)isConnected {
-  return _active;
 }
 
 /**
@@ -130,7 +120,6 @@
  */
 - (void)stop {
   [_client disconnect];
-  _active = NO;
   self.model.status = @"Stopped";
 }
 
@@ -139,7 +128,6 @@
  */
 - (void)detach {
   [_client sendCommandWithFormat:@"detach"];
-  _active = NO;
   self.model.status = @"Stopped";
 }
 
@@ -214,7 +202,7 @@
  * Send an add breakpoint command
  */
 - (void)addBreakpoint:(Breakpoint*)bp {
-  if (!_active)
+  if (!self.model.connected)
     return;
   
   NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
@@ -228,7 +216,7 @@
  * Removes a breakpoint
  */
 - (void)removeBreakpoint:(Breakpoint*)bp {
-  if (!_active)
+  if (!self.model.connected)
     return;
   
   [_client sendCommandWithFormat:@"breakpoint_remove -d %i", [bp debuggerId]];
@@ -238,7 +226,7 @@
  * Sends a string to be evaluated by the engine.
  */
 - (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback {
-  if (!_active)
+  if (!self.model.connected)
     return;
 
   char* encodedString = malloc(modp_b64_encode_len([str length]));
@@ -256,7 +244,6 @@
 #pragma mark Protocol Client Delegate
 
 - (void)debuggerEngineConnected:(ProtocolClient*)client {
-  _active = YES;
   [_model onNewConnection];
 }
 
@@ -265,8 +252,6 @@
  * socket if the debugger remains attached.
  */
 - (void)debuggerEngineDisconnected:(ProtocolClient*)client {
-  _active = NO;
-
   [_model onDisconnect];
 
   if (self.autoAttach)
@@ -298,8 +283,6 @@
     return;
   }
 
-  _active = YES;
-
   // Register any breakpoints that exist offline.
   for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
     [self addBreakpoint:bp];
@@ -313,13 +296,10 @@
 - (void)updateStatus:(NSXMLDocument*)response {
   NSString* status = [[[[response rootElement] attributeForName:@"status"] stringValue] capitalizedString];
   self.model.status = status;
-  _active = YES;
   if (!status || [status isEqualToString:@"Stopped"]) {
     [_model onDisconnect];
-    _active = NO;
   } else if ([status isEqualToString:@"Stopping"]) {
     [_client sendCommandWithFormat:@"stop"];
-    _active = NO;
   }
 }
 
@@ -329,7 +309,7 @@
  */
 - (void)debuggerStep:(NSXMLDocument*)response {
   [self updateStatus:response];
-  if (![self isConnected])
+  if (!self.model.connected)
     return;
 
   [_client sendCommandWithFormat:@"stack_depth" handler:^(NSXMLDocument* message) {

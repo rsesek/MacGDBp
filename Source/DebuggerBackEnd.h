@@ -45,7 +45,6 @@
 
 // getter
 - (NSUInteger)port;
-- (BOOL)isConnected;
 
 // communication
 - (void)run;
