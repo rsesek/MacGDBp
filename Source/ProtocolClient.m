@@ -97,7 +97,7 @@
   // Collect varargs and format command.
   va_list args;
   va_start(args, handler);
-  NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
+  NSString* command = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
   va_end(args);
 
   int transaction = _nextID++;
@@ -186,9 +186,9 @@
 
   // Parse the XML and test for errors.
   NSError* error = nil;
-  NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:message
-                                                        options:NSXMLDocumentTidyXML
-                                                          error:&error];
+  NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithXMLString:message
+                                                         options:NSXMLDocumentTidyXML
+                                                           error:&error] autorelease];
   if (error) {
     [self messageQueue:queue error:error];
     return;
