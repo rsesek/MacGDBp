@@ -16,25 +16,21 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "Breakpoint.h"
 #import "ProtocolClient.h"
-#import "StackFrame.h"
 
-@protocol DebuggerBackEndDelegate;
+@class Breakpoint;
 @class DebuggerModel;
+@class StackFrame;
 @class VariableNode;
 
 // The DebuggerBackEnd is the communication layer between the application
 // and the back-end debugger. Clients issue debugger commands via this class,
 // which are sent in an asynchronous manner. Reads are also asynchronous and
-// the primary client of this class should set itself as the delegate. The
-// primary unit that this class deals with is the StackFrame; clients should
-// maintain a stack structure and the BackEnd will inform the delegate when
-// a new frame is created or the stack should be destroyed.
+// the primary client of this class should set a model object, which will be
+// updated as data arrive.
 @interface DebuggerBackEnd : NSObject<ProtocolClientDelegate>
 
-// Whether the debugger should detach immediately after being contacted by the
-// backend. YES means all debugger connections will be dropped.
+// Whether the debugger should listen for and attach to connections.
 @property(assign, nonatomic) BOOL autoAttach;
 
 // The model object to update in response to changes in the debugger.

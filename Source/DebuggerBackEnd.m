@@ -17,18 +17,17 @@
 #import "DebuggerBackEnd.h"
 
 #import "AppDelegate.h"
+#import "Breakpoint.h"
 #import "DebuggerModel.h"
 #import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
+#import "StackFrame.h"
 
 @implementation DebuggerBackEnd {
   // The connection to the debugger engine.
   NSUInteger _port;
   ProtocolClient* _client;
 }
-
-@synthesize autoAttach = _autoAttach;
-@synthesize model = _model;
 
 - (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach
 {

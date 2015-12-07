@@ -23,6 +23,7 @@
 #import "DebuggerModel.h"
 #import "EvalController.h"
 #import "NSXMLElementAdditions.h"
+#import "StackFrame.h"
 
 @interface DebuggerController (Private)
 - (void)updateSourceViewer;

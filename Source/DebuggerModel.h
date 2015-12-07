@@ -18,6 +18,9 @@
 
 @class StackFrame;
 
+// This class represents the state of an active debugging session. It is
+// typically updated by the DebuggerBackEnd in response to various commands.
+// All of the properties are KVO-compliant.
 @interface DebuggerModel : NSObject
 
 // Whether or not the debugger is currently connected.
