@@ -47,8 +47,6 @@
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
 		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
 		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
-		1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBFD070D3599E8008F835B /* BSSplitView.m */; };
-		1EEBFD120D359A9F008F835B /* dimple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFD110D359A9F008F835B /* dimple.png */; };
 		1EECC0BA1BC9B1E800FB22D3 /* DebuggerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
 		1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointController.m */; };
@@ -144,9 +142,6 @@
 		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
-		1EEBFD070D3599E8008F835B /* BSSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSplitView.m; path = Source/BSSplitView.m; sourceTree = "<group>"; };
-		1EEBFD080D3599E8008F835B /* BSSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSplitView.h; path = Source/BSSplitView.h; sourceTree = "<group>"; };
-		1EEBFD110D359A9F008F835B /* dimple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dimple.png; sourceTree = "<group>"; };
 		1EECC0B81BC9B1E700FB22D3 /* DebuggerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerModel.h; path = Source/DebuggerModel.h; sourceTree = "<group>"; };
 		1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerModel.m; path = Source/DebuggerModel.m; sourceTree = "<group>"; };
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
@@ -279,8 +274,6 @@
 		1E71886C0D839F6C00969277 /* Source View */ = {
 			isa = PBXGroup;
 			children = (
-				1EEBFD080D3599E8008F835B /* BSSplitView.h */,
-				1EEBFD070D3599E8008F835B /* BSSplitView.m */,
 				1E7188640D839F6300969277 /* BSSourceView.h */,
 				1E7188650D839F6300969277 /* BSSourceView.mm */,
 				1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */,
@@ -375,7 +368,6 @@
 				1E42F1D60F53317B008412DB /* dsa_pub.pem */,
 				1E416FFB0D36F827009A53A2 /* Interfaces */,
 				1E027F0D0D36F24200885DEE /* Toolbar Icons */,
-				1EEBFD110D359A9F008F835B /* dimple.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */,
@@ -483,7 +475,6 @@
 				1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */,
 				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
 				1EEBFC370D358F1B008F835B /* StepOut.png in Resources */,
-				1EEBFD120D359A9F008F835B /* dimple.png in Resources */,
 				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
 				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
 				1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */,
@@ -537,7 +528,6 @@
 				1E02C5710C610158006F1752 /* DebuggerBackEnd.m in Sources */,
 				1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */,
 				1E35FC760C6579CA0030F527 /* NSXMLElementAdditions.m in Sources */,
-				1EEBFD090D3599E8008F835B /* BSSplitView.m in Sources */,
 				1E7188690D839F6300969277 /* BSSourceView.mm in Sources */,
 				1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */,
 				1E4C7AF90DA401C7000A9DC7 /* BreakpointManager.m in Sources */,
