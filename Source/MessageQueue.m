@@ -265,19 +265,18 @@
     [self disconnectClient];
     return;
   }
-  const char* charBuffer = (const char*)buffer;
 
   // The read loop works by going through the buffer until all the bytes have
   // been processed.
   while (bufferOffset < bytesRead) {
     // Find the NUL separator, or the end of the string.
     NSUInteger partLength = 0;
-    for (ssize_t i = bufferOffset; i < bytesRead && charBuffer[i] != '\0'; ++i, ++partLength) ;
+    for (ssize_t i = bufferOffset; i < bytesRead && buffer[i] != '\0'; ++i, ++partLength) ;
 
     // If there is not a current packet, set some state.
     if (!_message) {
       // Read the message header: the size.  This will be |partLength| bytes.
-      _totalMessageSize = atoi(charBuffer + bufferOffset);
+      _totalMessageSize = atoi(buffer + bufferOffset);
       _messageSize = 0;
       _message = [[NSMutableString alloc] initWithCapacity:_totalMessageSize];
       bufferOffset += partLength + 1;  // Pass over the NUL byte.
