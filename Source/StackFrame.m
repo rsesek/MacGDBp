@@ -46,7 +46,7 @@
 }
 
 - (NSString*)description {
-  return [NSString stringWithFormat:@"#%d %@ [%@:%d]", self.index, self.function, self.filename, self.lineNumber];
+  return [NSString stringWithFormat:@"#%lu %@ [%@:%lu]", self.index, self.function, self.filename, self.lineNumber];
 }
 
 @end

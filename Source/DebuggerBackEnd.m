@@ -25,7 +25,7 @@
 
 @implementation DebuggerBackEnd {
   // The connection to the debugger engine.
-  NSUInteger _port;
+  uint16_t _port;
   ProtocolClient* _client;
 }
 
@@ -54,7 +54,7 @@
 /**
  * Gets the port number
  */
-- (NSUInteger)port {
+- (uint16_t)port {
   return _port;
 }
 

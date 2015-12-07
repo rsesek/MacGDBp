@@ -21,15 +21,15 @@
 @interface Breakpoint : NSObject
 {
   NSString* file_;
-  NSUInteger line_;
-  NSUInteger debuggerId_;
+  unsigned long line_;
+  unsigned long debuggerId_;
 }
 
 @property (readonly) NSString* file;
-@property (readonly) NSUInteger line;
-@property (readwrite, assign) NSUInteger debuggerId;
+@property (readonly) unsigned long line;
+@property (readwrite, assign) unsigned long debuggerId;
 
-- (id)initWithLine:(NSUInteger)l inFile:(NSString*)f;
+- (id)initWithLine:(unsigned long)l inFile:(NSString*)f;
 - (id)initWithDictionary:(NSDictionary*)dict;
 
 - (NSString*)transformedPath;

@@ -41,7 +41,7 @@
 - (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach;
 
 // getter
-- (NSUInteger)port;
+- (uint16_t)port;
 
 // communication
 - (void)run;

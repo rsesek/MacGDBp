@@ -28,7 +28,7 @@
 /**
  * The position in the stack
  */
-@property(readwrite, nonatomic) NSUInteger index;
+@property(readwrite, nonatomic) unsigned long index;
 
 /**
  * File the current frame is in
@@ -43,7 +43,7 @@
 /**
  * Line number of the source the frame points to
  */
-@property(readwrite, nonatomic) NSUInteger lineNumber;
+@property(readwrite, nonatomic) unsigned long lineNumber;
 
 /**
  * Current-executing function

@@ -224,9 +224,9 @@ const CGFloat kRulerRightPadding = 2.5;
  * Takes in a line number and returns a formatted attributed string, usable
  * for drawing.
  */
-- (NSAttributedString*)attributedStringForLineNumber:(NSUInteger)line
+- (NSAttributedString*)attributedStringForLineNumber:(unsigned long)line
 {
-  NSString* format = [NSString stringWithFormat:@"%d", line];
+  NSString* format = [NSString stringWithFormat:@"%lu", line];
   return [[[NSAttributedString alloc] initWithString:format
                                           attributes:[self fontAttributes]] autorelease];
 }

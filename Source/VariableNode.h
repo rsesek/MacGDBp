@@ -28,7 +28,7 @@
 @property(readonly, nonatomic) NSString* type;
 @property(readonly, nonatomic) NSString* value;
 @property(readonly, nonatomic) NSArray* children;
-@property(readonly, nonatomic) NSInteger childCount;
+@property(readonly, nonatomic) unsigned long childCount;
 @property(readonly, nonatomic) NSString* address;
 
 // Creates and initializes a new VariableNode from the XML response from the

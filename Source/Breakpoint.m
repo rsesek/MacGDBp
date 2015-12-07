@@ -113,7 +113,7 @@
  */
 - (NSString*)description
 {
-  return [NSString stringWithFormat:@"%@:%i", self.file, self.line];
+  return [NSString stringWithFormat:@"%@:%lu", self.file, self.line];
 }
 
 @end

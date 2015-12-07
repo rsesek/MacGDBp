@@ -49,7 +49,7 @@
     return;
   }
   
-  [sourceView setFile:[panel filename]];
+  [sourceView setFile:[[panel URL] path]];
 }
 
 /**

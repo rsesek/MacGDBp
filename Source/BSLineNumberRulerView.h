@@ -41,6 +41,6 @@
 
 // Returns the line number (1-based) at the given point. |point| should be in
 // the receiver's coordinate system.
-- (NSUInteger)lineNumberAtPoint:(NSPoint)point;
+- (unsigned long)lineNumberAtPoint:(NSPoint)point;
 
 @end

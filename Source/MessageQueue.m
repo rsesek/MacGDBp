@@ -136,7 +136,7 @@
 
   int rv;
   do {
-    rv = bind(_socket, &address, sizeof(address));
+    rv = bind(_socket, (struct sockaddr*)&address, sizeof(address));
     if (rv !=  0) {
       NSLog(@"Could not bind to socket: %d, %s", errno, strerror(errno));
     }
@@ -306,7 +306,7 @@
 - (void)acceptConnection {
   struct sockaddr_in address = {0};
   socklen_t addressLength = sizeof(address);
-  int connection = accept(_socket, &address, &addressLength);
+  int connection = accept(_socket, (struct sockaddr*)&address, &addressLength);
   if (connection < 0) {
     NSLog(@"Failed to accept connection: %d, %s", errno, strerror(errno));
     [self disconnectClient];
