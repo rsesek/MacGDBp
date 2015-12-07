@@ -49,7 +49,8 @@
                 options:NSKeyValueObservingOptionNew
                 context:nil];
 
-    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]];
+    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]
+                                            autoAttach:[defaults boolForKey:@"DebuggerAttached"]];
     connection.model = _model;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];

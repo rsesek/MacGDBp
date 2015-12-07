@@ -40,8 +40,9 @@
 // The model object to update in response to changes in the debugger.
 @property(assign, nonatomic) DebuggerModel* model;
 
-// initializer
-- (id)initWithPort:(NSUInteger)aPort;
+// Designated initializer. Sets up a connection on |aPort| and will
+// initialize it if |autoAttach| is YES.
+- (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach;
 
 // getter
 - (NSUInteger)port;
@@ -54,13 +55,6 @@
 - (void)stop;
 - (void)detach;
 
-// Breakpoint management.
-- (void)addBreakpoint:(Breakpoint*)bp;
-- (void)removeBreakpoint:(Breakpoint*)bp;
-
-// Evaluates a given string in the current execution context.
-- (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback;
-
 // Takes a partially loaded stack frame and fetches the rest of the information.
 - (void)loadStackFrame:(StackFrame*)frame;
 
@@ -68,5 +62,12 @@
 // any that are not. This is done within the scope of the given stack frame.
 - (void)loadVariableNode:(VariableNode*)variable
            forStackFrame:(StackFrame*)frame;
+
+// Breakpoint management.
+- (void)addBreakpoint:(Breakpoint*)bp;
+- (void)removeBreakpoint:(Breakpoint*)bp;
+
+// Evaluates a given string in the current execution context.
+- (void)evalScript:(NSString*)str callback:(void (^)(NSString*))callback;
 
 @end

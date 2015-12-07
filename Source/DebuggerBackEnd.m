@@ -30,16 +30,15 @@
 @synthesize autoAttach = _autoAttach;
 @synthesize model = _model;
 
-- (id)initWithPort:(NSUInteger)aPort
+- (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach
 {
   if (self = [super init]) {
     [[BreakpointManager sharedManager] setConnection:self];
     _port = aPort;
     _client = [[ProtocolClient alloc] initWithDelegate:self];
 
-    _autoAttach = [[NSUserDefaults standardUserDefaults] boolForKey:@"DebuggerAttached"];
-
-    if (self.autoAttach)
+    _autoAttach = doAttach;
+    if (doAttach)
       [_client connectOnPort:_port];
   }
   return self;
@@ -324,12 +323,8 @@
 - (void)rebuildStack:(NSXMLDocument*)response {
   NSUInteger depth = [[[[response rootElement] attributeForName:@"depth"] stringValue] intValue];
 
-  // Start with frame 0. If this is a shifted frame, then only it needs to be
-  // re-loaded. If it is not shifted, see if another frame on the stack is equal
-  // to it; if so, then the frames up to that must be discarded. If not, this is
-  // a new stack frame that should be inserted at the top of the stack. Finally,
-  // the sice of the stack is trimmed to |depth| from the bottom.
-
+  // Send a request to get each frame of the stack, which will be added to this
+  // array. When the final frame arrives, the |tempStack| is released.
   __block NSMutableArray* tempStack = [[NSMutableArray alloc] init];
 
   for (NSUInteger i = 0; i < depth; ++i) {
