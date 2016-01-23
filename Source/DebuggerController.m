@@ -186,6 +186,8 @@
     return;
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
     [self stepIn:self];
+  // Do not cache the file between debugger executions.
+  sourceViewer.file = nil;
 }
 
 /**
