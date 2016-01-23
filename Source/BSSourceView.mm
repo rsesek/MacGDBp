@@ -140,7 +140,7 @@
 - (void)errorHighlightingFile:(NSNotification*)notif
 {
   NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
-  if ([data length] > 0) // there's something on stderr, so the PHP CLI failed
+  if ([data length] > 0 && file_) // there's something on stderr, so the PHP CLI failed
     [self setPlainTextStringFromFile:file_];
 }
 
