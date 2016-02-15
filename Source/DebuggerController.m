@@ -330,7 +330,7 @@
   [sourceViewer setMarkedLine:frame.lineNumber];
   [sourceViewer scrollToLine:frame.lineNumber];
   
-  [[sourceViewer textView] display];
+  [[sourceViewer textView] setNeedsDisplay:YES];
 }
 
 /**
