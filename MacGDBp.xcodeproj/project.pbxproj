@@ -39,8 +39,6 @@
 		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
-		1EC6965712BBC6A700A8D984 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1EC6965112BBC6A700A8D984 /* LICENSE */; };
-		1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1EC6965212BBC6A700A8D984 /* modp_b64.cc */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
 		1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE841176FEA80003622C3 /* MessageQueue.m */; };
 		1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE844176FFE04003622C3 /* ProtocolClient.m */; };
@@ -129,10 +127,6 @@
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
 		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
-		1EC6965112BBC6A700A8D984 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1EC6965212BBC6A700A8D984 /* modp_b64.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modp_b64.cc; sourceTree = "<group>"; };
-		1EC6965312BBC6A700A8D984 /* modp_b64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64.h; sourceTree = "<group>"; };
-		1EC6965412BBC6A700A8D984 /* modp_b64_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modp_b64_data.h; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
 		1EEBE840176FEA80003622C3 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageQueue.h; path = Source/MessageQueue.h; sourceTree = "<group>"; };
@@ -315,17 +309,6 @@
 			name = Debugger;
 			sourceTree = "<group>";
 		};
-		1EC6965012BBC6A700A8D984 /* modp_b64 */ = {
-			isa = PBXGroup;
-			children = (
-				1EC6965112BBC6A700A8D984 /* LICENSE */,
-				1EC6965212BBC6A700A8D984 /* modp_b64.cc */,
-				1EC6965312BBC6A700A8D984 /* modp_b64.h */,
-				1EC6965412BBC6A700A8D984 /* modp_b64_data.h */,
-			);
-			path = modp_b64;
-			sourceTree = "<group>";
-		};
 		1EEBE83F176FEA5C003622C3 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,7 +339,6 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* MacGDBp_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				1EC6965012BBC6A700A8D984 /* modp_b64 */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -483,7 +465,6 @@
 				1E9582620E252474001A3D89 /* Preferences.xib in Resources */,
 				1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */,
 				1E6B594C11610993001189D2 /* Log.xib in Resources */,
-				1EC6965712BBC6A700A8D984 /* LICENSE in Resources */,
 				1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */,
 				1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */,
 				1E110F8D1393F370007B6D63 /* Eval.png in Resources */,
@@ -538,7 +519,6 @@
 				1EECC0BA1BC9B1E800FB22D3 /* DebuggerModel.m in Sources */,
 				1E6B5947116106FE001189D2 /* LoggingController.m in Sources */,
 				1EC1337E127DBB00007946FC /* VariableNode.m in Sources */,
-				1EC6965812BBC6A700A8D984 /* modp_b64.cc in Sources */,
 				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */,
 				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
 				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,

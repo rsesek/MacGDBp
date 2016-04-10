@@ -17,7 +17,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "AppDelegate.h"
-#include "modp_b64.h"
 
 @interface NSXMLElement (GDBpAdditions_Private)
 - (NSString*)internalName;
@@ -51,21 +50,12 @@
 {
   // The value of the node is base64 encoded.
   if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
-    const char* src = [[self stringValue] UTF8String];
-    NSUInteger srclen = [[self stringValue] length];
-
-    int destlen = modp_b64_decode_len(srclen);
-    char* dest = malloc(destlen);
-    memset(dest, 0, destlen);
-
-    modp_b64_decode(dest, src, srclen);
-
-    NSString* ret = nil;
-    if (dest) {
-      ret = [NSString stringWithUTF8String:dest];
-      free(dest);
+    NSData* base64Data = [[[NSData alloc] initWithBase64Encoding:[self stringValue]] autorelease];
+    if (base64Data) {
+      return [[[NSString alloc] initWithData:base64Data encoding:NSUTF8StringEncoding] autorelease];
+    } else {
+      return @"<< Failed to base64-decode data >>";
     }
-    return ret;
   }
 
   // The value is just a normal string.

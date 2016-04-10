@@ -19,7 +19,6 @@
 #import "AppDelegate.h"
 #import "Breakpoint.h"
 #import "DebuggerModel.h"
-#import "modp_b64.h"
 #import "NSXMLElementAdditions.h"
 #import "StackFrame.h"
 
@@ -227,15 +226,13 @@
   if (!self.model.connected)
     return;
 
-  char* encodedString = malloc(modp_b64_encode_len([str length]));
-  modp_b64_encode(encodedString, [str UTF8String], [str length]);
+  NSData* stringData = [str dataUsingEncoding:NSUTF8StringEncoding];
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     NSXMLElement* parent = (NSXMLElement*)[[message rootElement] childAtIndex:0];
     NSString* value = [parent base64DecodedValue];
     callback(value);
   };
-  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %s" handler:handler, encodedString];
-  free(encodedString);
+  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %@" handler:handler, [stringData base64Encoding]];
 }
 
 // Protocol Client Delegate ////////////////////////////////////////////////////
