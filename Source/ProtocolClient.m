@@ -172,7 +172,7 @@
   LogEntry* entry = [LogEntry newSendEntry:message];
   entry.lastReadTransactionID = _lastReadID;
   entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger recordEntry:entry];
+  [logger recordEntry:[entry autorelease]];
 }
 
 // Callback with the message content when one has been receieved.
@@ -182,7 +182,7 @@
   LogEntry* entry = [LogEntry newReceiveEntry:message];
   entry.lastReadTransactionID = _lastReadID;
   entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger recordEntry:entry];
+  [logger recordEntry:[entry autorelease]];
 
   // Parse the XML and test for errors.
   NSError* error = nil;
