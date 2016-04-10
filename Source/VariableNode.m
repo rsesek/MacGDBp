@@ -22,14 +22,6 @@
   NSMutableArray* _children;
 }
 
-@synthesize name = _name;
-@synthesize fullName = _fullName;
-@synthesize className = _className;
-@synthesize type = _type;
-@synthesize value = _value;
-@synthesize childCount = _childCount;
-@synthesize address = _address;
-
 - (id)initWithXMLNode:(NSXMLElement*)node {
   if (self = [super init]) {
     _name       = [[[node attributeForName:@"name"] stringValue] copy];
@@ -67,7 +59,7 @@
     // Other child nodes may be the string value.
     if ([child isKindOfClass:[NSXMLElement class]]) {
       VariableNode* node = [[VariableNode alloc] initWithXMLNode:(NSXMLElement*)child];
-      // Don't include the CLASSNAME property as that information is retreeived
+      // Don't include the CLASSNAME property as that information is retrieved
       // elsewhere.
       if (![node.name isEqualToString:@"CLASSNAME"])
         [_children addObject:node];

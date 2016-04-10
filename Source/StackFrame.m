@@ -18,14 +18,6 @@
 
 @implementation StackFrame
 
-@synthesize loaded;
-@synthesize index;
-@synthesize filename;
-@synthesize source;
-@synthesize lineNumber;
-@synthesize function;
-@synthesize variables;
-
 - (void)dealloc {
   self.filename = nil;
   self.source = nil;
