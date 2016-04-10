@@ -17,6 +17,7 @@
 #import "BreakpointController.h"
 
 #import "AppDelegate.h"
+#import "PreferenceNames.h"
 
 @implementation BreakpointController
 
@@ -30,7 +31,7 @@
   if (self = [super initWithWindowNibName:@"Breakpoints"])
   {
     manager = [BreakpointManager sharedManager];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakpointsWindowVisible"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefBreakpointsWindowVisible])
       [[self window] orderBack:nil];
   }
   return self;

@@ -15,7 +15,9 @@
  */
 
 #import "BreakpointManager.h"
+
 #import "AppDelegate.h"
+#import "PreferenceNames.h"
 
 @interface BreakpointManager (Private)
 - (void)updateDisplaysForFile:(NSString*)file;
@@ -37,7 +39,7 @@
       breakpoints = [[NSMutableArray alloc] init];
     }
     
-    savedBreakpoints = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"Breakpoints"] mutableCopy];
+    savedBreakpoints = [[[NSUserDefaults standardUserDefaults] arrayForKey:kPrefBreakpoints] mutableCopy];
     if (savedBreakpoints)
     {
       for (NSDictionary* d in savedBreakpoints)
@@ -77,7 +79,7 @@
     [connection addBreakpoint:bp];
     
     [savedBreakpoints addObject:[bp dictionary]];
-    [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:@"Breakpoints"];
+    [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:kPrefBreakpoints];
     
     [self updateDisplaysForFile:[bp file]];
   }
@@ -96,7 +98,7 @@
       [connection removeBreakpoint:b];
       
       [savedBreakpoints removeObject:[b dictionary]];
-      [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:@"Breakpoints"];
+      [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:kPrefBreakpoints];
       
       [self updateDisplaysForFile:file];
       return b;

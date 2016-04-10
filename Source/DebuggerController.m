@@ -22,6 +22,7 @@
 #import "DebuggerBackEnd.h"
 #import "DebuggerModel.h"
 #import "EvalController.h"
+#import "PreferenceNames.h"
 #import "NSXMLElementAdditions.h"
 #import "StackFrame.h"
 
@@ -50,14 +51,14 @@
                 options:NSKeyValueObservingOptionNew
                 context:nil];
 
-    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:@"Port"]
-                                            autoAttach:[defaults boolForKey:@"DebuggerAttached"]];
+    connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:kPrefPort]
+                                            autoAttach:[defaults boolForKey:kPrefDebuggerAttached]];
     connection.model = _model;
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
     [[self window] setDelegate:self];
     
-    if ([defaults boolForKey:@"InspectorWindowVisible"])
+    if ([defaults boolForKey:kPrefInspectorWindowVisible])
       [inspector orderFront:self];
   }
   return self;
@@ -184,7 +185,7 @@
   [errormsg setHidden:YES];
   if (!self.connection.autoAttach)
     return;
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BreakOnFirstLine"])
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefBreakOnFirstLine])
     [self stepIn:self];
   // Do not cache the file between debugger executions.
   sourceViewer.file = nil;

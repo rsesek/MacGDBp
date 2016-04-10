@@ -16,6 +16,7 @@
 
 #import "Breakpoint.h"
 
+#import "PreferenceNames.h"
 
 @implementation Breakpoint
 
@@ -65,7 +66,7 @@
 {
   NSString* path = self.file;
   
-  NSMutableArray* transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:@"PathReplacements"];
+  NSMutableArray* transforms = [[NSUserDefaults standardUserDefaults] mutableArrayValueForKey:kPrefPathReplacements];
   if (!transforms || [transforms count] < 1)
     return path;
   

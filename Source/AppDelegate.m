@@ -18,6 +18,8 @@
 
 #import <Sparkle/Sparkle.h>
 
+#import "PreferenceNames.h"
+
 @implementation AppDelegate
 
 @synthesize debugger;
@@ -32,12 +34,12 @@
 {
   @autoreleasepool {
     NSDictionary* defaults = @{
-      @"Port"                     : @9000,
-      @"BreakpointsWindowVisible" : @YES,
-      @"InspectorWindowVisible"   : @YES,
-      @"PathReplacements"         : [NSMutableArray array],
-      @"BreakOnFirstLine"         : @YES,
-      @"DebuggerAttached"         : @YES
+      kPrefPort                     : @9000,
+      kPrefBreakpointsWindowVisible : @YES,
+      kPrefInspectorWindowVisible   : @YES,
+      kPrefPathReplacements         : [NSMutableArray array],
+      kPrefBreakOnFirstLine         : @YES,
+      kPrefDebuggerAttached         : @YES
     };
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
   }
@@ -53,20 +55,19 @@
   // Record whether this user ever used the beta VersionCast feed. In the
   // future, we will use this bit to query for unstable releases after the user
   // has upgraded to a stable version.
-  NSString* const kUsesUnstableVersionCast = @"UnstableVersionCast";
   NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-  BOOL usesUnstable = [defaults boolForKey:kUsesUnstableVersionCast];
+  BOOL usesUnstable = [defaults boolForKey:kPrefUnstableVersionCast];
   NSURL* feedURL = [[SUUpdater sharedUpdater] feedURL];
   usesUnstable = usesUnstable ||
       [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
-  [defaults setBool:usesUnstable forKey:kUsesUnstableVersionCast];
+  [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)notification
 {
   [[NSUserDefaults standardUserDefaults] setBool:self.debugger.connection.autoAttach
-                                          forKey:@"DebuggerAttached"];
+                                          forKey:kPrefDebuggerAttached];
 }
 
 /**
