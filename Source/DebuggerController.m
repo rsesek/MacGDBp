@@ -96,17 +96,23 @@
                          forKeyPath:@"selection.source"
                             options:NSKeyValueObservingOptionNew
                             context:nil];
-  [[_segmentControl cell] addObserver:self
-                           forKeyPath:@"selectedSegment"
-                              options:NSKeyValueObservingOptionNew
-                              context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 
   _breakpointsController = [[BreakpointController alloc] init];
   [[self.tabView tabViewItemAtIndex:1] setView:_breakpointsController.view];
 
+  // When the segment control's selection changes, update the tab view.
+  [[_segmentControl cell] addObserver:self
+                           forKeyPath:@"selectedSegment"
+                              options:0
+                              context:nil];
+  // When the segment control's superview changes, recalculate the spacer
+  // segment widths.
+  [[_segmentControl superview] addObserver:self
+                                forKeyPath:@"frame"
+                                   options:0
+                                   context:nil];
   [self updateSegmentControl];
-
 }
 
 /**
@@ -126,8 +132,10 @@
       [self debuggerConnected];
     else
       [self debuggerDisconnected];
-  } else if (object == self.segmentControl.cell) {
-    [self.tabView selectTabViewItemAtIndex:self.segmentControl.selectedSegment - 1];
+  } else if (object == _segmentControl.cell) {
+    [_tabView selectTabViewItemAtIndex:_segmentControl.selectedSegment - 1];
+  } else if (object == _segmentControl.superview) {
+    [self updateSegmentControl];
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
