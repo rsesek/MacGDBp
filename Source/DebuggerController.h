@@ -31,7 +31,7 @@
   IBOutlet NSButton* attachedCheckbox_;
 
   IBOutlet NSArrayController* stackArrayController;
-  
+
   IBOutlet NSTreeController* variablesTreeController;
   IBOutlet NSOutlineView* variablesOutlineView;
   NSMutableSet* expandedVariables;
@@ -48,6 +48,9 @@
 @property(readonly) DebuggerBackEnd* connection;
 @property(readonly) BSSourceView* sourceViewer;
 @property(readonly) NSWindow* inspector;
+
+@property(retain) IBOutlet NSSegmentedControl* segmentControl;
+@property(retain) IBOutlet NSTabView* tabView;
 
 - (IBAction)showInspectorWindow:(id)sender;
 - (IBAction)showEvalWindow:(id)sender;

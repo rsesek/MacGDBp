@@ -92,7 +92,14 @@
                          forKeyPath:@"selection.source"
                             options:NSKeyValueObservingOptionNew
                             context:nil];
+  [[_segmentControl cell] addObserver:self
+                           forKeyPath:@"selectedSegment"
+                              options:NSKeyValueObservingOptionNew
+                              context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
+
+  [self updateSegmentControl];
+
 }
 
 /**
@@ -112,6 +119,8 @@
       [self debuggerConnected];
     else
       [self debuggerDisconnected];
+  } else if (object == self.segmentControl.cell) {
+    [self.tabView selectTabViewItemAtIndex:self.segmentControl.selectedSegment - 1];
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
@@ -352,6 +361,23 @@
     if ([fullName isEqualToString:selection])
       [variablesTreeController setSelectionIndexPath:[node indexPath]];
   }
+}
+
+/**
+ * Sets the widths of the segmented control.
+ */
+- (void)updateSegmentControl {
+  NSRect containerFrame = [[_segmentControl superview] frame];
+  CGFloat containerWidth = NSWidth(containerFrame);
+  CGFloat segmentSizes = 0;
+  for (NSInteger i = 1; i < [_segmentControl segmentCount] - 1; ++i) {
+    segmentSizes += [_segmentControl widthForSegment:i];
+  }
+  CGFloat spacerWidth = (containerWidth - segmentSizes) / 2;
+  [_segmentControl setWidth:spacerWidth forSegment:0];
+  [_segmentControl setWidth:spacerWidth forSegment:[_segmentControl segmentCount] - 1];
+
+  [_segmentControl setFrame:NSMakeRect(-1, NSHeight(containerFrame) - 27, containerWidth + 2, 30)];
 }
 
 #pragma mark BSSourceView Delegate
