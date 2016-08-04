@@ -75,6 +75,7 @@
 - (IBAction)showDebuggerWindow:(id)sender
 {
   [[debugger window] makeKeyAndOrderFront:self];
+  [debugger.segmentControl setSelectedSegment:1];
 }
 
 /**
