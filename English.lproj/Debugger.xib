@@ -60,7 +60,7 @@
                             <binding destination="-2" name="value" keyPath="model.status" id="K7n-DX-SjR"/>
                         </connections>
                     </textField>
-                    <splitView dividerStyle="thin" vertical="YES" id="502">
+                    <splitView autosaveName="DebuggerSplitFrame" dividerStyle="thin" vertical="YES" id="502">
                         <rect key="frame" x="-1" y="19" width="772" height="483"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
