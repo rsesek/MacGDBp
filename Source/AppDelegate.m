@@ -35,7 +35,6 @@
   @autoreleasepool {
     NSDictionary* defaults = @{
       kPrefPort                     : @9000,
-      kPrefBreakpointsWindowVisible : @YES,
       kPrefInspectorWindowVisible   : @YES,
       kPrefPathReplacements         : [NSMutableArray array],
       kPrefBreakOnFirstLine         : @YES,
@@ -83,10 +82,8 @@
  */
 - (IBAction)showBreakpointWindow:(id)sender
 {
-  if (![[breakpoint window] isVisible] || ![[breakpoint window] isKeyWindow])
-    [[breakpoint window] makeKeyAndOrderFront:sender];
-  else
-    [[breakpoint window] orderOut:sender];
+  [[debugger window] makeKeyAndOrderFront:sender];
+  [debugger.segmentControl setSelectedSegment:2];
 }
 
 /**

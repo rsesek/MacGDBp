@@ -18,6 +18,7 @@
 
 #import "AppDelegate.h"
 #import "BSSourceView.h"
+#import "BreakpointController.h"
 #import "BreakpointManager.h"
 #import "DebuggerBackEnd.h"
 #import "DebuggerModel.h"
@@ -31,7 +32,9 @@
 - (void)expandVariables;
 @end
 
-@implementation DebuggerController
+@implementation DebuggerController {
+  BreakpointController* _breakpointsController;
+}
 
 @synthesize connection, sourceViewer, inspector;
 
@@ -71,6 +74,7 @@
 {
   [connection release];
   [_model release];
+  [_breakpointsController release];
   [expandedVariables release];
   [super dealloc];
 }
@@ -97,6 +101,9 @@
                               options:NSKeyValueObservingOptionNew
                               context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
+
+  _breakpointsController = [[BreakpointController alloc] init];
+  [[self.tabView tabViewItemAtIndex:1] setView:_breakpointsController.view];
 
   [self updateSegmentControl];
 

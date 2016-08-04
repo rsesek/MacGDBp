@@ -24,7 +24,6 @@
 @interface AppDelegate : NSObject
 {
   IBOutlet DebuggerController* debugger;
-  IBOutlet BreakpointController* breakpoint;
   IBOutlet LoggingController* loggingController_;
   PreferencesController* prefs;
 }

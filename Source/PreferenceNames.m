@@ -18,8 +18,6 @@
 
 NSString* const kPrefPort = @"Port";
 
-NSString* const kPrefBreakpointsWindowVisible = @"BreakpointsWindowVisible";
-
 NSString* const kPrefInspectorWindowVisible = @"InspectorWindowVisible";
 
 NSString* const kPrefPathReplacements = @"PathReplacements";

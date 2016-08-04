@@ -28,11 +28,9 @@
  */
 - (id)init
 {
-  if (self = [super initWithWindowNibName:@"Breakpoints"])
+  if (self = [super initWithNibName:@"Breakpoints" bundle:nil])
   {
     manager = [BreakpointManager sharedManager];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefBreakpointsWindowVisible])
-      [[self window] orderBack:nil];
   }
   return self;
 }

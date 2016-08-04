@@ -19,9 +19,6 @@
 // NSNumber integer for the port to listen on.
 extern NSString* const kPrefPort;
 
-// NSNumber bool for whether the breakpoints window is visible.
-extern NSString* const kPrefBreakpointsWindowVisible;
-
 // NSNumber bool for whether the inspector window is visible.
 extern NSString* const kPrefInspectorWindowVisible;
 
