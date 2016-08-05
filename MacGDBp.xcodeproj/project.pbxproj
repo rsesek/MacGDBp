@@ -16,7 +16,6 @@
 		1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E108E3F136CC8B9002E34E0 /* EvalController.m */; };
 		1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E108E41136CC9A0002E34E0 /* Eval.xib */; };
 		1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E109018136DD92D002E34E0 /* StripLineBreaksValueTransformer.m */; };
-		1E110F8D1393F370007B6D63 /* Eval.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E110F8C1393F370007B6D63 /* Eval.png */; };
 		1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */; };
 		1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E1E53010DF9B89800D334F9 /* Breakpoints.xib */; };
 		1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E2F0A6812D5371B00EBF675 /* Stop.png */; };
@@ -95,7 +94,6 @@
 		1E108E42136CC9A0002E34E0 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Eval.xib; sourceTree = "<group>"; };
 		1E109017136DD92D002E34E0 /* StripLineBreaksValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StripLineBreaksValueTransformer.h; path = Source/StripLineBreaksValueTransformer.h; sourceTree = "<group>"; };
 		1E109018136DD92D002E34E0 /* StripLineBreaksValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StripLineBreaksValueTransformer.m; path = Source/StripLineBreaksValueTransformer.m; sourceTree = "<group>"; };
-		1E110F8C1393F370007B6D63 /* Eval.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Eval.png; path = Icons/Eval.png; sourceTree = "<group>"; };
 		1E1181481319805E003BFEF1 /* BSSourceViewTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceViewTextView.h; path = Source/BSSourceViewTextView.h; sourceTree = "<group>"; };
 		1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceViewTextView.m; path = Source/BSSourceViewTextView.m; sourceTree = "<group>"; };
 		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
@@ -224,7 +222,6 @@
 				1E027F090D36F23F00885DEE /* StepOver.png */,
 				1EEBFC360D358F1B008F835B /* StepOut.png */,
 				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
-				1E110F8C1393F370007B6D63 /* Eval.png */,
 			);
 			name = "Toolbar Icons";
 			sourceTree = "<group>";
@@ -472,7 +469,6 @@
 				1E6B594C11610993001189D2 /* Log.xib in Resources */,
 				1E2F0A6912D5371C00EBF675 /* Stop.png in Resources */,
 				1E108E43136CC9A0002E34E0 /* Eval.xib in Resources */,
-				1E110F8D1393F370007B6D63 /* Eval.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

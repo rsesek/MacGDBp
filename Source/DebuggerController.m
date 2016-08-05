@@ -34,6 +34,7 @@
 
 @implementation DebuggerController {
   BreakpointController* _breakpointsController;
+  EvalController* _evalController;
 }
 
 @synthesize connection, sourceViewer, inspector;
@@ -75,6 +76,7 @@
   [connection release];
   [_model release];
   [_breakpointsController release];
+  [_evalController release];
   [expandedVariables release];
   [super dealloc];
 }
@@ -98,8 +100,12 @@
                             context:nil];
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 
+  // Load view controllers into the tab views.
   _breakpointsController = [[BreakpointController alloc] init];
   [[self.tabView tabViewItemAtIndex:1] setView:_breakpointsController.view];
+
+  _evalController = [[EvalController alloc] initWithBackEnd:connection];
+  [[self.tabView tabViewItemAtIndex:2] setView:_evalController.view];
 
   // When the segment control's selection changes, update the tab view.
   [[_segmentControl cell] addObserver:self
@@ -176,9 +182,7 @@
  */
 - (IBAction)showEvalWindow:(id)sender
 {
-  // The |controller| will release itself on close.
-  EvalController* controller = [[EvalController alloc] initWithBackEnd:connection];
-  [controller runModalForWindow:[self window]];
+  [self.segmentControl setSelectedSegment:3];
 }
 
 /**

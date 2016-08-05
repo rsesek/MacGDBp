@@ -69,7 +69,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <segmentedControl verticalHuggingPriority="750" id="mRx-aY-U5x">
-                                        <rect key="frame" x="-9" y="459" width="218" height="25"/>
+                                        <rect key="frame" x="-50" y="459" width="304" height="25"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="Qgr-HU-m0Y">
                                             <font key="font" metaFont="system"/>
@@ -77,15 +77,16 @@
                                                 <segment enabled="NO">
                                                     <nil key="label"/>
                                                 </segment>
-                                                <segment label="Variables" width="92" selected="YES" tag="1"/>
-                                                <segment label="Breakpoints" width="93" tag="2"/>
+                                                <segment label="Variables" width="90" selected="YES" tag="1"/>
+                                                <segment label="Breakpoints" width="90" tag="2"/>
+                                                <segment label="Eval" width="90" tag="3"/>
                                                 <segment enabled="NO">
                                                     <nil key="label"/>
                                                 </segment>
                                             </segments>
                                         </segmentedCell>
                                     </segmentedControl>
-                                    <tabView type="noTabsNoBorder" id="XU1-a6-Ws7">
+                                    <tabView type="noTabsNoBorder" initialItem="jVS-VL-LBw" id="XU1-a6-Ws7">
                                         <rect key="frame" x="0.0" y="0.0" width="211" height="461"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -182,7 +183,7 @@
                                                                 <rect key="frame" x="1" y="11" width="53" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                             </scroller>
-                                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="465">
+                                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="465">
                                                                 <rect key="frame" x="38" y="23" width="16" height="4"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                             </scroller>
@@ -196,7 +197,13 @@
                                             </tabViewItem>
                                             <tabViewItem label="Breakpoints" identifier="2" id="2a4-vf-O1X">
                                                 <view key="view" id="9f1-p9-w6d">
-                                                    <rect key="frame" x="0.0" y="0.0" width="211" height="463"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="211" height="461"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                </view>
+                                            </tabViewItem>
+                                            <tabViewItem label="Eval" identifier="" id="ncK-g5-aVZ">
+                                                <view key="view" id="uDl-xl-zMF">
+                                                    <rect key="frame" x="0.0" y="0.0" width="211" height="461"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                             </tabViewItem>
@@ -373,23 +380,18 @@
                             <action selector="showInspectorWindow:" target="-1" id="587"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="05157554-5CF3-45B4-9306-239A1F7E8130" label="Evaluate Script" paletteLabel="Evaluate Script" tag="-1" image="Eval" id="600">
-                        <connections>
-                            <action selector="showEvalWindow:" target="-2" id="602"/>
-                        </connections>
-                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarSeparatorItem" id="474"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="476"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="477"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarCustomizeToolbarItem" id="478"/>
-                    <toolbarItem implicitItemIdentifier="0DD9463E-4676-43E6-B885-7A9CB1137956" label="Attached" paletteLabel="" image="123B7784-9F5B-43C3-9BF1-67AA3027FBC7" id="593">
+                    <toolbarItem implicitItemIdentifier="0DD9463E-4676-43E6-B885-7A9CB1137956" label="Attached" paletteLabel="" image="5C5E81E6-5645-44D5-9588-4457F99FF803" id="593">
                         <nil key="toolTip"/>
                         <size key="minSize" width="63" height="18"/>
                         <size key="maxSize" width="107" height="18"/>
                         <button key="view" id="591">
                             <rect key="frame" x="0.0" y="14" width="83" height="18"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="bevel" title="Attached" bezelStyle="regularSquare" image="123B7784-9F5B-43C3-9BF1-67AA3027FBC7" imagePosition="left" alignment="left" state="on" inset="2" id="592">
+                            <buttonCell key="cell" type="bevel" title="Attached" bezelStyle="regularSquare" image="5C5E81E6-5645-44D5-9588-4457F99FF803" imagePosition="left" alignment="left" state="on" inset="2" id="592">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                                 <connections>
@@ -412,7 +414,6 @@
                     <toolbarItem reference="597"/>
                     <toolbarItem reference="476"/>
                     <toolbarItem reference="476"/>
-                    <toolbarItem reference="600"/>
                     <toolbarItem reference="584"/>
                     <toolbarItem reference="477"/>
                     <toolbarItem reference="593"/>
@@ -608,7 +609,7 @@
         <userDefaultsController representsSharedInstance="YES" id="582"/>
     </objects>
     <resources>
-        <image name="123B7784-9F5B-43C3-9BF1-67AA3027FBC7" width="18" height="18">
+        <image name="5C5E81E6-5645-44D5-9588-4457F99FF803" width="18" height="18">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGW1xYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8QFwcI
 ERYbHCc0NTY3ODk6O0JDRElMT1VYVSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNS
@@ -627,7 +628,6 @@ AUMBSAFOAVQBWwFjAWoBcwF4AYMBjAGiAaYBswG8AcUB4QHmAfkB/QIQAhsCIAIoAisCMAI/AkMCSgJS
 Al8CZAJmAmgCbQJ1AngCfQKFAogCmgKdAqIAAAAAAAACAQAAAAAAAABfAAAAAAAAAAAAAAAAAAACpA
 </mutableData>
         </image>
-        <image name="Eval" width="256" height="256"/>
         <image name="HUDIcon" width="32" height="32"/>
         <image name="Run" width="256" height="256"/>
         <image name="StepIn" width="256" height="256"/>

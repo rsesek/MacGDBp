@@ -18,23 +18,13 @@
 
 @class DebuggerBackEnd;
 
-@interface EvalController : NSWindowController {
- @private
-  DebuggerBackEnd* backEnd_;
-
-  // Outlets.
-  NSTextField* dataField_;
-  NSTextField* resultField_;
-}
+@interface EvalController : NSViewController
 
 @property(nonatomic, retain) IBOutlet NSTextField* dataField;
 @property(nonatomic, retain) IBOutlet NSTextField* resultField;
 
 - (id)initWithBackEnd:(DebuggerBackEnd*)backEnd;
 
-- (void)runModalForWindow:(NSWindow*)parent;
-
 - (IBAction)evaluateScript:(id)sender;
-- (IBAction)closeWindow:(id)sender;
 
 @end

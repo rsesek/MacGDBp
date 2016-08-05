@@ -18,54 +18,28 @@
 
 #import "DebuggerBackEnd.h"
 
-@implementation EvalController
+@implementation EvalController {
+  DebuggerBackEnd* _backEnd;
+}
 
-@synthesize dataField = dataField_;
-@synthesize resultField = resultField_;
-
-- (id)initWithBackEnd:(DebuggerBackEnd*)backEnd
-{
-  if (self = [super initWithWindowNibName:@"Eval"]) {
-    backEnd_ = backEnd;
+- (id)initWithBackEnd:(DebuggerBackEnd*)backEnd {
+  if (self = [super initWithNibName:@"Eval" bundle:nil]) {
+    _backEnd = backEnd;
   }
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   self.dataField = nil;
   self.resultField = nil;
   [super dealloc];
 }
 
-- (void)runModalForWindow:(NSWindow*)parent
-{
-  [NSApp beginSheet:[self window]
-     modalForWindow:parent
-      modalDelegate:self
-     didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
-        contextInfo:nil];
-}
-
-- (void)sheetDidEnd:(NSWindow*)sheet
-         returnCode:(NSInteger)returnCode
-        contextInfo:(void*)contextInfo
-{
-  [self autorelease];
-}
-
-- (IBAction)evaluateScript:(id)sender
-{
+- (IBAction)evaluateScript:(id)sender {
   NSString* code = [self.dataField stringValue];
-  [backEnd_ evalScript:code callback:^(NSString* result) {
+  [_backEnd evalScript:code callback:^(NSString* result) {
     [self.resultField setStringValue:result];
   }];
-}
-
-- (IBAction)closeWindow:(id)sender
-{
-  [self close];
-  [NSApp endSheet:[self window]];
 }
 
 @end
