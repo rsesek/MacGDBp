@@ -107,7 +107,6 @@
   }
   
   [sourceView setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
-  [sourceView setNeedsDisplay:YES];
 }
 
 /**

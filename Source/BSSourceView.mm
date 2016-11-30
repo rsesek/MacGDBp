@@ -64,6 +64,18 @@
   [super dealloc];
 }
 
+- (void)setMarkers:(NSSet*)markers {
+  [markers_ release];
+  markers_ = [markers copy];
+
+  [ruler_ setNeedsDisplay:YES];
+}
+
+- (void)setMarkedLine:(NSUInteger)markedLine {
+  markedLine_ = markedLine;
+  [ruler_ setNeedsDisplay:YES];
+}
+
 /**
  * Sets the file name as well as the text of the source view
  */

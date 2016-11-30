@@ -41,12 +41,12 @@
   id<BSSourceViewDelegate> delegate_;
 }
 
-@property (readonly) NSTextView* textView;
-@property (readonly) NSScrollView* scrollView;
-@property (retain) NSSet* markers;
+@property (nonatomic, readonly) NSTextView* textView;
+@property (nonatomic, readonly) NSScrollView* scrollView;
+@property (nonatomic, retain) NSSet* markers;
 @property (nonatomic, assign) NSString* file;
-@property (assign) NSUInteger markedLine;
-@property (assign) id delegate;
+@property (nonatomic, assign) NSUInteger markedLine;
+@property (nonatomic, assign) id delegate;
 
 - (void)setFile:(NSString*)f;
 - (void)setString:(NSString*)source asFile:(NSString*)path;
