@@ -351,7 +351,7 @@
   {
     [sourceViewer setString:frame.source asFile:filename];
     
-    NSSet* breakpoints = [NSSet setWithArray:[[BreakpointManager sharedManager] breakpointsForFile:filename]];
+    NSSet<NSNumber*>* breakpoints = [[BreakpointManager sharedManager] breakpointsForFile:filename];
     [sourceViewer setMarkers:breakpoints];
   }
   
@@ -419,8 +419,7 @@
     [bp release];
   }
   
-  [sourceViewer setMarkers:[NSSet setWithArray:[mngr breakpointsForFile:file]]];
-  [sourceViewer setNeedsDisplay:YES];
+  [sourceViewer setMarkers:[mngr breakpointsForFile:file]];
 }
 
 @end

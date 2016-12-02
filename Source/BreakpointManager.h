@@ -32,7 +32,7 @@
 + (BreakpointManager*)sharedManager;
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
-- (NSArray*)breakpointsForFile:(NSString*)file;
+- (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file;
 - (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
 
 @end

@@ -94,6 +94,10 @@
   {
     if ([b line] == line && [[b file] isEqualToString:file])
     {
+      // Keep the breakpoint alive after it is removed from the breakpoints
+      // array.
+      [[b retain] autorelease];
+
       [breakpoints removeObject:b];
       [connection removeBreakpoint:b];
       
@@ -110,17 +114,15 @@
 /**
  * Returns all the breakpoints for a given file
  */
-- (NSArray*)breakpointsForFile:(NSString*)file
+- (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file
 {
-  NSMutableArray* matches = [NSMutableArray array];
-  for (Breakpoint* b in breakpoints)
-  {
-    if ([[b file] isEqualToString:file])
-    {
-      [matches addObject:b];
+  NSMutableSet<NSNumber*>* matches = [NSMutableSet set];
+  for (Breakpoint* b in breakpoints) {
+    if ([b.file isEqualToString:file]) {
+      [matches addObject:@(b.line)];
     }
   }
-  
+
   return matches;
 }
 
@@ -143,9 +145,9 @@
   AppDelegate* appDel = [NSApp delegate];
   [[[appDel breakpoint] arrayController] rearrangeObjects];
   [[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
-  [[[appDel breakpoint] sourceView] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  [[[appDel breakpoint] sourceView] setMarkers:[self breakpointsForFile:file]];
   [[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
-  [[[appDel debugger] sourceViewer] setMarkers:[NSSet setWithArray:[self breakpointsForFile:file]]];
+  [[[appDel debugger] sourceViewer] setMarkers:[self breakpointsForFile:file]];
 }
 
 @end

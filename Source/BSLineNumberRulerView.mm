@@ -87,7 +87,7 @@ const CGFloat kRulerRightPadding = 2.5;
 
   // Load any markers. The superview takes care of filtering out for just the
   // curently displayed file.
-  NSSet* markers = [sourceView_ markers];
+  NSSet<NSNumber*>* markers = [sourceView_ markers];
 
   // Go through the lines.
   const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
@@ -127,9 +127,7 @@ const CGFloat kRulerRightPadding = 2.5;
       // ruler, rather than just the width of the string.
       drawRect.origin.x = NSMinX(rect);
 
-      Breakpoint* test = [[[Breakpoint alloc] initWithLine:lineNumber
-                                                    inFile:[sourceView_ file]] autorelease];
-      if ([markers containsObject:test]) {
+      if ([markers containsObject:@(lineNumber)]) {
         [self drawBreakpointInRect:drawRect];
       }
       if (sourceView_.markedLine == lineNumber) {

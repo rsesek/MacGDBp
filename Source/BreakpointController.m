@@ -85,7 +85,7 @@
   Breakpoint* bp = [selection objectAtIndex:0];
   [sourceView setFile:[bp file]];
   [sourceView scrollToLine:[bp line]];
-  [sourceView setMarkers:[NSSet setWithArray:[manager breakpointsForFile:[bp file]]]];
+  [sourceView setMarkers:[manager breakpointsForFile:bp.file]];
 }
 
 #pragma mark BSSourceView Delegate
@@ -106,7 +106,7 @@
     [bp release];
   }
   
-  [sourceView setMarkers:[NSSet setWithArray:[manager breakpointsForFile:file]]];
+  [sourceView setMarkers:[manager breakpointsForFile:file]];
 }
 
 /**

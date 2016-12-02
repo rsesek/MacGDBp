@@ -32,8 +32,8 @@
   BSLineNumberRulerView* ruler_;
   NSScrollView* scrollView_;
 
-  // Set of Breakpoint objects.
-  NSSet* markers_;
+  // Line numbers to mark.
+  NSSet<NSNumber*>* markers_;
 
   NSString* file_;
   NSUInteger markedLine_;
@@ -43,7 +43,7 @@
 
 @property (nonatomic, readonly) NSTextView* textView;
 @property (nonatomic, readonly) NSScrollView* scrollView;
-@property (nonatomic, retain) NSSet* markers;
+@property (nonatomic, retain) NSSet<NSNumber*>* markers;
 @property (nonatomic, assign) NSString* file;
 @property (nonatomic, assign) NSUInteger markedLine;
 @property (nonatomic, assign) id delegate;
