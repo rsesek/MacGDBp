@@ -18,45 +18,60 @@
 
 #import "PreferenceNames.h"
 
-@implementation Breakpoint
+NSString* const kBreakpointTypeFile = @"line";
+NSString* const kBreakpointTypeFunctionEntry = @"call";
 
-@synthesize file = file_;
-@synthesize line = line_;
-@synthesize debuggerId = debuggerId_;
+@implementation Breakpoint {
+  NSString* _type;  // weak
+  unsigned long _debuggerId;
 
-/**
- * Initializes a breakpoint with a file and line
- */
-- (id)initWithLine:(NSUInteger)l inFile:(NSString*)f
+  NSString* _file;
+
+  NSString* _functionName;
+}
+
+- (instancetype)initWithLine:(NSUInteger)l inFile:(NSString*)f
 {
-  if (self = [super init])
-  {
-    file_ = [f retain];
-    line_ = l;
+  if ((self = [super init])) {
+    _type = kBreakpointTypeFile;
+    _file = [f copy];
+    _line = l;
   }
   return self;
 }
 
-/**
- * Dealloc
- */
-- (void)dealloc
-{
-  [file_ release];
-  [super dealloc];
+- (instancetype)initWithFunctionNamed:(NSString *)function {
+  if ((self = [super init])) {
+    _type = kBreakpointTypeFunctionEntry;
+    _functionName = [function copy];
+  }
+  return self;
 }
 
-/**
- * Creates a Breakpoint from the values of an NSDictionary
- */
 - (id)initWithDictionary:(NSDictionary*)dict
 {
-  if (self = [super init])
-  {
-    file_ = [[dict valueForKey:@"file"] retain];
-    line_ = [[dict valueForKey:@"line"] intValue];
+  if ((self = [super init])) {
+    NSString* type = [dict valueForKey:@"type"];
+    if (!type || [type isEqualToString:kBreakpointTypeFile]) {
+      _type = kBreakpointTypeFile;
+      _file = [[dict valueForKey:@"file"] copy];
+      _line = [[dict valueForKey:@"line"] intValue];
+    } else if ([type isEqualToString:kBreakpointTypeFunctionEntry]) {
+      _type = kBreakpointTypeFunctionEntry;
+      _functionName = [[dict valueForKey:@"function"] copy];
+    } else {
+      [NSException raise:NSInvalidArgumentException
+                  format:@"Unknown Breakpoint type: %@", type];
+    }
   }
   return self;
+}
+
+- (void)dealloc
+{
+  [_file release];
+  [_functionName release];
+  [super dealloc];
 }
 
 /**
@@ -102,11 +117,19 @@
  */
 - (NSDictionary*)dictionary
 {
-  return [NSDictionary dictionaryWithObjectsAndKeys:
-      self.file, @"file",
-      [NSNumber numberWithInt:self.line], @"line",
-      nil
-  ];
+  if (_type == kBreakpointTypeFile) {
+    return @{
+      @"type" : _type,
+      @"file" : self.file,
+      @"line" : @(self.line)
+    };
+  } else if (_type == kBreakpointTypeFunctionEntry) {
+    return @{
+      @"type"     : _type,
+      @"function" : self.functionName
+    };
+  }
+  return nil;
 }
 
 /**
@@ -114,7 +137,7 @@
  */
 - (NSString*)description
 {
-  return [NSString stringWithFormat:@"%@:%lu", self.file, self.line];
+  return [NSString stringWithFormat:@"Breakpoint %@", [[self dictionary] description]];
 }
 
 @end

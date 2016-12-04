@@ -16,24 +16,36 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString* const kBreakpointTypeFile;
+extern NSString* const kBreakpointTypeFunctionEntry;
+
 // This represents a breakpoint at a certain file and line number. It also
 // maintains the identifier that the backend assigns to the breakpoint.
 @interface Breakpoint : NSObject
-{
-  NSString* file_;
-  unsigned long line_;
-  unsigned long debuggerId_;
-}
 
-@property (readonly) NSString* file;
-@property (readonly) unsigned long line;
+// The type of breakpoint, one of the kBreakpointType constants above.
+@property (readonly) NSString* type;
+
+// The unique identifier assigned by the debugger engine, only valid while
+// connected.
 @property (readwrite, assign) unsigned long debuggerId;
 
-- (id)initWithLine:(unsigned long)l inFile:(NSString*)f;
-- (id)initWithDictionary:(NSDictionary*)dict;
+// kBreakpointTypeFile:
+@property (readonly) NSString* file;
+@property (readonly) unsigned long line;
+
+// kBreakpointTypeFunctionEntry:
+@property (readonly) NSString* functionName;
+
+- (instancetype)initWithLine:(unsigned long)l inFile:(NSString*)f;
+- (instancetype)initWithFunctionNamed:(NSString*)function;
+
+// Initializer from NSUserDefaults.
+- (instancetype)initWithDictionary:(NSDictionary*)dict;
 
 - (NSString*)transformedPath;
 
+// Creates a dictionary representation for use in NSUserDefaults.
 - (NSDictionary*)dictionary;
 
 @end
