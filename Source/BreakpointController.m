@@ -23,6 +23,7 @@
   BreakpointManager* _manager;
 
   BSSourceView* _sourceView;
+
   NSArrayController* _arrayController;
 }
 
@@ -37,6 +38,12 @@
     _sourceView = sourceView;
   }
   return self;
+}
+
+- (void)awakeFromNib
+{
+  [[self.addBreakpointButton cell] setUsesItemFromMenu:NO];
+  [self.addBreakpointButton.cell setMenuItem:[self.addBreakpointButton.menu itemAtIndex:0]];
 }
 
 /**
@@ -81,12 +88,15 @@
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
   NSArray* selection = [_arrayController selectedObjects];
-  if ([selection count] < 1)
-  {
+  if ([selection count] < 1) {
     return;
   }
   
   Breakpoint* bp = [selection objectAtIndex:0];
+  if (bp.type != kBreakpointTypeFile) {
+    return;
+  }
+
   [_sourceView setFile:[bp file]];
   [_sourceView scrollToLine:[bp line]];
   [_sourceView setMarkers:[_manager breakpointsForFile:bp.file]];

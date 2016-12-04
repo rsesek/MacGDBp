@@ -21,6 +21,7 @@
 
 @interface BreakpointController : NSViewController<BSSourceViewDelegate>
 
+@property(nonatomic, assign) IBOutlet NSPopUpButton* addBreakpointButton;
 @property(nonatomic, assign) IBOutlet NSArrayController* arrayController;
 
 - (instancetype)initWithBreakpointManager:(BreakpointManager*)breakpointManager
