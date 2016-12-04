@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="BreakpointController">
@@ -32,8 +33,8 @@
                             <rect key="frame" x="0.0" y="222" width="574" height="262"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <button verticalHuggingPriority="750" id="NEA-NE-e2L">
-                                    <rect key="frame" x="23" y="-2" width="26" height="23"/>
+                                <button verticalHuggingPriority="750" misplaced="YES" id="NEA-NE-e2L">
+                                    <rect key="frame" x="23" y="-1" width="26" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RTj-JH-bdO">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -44,8 +45,8 @@
                                         <action selector="removeBreakpoint:" target="-2" id="65m-Li-WgP"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" id="lru-8s-P8q">
-                                    <rect key="frame" x="0.0" y="-2" width="24" height="23"/>
+                                <button verticalHuggingPriority="750" misplaced="YES" id="lru-8s-P8q">
+                                    <rect key="frame" x="0.0" y="-1" width="24" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7HD-4r-sdn">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -55,15 +56,15 @@
                                         <action selector="addBreakpoint:" target="-2" id="qiy-D7-vZp"/>
                                     </connections>
                                 </button>
-                                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="QUj-nl-H1n">
-                                    <rect key="frame" x="0.0" y="19" width="574" height="243"/>
+                                <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="QUj-nl-H1n">
+                                    <rect key="frame" x="0.0" y="20" width="574" height="242"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="vnD-I2-3RC">
-                                        <rect key="frame" x="1" y="23" width="572" height="219"/>
+                                        <rect key="frame" x="1" y="0.0" width="572" height="241"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnSelection="YES" autosaveColumns="NO" headerView="XI3-4j-eHA" id="d8X-q7-NYd">
-                                                <rect key="frame" x="0.0" y="0.0" width="572" height="19"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="572" height="218"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -107,7 +108,6 @@
                                                 </connections>
                                             </tableView>
                                         </subviews>
-                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Abm-OM-c9d">
                                         <rect key="frame" x="1" y="223" width="557" height="15"/>
