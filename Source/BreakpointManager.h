@@ -19,17 +19,10 @@
 #import "DebuggerBackEnd.h"
 
 @interface BreakpointManager : NSObject
-{
-  NSMutableArray* breakpoints;
-  NSMutableArray* savedBreakpoints;
-  
-  DebuggerBackEnd* connection;
-}
 
 @property(readwrite, assign) DebuggerBackEnd* connection;
 @property(readonly) NSMutableArray* breakpoints;
 
-+ (BreakpointManager*)sharedManager;
 - (void)addBreakpoint:(Breakpoint*)bp;
 - (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
 - (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file;

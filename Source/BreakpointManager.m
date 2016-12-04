@@ -1,16 +1,16 @@
 /*
  * MacGDBp
  * Copyright (c) 2007 - 2011, Blue Static <http://www.bluestatic.org>
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation; either version 2 of the 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, 
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not,
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
@@ -23,49 +23,35 @@
 - (void)updateDisplaysForFile:(NSString*)file;
 @end
 
-@implementation BreakpointManager
+@implementation BreakpointManager {
+  NSMutableArray* _breakpoints;
+  NSMutableArray* _savedBreakpoints;
 
-@synthesize breakpoints, connection;
+  DebuggerBackEnd* _connection;
+}
 
-/**
- * Initializer
- */
 - (id)init
 {
   if (self = [super init])
   {
-    if (!breakpoints)
-    {
-      breakpoints = [[NSMutableArray alloc] init];
-    }
-    
-    savedBreakpoints = [[[NSUserDefaults standardUserDefaults] arrayForKey:kPrefBreakpoints] mutableCopy];
-    if (savedBreakpoints)
-    {
-      for (NSDictionary* d in savedBreakpoints)
-      {
-        [breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
+    _breakpoints = [[NSMutableArray alloc] init];
+    _savedBreakpoints = [[NSMutableArray alloc] init];
+
+    NSArray* savedBreakpoints = [[NSUserDefaults standardUserDefaults] arrayForKey:kPrefBreakpoints];
+    if (savedBreakpoints) {
+      [_savedBreakpoints addObjectsFromArray:savedBreakpoints];
+      for (NSDictionary* d in savedBreakpoints) {
+        [_breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
       }
-    }
-    else
-    {
-      savedBreakpoints = [NSMutableArray new];
     }
   }
   return self;
 }
 
-/**
- * Returns the shared manager (singleton)
- */
-+ (BreakpointManager*)sharedManager
-{
-  static BreakpointManager* manager;
-  if (!manager)
-  {
-    manager = [[BreakpointManager alloc] init];
-  }
-  return manager;
+- (void)dealloc {
+  [_breakpoints release];
+  [_savedBreakpoints release];
+  [super dealloc];
 }
 
 /**
@@ -73,17 +59,17 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp;
 {
-  if (![breakpoints containsObject:bp])
+  if (![_breakpoints containsObject:bp])
   {
     [self willChangeValueForKey:@"breakpoints"];
-    [breakpoints addObject:bp];
+    [_breakpoints addObject:bp];
     [self didChangeValueForKey:@"breakpoints"];
 
-    [connection addBreakpoint:bp];
-    
-    [savedBreakpoints addObject:[bp dictionary]];
-    [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:kPrefBreakpoints];
-    
+    [_connection addBreakpoint:bp];
+
+    [_savedBreakpoints addObject:[bp dictionary]];
+    [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+
     [self updateDisplaysForFile:[bp file]];
   }
 }
@@ -93,7 +79,7 @@
  */
 - (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file
 {
-  for (Breakpoint* b in breakpoints)
+  for (Breakpoint* b in _breakpoints)
   {
     if ([b line] == line && [[b file] isEqualToString:file])
     {
@@ -102,14 +88,14 @@
       [[b retain] autorelease];
 
       [self willChangeValueForKey:@"breakpoints"];
-      [breakpoints removeObject:b];
+      [_breakpoints removeObject:b];
       [self didChangeValueForKey:@"breakpoints"];
 
-      [connection removeBreakpoint:b];
-      
-      [savedBreakpoints removeObject:[b dictionary]];
-      [[NSUserDefaults standardUserDefaults] setObject:savedBreakpoints forKey:kPrefBreakpoints];
-      
+      [_connection removeBreakpoint:b];
+
+      [_savedBreakpoints removeObject:[b dictionary]];
+      [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+
       [self updateDisplaysForFile:file];
       return b;
     }
@@ -123,7 +109,7 @@
 - (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file
 {
   NSMutableSet<NSNumber*>* matches = [NSMutableSet set];
-  for (Breakpoint* b in breakpoints) {
+  for (Breakpoint* b in _breakpoints) {
     if ([b.file isEqualToString:file]) {
       [matches addObject:@(b.line)];
     }
@@ -137,7 +123,7 @@
  */
 - (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file
 {
-  return [breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
+  return [_breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
 }
 
 #pragma mark Private

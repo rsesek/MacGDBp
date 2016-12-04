@@ -31,7 +31,6 @@
 - (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach
 {
   if (self = [super init]) {
-    [[BreakpointManager sharedManager] setConnection:self];
     _port = aPort;
     _client = [[ProtocolClient alloc] initWithDelegate:self];
 
@@ -279,7 +278,7 @@
   }
 
   // Register any breakpoints that exist offline.
-  for (Breakpoint* bp in [[BreakpointManager sharedManager] breakpoints])
+  for (Breakpoint* bp in self.model.breakpointManager.breakpoints)
     [self addBreakpoint:bp];
   
   // TODO: update the status.

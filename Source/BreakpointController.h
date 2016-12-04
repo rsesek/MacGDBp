@@ -23,7 +23,8 @@
 
 @property(nonatomic, assign) IBOutlet NSArrayController* arrayController;
 
-- (instancetype)initWithSourceView:(BSSourceView*)sourceView;
+- (instancetype)initWithBreakpointManager:(BreakpointManager*)breakpointManager
+                               sourceView:(BSSourceView*)sourceView;
 
 - (IBAction)addBreakpoint:(id)sender;
 - (IBAction)removeBreakpoint:(id)sender;

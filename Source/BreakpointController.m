@@ -29,10 +29,11 @@
 /**
  * Constructor
  */
-- (id)initWithSourceView:(BSSourceView*)sourceView
+- (instancetype)initWithBreakpointManager:(BreakpointManager*)breakpointManager
+                               sourceView:(BSSourceView*)sourceView
 {
   if ((self = [super initWithNibName:@"Breakpoints" bundle:nil])) {
-    _manager = [BreakpointManager sharedManager];
+    _manager = breakpointManager;
     _sourceView = sourceView;
   }
   return self;

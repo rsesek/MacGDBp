@@ -16,12 +16,16 @@
 
 #import <Foundation/Foundation.h>
 
+@class BreakpointManager;
 @class StackFrame;
 
 // This class represents the state of an active debugging session. It is
 // typically updated by the DebuggerBackEnd in response to various commands.
 // All of the properties are KVO-compliant.
 @interface DebuggerModel : NSObject
+
+// Maintains state about breakpoints.
+@property(readonly, nonatomic) BreakpointManager* breakpointManager;
 
 // Whether or not the debugger is currently connected.
 @property(readonly, nonatomic) BOOL connected;

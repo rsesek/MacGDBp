@@ -16,6 +16,7 @@
 
 #import "DebuggerModel.h"
 
+#import "BreakpointManager.h"
 #import "StackFrame.h"
 
 @interface DebuggerModel ()
@@ -28,12 +29,14 @@
 
 - (instancetype)init {
   if (self = [super init]) {
+    _breakpointManager = [[BreakpointManager alloc] init];
     _stack = [NSMutableArray new];
   }
   return self;
 }
 
 - (void)dealloc {
+  [_breakpointManager release];
   [_status release];
   [_stack release];
   [super dealloc];

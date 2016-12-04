@@ -58,6 +58,8 @@
     connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:kPrefPort]
                                             autoAttach:[defaults boolForKey:kPrefDebuggerAttached]];
     connection.model = _model;
+    _model.breakpointManager.connection = connection;
+
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
     [[self window] setDelegate:self];
@@ -101,7 +103,8 @@
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 
   // Load view controllers into the tab views.
-  _breakpointsController = [[BreakpointController alloc] initWithSourceView:sourceViewer];
+  _breakpointsController = [[BreakpointController alloc] initWithBreakpointManager:_model.breakpointManager
+                                                                        sourceView:sourceViewer];
   [[self.tabView tabViewItemAtIndex:1] setView:_breakpointsController.view];
 
   _evalController = [[EvalController alloc] initWithBackEnd:connection];
@@ -351,7 +354,7 @@
   {
     [sourceViewer setString:frame.source asFile:filename];
     
-    NSSet<NSNumber*>* breakpoints = [[BreakpointManager sharedManager] breakpointsForFile:filename];
+    NSSet<NSNumber*>* breakpoints = [_model.breakpointManager breakpointsForFile:filename];
     [sourceViewer setMarkers:breakpoints];
   }
   
@@ -406,7 +409,7 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-  BreakpointManager* mngr = [BreakpointManager sharedManager];
+  BreakpointManager* mngr = _model.breakpointManager;
   
   if ([mngr hasBreakpointAt:line inFile:file])
   {
