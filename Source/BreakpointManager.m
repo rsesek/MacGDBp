@@ -75,7 +75,10 @@
 {
   if (![breakpoints containsObject:bp])
   {
+    [self willChangeValueForKey:@"breakpoints"];
     [breakpoints addObject:bp];
+    [self didChangeValueForKey:@"breakpoints"];
+
     [connection addBreakpoint:bp];
     
     [savedBreakpoints addObject:[bp dictionary]];
@@ -98,7 +101,10 @@
       // array.
       [[b retain] autorelease];
 
+      [self willChangeValueForKey:@"breakpoints"];
       [breakpoints removeObject:b];
+      [self didChangeValueForKey:@"breakpoints"];
+
       [connection removeBreakpoint:b];
       
       [savedBreakpoints removeObject:[b dictionary]];
@@ -144,8 +150,6 @@
 {
   AppDelegate* appDel = [NSApp delegate];
   [[[appDel breakpoint] arrayController] rearrangeObjects];
-  [[[appDel breakpoint] sourceView] setNeedsDisplay:YES];
-  [[[appDel breakpoint] sourceView] setMarkers:[self breakpointsForFile:file]];
   [[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
   [[[appDel debugger] sourceViewer] setMarkers:[self breakpointsForFile:file]];
 }

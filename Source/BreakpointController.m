@@ -19,18 +19,21 @@
 #import "AppDelegate.h"
 #import "PreferenceNames.h"
 
-@implementation BreakpointController
+@implementation BreakpointController {
+  BreakpointManager* _manager;
 
-@synthesize sourceView, arrayController;
+  BSSourceView* _sourceView;
+  NSArrayController* _arrayController;
+}
 
 /**
  * Constructor
  */
-- (id)init
+- (id)initWithSourceView:(BSSourceView*)sourceView
 {
-  if (self = [super initWithNibName:@"Breakpoints" bundle:nil])
-  {
-    manager = [BreakpointManager sharedManager];
+  if ((self = [super initWithNibName:@"Breakpoints" bundle:nil])) {
+    _manager = [BreakpointManager sharedManager];
+    _sourceView = sourceView;
   }
   return self;
 }
@@ -48,7 +51,7 @@
     return;
   }
   
-  [sourceView setFile:[[panel URL] path]];
+  [_sourceView setFile:[[panel URL] path]];
 }
 
 /**
@@ -56,7 +59,7 @@
  */
 - (IBAction)removeBreakpoint:(id)sender
 {
-  NSArray* selection = [arrayController selectedObjects];
+  NSArray* selection = [_arrayController selectedObjects];
   if ([selection count] < 1)
   {
     return;
@@ -64,7 +67,7 @@
   
   for (Breakpoint* bp in selection)
   {
-    [manager removeBreakpointAt:[bp line] inFile:[bp file]];
+    [_manager removeBreakpointAt:[bp line] inFile:[bp file]];
   }
 }
 
@@ -76,38 +79,19 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
-  NSArray* selection = [arrayController selectedObjects];
+  NSArray* selection = [_arrayController selectedObjects];
   if ([selection count] < 1)
   {
     return;
   }
   
   Breakpoint* bp = [selection objectAtIndex:0];
-  [sourceView setFile:[bp file]];
-  [sourceView scrollToLine:[bp line]];
-  [sourceView setMarkers:[manager breakpointsForFile:bp.file]];
+  [_sourceView setFile:[bp file]];
+  [_sourceView scrollToLine:[bp line]];
+  [_sourceView setMarkers:[_manager breakpointsForFile:bp.file]];
 }
 
 #pragma mark BSSourceView Delegate
-
-/**
- * The gutter was clicked, which indicates that a breakpoint needs to be changed
- */
-- (void)gutterClickedAtLine:(NSUInteger)line forFile:(NSString*)file
-{
-  if ([manager hasBreakpointAt:line inFile:file])
-  {
-    [manager removeBreakpointAt:line inFile:file];
-  }
-  else
-  {
-    Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
-    [manager addBreakpoint:bp];
-    [bp release];
-  }
-  
-  [sourceView setMarkers:[manager breakpointsForFile:file]];
-}
 
 /**
  * Accepts a file dragged to set the contents of the display.

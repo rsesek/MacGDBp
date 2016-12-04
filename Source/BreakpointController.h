@@ -20,15 +20,10 @@
 #import "BSSourceView.h"
 
 @interface BreakpointController : NSViewController<BSSourceViewDelegate>
-{
-  BreakpointManager* manager;
-  
-  IBOutlet NSArrayController* arrayController;
-  IBOutlet BSSourceView* sourceView;
-}
 
-@property(readonly) BSSourceView* sourceView;
-@property(readonly) NSArrayController* arrayController;
+@property(nonatomic, assign) IBOutlet NSArrayController* arrayController;
+
+- (instancetype)initWithSourceView:(BSSourceView*)sourceView;
 
 - (IBAction)addBreakpoint:(id)sender;
 - (IBAction)removeBreakpoint:(id)sender;

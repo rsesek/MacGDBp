@@ -101,7 +101,7 @@
   self.connection.autoAttach = [attachedCheckbox_ state] == NSOnState;
 
   // Load view controllers into the tab views.
-  _breakpointsController = [[BreakpointController alloc] init];
+  _breakpointsController = [[BreakpointController alloc] initWithSourceView:sourceViewer];
   [[self.tabView tabViewItemAtIndex:1] setView:_breakpointsController.view];
 
   _evalController = [[EvalController alloc] initWithBackEnd:connection];
