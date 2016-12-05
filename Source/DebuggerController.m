@@ -168,8 +168,7 @@
   } else if (action == @selector(stepIn:) ||
              action == @selector(stepOver:) ||
              action == @selector(run:) ||
-             action == @selector(stop:) ||
-             action == @selector(showEvalWindow:)) {
+             action == @selector(stop:)) {
     return _model.connected;
   }
   return [[self window] validateUserInterfaceItem:anItem];
