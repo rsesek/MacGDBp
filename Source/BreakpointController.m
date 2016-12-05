@@ -62,6 +62,22 @@
   [_sourceView setFile:[[panel URL] path]];
 }
 
+- (IBAction)addFunctionBreakpoint:(id)sender
+{
+  [self.view.window beginSheet:self.addFunctionBreakpointWindow completionHandler:nil];
+}
+
+- (IBAction)cancelFunctionBreakpoint:(id)sender
+{
+  [self.view.window endSheet:self.addFunctionBreakpointWindow];
+}
+
+- (IBAction)saveFunctionBreakpoint:(id)sender
+{
+  [_manager addBreakpoint:[[[Breakpoint alloc] initWithFunctionNamed:self.functionNameField.stringValue] autorelease]];
+  [self.view.window endSheet:self.addFunctionBreakpointWindow];
+}
+
 /**
  * Removes a breakpoint
  */

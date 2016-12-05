@@ -75,6 +75,18 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 }
 
 /**
+ * Returns the string to display in the breakpoints list.
+ */
+- (NSString*)displayValue
+{
+  if (self.type == kBreakpointTypeFile) {
+    return [NSString stringWithFormat:@"%@:%ld", self.file, self.line];
+  } else if (self.type == kBreakpointTypeFunctionEntry) {
+    return [NSString stringWithFormat:@"%@()", self.functionName];
+  }
+}
+
+/**
  * Returns the transformed path for the breakpoint, as Xdebug needs it
  */
 - (NSString*)transformedPath

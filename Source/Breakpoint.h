@@ -30,6 +30,8 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 // connected.
 @property (readwrite, assign) unsigned long debuggerId;
 
+@property(nonatomic, readonly) NSString* displayValue;
+
 // kBreakpointTypeFile:
 @property (readonly) NSString* file;
 @property (readonly) unsigned long line;

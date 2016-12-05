@@ -200,12 +200,16 @@
 - (void)addBreakpoint:(Breakpoint*)bp {
   if (!self.model.connected)
     return;
-  
-  NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
+
   ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
     [bp setDebuggerId:[[[[message rootElement] attributeForName:@"id"] stringValue] intValue]];
   };
-  [_client sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
+  if (bp.type == kBreakpointTypeFile) {
+    NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
+    [_client sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
+  } else if (bp.type == kBreakpointTypeFunctionEntry) {
+    [_client sendCommandWithFormat:@"breakpoint_set -t call -m %@" handler:handler, bp.functionName];
+  }
 }
 
 /**

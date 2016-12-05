@@ -24,10 +24,18 @@
 @property(nonatomic, assign) IBOutlet NSPopUpButton* addBreakpointButton;
 @property(nonatomic, assign) IBOutlet NSArrayController* arrayController;
 
+@property(nonatomic, assign) IBOutlet NSWindow* addFunctionBreakpointWindow;
+@property(nonatomic, assign) IBOutlet NSTextField* functionNameField;
+
 - (instancetype)initWithBreakpointManager:(BreakpointManager*)breakpointManager
                                sourceView:(BSSourceView*)sourceView;
 
 - (IBAction)addBreakpoint:(id)sender;
+
 - (IBAction)removeBreakpoint:(id)sender;
+
+- (IBAction)addFunctionBreakpoint:(id)sender;
+- (IBAction)cancelFunctionBreakpoint:(id)sender;
+- (IBAction)saveFunctionBreakpoint:(id)sender;
 
 @end

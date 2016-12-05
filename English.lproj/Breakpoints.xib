@@ -9,7 +9,9 @@
         <customObject id="-2" userLabel="File's Owner" customClass="BreakpointController">
             <connections>
                 <outlet property="addBreakpointButton" destination="Rhe-Th-Bhr" id="xGD-6H-O84"/>
+                <outlet property="addFunctionBreakpointWindow" destination="WIt-lK-AgN" id="i4J-oj-X0M"/>
                 <outlet property="arrayController" destination="28" id="35"/>
+                <outlet property="functionNameField" destination="Q8h-fW-Nqn" id="fZ4-ev-6VK"/>
                 <outlet property="view" destination="uUK-Ll-YSm" id="ujh-9q-BWz"/>
             </connections>
         </customObject>
@@ -37,31 +39,31 @@
                         <rect key="frame" x="1" y="0.0" width="572" height="463"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnSelection="YES" autosaveColumns="NO" headerView="XI3-4j-eHA" id="d8X-q7-NYd">
+                            <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveColumns="NO" headerView="XI3-4j-eHA" id="d8X-q7-NYd">
                                 <rect key="frame" x="0.0" y="0.0" width="572" height="440"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn width="425" minWidth="40" maxWidth="1000" id="RCP-bP-B4d">
-                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="File">
+                                    <tableColumn editable="NO" width="425" minWidth="40" maxWidth="1000" id="RCP-bP-B4d">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Breakpoint">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                         </tableHeaderCell>
-                                        <textFieldCell key="dataCell" lineBreakMode="truncatingMiddle" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="IV1-Sj-2od">
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingHead" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="IV1-Sj-2od">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <connections>
-                                            <binding destination="28" name="value" keyPath="arrangedObjects.file" id="8aj-3i-nGj"/>
+                                            <binding destination="28" name="value" keyPath="arrangedObjects.displayValue" id="l3q-iK-Je0"/>
                                         </connections>
                                     </tableColumn>
-                                    <tableColumn width="141" minWidth="40" maxWidth="1000" id="MvD-nE-8qa">
-                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Line">
+                                    <tableColumn editable="NO" width="141" minWidth="40" maxWidth="1000" id="MvD-nE-8qa">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Type">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
@@ -73,7 +75,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <connections>
-                                            <binding destination="28" name="value" keyPath="arrangedObjects.line" id="keh-Aa-ayp"/>
+                                            <binding destination="28" name="value" keyPath="arrangedObjects.type" id="ew1-id-ymT"/>
                                         </connections>
                                     </tableColumn>
                                 </tableColumns>
@@ -87,7 +89,7 @@
                         <rect key="frame" x="1" y="223" width="557" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="NaV-vD-Og8">
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="NaV-vD-Og8">
                         <rect key="frame" x="558" y="17" width="15" height="206"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
@@ -104,7 +106,7 @@
                         <font key="font" metaFont="menu"/>
                         <menu key="menu" id="Rib-S1-dUw">
                             <items>
-                                <menuItem image="NSAddTemplate" id="CvR-xk-b9b">
+                                <menuItem image="NSAddTemplate" hidden="YES" id="CvR-xk-b9b">
                                     <modifierMask key="keyEquivalentModifierMask"/>
                                     <connections>
                                         <action selector="addBreakpoint:" target="-2" id="HVH-4f-zD3"/>
@@ -116,7 +118,11 @@
                                         <action selector="addBreakpoint:" target="-2" id="7gF-se-38S"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="Symbolic breakpoint" id="bYU-4e-GiO"/>
+                                <menuItem title="Symbolic breakpoint" id="bYU-4e-GiO">
+                                    <connections>
+                                        <action selector="addFunctionBreakpoint:" target="-2" id="7Vn-6z-YfT"/>
+                                    </connections>
+                                </menuItem>
                             </items>
                         </menu>
                     </popUpButtonCell>
@@ -128,12 +134,76 @@
             <declaredKeys>
                 <string>file</string>
                 <string>line</string>
+                <string>type</string>
+                <string>displayValue</string>
             </declaredKeys>
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="_manager.breakpoints" id="3RA-Ia-VZL"/>
             </connections>
         </arrayController>
         <userDefaultsController representsSharedInstance="YES" id="43"/>
+        <window title="Add Function Breakpoint" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="WIt-lK-AgN">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="283" y="305" width="499" height="91"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" misplaced="YES" id="33T-Yh-b1U">
+                <rect key="frame" x="0.0" y="0.0" width="499" height="91"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="VWa-r5-Xxt">
+                        <rect key="frame" x="18" y="54" width="96" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Function Name" id="BzJ-Db-VO7">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="Q8h-fW-Nqn">
+                        <rect key="frame" x="120" y="49" width="359" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="FJF-A0-kuc">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>NSAllRomanInputSourcesLocaleIdentifier</string>
+                            </allowedInputSourceLocales>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="GHE-Mb-Nif">
+                        <rect key="frame" x="351" y="13" width="134" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Add Breakpoint" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4zE-mO-186">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="saveFunctionBreakpoint:" target="-2" id="3YN-hL-v91"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="bXg-Eo-fuC">
+                        <rect key="frame" x="269" y="13" width="82" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="TGs-Bk-dxD">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancelFunctionBreakpoint:" target="-2" id="uEZ-hW-c9c"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-76.5" y="720.5"/>
+        </window>
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
