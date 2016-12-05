@@ -96,45 +96,43 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
   return path;
 }
 
-/**
- * Determines if two breakpoints are equal
- */
 - (BOOL)isEqual:(id)obj
 {
-  return ([[obj file] isEqualToString:self.file] && [obj line] == self.line);
+  if (![obj isKindOfClass:[self class]]) {
+    return NO;
+  }
+
+  Breakpoint* other = obj;
+  if (self.type != other.type) {
+    return NO;
+  }
+
+  if (self.type == kBreakpointTypeFile) {
+    return [self.file isEqualToString:other.file] && self.line == other.line;
+  } else if (self.type == kBreakpointTypeFunctionEntry) {
+    return [self.functionName isEqualToString:other.functionName];
+  }
+
+  return NO;
 }
 
-/**
- * Returns the hash value of a breakpoint
- */
-- (NSUInteger)hash
-{
-  return ([self.file hash] << 8) + self.line;
-}
-
-/**
- * Returns an NSDictionary of the data so it can be stored in NSUserDefaults
- */
 - (NSDictionary*)dictionary
 {
-  if (_type == kBreakpointTypeFile) {
+  if (self.type == kBreakpointTypeFile) {
     return @{
-      @"type" : _type,
+      @"type" : self.type,
       @"file" : self.file,
       @"line" : @(self.line)
     };
-  } else if (_type == kBreakpointTypeFunctionEntry) {
+  } else if (self.type == kBreakpointTypeFunctionEntry) {
     return @{
-      @"type"     : _type,
+      @"type"     : self.type,
       @"function" : self.functionName
     };
   }
   return nil;
 }
 
-/**
- * Pretty-print
- */
 - (NSString*)description
 {
   return [NSString stringWithFormat:@"Breakpoint %@", [[self dictionary] description]];
