@@ -38,3 +38,6 @@ extern NSString* const kPrefUnstableVersionCast;
 
 // NSMutableArray of breakpoints.
 extern NSString* const kPrefBreakpoints;
+
+// The selected segment in the DebuggerController.
+extern NSString* const kPrefSelectedDebuggerSegment;

@@ -29,3 +29,5 @@ NSString* const kPrefDebuggerAttached = @"DebuggerAttached";
 NSString* const kPrefUnstableVersionCast = @"UnstableVersionCast";
 
 NSString* const kPrefBreakpoints = @"Breakpoints";
+
+NSString* const kPrefSelectedDebuggerSegment = @"DebuggerSegment";

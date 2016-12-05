@@ -38,7 +38,8 @@
       kPrefInspectorWindowVisible   : @YES,
       kPrefPathReplacements         : [NSMutableArray array],
       kPrefBreakOnFirstLine         : @YES,
-      kPrefDebuggerAttached         : @YES
+      kPrefDebuggerAttached         : @YES,
+      kPrefSelectedDebuggerSegment  : @1,
     };
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
   }

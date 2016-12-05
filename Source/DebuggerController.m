@@ -121,6 +121,10 @@
                                 forKeyPath:@"frame"
                                    options:0
                                    context:nil];
+
+  NSUInteger selectedSegment =
+      [[[NSUserDefaults standardUserDefaults] valueForKey:kPrefSelectedDebuggerSegment] intValue];
+  [[_segmentControl cell] setSelectedSegment:selectedSegment];
   [self updateSegmentControl];
 }
 
@@ -142,6 +146,8 @@
     else
       [self debuggerDisconnected];
   } else if (object == _segmentControl.cell) {
+    [[NSUserDefaults standardUserDefaults] setValue:@(_segmentControl.selectedSegment)
+                                             forKey:kPrefSelectedDebuggerSegment];
     [_tabView selectTabViewItemAtIndex:_segmentControl.selectedSegment - 1];
   } else if (object == _segmentControl.superview) {
     [self updateSegmentControl];
