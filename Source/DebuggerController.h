@@ -39,16 +39,15 @@
   
   IBOutlet NSWindow* inspector;
   
-  IBOutlet NSTextField* statusmsg;
-  IBOutlet NSTextField* errormsg;
-  
   IBOutlet BSSourceView* sourceViewer;
 }
 
 @property(readonly) DebuggerBackEnd* connection;
+@property(readonly) DebuggerModel* model;
 @property(readonly) BSSourceView* sourceViewer;
 @property(readonly) NSWindow* inspector;
 
+@property(retain) IBOutlet NSTextField* statusField;
 @property(retain) IBOutlet NSSegmentedControl* segmentControl;
 @property(retain) IBOutlet NSTabView* tabView;
 
@@ -56,8 +55,6 @@
 - (IBAction)showEvalWindow:(id)sender;
 
 - (void)resetDisplays;
-
-- (void)setError:(NSString*)anError;
 
 - (IBAction)attachedToggled:(id)sender;
 

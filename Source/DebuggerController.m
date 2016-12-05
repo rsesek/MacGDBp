@@ -60,6 +60,11 @@
     connection.model = _model;
     _model.breakpointManager.connection = connection;
 
+    [_model addObserver:self
+             forKeyPath:@"status"
+                options:NSKeyValueObservingOptionNew
+                context:nil];
+
     expandedVariables = [[NSMutableSet alloc] init];
     [[self window] makeKeyAndOrderFront:nil];
     [[self window] setDelegate:self];
@@ -140,11 +145,16 @@
       [connection loadStackFrame:frame];
   } else if (object == stackArrayController && [keyPath isEqualToString:@"selection.source"]) {
     [self updateSourceViewer];
-  } else if (object == _model && [keyPath isEqualToString:@"connected"]) {
-    if ([change[NSKeyValueChangeNewKey] boolValue])
-      [self debuggerConnected];
-    else
-      [self debuggerDisconnected];
+  } else if (object == _model) {
+    if ([keyPath isEqualToString:@"connected"]) {
+      if ([change[NSKeyValueChangeNewKey] boolValue]) {
+        [self debuggerConnected];
+      } else {
+        [self debuggerDisconnected];
+      }
+    } else if ([keyPath isEqualToString:@"status"]) {
+      self.statusField.textColor = self.model.lastError ? [NSColor redColor] : [NSColor textColor];
+    }
   } else if (object == _segmentControl.cell) {
     [[NSUserDefaults standardUserDefaults] setValue:@(_segmentControl.selectedSegment)
                                              forKey:kPrefSelectedDebuggerSegment];
@@ -204,21 +214,12 @@
   sourceViewer.file = nil;
 }
 
-/**
- * Sets the status to be "Error" and then displays the error message
- */
-- (void)setError:(NSString*)anError
-{
-  [errormsg setStringValue:anError];
-  [errormsg setHidden:NO];
-}
 
 /**
  * Delegate function for GDBpConnection for when the debugger connects.
  */
 - (void)debuggerConnected
 {
-  [errormsg setHidden:YES];
   if (!self.connection.autoAttach)
     return;
   if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefBreakOnFirstLine])

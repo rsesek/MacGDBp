@@ -31,6 +31,8 @@
   if (self = [super init]) {
     _breakpointManager = [[BreakpointManager alloc] init];
     _stack = [NSMutableArray new];
+
+    [self onDisconnect];
   }
   return self;
 }
@@ -54,6 +56,7 @@
 
 - (void)onDisconnect {
   self.connected = NO;
+  self.status = @"Disconnected";
 }
 
 - (void)updateStack:(NSArray<StackFrame*>*)newStack {
