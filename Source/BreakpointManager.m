@@ -74,31 +74,26 @@
   }
 }
 
-/**
- * Removes a breakpoint at a given line/file combination, or nil if nothing was removed
- */
-- (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file
+- (Breakpoint*)removeBreakpoint:(Breakpoint*)bp
 {
-  for (Breakpoint* b in _breakpoints)
-  {
-    if ([b line] == line && [[b file] isEqualToString:file])
-    {
-      // Keep the breakpoint alive after it is removed from the breakpoints
-      // array.
-      [[b retain] autorelease];
+  if ([_breakpoints containsObject:bp]) {
+    // Keep the breakpoint alive after it is removed from the breakpoints
+    // array.
+    [[bp retain] autorelease];
 
-      [self willChangeValueForKey:@"breakpoints"];
-      [_breakpoints removeObject:b];
-      [self didChangeValueForKey:@"breakpoints"];
+    [self willChangeValueForKey:@"breakpoints"];
+    [_breakpoints removeObject:bp];
+    [self didChangeValueForKey:@"breakpoints"];
 
-      [_connection removeBreakpoint:b];
+    [_connection removeBreakpoint:bp];
 
-      [_savedBreakpoints removeObject:[b dictionary]];
-      [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+    [_savedBreakpoints removeObject:[bp dictionary]];
+    [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
 
-      [self updateDisplaysForFile:file];
-      return b;
-    }
+    if (bp.file)
+      [self updateDisplaysForFile:bp.file];
+
+    return bp;
   }
   return nil;
 }
@@ -118,12 +113,18 @@
   return matches;
 }
 
+
+- (BOOL)hasBreakpoint:(Breakpoint*)breakpoint
+{
+  return [_breakpoints containsObject:breakpoint];
+}
+
 /**
  * Checks to see if a given file has a breakpoint on a given line
  */
 - (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file
 {
-  return [_breakpoints containsObject:[[[Breakpoint alloc] initWithLine:line inFile:file] autorelease]];
+  return [self hasBreakpoint:[Breakpoint breakpointAtLine:line inFile:file]];
 }
 
 #pragma mark Private

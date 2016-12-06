@@ -74,7 +74,7 @@
 
 - (IBAction)saveFunctionBreakpoint:(id)sender
 {
-  [_manager addBreakpoint:[[[Breakpoint alloc] initWithFunctionNamed:self.functionNameField.stringValue] autorelease]];
+  [_manager addBreakpoint:[Breakpoint breakpointOnFunctionNamed:self.functionNameField.stringValue]];
   [self.view.window endSheet:self.addFunctionBreakpointWindow];
 }
 
@@ -89,9 +89,8 @@
     return;
   }
   
-  for (Breakpoint* bp in selection)
-  {
-    [_manager removeBreakpointAt:[bp line] inFile:[bp file]];
+  for (Breakpoint* bp in selection) {
+    [_manager removeBreakpoint:bp];
   }
 }
 

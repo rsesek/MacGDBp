@@ -415,20 +415,16 @@
  */
 - (void)gutterClickedAtLine:(int)line forFile:(NSString*)file
 {
-  BreakpointManager* mngr = _model.breakpointManager;
+  BreakpointManager* manager = _model.breakpointManager;
+  Breakpoint* breakpoint = [Breakpoint breakpointAtLine:line inFile:file];
   
-  if ([mngr hasBreakpointAt:line inFile:file])
-  {
-    [mngr removeBreakpointAt:line inFile:file];
-  }
-  else
-  {
-    Breakpoint* bp = [[Breakpoint alloc] initWithLine:line inFile:file];
-    [mngr addBreakpoint:bp];
-    [bp release];
+  if ([manager hasBreakpoint:breakpoint]) {
+    [manager removeBreakpoint:breakpoint];
+  } else {
+    [manager addBreakpoint:breakpoint];
   }
   
-  [sourceViewer setMarkers:[mngr breakpointsForFile:file]];
+  [sourceViewer setMarkers:[manager breakpointsForFile:file]];
 }
 
 @end

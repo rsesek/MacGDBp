@@ -39,8 +39,8 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 // kBreakpointTypeFunctionEntry:
 @property (readonly) NSString* functionName;
 
-- (instancetype)initWithLine:(unsigned long)l inFile:(NSString*)f;
-- (instancetype)initWithFunctionNamed:(NSString*)function;
++ (instancetype)breakpointAtLine:(unsigned long)line inFile:(NSString*)file;
++ (instancetype)breakpointOnFunctionNamed:(NSString*)name;
 
 // Initializer from NSUserDefaults.
 - (instancetype)initWithDictionary:(NSDictionary*)dict;

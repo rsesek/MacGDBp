@@ -24,7 +24,10 @@
 @property(readonly) NSMutableArray* breakpoints;
 
 - (void)addBreakpoint:(Breakpoint*)bp;
-- (Breakpoint*)removeBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
+- (Breakpoint*)removeBreakpoint:(Breakpoint*)bp;
+
+- (BOOL)hasBreakpoint:(Breakpoint*)bp;
+
 - (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file;
 - (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
 

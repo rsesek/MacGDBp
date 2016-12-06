@@ -30,25 +30,24 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
   NSString* _functionName;
 }
 
-- (instancetype)initWithLine:(NSUInteger)l inFile:(NSString*)f
++ (instancetype)breakpointAtLine:(unsigned long)line inFile:(NSString*)file
 {
-  if ((self = [super init])) {
-    _type = kBreakpointTypeFile;
-    _file = [f copy];
-    _line = l;
-  }
-  return self;
+  Breakpoint* breakpoint = [[[Breakpoint alloc] init] autorelease];
+  breakpoint->_type = kBreakpointTypeFile;
+  breakpoint->_file = [file copy];
+  breakpoint->_line = line;
+  return breakpoint;
 }
 
-- (instancetype)initWithFunctionNamed:(NSString *)function {
-  if ((self = [super init])) {
-    _type = kBreakpointTypeFunctionEntry;
-    _functionName = [function copy];
-  }
-  return self;
++ (instancetype)breakpointOnFunctionNamed:(NSString*)name
+{
+  Breakpoint* breakpoint = [[[Breakpoint alloc] init] autorelease];
+  breakpoint->_type = kBreakpointTypeFunctionEntry;
+  breakpoint->_functionName = [name copy];
+  return breakpoint;
 }
 
-- (id)initWithDictionary:(NSDictionary*)dict
+- (instancetype)initWithDictionary:(NSDictionary*)dict
 {
   if ((self = [super init])) {
     NSString* type = [dict valueForKey:@"type"];
@@ -84,6 +83,7 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
   } else if (self.type == kBreakpointTypeFunctionEntry) {
     return [NSString stringWithFormat:@"%@()", self.functionName];
   }
+  return nil;
 }
 
 /**
