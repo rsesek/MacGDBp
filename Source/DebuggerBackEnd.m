@@ -178,8 +178,8 @@
     // Check to see if there are more children to load.
     NSArray* newLoadedData = [loadedData arrayByAddingObjectsFromArray:children];
 
-    unsigned int totalChildren = [[[parent attributeForName:@"numchildren"] stringValue] integerValue];
-    if ([newLoadedData count] < totalChildren) {
+    NSInteger totalChildren = [[[parent attributeForName:@"numchildren"] stringValue] integerValue];
+    if ([newLoadedData count] < (NSUInteger)totalChildren) {
       [self loadVariableNode:variable
                forStackFrame:frame
                     dataPage:dataPage + 1

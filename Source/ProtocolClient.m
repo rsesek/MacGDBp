@@ -193,7 +193,7 @@
     [self messageQueue:queue error:error];
     return;
   }
-  int transactionID = [self transactionIDFromResponse:xml];
+  NSInteger transactionID = [self transactionIDFromResponse:xml];
 
   _lastReadID = transactionID;
   entry.lastReadTransactionID = _lastReadID;
