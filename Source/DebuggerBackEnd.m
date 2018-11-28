@@ -235,7 +235,8 @@
     NSString* value = [parent base64DecodedValue];
     callback(value);
   };
-  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %@" handler:handler, [stringData base64Encoding]];
+  [_client sendCustomCommandWithFormat:@"eval -i {txn} -- %@"
+                               handler:handler, [stringData base64EncodedStringWithOptions:0]];
 }
 
 // Protocol Client Delegate ////////////////////////////////////////////////////

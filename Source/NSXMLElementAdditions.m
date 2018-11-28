@@ -50,7 +50,8 @@
 {
   // The value of the node is base64 encoded.
   if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
-    NSData* base64Data = [[[NSData alloc] initWithBase64Encoding:[self stringValue]] autorelease];
+    NSData* data = [[self stringValue] dataUsingEncoding:NSASCIIStringEncoding];
+    NSData* base64Data = [[[NSData alloc] initWithBase64EncodedData:data options:0] autorelease];
     if (base64Data) {
       return [[[NSString alloc] initWithData:base64Data encoding:NSUTF8StringEncoding] autorelease];
     } else {
