@@ -57,7 +57,8 @@
 - (void)dealloc
 {
   [file_ release];
-  
+  [markers_ release];
+
   [scrollView_ removeFromSuperview];
   [textView_ removeFromSuperview];
   

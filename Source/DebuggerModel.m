@@ -40,6 +40,7 @@
 - (void)dealloc {
   [_breakpointManager release];
   [_status release];
+  [_lastError release];
   [_stack release];
   [super dealloc];
 }

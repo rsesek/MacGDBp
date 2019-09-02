@@ -44,7 +44,7 @@
 @property (nonatomic, readonly) NSTextView* textView;
 @property (nonatomic, readonly) NSScrollView* scrollView;
 @property (nonatomic, retain) NSSet<NSNumber*>* markers;
-@property (nonatomic, assign) NSString* file;
+@property (nonatomic, retain) NSString* file;
 @property (nonatomic, assign) NSUInteger markedLine;
 @property (nonatomic, assign) id delegate;
 

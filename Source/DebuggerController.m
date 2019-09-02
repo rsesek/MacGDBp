@@ -94,6 +94,11 @@
   [_breakpointsController release];
   [_evalController release];
   [_expandedVariables release];
+
+  [_segmentControl release];
+  [_statusField release];
+  [_tabView release];
+
   [super dealloc];
 }
 
