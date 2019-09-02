@@ -100,7 +100,6 @@
   [_variablesOutlineView release];
 
   [_segmentControl release];
-  [_statusField release];
   [_tabView release];
 
   [super dealloc];
@@ -170,8 +169,6 @@
       } else {
         [self debuggerDisconnected];
       }
-    } else if ([keyPath isEqualToString:@"status"]) {
-      self.statusField.textColor = self.model.lastError ? [NSColor redColor] : [NSColor textColor];
     }
   } else if (object == _segmentControl.cell) {
     [[NSUserDefaults standardUserDefaults] setValue:@(_segmentControl.selectedSegment)

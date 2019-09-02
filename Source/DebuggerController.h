@@ -35,7 +35,6 @@
 @property(retain) IBOutlet NSTreeController* variablesTreeController;
 @property(retain) IBOutlet NSOutlineView* variablesOutlineView;
 
-@property(retain) IBOutlet NSTextField* statusField;
 @property(retain) IBOutlet NSSegmentedControl* segmentControl;
 @property(retain) IBOutlet NSTabView* tabView;
 
