@@ -24,22 +24,16 @@
 
 @interface DebuggerController : NSWindowController <NSWindowDelegate>
 {
-  DebuggerBackEnd* connection;
+  IBOutlet NSButton* _attachedCheckbox;
 
-  DebuggerModel* _model;
+  IBOutlet NSArrayController* _stackArrayController;
 
-  IBOutlet NSButton* attachedCheckbox_;
-
-  IBOutlet NSArrayController* stackArrayController;
-
-  IBOutlet NSTreeController* variablesTreeController;
-  IBOutlet NSOutlineView* variablesOutlineView;
-  NSMutableSet* expandedVariables;
-  VariableNode* selectedVariable;
+  IBOutlet NSTreeController* _variablesTreeController;
+  IBOutlet NSOutlineView* _variablesOutlineView;
   
-  IBOutlet NSWindow* inspector;
+  IBOutlet NSWindow* _inspector;
   
-  IBOutlet BSSourceView* sourceViewer;
+  IBOutlet BSSourceView* _sourceViewer;
 }
 
 @property(readonly) DebuggerBackEnd* connection;
