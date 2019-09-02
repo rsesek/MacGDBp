@@ -128,6 +128,7 @@
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
 		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
+		1ED58817231CC66000F0A713 /* MacGDBp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacGDBp.entitlements; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
 		1EEBE840176FEA80003622C3 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageQueue.h; path = Source/MessageQueue.h; sourceTree = "<group>"; };
@@ -352,6 +353,7 @@
 				1E42F1D60F53317B008412DB /* dsa_pub.pem */,
 				1E416FFB0D36F827009A53A2 /* Interfaces */,
 				1E027F0D0D36F24200885DEE /* Toolbar Icons */,
+				1ED58817231CC66000F0A713 /* MacGDBp.entitlements */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */,
@@ -419,6 +421,13 @@
 				TargetAttributes = {
 					1E8C70961BDB167F00D333DC = {
 						CreatedOnToolsVersion = 7.0.1;
+					};
+					8D1107260486CEB800E47090 = {
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -651,6 +660,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = MacGDBp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -672,6 +682,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = MacGDBp.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
