@@ -23,23 +23,17 @@
 @class DebuggerModel;
 
 @interface DebuggerController : NSWindowController <NSWindowDelegate>
-{
-  IBOutlet NSButton* _attachedCheckbox;
-
-  IBOutlet NSArrayController* _stackArrayController;
-
-  IBOutlet NSTreeController* _variablesTreeController;
-  IBOutlet NSOutlineView* _variablesOutlineView;
-  
-  IBOutlet NSWindow* _inspector;
-  
-  IBOutlet BSSourceView* _sourceViewer;
-}
 
 @property(readonly) DebuggerBackEnd* connection;
 @property(readonly) DebuggerModel* model;
-@property(readonly) BSSourceView* sourceViewer;
-@property(readonly) NSWindow* inspector;
+
+@property(retain) IBOutlet BSSourceView* sourceViewer;
+@property(retain) IBOutlet NSWindow* inspector;
+
+@property(retain) IBOutlet NSButton* attachedCheckbox;
+@property(retain) IBOutlet NSArrayController* stackArrayController;
+@property(retain) IBOutlet NSTreeController* variablesTreeController;
+@property(retain) IBOutlet NSOutlineView* variablesOutlineView;
 
 @property(retain) IBOutlet NSTextField* statusField;
 @property(retain) IBOutlet NSSegmentedControl* segmentControl;

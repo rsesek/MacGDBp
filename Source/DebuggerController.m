@@ -44,10 +44,6 @@
   VariableNode* _selectedVariable;
 }
 
-@synthesize connection = _connection;
-@synthesize sourceViewer = _sourceViewer;
-@synthesize inspector = _inspector;
-
 /**
  * Initializes the window controller and sets the connection using preference
  * values
@@ -94,6 +90,14 @@
   [_breakpointsController release];
   [_evalController release];
   [_expandedVariables release];
+
+  [_sourceViewer release];
+  [_inspector release];
+
+  [_attachedCheckbox release];
+  [_stackArrayController release];
+  [_variablesTreeController release];
+  [_variablesOutlineView release];
 
   [_segmentControl release];
   [_statusField release];
