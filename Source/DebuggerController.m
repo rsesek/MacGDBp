@@ -204,18 +204,6 @@
 }
 
 /**
- * Resets all the displays to be empty
- */
-- (void)resetDisplays
-{
-  [variablesTreeController setContent:nil];
-  [stackArrayController rearrangeObjects];
-  [[sourceViewer textView] setString:@""];
-  sourceViewer.file = nil;
-}
-
-
-/**
  * Delegate function for GDBpConnection for when the debugger connects.
  */
 - (void)debuggerConnected

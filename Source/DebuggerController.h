@@ -54,8 +54,6 @@
 - (IBAction)showInspectorWindow:(id)sender;
 - (IBAction)showEvalWindow:(id)sender;
 
-- (void)resetDisplays;
-
 - (IBAction)attachedToggled:(id)sender;
 
 - (IBAction)run:(id)sender;
