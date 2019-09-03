@@ -19,7 +19,7 @@
 #import "BreakpointManager.h"
 #import "BSSourceView.h"
 
-@interface BreakpointController : NSViewController<BSSourceViewDelegate>
+@interface BreakpointController : NSViewController
 
 @property(nonatomic, assign) IBOutlet NSPopUpButton* addBreakpointButton;
 @property(nonatomic, assign) IBOutlet NSArrayController* arrayController;

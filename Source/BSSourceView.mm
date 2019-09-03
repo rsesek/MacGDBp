@@ -258,9 +258,7 @@
  */
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
-  if ([delegate_ respondsToSelector:@selector(sourceView:acceptsDropOfFile:)])
-    return NSDragOperationCopy;
-  return NSDragOperationNone;
+  return NSDragOperationCopy;
 }
 
 /**
@@ -273,11 +271,8 @@
     NSArray* files = [pboard propertyListForType:NSFilenamesPboardType];
     if ([files count]) {
       NSString* filename = [files objectAtIndex:0];
-      if ([delegate_ respondsToSelector:@selector(sourceView:acceptsDropOfFile:)] &&
-          [delegate_ sourceView:self acceptsDropOfFile:filename]) {
-        [self setFile:filename];
-        return YES;
-      }
+      [self setFile:filename];
+      return YES;
     }
   }
   return NO;

@@ -62,6 +62,4 @@
 // Notifies the delegate that the gutter was clicked at a certain line.
 - (void)gutterClickedAtLine:(NSUInteger)line forFile:(NSString*)file;
 
-// Whether to accept a file drop.
-- (BOOL)sourceView:(BSSourceView*)sv acceptsDropOfFile:(NSString*)fileName;
 @end

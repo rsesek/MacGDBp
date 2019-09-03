@@ -117,14 +117,4 @@
   [_sourceView setMarkers:[_manager breakpointsForFile:bp.file]];
 }
 
-#pragma mark BSSourceView Delegate
-
-/**
- * Accepts a file dragged to set the contents of the display.
- */
-- (BOOL)sourceView:(BSSourceView*)sv acceptsDropOfFile:(NSString*)filename
-{
-  return YES;
-}
-
 @end
