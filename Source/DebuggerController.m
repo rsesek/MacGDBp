@@ -408,7 +408,7 @@
   [_segmentControl setWidth:spacerWidth forSegment:0];
   [_segmentControl setWidth:spacerWidth forSegment:[_segmentControl segmentCount] - 1];
 
-  [_segmentControl setFrame:NSMakeRect(-1, NSHeight(containerFrame) - 27, containerWidth + 2, 30)];
+  [_segmentControl setFrame:NSMakeRect(-5, NSHeight(containerFrame) - 27, containerWidth + 10, 30)];
 }
 
 #pragma mark BSSourceView Delegate
