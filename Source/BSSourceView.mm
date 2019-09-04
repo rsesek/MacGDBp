@@ -107,7 +107,9 @@
     [[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
     
     NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
-    NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data documentAttributes:NULL];
+    NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data
+                                                                  options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                                       documentAttributes:nil];
     [[textView_ textStorage] setAttributedString:source];
     [source release];
   } @catch (NSException* exception) {
