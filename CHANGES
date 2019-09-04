@@ -16,6 +16,9 @@ MacGDBp                                                               CHANGE LOG
   after every 32 items.
 - Fix: #245  Attaching/Detaching is not always reliable.
 - Fix: #246  Replace non-breaking spaces in source viewer with normal spaces.
+- Fix: #244  Crashing when pressing Run after execution has completed.
+- Fix: #249  Property list has duplicate sub-properties.
+- Fix: #238  Clicking the Attached checkbox a couple of times crashes.
 
 
 1.5
