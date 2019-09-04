@@ -106,10 +106,15 @@
     
     [[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
     
-    NSData* data               = [[outPipe fileHandleForReading] readDataToEndOfFile];
-    NSAttributedString* source = [[NSAttributedString alloc] initWithHTML:data
-                                                                  options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
-                                                       documentAttributes:nil];
+    NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
+    NSMutableAttributedString* source =
+        [[NSMutableAttributedString alloc] initWithHTML:data
+                                                options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                     documentAttributes:nil];
+    NSMutableString* stringData = [source mutableString];
+    // PHP uses &nbsp; in the highlighted output, which should be converted
+    // back to normal spaces.
+    [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
     [[textView_ textStorage] setAttributedString:source];
     [source release];
   } @catch (NSException* exception) {

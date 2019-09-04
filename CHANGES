@@ -12,6 +12,10 @@ MacGDBp                                                               CHANGE LOG
 - Fix: #187  Non-ASCII characters would not display correctly in the source
   pane.
 - Fix: #224  Spaces in file paths were double-escaped.
+- Fix: #230  Long array of objects in variable pane wraps index back to 0
+  after every 32 items.
+- Fix: #245  Attaching/Detaching is not always reliable.
+- Fix: #246  Replace non-breaking spaces in source viewer with normal spaces.
 
 
 1.5
