@@ -1,6 +1,19 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.0 Beta 1
+#####################
+- New: Unified UI with integrated debugger, breakpoints, and eval panels.
+- Change: More robust protocol layer communication, which allows loading more
+  properties on long arrays and deep objects.
+- Change: The app is now sandboxed.
+- New: #203  Function call/symbolic breakpoints.
+- Fix: #255  "Could not open socket" failures due to socket reuse.
+- Fix: #187  Non-ASCII characters would not display correctly in the source
+  pane.
+- Fix: #224  Spaces in file paths were double-escaped.
+
+
 1.5
 #####################
 - New: Now a 64-bit binary (along with x86 and PPC)
