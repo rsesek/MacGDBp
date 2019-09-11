@@ -100,13 +100,13 @@
                                         <action selector="addBreakpoint:" target="-2" id="HVH-4f-zD3"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="File breakpoint" id="K7S-yj-EhU">
+                                <menuItem title="Line Number" id="K7S-yj-EhU">
                                     <modifierMask key="keyEquivalentModifierMask"/>
                                     <connections>
                                         <action selector="addBreakpoint:" target="-2" id="7gF-se-38S"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="Symbolic breakpoint" id="bYU-4e-GiO">
+                                <menuItem title="Function Call" id="bYU-4e-GiO">
                                     <connections>
                                         <action selector="addFunctionBreakpoint:" target="-2" id="7Vn-6z-YfT"/>
                                     </connections>
