@@ -49,6 +49,10 @@
   return self.stack.count;
 }
 
+- (void)onListeningOnPort:(uint16_t)port {
+  self.status = [NSString stringWithFormat:@"Listening on Port %d", port];
+}
+
 - (void)onNewConnection {
   self.status = nil;
   self.connected = YES;

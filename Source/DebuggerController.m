@@ -60,9 +60,9 @@
                 options:NSKeyValueObservingOptionNew
                 context:nil];
 
-    _connection = [[DebuggerBackEnd alloc] initWithPort:[defaults integerForKey:kPrefPort]
+    _connection = [[DebuggerBackEnd alloc] initWithModel:_model
+                                                    port:[defaults integerForKey:kPrefPort]
                                             autoAttach:[defaults boolForKey:kPrefDebuggerAttached]];
-    _connection.model = _model;
     _model.breakpointManager.connection = _connection;
 
     [_model addObserver:self

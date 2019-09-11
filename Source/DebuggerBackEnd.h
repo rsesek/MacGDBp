@@ -34,11 +34,13 @@
 @property(assign, nonatomic) BOOL autoAttach;
 
 // The model object to update in response to changes in the debugger.
-@property(assign, nonatomic) DebuggerModel* model;
+@property(readonly, nonatomic) DebuggerModel* model;
 
 // Designated initializer. Sets up a connection on |aPort| and will
 // initialize it if |autoAttach| is YES.
-- (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach;
+- (instancetype)initWithModel:(DebuggerModel*)model
+                         port:(NSUInteger)aPort
+                   autoAttach:(BOOL)doAttach;
 
 // getter
 - (uint16_t)port;

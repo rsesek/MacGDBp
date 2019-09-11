@@ -28,15 +28,16 @@
   ProtocolClient* _client;
 }
 
-- (instancetype)initWithPort:(NSUInteger)aPort autoAttach:(BOOL)doAttach
+- (instancetype)initWithModel:(DebuggerModel*)model
+                         port:(NSUInteger)aPort
+                   autoAttach:(BOOL)doAttach
 {
   if (self = [super init]) {
+    _model = model;
     _port = aPort;
     _client = [[ProtocolClient alloc] initWithDelegate:self];
 
-    _autoAttach = doAttach;
-    if (doAttach)
-      [_client connectOnPort:_port];
+    [self setAutoAttach:doAttach];
   }
   return self;
 }
@@ -67,7 +68,7 @@
   if (_autoAttach)
     [_client disconnect];
   else
-    [_client connectOnPort:_port];
+    [self doConnect];
 
   _autoAttach = flag;
 }
@@ -254,7 +255,7 @@
   [_model onDisconnect];
 
   if (self.autoAttach)
-    [_client connectOnPort:_port];
+    [self doConnect];
 }
 
 - (void)protocolClient:(ProtocolClient*)client receivedInitialMessage:(NSXMLDocument*)message {
@@ -382,6 +383,14 @@
     };
     [_client sendCommandWithFormat:@"context_get -d %d -c %d" handler:handler, frame.index, cid];
   }
+}
+
+// Private /////////////////////////////////////////////////////////////////////
+#pragma mark Private
+
+- (void)doConnect {
+  [_client connectOnPort:_port];
+  [_model onListeningOnPort:_port];
 }
 
 @end

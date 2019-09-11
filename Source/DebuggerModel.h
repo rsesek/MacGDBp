@@ -43,6 +43,9 @@
 // Helper accessor for |stack.count|.
 @property(readonly, nonatomic) NSUInteger stackDepth;
 
+// Informs the model that the debugger is listening for new connections.
+- (void)onListeningOnPort:(uint16_t)port;
+
 // Informs the model that a new connection was initiated. This clears any data
 // in the model.
 - (void)onNewConnection;
