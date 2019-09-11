@@ -13,15 +13,15 @@
                 <outlet property="segmentControl" destination="mRx-aY-U5x" id="plt-DD-Uli"/>
                 <outlet property="sourceViewer" destination="496" id="503"/>
                 <outlet property="stackArrayController" destination="36" id="563"/>
+                <outlet property="tabView" destination="XU1-a6-Ws7" id="Zhr-ym-q15"/>
                 <outlet property="variablesOutlineView" destination="12" id="567"/>
                 <outlet property="variablesTreeController" destination="59" id="566"/>
-                <outlet property="tabView" destination="XU1-a6-Ws7" id="Zhr-ym-q15"/>
                 <outlet property="window" destination="7" id="26"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="GDBp &lt;host&gt;:&lt;port&gt; @ &lt;session&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="DebuggerWindow" animationBehavior="default" id="7" userLabel="Debugger">
+        <window title="MacGDBp" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="DebuggerWindow" animationBehavior="default" titleVisibility="hidden" id="7" userLabel="Debugger">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="363" y="277" width="769" height="501"/>

@@ -110,8 +110,10 @@
  */
 - (void)awakeFromNib
 {
+  // Exclude from the Windows menu because there is an explicit entry.
   [[self window] setExcludedFromWindowsMenu:YES];
-  [[self window] setTitle:[NSString stringWithFormat:@"MacGDBp @ %d", [_connection port]]];
+
+  // Connect to XIB properties.
   [_sourceViewer setDelegate:self];
   [_stackArrayController setSortDescriptors:@[ [[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease] ]];
   [_stackArrayController addObserver:self
