@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesController">
@@ -16,8 +17,8 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Preferences" animationBehavior="default" id="1">
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="Preferences" animationBehavior="default" id="1">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="388" width="420" height="120"/>
@@ -25,7 +26,6 @@
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="420" height="120"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <animations/>
             </view>
             <toolbar key="toolbar" implicitIdentifier="8C3684D1-F400-4CBB-897D-0889A0E1CBC8" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="20">
                 <allowedToolbarItems>
@@ -61,7 +61,6 @@
                 <textField verticalHuggingPriority="750" id="93">
                     <rect key="frame" x="15" y="94" width="146" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Debugger Behavior:" id="94">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -71,7 +70,6 @@
                 <button toolTip="If enabled, MacGDBp will automatically step into the first line of code when the debugger is attached." id="91">
                     <rect key="frame" x="164" y="92" width="216" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <buttonCell key="cell" type="check" title="Break on first line of execution" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="92">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="system"/>
@@ -83,7 +81,6 @@
                 <textField verticalHuggingPriority="750" id="36">
                     <rect key="frame" x="17" y="45" width="387" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="You must close and reopen MacGDBp before these preference values take effect." id="37">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -93,10 +90,10 @@
                 <textField verticalHuggingPriority="750" id="33">
                     <rect key="frame" x="168" y="18" width="60" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="40">
+                        <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="fAx-s6-Oqh"/>
                         <font key="font" metaFont="system"/>
-                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
@@ -106,7 +103,6 @@
                 <textField verticalHuggingPriority="750" id="32">
                     <rect key="frame" x="77" y="20" width="86" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Xdebug Port:" id="41">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -114,7 +110,6 @@
                     </textFieldCell>
                 </textField>
             </subviews>
-            <animations/>
         </customView>
         <customView id="53" userLabel="PathsPreferences">
             <rect key="frame" x="0.0" y="0.0" width="427" height="213"/>
@@ -123,7 +118,6 @@
                 <button verticalHuggingPriority="750" id="66">
                     <rect key="frame" x="24" y="-1" width="26" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="67">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -135,7 +129,6 @@
                 <button verticalHuggingPriority="750" id="64">
                     <rect key="frame" x="-1" y="-1" width="26" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <animations/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="65">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -148,13 +141,12 @@
                     <rect key="frame" x="-1" y="20" width="429" height="193"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" id="egR-Mj-j4E">
-                        <rect key="frame" x="1" y="23" width="427" height="169"/>
+                        <rect key="frame" x="1" y="0.0" width="427" height="192"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" autosaveColumns="NO" headerView="59" id="58">
                                 <rect key="frame" x="0.0" y="0.0" width="427" height="169"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <animations/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -194,28 +186,21 @@
                                 </tableColumns>
                             </tableView>
                         </subviews>
-                        <animations/>
-                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
-                    <animations/>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="57">
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="57">
                         <rect key="frame" x="1" y="177" width="411" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="56">
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="56">
                         <rect key="frame" x="411" y="17" width="15" height="160"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </scroller>
                     <tableHeaderView key="headerView" id="59">
                         <rect key="frame" x="0.0" y="0.0" width="427" height="23"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </tableHeaderView>
                 </scrollView>
             </subviews>
-            <animations/>
         </customView>
         <arrayController automaticallyPreparesContent="YES" id="78" userLabel="Paths Controller" customClass="PreferencesPathsArrayController">
             <declaredKeys>
