@@ -399,7 +399,6 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				1E9583550E2531E7001A3D89 /* CopyFiles */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				1E42F1110F4E78C8008412DB /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -482,22 +481,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1E42F1110F4E78C8008412DB /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\n# Define the path to Gitcrement in Xcode's Source Trees.\n$GITCREMENT\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1E8C70931BDB167F00D333DC /* Sources */ = {
