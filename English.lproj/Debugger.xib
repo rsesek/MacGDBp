@@ -68,20 +68,20 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="11">
-                                                            <rect key="frame" x="0.0" y="0.0" width="300" height="481"/>
+                                                            <rect key="frame" x="-1" y="-1" width="301" height="482"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <clipView key="contentView" id="oXX-ZU-YDL">
-                                                                <rect key="frame" x="1" y="0.0" width="298" height="480"/>
+                                                                <rect key="frame" x="1" y="0.0" width="299" height="481"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
                                                                     <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="467" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="14" id="12">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="298" height="457"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="299" height="458"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                         <tableColumns>
-                                                                            <tableColumn editable="NO" width="76" minWidth="16" maxWidth="1000" id="14">
+                                                                            <tableColumn editable="NO" width="76.5" minWidth="16" maxWidth="1000" id="14">
                                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Variable">
                                                                                     <font key="font" metaFont="smallSystem"/>
                                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -101,7 +101,7 @@
                                                                                     </binding>
                                                                                 </connections>
                                                                             </tableColumn>
-                                                                            <tableColumn editable="NO" width="97" minWidth="8" maxWidth="1000" id="13">
+                                                                            <tableColumn editable="NO" width="97.5" minWidth="8" maxWidth="1000" id="13">
                                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
                                                                                     <font key="font" metaFont="smallSystem"/>
                                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -158,7 +158,7 @@
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                             </scroller>
                                                             <tableHeaderView key="headerView" id="467">
-                                                                <rect key="frame" x="0.0" y="0.0" width="298" height="23"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="299" height="23"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                             </tableHeaderView>
                                                         </scrollView>
@@ -167,7 +167,7 @@
                                             </tabViewItem>
                                             <tabViewItem label="Breakpoints" identifier="2" id="2a4-vf-O1X">
                                                 <view key="view" id="9f1-p9-w6d">
-                                                    <rect key="frame" x="0.0" y="0.0" width="211" height="461"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="211" height="480"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </view>
                                             </tabViewItem>
