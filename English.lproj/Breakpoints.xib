@@ -89,7 +89,7 @@
                 <popUpButton verticalHuggingPriority="750" id="Rhe-Th-Bhr">
                     <rect key="frame" x="-1" y="-2" width="24" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" preferredEdge="maxX" altersStateOfSelectedItem="NO" id="Dwf-ep-VTS">
+                    <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" preferredEdge="maxX" altersStateOfSelectedItem="NO" selectedItem="CvR-xk-b9b" id="Dwf-ep-VTS">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="menu"/>
                         <menu key="menu" id="Rib-S1-dUw">
@@ -100,20 +100,15 @@
                                         <action selector="addBreakpoint:" target="-2" id="HVH-4f-zD3"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="File Breakpoint" id="K7S-yj-EhU">
+                                <menuItem title="File breakpoint" id="K7S-yj-EhU">
                                     <modifierMask key="keyEquivalentModifierMask"/>
                                     <connections>
                                         <action selector="addBreakpoint:" target="-2" id="7gF-se-38S"/>
                                     </connections>
                                 </menuItem>
-                                <menuItem title="Function Entry" tag="101" id="bYU-4e-GiO">
+                                <menuItem title="Symbolic breakpoint" id="bYU-4e-GiO">
                                     <connections>
                                         <action selector="addFunctionBreakpoint:" target="-2" id="7Vn-6z-YfT"/>
-                                    </connections>
-                                </menuItem>
-                                <menuItem title="Function Return" tag="114" id="HBr-Lu-4Xf">
-                                    <connections>
-                                        <action selector="addFunctionBreakpoint:" target="-2" id="0gN-sL-7Kg"/>
                                     </connections>
                                 </menuItem>
                             </items>
