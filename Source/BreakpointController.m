@@ -64,18 +64,31 @@
 
 - (IBAction)addFunctionBreakpoint:(id)sender
 {
-  [self.view.window beginSheet:self.addFunctionBreakpointWindow completionHandler:nil];
+  NSUInteger tag = [sender tag];
+  NSString* type;
+  if (tag == 'e') {
+    type = kBreakpointTypeFunctionEntry;
+  } else if (tag == 'r') {
+    type = kBreakpointTypeFunctionReturn;
+  } else {
+    [NSException raise:NSInvalidArgumentException
+                format:@"Unexpected breakpoint type from tag %ld sender %@", tag, sender];
+  }
+  [self.view.window beginSheet:self.addFunctionBreakpointWindow completionHandler:^(NSModalResponse returnCode) {
+    if (returnCode == NSModalResponseOK) {
+      [_manager addBreakpoint:[Breakpoint breakpointOnFunctionNamed:self.functionNameField.stringValue type:type]];
+    }
+  }];
 }
 
 - (IBAction)cancelFunctionBreakpoint:(id)sender
 {
-  [self.view.window endSheet:self.addFunctionBreakpointWindow];
+  [self.view.window endSheet:self.addFunctionBreakpointWindow returnCode:NSModalResponseCancel];
 }
 
 - (IBAction)saveFunctionBreakpoint:(id)sender
 {
-  [_manager addBreakpoint:[Breakpoint breakpointOnFunctionNamed:self.functionNameField.stringValue]];
-  [self.view.window endSheet:self.addFunctionBreakpointWindow];
+  [self.view.window endSheet:self.addFunctionBreakpointWindow returnCode:NSModalResponseOK];
 }
 
 /**

@@ -20,6 +20,7 @@
 
 NSString* const kBreakpointTypeFile = @"line";
 NSString* const kBreakpointTypeFunctionEntry = @"call";
+NSString* const kBreakpointTypeFunctionReturn = @"return";
 
 @implementation Breakpoint {
   NSString* _type;  // weak
@@ -39,10 +40,11 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
   return breakpoint;
 }
 
-+ (instancetype)breakpointOnFunctionNamed:(NSString*)name
++ (instancetype)breakpointOnFunctionNamed:(NSString*)name type:(NSString*)type
 {
   Breakpoint* breakpoint = [[[Breakpoint alloc] init] autorelease];
-  breakpoint->_type = kBreakpointTypeFunctionEntry;
+  NSAssert1(type == kBreakpointTypeFunctionEntry || type == kBreakpointTypeFunctionReturn, @"Unexpected breakpoint type: %@", type);
+  breakpoint->_type = type;
   breakpoint->_functionName = [name copy];
   return breakpoint;
 }
@@ -57,6 +59,9 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
       _line = [[dict valueForKey:@"line"] intValue];
     } else if ([type isEqualToString:kBreakpointTypeFunctionEntry]) {
       _type = kBreakpointTypeFunctionEntry;
+      _functionName = [[dict valueForKey:@"function"] copy];
+    } else if ([type isEqualToString:kBreakpointTypeFunctionReturn]) {
+      _type = kBreakpointTypeFunctionReturn;
       _functionName = [[dict valueForKey:@"function"] copy];
     } else {
       [NSException raise:NSInvalidArgumentException
@@ -80,7 +85,8 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 {
   if (self.type == kBreakpointTypeFile) {
     return [NSString stringWithFormat:@"%@:%ld", self.file, self.line];
-  } else if (self.type == kBreakpointTypeFunctionEntry) {
+  } else if (self.type == kBreakpointTypeFunctionEntry ||
+             self.type == kBreakpointTypeFunctionReturn) {
     return [NSString stringWithFormat:@"%@()", self.functionName];
   }
   return nil;
@@ -121,7 +127,8 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 
   if (self.type == kBreakpointTypeFile) {
     return [self.file isEqualToString:other.file] && self.line == other.line;
-  } else if (self.type == kBreakpointTypeFunctionEntry) {
+  } else if (self.type == kBreakpointTypeFunctionEntry ||
+             self.type == kBreakpointTypeFunctionReturn) {
     return [self.functionName isEqualToString:other.functionName];
   }
 
@@ -136,7 +143,8 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
       @"file" : self.file,
       @"line" : @(self.line)
     };
-  } else if (self.type == kBreakpointTypeFunctionEntry) {
+  } else if (self.type == kBreakpointTypeFunctionEntry ||
+             self.type == kBreakpointTypeFunctionReturn) {
     return @{
       @"type"     : self.type,
       @"function" : self.functionName

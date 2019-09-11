@@ -18,6 +18,7 @@
 
 extern NSString* const kBreakpointTypeFile;
 extern NSString* const kBreakpointTypeFunctionEntry;
+extern NSString* const kBreakpointTypeFunctionReturn;
 
 // This represents a breakpoint at a certain file and line number. It also
 // maintains the identifier that the backend assigns to the breakpoint.
@@ -40,7 +41,7 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 @property (readonly) NSString* functionName;
 
 + (instancetype)breakpointAtLine:(unsigned long)line inFile:(NSString*)file;
-+ (instancetype)breakpointOnFunctionNamed:(NSString*)name;
++ (instancetype)breakpointOnFunctionNamed:(NSString*)name type:(NSString*)type;
 
 // Initializer from NSUserDefaults.
 - (instancetype)initWithDictionary:(NSDictionary*)dict;

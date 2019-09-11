@@ -207,8 +207,11 @@
   if (bp.type == kBreakpointTypeFile) {
     NSString* file = [ProtocolClient escapedFilePathURI:[bp transformedPath]];
     [_client sendCommandWithFormat:@"breakpoint_set -t line -f %@ -n %i" handler:handler, file, [bp line]];
-  } else if (bp.type == kBreakpointTypeFunctionEntry) {
-    [_client sendCommandWithFormat:@"breakpoint_set -t call -m %@" handler:handler, bp.functionName];
+  } else if (bp.type == kBreakpointTypeFunctionEntry ||
+             bp.type == kBreakpointTypeFunctionReturn) {
+    [_client sendCommandWithFormat:@"breakpoint_set -t %@ -m %@" handler:handler, bp.type, bp.functionName];
+  } else {
+    [NSException raise:NSInvalidArgumentException format:@"Unknown breakpoint type %@", bp.type];
   }
 }
 
