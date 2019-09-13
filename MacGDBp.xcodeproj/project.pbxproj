@@ -40,6 +40,7 @@
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
+		1EE97E55232B11CB000FA8E6 /* ValidatingNSToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE97E54232B11CB000FA8E6 /* ValidatingNSToolbarItem.m */; };
 		1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE841176FEA80003622C3 /* MessageQueue.m */; };
 		1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE844176FFE04003622C3 /* ProtocolClient.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
@@ -131,6 +132,8 @@
 		1ED58817231CC66000F0A713 /* MacGDBp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacGDBp.entitlements; sourceTree = "<group>"; };
 		1EDA9CF612DD13B300596211 /* BSLineNumberRulerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSLineNumberRulerView.h; path = Source/BSLineNumberRulerView.h; sourceTree = "<group>"; };
 		1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSLineNumberRulerView.mm; path = Source/BSLineNumberRulerView.mm; sourceTree = "<group>"; };
+		1EE97E53232B11CB000FA8E6 /* ValidatingNSToolbarItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ValidatingNSToolbarItem.h; path = Source/ValidatingNSToolbarItem.h; sourceTree = "<group>"; };
+		1EE97E54232B11CB000FA8E6 /* ValidatingNSToolbarItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ValidatingNSToolbarItem.m; path = Source/ValidatingNSToolbarItem.m; sourceTree = "<group>"; };
 		1EEBE840176FEA80003622C3 /* MessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageQueue.h; path = Source/MessageQueue.h; sourceTree = "<group>"; };
 		1EEBE841176FEA80003622C3 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageQueue.m; path = Source/MessageQueue.m; sourceTree = "<group>"; };
 		1EEBE843176FFE04003622C3 /* ProtocolClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolClient.h; path = Source/ProtocolClient.h; sourceTree = "<group>"; };
@@ -308,6 +311,8 @@
 				1EC1337D127DBB00007946FC /* VariableNode.m */,
 				1E109017136DD92D002E34E0 /* StripLineBreaksValueTransformer.h */,
 				1E109018136DD92D002E34E0 /* StripLineBreaksValueTransformer.m */,
+				1EE97E53232B11CB000FA8E6 /* ValidatingNSToolbarItem.h */,
+				1EE97E54232B11CB000FA8E6 /* ValidatingNSToolbarItem.m */,
 			);
 			name = Debugger;
 			sourceTree = "<group>";
@@ -515,6 +520,7 @@
 				1EC1337E127DBB00007946FC /* VariableNode.m in Sources */,
 				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */,
 				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
+				1EE97E55232B11CB000FA8E6 /* ValidatingNSToolbarItem.m in Sources */,
 				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,
 				1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */,
 				1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */,
