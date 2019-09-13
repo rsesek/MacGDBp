@@ -47,11 +47,6 @@
   return self;
 }
 
-- (void)dealloc {
-  [_dispatchTable release];
-  [super dealloc];
-}
-
 - (BOOL)isConnected {
   return [_messageQueue isConnected];
 }
@@ -85,10 +80,10 @@
   va_end(args);
 
   int transaction = _nextID++;
-  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %d", [command autorelease], transaction];
+  NSString* taggedCommand = [NSString stringWithFormat:@"%@ -i %d", command, transaction];
 
   assert(_messageQueue);
-  [_dispatchTable setObject:[[handler copy] autorelease] forKey:@(transaction)];
+  [_dispatchTable setObject:[handler copy] forKey:@(transaction)];
   [_messageQueue sendMessage:taggedCommand];
 }
 
@@ -97,7 +92,7 @@
   // Collect varargs and format command.
   va_list args;
   va_start(args, handler);
-  NSString* command = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+  NSString* command = [[NSString alloc] initWithFormat:format arguments:args];
   va_end(args);
 
   int transaction = _nextID++;
@@ -106,7 +101,7 @@
                                          withString:[NSString stringWithFormat:@"%d", transaction]];
 
   assert(_messageQueue);
-  [_dispatchTable setObject:[[handler copy] autorelease] forKey:@(transaction)];
+  [_dispatchTable setObject:[handler copy] forKey:@(transaction)];
   [_messageQueue sendMessage:taggedCommand];
 }
 
@@ -157,7 +152,6 @@
 }
 
 - (void)messageQueueDidDisconnect:(MessageQueue*)queue {
-  [_messageQueue release];
   _messageQueue = nil;
   [_dispatchTable removeAllObjects];
   [_delegate debuggerEngineDisconnected:self];
@@ -172,7 +166,7 @@
   LogEntry* entry = [LogEntry newSendEntry:message];
   entry.lastReadTransactionID = _lastReadID;
   entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger recordEntry:[entry autorelease]];
+  [logger recordEntry:entry];
 }
 
 // Callback with the message content when one has been receieved.
@@ -182,13 +176,13 @@
   LogEntry* entry = [LogEntry newReceiveEntry:message];
   entry.lastReadTransactionID = _lastReadID;
   entry.lastWrittenTransactionID = _lastWrittenID;
-  [logger recordEntry:[entry autorelease]];
+  [logger recordEntry:entry];
 
   // Parse the XML and test for errors.
   NSError* error = nil;
-  NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithXMLString:message
-                                                         options:NSXMLDocumentTidyXML
-                                                           error:&error] autorelease];
+  NSXMLDocument* xml = [[NSXMLDocument alloc] initWithXMLString:message
+                                                        options:NSXMLDocumentTidyXML
+                                                          error:&error];
   if (error) {
     [self messageQueue:queue error:error];
     return;

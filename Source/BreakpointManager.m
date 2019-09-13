@@ -27,7 +27,7 @@
   NSMutableArray* _breakpoints;
   NSMutableArray* _savedBreakpoints;
 
-  DebuggerBackEnd* _connection;
+  DebuggerBackEnd* __weak _connection;
 }
 
 - (id)init
@@ -41,17 +41,11 @@
     if (savedBreakpoints) {
       [_savedBreakpoints addObjectsFromArray:savedBreakpoints];
       for (NSDictionary* d in savedBreakpoints) {
-        [_breakpoints addObject:[[[Breakpoint alloc] initWithDictionary:d] autorelease]];
+        [_breakpoints addObject:[[Breakpoint alloc] initWithDictionary:d]];
       }
     }
   }
   return self;
-}
-
-- (void)dealloc {
-  [_breakpoints release];
-  [_savedBreakpoints release];
-  [super dealloc];
 }
 
 /**
@@ -77,10 +71,6 @@
 - (Breakpoint*)removeBreakpoint:(Breakpoint*)bp
 {
   if ([_breakpoints containsObject:bp]) {
-    // Keep the breakpoint alive after it is removed from the breakpoints
-    // array.
-    [[bp retain] autorelease];
-
     [self willChangeValueForKey:@"breakpoints"];
     [_breakpoints removeObject:bp];
     [self didChangeValueForKey:@"breakpoints"];

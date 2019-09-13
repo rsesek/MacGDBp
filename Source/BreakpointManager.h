@@ -20,7 +20,7 @@
 
 @interface BreakpointManager : NSObject
 
-@property(readwrite, assign) DebuggerBackEnd* connection;
+@property(readwrite, weak) DebuggerBackEnd* connection;
 @property(readonly) NSMutableArray* breakpoints;
 
 - (void)addBreakpoint:(Breakpoint*)bp;

@@ -42,11 +42,6 @@
   return self;
 }
 
-- (void)dealloc {
-  [_client release];
-  [super dealloc];
-}
-
 // Getters /////////////////////////////////////////////////////////////////////
 #pragma mark Getters
 
@@ -332,7 +327,7 @@
     ProtocolClientMessageHandler handler = ^(NSXMLDocument* message) {
       [tempStack addObject:[self transformXMLToStackFrame:message]];
       if (i == depth - 1) {
-        [self.model updateStack:[tempStack autorelease]];
+        [self.model updateStack:tempStack];
       }
     };
     [_client sendCommandWithFormat:@"stack_get -d %d" handler:handler, i];
@@ -345,7 +340,7 @@
  */
 - (StackFrame*)transformXMLToStackFrame:(NSXMLDocument*)response {
   NSXMLElement* xmlframe = (NSXMLElement*)[[[response rootElement] children] objectAtIndex:0];
-  StackFrame* frame = [[[StackFrame alloc] init] autorelease];
+  StackFrame* frame = [[StackFrame alloc] init];
   frame.index = [[[xmlframe attributeForName:@"level"] stringValue] intValue];
   frame.filename = [[xmlframe attributeForName:@"filename"] stringValue];
   frame.lineNumber = [[[xmlframe attributeForName:@"lineno"] stringValue] intValue];
@@ -375,7 +370,7 @@
       if (addVariables) {
         for (NSXMLElement* elm in addVariables) {
           VariableNode* node = [[VariableNode alloc] initWithXMLNode:elm];
-          [variables addObject:[node autorelease]];
+          [variables addObject:node];
         }
       }
 

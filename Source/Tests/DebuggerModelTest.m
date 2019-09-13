@@ -33,7 +33,6 @@
 }
 
 - (void)tearDown {
-  [_model release];
   [super tearDown];
 }
 
@@ -44,7 +43,7 @@
 - (StackFrame*)makeStackFrameForFile:(NSString*)file
                               atLine:(NSUInteger)line
                           stackIndex:(NSUInteger)index {
-  StackFrame* frame = [[[StackFrame alloc] init] autorelease];
+  StackFrame* frame = [[StackFrame alloc] init];
   frame.filename = file;
   frame.lineNumber = line;
   frame.index = index;

@@ -21,11 +21,11 @@
 
 @interface BreakpointController : NSViewController
 
-@property(nonatomic, assign) IBOutlet NSPopUpButton* addBreakpointButton;
-@property(nonatomic, assign) IBOutlet NSArrayController* arrayController;
+@property(nonatomic, weak) IBOutlet NSPopUpButton* addBreakpointButton;
+@property(nonatomic, weak) IBOutlet NSArrayController* arrayController;
 
-@property(nonatomic, assign) IBOutlet NSWindow* addFunctionBreakpointWindow;
-@property(nonatomic, assign) IBOutlet NSTextField* functionNameField;
+@property(nonatomic, weak) IBOutlet NSWindow* addFunctionBreakpointWindow;
+@property(nonatomic, weak) IBOutlet NSTextField* functionNameField;
 
 - (instancetype)initWithBreakpointManager:(BreakpointManager*)breakpointManager
                                sourceView:(BSSourceView*)sourceView;

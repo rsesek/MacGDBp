@@ -39,17 +39,6 @@
   return self;
 }
 
-- (void)dealloc {
-  [_name release];
-  [_fullName release];
-  [_className release];
-  [_type release];
-  [_value release];
-  [_children release];
-  [_address release];
-  [super dealloc];
-}
-
 - (void)setChildrenFromXMLChildren:(NSArray*)children {
   [self willChangeValueForKey:@"children"];
 
@@ -63,7 +52,6 @@
       // elsewhere.
       if (![node.name isEqualToString:@"CLASSNAME"])
         [_children addObject:node];
-      [node release];
     }
   }
 

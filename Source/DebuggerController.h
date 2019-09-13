@@ -27,16 +27,16 @@
 @property(readonly) DebuggerBackEnd* connection;
 @property(readonly) DebuggerModel* model;
 
-@property(retain) IBOutlet BSSourceView* sourceViewer;
-@property(retain) IBOutlet NSWindow* inspector;
+@property(strong) IBOutlet BSSourceView* sourceViewer;
+@property(strong) IBOutlet NSWindow* inspector;
 
-@property(retain) IBOutlet NSButton* attachedCheckbox;
-@property(retain) IBOutlet NSArrayController* stackArrayController;
-@property(retain) IBOutlet NSTreeController* variablesTreeController;
-@property(retain) IBOutlet NSOutlineView* variablesOutlineView;
+@property(strong) IBOutlet NSButton* attachedCheckbox;
+@property(strong) IBOutlet NSArrayController* stackArrayController;
+@property(strong) IBOutlet NSTreeController* variablesTreeController;
+@property(strong) IBOutlet NSOutlineView* variablesOutlineView;
 
-@property(retain) IBOutlet NSSegmentedControl* segmentControl;
-@property(retain) IBOutlet NSTabView* tabView;
+@property(strong) IBOutlet NSSegmentedControl* segmentControl;
+@property(strong) IBOutlet NSTabView* tabView;
 
 - (IBAction)showInspectorWindow:(id)sender;
 - (IBAction)showEvalWindow:(id)sender;

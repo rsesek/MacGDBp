@@ -22,7 +22,7 @@ NSString* const kBreakpointTypeFile = @"line";
 NSString* const kBreakpointTypeFunctionEntry = @"call";
 
 @implementation Breakpoint {
-  NSString* _type;  // weak
+  NSString* __weak _type;
   unsigned long _debuggerId;
 
   NSString* _file;
@@ -32,7 +32,7 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 
 + (instancetype)breakpointAtLine:(unsigned long)line inFile:(NSString*)file
 {
-  Breakpoint* breakpoint = [[[Breakpoint alloc] init] autorelease];
+  Breakpoint* breakpoint = [[Breakpoint alloc] init];
   breakpoint->_type = kBreakpointTypeFile;
   breakpoint->_file = [file copy];
   breakpoint->_line = line;
@@ -41,7 +41,7 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 
 + (instancetype)breakpointOnFunctionNamed:(NSString*)name
 {
-  Breakpoint* breakpoint = [[[Breakpoint alloc] init] autorelease];
+  Breakpoint* breakpoint = [[Breakpoint alloc] init];
   breakpoint->_type = kBreakpointTypeFunctionEntry;
   breakpoint->_functionName = [name copy];
   return breakpoint;
@@ -64,13 +64,6 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
     }
   }
   return self;
-}
-
-- (void)dealloc
-{
-  [_file release];
-  [_functionName release];
-  [super dealloc];
 }
 
 /**

@@ -18,14 +18,6 @@
 
 @implementation StackFrame
 
-- (void)dealloc {
-  self.filename = nil;
-  self.source = nil;
-  self.function = nil;
-  self.variables = nil;
-  [super dealloc];
-}
-
 - (BOOL)isEqual:(id)object {
   if (![object isKindOfClass:[StackFrame class]])
     return NO;

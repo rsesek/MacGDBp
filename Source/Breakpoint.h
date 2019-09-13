@@ -24,13 +24,13 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 @interface Breakpoint : NSObject
 
 // The type of breakpoint, one of the kBreakpointType constants above.
-@property (readonly) NSString* type;
+@property (weak, readonly) NSString* type;
 
 // The unique identifier assigned by the debugger engine, only valid while
 // connected.
 @property (readwrite, assign) unsigned long debuggerId;
 
-@property(nonatomic, readonly) NSString* displayValue;
+@property(weak, nonatomic, readonly) NSString* displayValue;
 
 // kBreakpointTypeFile:
 @property (readonly) NSString* file;

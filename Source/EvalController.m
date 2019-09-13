@@ -29,12 +29,6 @@
   return self;
 }
 
-- (void)dealloc {
-  self.dataField = nil;
-  self.resultField = nil;
-  [super dealloc];
-}
-
 - (IBAction)evaluateScript:(id)sender {
   NSString* code = [self.dataField stringValue];
   [_backEnd evalScript:code callback:^(NSString* result) {

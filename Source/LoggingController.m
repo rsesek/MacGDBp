@@ -30,12 +30,6 @@
   return self;
 }
 
-- (void)dealloc
-{
-  [logEntries_ release];
-  [super dealloc];
-}
-
 - (void)recordEntry:(LogEntry*)entry
 {
   [logEntries_ addObject:entry];
@@ -67,14 +61,6 @@
   entry.direction = kLogEntryReceiving;
   entry.contents  = command;
   return entry;
-}
-
-- (void)dealloc
-{
-  self.contents = nil;
-  self.lastWrittenTransactionID = 0;
-  self.lastReadTransactionID = 0;
-  [super dealloc];
 }
 
 - (NSString*)directionName

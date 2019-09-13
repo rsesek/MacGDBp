@@ -37,14 +37,6 @@
   return self;
 }
 
-- (void)dealloc {
-  [_breakpointManager release];
-  [_status release];
-  [_lastError release];
-  [_stack release];
-  [super dealloc];
-}
-
 - (NSUInteger)stackDepth {
   return self.stack.count;
 }

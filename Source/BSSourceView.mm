@@ -51,24 +51,8 @@
   return self;
 }
 
-/**
- * Dealloc
- */
-- (void)dealloc
-{
-  [file_ release];
-  [markers_ release];
-
-  [scrollView_ removeFromSuperview];
-  [textView_ removeFromSuperview];
-  
-  [super dealloc];
-}
-
 - (void)setMarkers:(NSSet*)markers {
-  [markers_ release];
   markers_ = [markers copy];
-
   [ruler_ setNeedsDisplay:YES];
 }
 
@@ -83,10 +67,7 @@
  */
 - (void)setFile:(NSString*)f
 {
-  if (file_ != f) {
-    [file_ release];
-    file_ = [f retain];
-  }
+  file_ = f;
   
   if (![[NSFileManager defaultManager] fileExistsAtPath:f]) {
     [textView_ setString:@""];
@@ -101,10 +82,7 @@
  */
 - (void)setString:(NSString*)source asFile:(NSString*)path
 {
-  if (path != file_) {
-    [file_ release];
-    file_ = [path copy];
-  }
+  file_ = path;
 
   // Write the source out as a temporary file so it can be highlighted.
   NSError* error = nil;
@@ -159,7 +137,7 @@
 - (void)setupViews
 {
   // Create the scroll view.
-  scrollView_ = [[[NSScrollView alloc] initWithFrame:[self bounds]] autorelease];
+  scrollView_ = [[NSScrollView alloc] initWithFrame:[self bounds]];
   [scrollView_ setHasHorizontalScroller:YES];
   [scrollView_ setHasVerticalScroller:YES];
   [scrollView_ setAutohidesScrollers:YES];
@@ -172,7 +150,7 @@
   NSRect textFrame;
   textFrame.origin = NSMakePoint(0.0, 0.0);
   textFrame.size = [scrollView_ contentSize];
-  textView_ = [[[BSSourceViewTextView alloc] initWithFrame:textFrame] autorelease];
+  textView_ = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
   [textView_ setSourceView:self];
   [textView_ setEditable:NO];
   [textView_ setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
@@ -187,7 +165,7 @@
   [scrollView_ setDocumentView:textView_];
 
   // Set up the ruler.
-  ruler_ = [[[BSLineNumberRulerView alloc] initWithSourceView:self] autorelease];
+  ruler_ = [[BSLineNumberRulerView alloc] initWithSourceView:self];
   [scrollView_ setVerticalRulerView:ruler_];
   [scrollView_ setHasHorizontalRuler:NO];
   [scrollView_ setHasVerticalRuler:YES];
@@ -225,16 +203,13 @@
           // PHP uses &nbsp; in the highlighted output, which should be converted
           // back to normal spaces.
           [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
-          [[textView_ textStorage] setAttributedString:source];
-          [source release];
+          [[self->textView_ textStorage] setAttributedString:source];
         } else {
           NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
           [self setPlainTextStringFromFile:filePath];
         }
 
-        [ruler_ performLayout];
-
-        [task release];
+        [self->ruler_ performLayout];
 
         if (handler)
           handler();

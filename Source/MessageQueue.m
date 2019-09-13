@@ -80,21 +80,17 @@
 
 - (void)dealloc {
   dispatch_sync(_dispatchQueue, ^{ [self disconnectClient]; });
-  dispatch_release(_dispatchQueue);
-  [_messageQueue release];
-  [_delegate release];
-  [super dealloc];
 }
 
 - (BOOL)isConnected {
   BOOL __block connected;
-  dispatch_sync(_dispatchQueue, ^{ connected = _connected; });
+  dispatch_sync(_dispatchQueue, ^{ connected = self->_connected; });
   return connected;
 }
 
 - (void)connect {
   dispatch_async(_dispatchQueue, ^{
-    if (_connected)
+    if (self->_connected)
       return;
 
     [self openListeningSocket];
@@ -107,7 +103,7 @@
 
 - (void)sendMessage:(NSString*)message {
   dispatch_async(_dispatchQueue, ^{
-    [_messageQueue addObject:message];
+    [self->_messageQueue addObject:message];
     [self dequeueAndSend];
   });
 }
@@ -166,7 +162,6 @@
 
   if (_readSource) {
     dispatch_source_cancel(_readSource);
-    dispatch_release(_readSource);
     _readSource = NULL;
   }
 
@@ -176,7 +171,6 @@
       dispatch_resume(_writeSource);
     }
     dispatch_source_cancel(_writeSource);
-    dispatch_release(_writeSource);
     _writeSource = NULL;
   }
 
@@ -288,7 +282,7 @@
                                                             length:partLength
                                                           encoding:NSUTF8StringEncoding
                                                       freeWhenDone:NO];
-    [_message appendString:[bufferString autorelease]];
+    [_message appendString:bufferString];
 
     // Advance counters.
     _messageSize += partLength;
@@ -296,7 +290,7 @@
 
     // If this read finished the packet, handle it and reset.
     if (_messageSize >= _totalMessageSize) {
-      [_delegate messageQueue:self didReceiveMessage:[_message autorelease]];
+      [_delegate messageQueue:self didReceiveMessage:_message];
       _message = nil;
     }
   }

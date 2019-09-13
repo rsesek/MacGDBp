@@ -225,8 +225,8 @@ const CGFloat kRulerRightPadding = 2.5;
 - (NSAttributedString*)attributedStringForLineNumber:(unsigned long)line
 {
   NSString* format = [NSString stringWithFormat:@"%lu", line];
-  return [[[NSAttributedString alloc] initWithString:format
-                                          attributes:[self fontAttributes]] autorelease];
+  return [[NSAttributedString alloc] initWithString:format
+                                         attributes:[self fontAttributes]];
 }
 
 /**

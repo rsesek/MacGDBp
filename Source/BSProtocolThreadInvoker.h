@@ -15,6 +15,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <objc/Protocol.h>
 
 // BSProtocolThreadInvoker will forward all messages that are part of |protocol|
 // to its target |object| on the specified |thread| in the optional modes. This

@@ -38,7 +38,7 @@
   NSString* file_;
   NSUInteger markedLine_;
 
-  id<BSSourceViewDelegate> delegate_;
+  id<BSSourceViewDelegate> __weak delegate_;
 }
 
 @property (nonatomic, readonly) NSTextView* textView;
@@ -46,7 +46,7 @@
 @property (nonatomic, retain) NSSet<NSNumber*>* markers;
 @property (nonatomic, retain) NSString* file;
 @property (nonatomic, assign) NSUInteger markedLine;
-@property (nonatomic, assign) id delegate;
+@property (nonatomic, weak) id delegate;
 
 - (void)setFile:(NSString*)f;
 - (void)setString:(NSString*)source asFile:(NSString*)path;

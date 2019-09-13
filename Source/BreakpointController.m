@@ -24,7 +24,7 @@
 
   BSSourceView* _sourceView;
 
-  NSArrayController* _arrayController;
+  NSArrayController* __weak _arrayController;
 }
 
 /**

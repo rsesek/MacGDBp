@@ -81,31 +81,6 @@
 }
 
 /**
- * Dealloc
- */
-- (void)dealloc
-{
-  [_connection release];
-  [_model release];
-  [_breakpointsController release];
-  [_evalController release];
-  [_expandedVariables release];
-
-  [_sourceViewer release];
-  [_inspector release];
-
-  [_attachedCheckbox release];
-  [_stackArrayController release];
-  [_variablesTreeController release];
-  [_variablesOutlineView release];
-
-  [_segmentControl release];
-  [_tabView release];
-
-  [super dealloc];
-}
-
-/**
  * Before the display get's comfortable, set up the NSTextView to scroll horizontally
  */
 - (void)awakeFromNib
@@ -115,7 +90,7 @@
 
   // Connect to XIB properties.
   [_sourceViewer setDelegate:self];
-  [_stackArrayController setSortDescriptors:@[ [[[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] autorelease] ]];
+  [_stackArrayController setSortDescriptors:@[ [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES] ]];
   [_stackArrayController addObserver:self
                          forKeyPath:@"selectedObjects"
                             options:NSKeyValueObservingOptionNew

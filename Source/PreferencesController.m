@@ -39,15 +39,6 @@ NSSize pathsSize;
 }
 
 /**
- * Destructor
- */
-- (void)dealloc
-{
-  [blankView release];
-  [super dealloc];
-}
-
-/**
  * Awake from nib
  */
 - (void)awakeFromNib

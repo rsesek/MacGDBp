@@ -20,11 +20,8 @@
 
 // This custom subclass of NSTextView simply draws a red rectangle over the text
 // for the current value of BSSourceView.markedLine.
-@interface BSSourceViewTextView : NSTextView {
- @private
-  BSSourceView* sourceView_;  // weak
-}
+@interface BSSourceViewTextView : NSTextView
 
-@property (nonatomic, assign) BSSourceView* sourceView;
+@property (nonatomic, weak) BSSourceView* sourceView;
 
 @end

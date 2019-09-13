@@ -75,7 +75,7 @@
     _object = object;
     _protocol = protocol;
     _thread = thread;
-    _modes = [runLoopModes retain];
+    _modes = [runLoopModes copy];
     _invocations = [[NSMutableArray alloc] init];
 
     [self performSelector:@selector(addRunLoopObserver)
@@ -90,9 +90,6 @@
 - (void)dealloc
 {
   [self removeRunLoopObserver];
-  [_modes release];
-  [_invocations release];
-  [super dealloc];
 }
 
 - (BOOL)conformsToProtocol:(Protocol*)protocol
