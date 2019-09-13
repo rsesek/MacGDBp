@@ -78,7 +78,8 @@
 }
 
 /**
- * Sets the file name as well as the text of the source view
+ * Reads the contents of file at |f| and sets the source viewer and filename
+ * as such.
  */
 - (void)setFile:(NSString*)f
 {
@@ -92,45 +93,20 @@
     return;
   }
 
-  @try {
-    // Attempt to use the PHP CLI to highlight the source file as HTML
-    NSPipe* outPipe = [NSPipe pipe];
-    NSPipe* errPipe = [NSPipe pipe];
-    NSTask* task = [[NSTask new] autorelease];
-    
-    [task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
-    [task setArguments:[NSArray arrayWithObjects:@"-s", f, nil]];
-    [task setStandardOutput:outPipe];
-    [task setStandardError:errPipe];
-    [task launch];
-    
-    [[errPipe fileHandleForReading] readToEndOfFileInBackgroundAndNotify];
-    
-    NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
-    NSMutableAttributedString* source =
-        [[NSMutableAttributedString alloc] initWithHTML:data
-                                                options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
-                                     documentAttributes:nil];
-    NSMutableString* stringData = [source mutableString];
-    // PHP uses &nbsp; in the highlighted output, which should be converted
-    // back to normal spaces.
-    [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
-    [[textView_ textStorage] setAttributedString:source];
-    [source release];
-  } @catch (NSException* exception) {
-    // If the PHP executable is not available then the NSTask will throw an exception
-    [self setPlainTextStringFromFile:f];
-  }
-
-  [ruler_ performLayout];
+  [self setSource:f completionHandler:nil];
 }
 
 /**
- * Sets the contents of the SourceView via a string rather than loading from a path
+ * Sets the contents of the SourceView to |source| representing the file at |path|.
  */
 - (void)setString:(NSString*)source asFile:(NSString*)path
 {
-  // create the temp file
+  if (path != file_) {
+    [file_ release];
+    file_ = [path copy];
+  }
+
+  // Write the source out as a temporary file so it can be highlighted.
   NSError* error = nil;
   NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
   [source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
@@ -138,30 +114,10 @@
     [textView_ setString:source];
     return;
   }
-  
-  // highlight the temporary file
-  [self setFile:tmpPath];
-  
-  // delete the temp file
-  [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
-  
-  // plop in our fake path so nobody knows the difference
-  if (path != file_) {
-    [file_ release];
-    file_ = [path copy];
-  }
 
-  [ruler_ performLayout];
-}
-
-/**
- * If an error occurs in reading the highlighted PHP source, this will merely set the string
- */
-- (void)errorHighlightingFile:(NSNotification*)notif
-{
-  NSData* data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
-  if ([data length] > 0 && file_) // there's something on stderr, so the PHP CLI failed
-    [self setPlainTextStringFromFile:file_];
+  [self setSource:tmpPath completionHandler:^{
+    [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:NULL];
+  }];
 }
 
 /**
@@ -239,6 +195,56 @@
 
   NSArray* types = [NSArray arrayWithObject:NSFilenamesPboardType];
   [self registerForDraggedTypes:types];
+}
+
+/**
+ * Reads the contents of |filePath| and sets it as the displayed text, after
+ * attempting to highlight it using the PHP binary.
+ */
+- (void)setSource:(NSString*)filePath completionHandler:(void(^)(void))handler
+{
+  @try {
+    // Attempt to use the PHP CLI to highlight the source file as HTML
+    NSPipe* outPipe = [NSPipe pipe];
+    NSPipe* errPipe = [NSPipe pipe];
+    NSTask* task = [[NSTask alloc] init];
+
+    [task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
+    [task setArguments:@[ @"-s", filePath ]];
+    [task setStandardOutput:outPipe];
+    [task setStandardError:errPipe];
+    [task setTerminationHandler:^(NSTask*) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (task.terminationStatus == 0) {
+          NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
+          NSMutableAttributedString* source =
+          [[NSMutableAttributedString alloc] initWithHTML:data
+                                                  options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                       documentAttributes:nil];
+          NSMutableString* stringData = [source mutableString];
+          // PHP uses &nbsp; in the highlighted output, which should be converted
+          // back to normal spaces.
+          [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
+          [[textView_ textStorage] setAttributedString:source];
+          [source release];
+        } else {
+          NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
+          [self setPlainTextStringFromFile:filePath];
+        }
+
+        [ruler_ performLayout];
+
+        [task release];
+
+        if (handler)
+          handler();
+      });
+    }];
+    [task launch];
+  } @catch (NSException* exception) {
+    // If the PHP executable is not available then the NSTask will throw an exception
+    [self setPlainTextStringFromFile:filePath];
+  }
 }
 
 /**
