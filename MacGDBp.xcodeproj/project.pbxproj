@@ -30,6 +30,10 @@
 		1E6B594C11610993001189D2 /* Log.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E6B594A11610993001189D2 /* Log.xib */; };
 		1E7188690D839F6300969277 /* BSSourceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E7188650D839F6300969277 /* BSSourceView.mm */; };
 		1E822CDD0DA28AC30027A23F /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E822CDC0DA28AC30027A23F /* Breakpoint.m */; };
+		1E87EFD1232B800900FF6348 /* BreakpointManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */; };
+		1E87EFD4232B806D00FF6348 /* Breakpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E822CDC0DA28AC30027A23F /* Breakpoint.m */; };
+		1E87EFD5232B807000FF6348 /* PreferenceNames.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E3F9D931CBAB57B005D896B /* PreferenceNames.m */; };
+		1E87EFD7232B809A00FF6348 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E87EFD6232B809A00FF6348 /* Cocoa.framework */; };
 		1E8C70A21BDB16A900D333DC /* DebuggerModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */; };
 		1E8C70A31BDB173A00D333DC /* DebuggerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */; };
 		1E8C70A41BDB183300D333DC /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
@@ -118,6 +122,8 @@
 		1E7188650D839F6300969277 /* BSSourceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSSourceView.mm; path = Source/BSSourceView.mm; sourceTree = "<group>"; };
 		1E822CDB0DA28AC30027A23F /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = Source/Breakpoint.h; sourceTree = "<group>"; };
 		1E822CDC0DA28AC30027A23F /* Breakpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Breakpoint.m; path = Source/Breakpoint.m; sourceTree = "<group>"; };
+		1E87EFD2232B805800FF6348 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1E87EFD6232B809A00FF6348 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1E8C70971BDB167F00D333DC /* MacGDBp-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MacGDBp-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
 		1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerModelTest.m; path = Source/Tests/DebuggerModelTest.m; sourceTree = "<group>"; };
@@ -159,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E87EFD7232B809A00FF6348 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +376,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E87EFD6232B809A00FF6348 /* Cocoa.framework */,
+				1E87EFD2232B805800FF6348 /* AppKit.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -492,9 +501,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E87EFD1232B800900FF6348 /* BreakpointManager.m in Sources */,
 				1E8C70A41BDB183300D333DC /* StackFrame.m in Sources */,
 				1E8C70A21BDB16A900D333DC /* DebuggerModelTest.m in Sources */,
+				1E87EFD5232B807000FF6348 /* PreferenceNames.m in Sources */,
 				1E8C70A31BDB173A00D333DC /* DebuggerModel.m in Sources */,
+				1E87EFD4232B806D00FF6348 /* Breakpoint.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,8 +614,6 @@
 		1E8C709F1BDB167F00D333DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -616,6 +626,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Source";
 				INFOPLIST_FILE = "UnitTests-Info.plist";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -627,8 +638,6 @@
 		1E8C70A01BDB167F00D333DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -636,6 +645,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Source";
 				INFOPLIST_FILE = "UnitTests-Info.plist";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.bluestatic.MacGDBp-Tests";
