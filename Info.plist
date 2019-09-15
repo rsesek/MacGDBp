@@ -32,6 +32,8 @@
 	<string>https://www.bluestatic.org/versioncast.php/macgdbp</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>+lYvh/I4BsXm7O1P1Q//xonUavygu1E8SNq+04QAnlk=</string>
 	<key>SUShowReleaseNotes</key>
 	<false/>
 </dict>
