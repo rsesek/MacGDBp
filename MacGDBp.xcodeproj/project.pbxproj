@@ -40,7 +40,7 @@
 		1E9582620E252474001A3D89 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9582600E252474001A3D89 /* Preferences.xib */; };
 		1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9582660E2524AD001A3D89 /* PreferencesController.m */; };
 		1E9583200E2531BD001A3D89 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
-		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
+		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
@@ -672,6 +672,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				WRAPPER_EXTENSION = app;
@@ -694,6 +695,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				WRAPPER_EXTENSION = app;
