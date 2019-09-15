@@ -1,2 +1,3 @@
 openssl-sign-ed25519
 private/
+signer-ed25519
