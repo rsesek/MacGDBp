@@ -205,6 +205,13 @@
         // back to normal spaces.
         NSMutableString* stringData = [source mutableString];
         [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
+
+        // Override the default font from Courier.
+        NSFont* menloFont = [NSFont fontWithName:@"Menlo" size:12];
+        if (menloFont) {
+          [source addAttributes:@{ NSFontAttributeName : menloFont }
+                          range:NSMakeRange(0, source.length)];
+        }
       } else {
         NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
       }
