@@ -192,20 +192,27 @@
     [task setStandardOutput:outPipe];
     [task setStandardError:errPipe];
     [task setTerminationHandler:^(NSTask*) {
+      NSMutableAttributedString* source;
+
+      if (task.terminationStatus == 0) {
+        NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
+        source =
+            [[NSMutableAttributedString alloc] initWithHTML:data
+                                                    options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                         documentAttributes:nil];
+
+        // PHP uses &nbsp; in the highlighted output, which should be converted
+        // back to normal spaces.
+        NSMutableString* stringData = [source mutableString];
+        [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
+      } else {
+        NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
+      }
+
       dispatch_async(dispatch_get_main_queue(), ^{
-        if (task.terminationStatus == 0) {
-          NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
-          NSMutableAttributedString* source =
-          [[NSMutableAttributedString alloc] initWithHTML:data
-                                                  options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
-                                       documentAttributes:nil];
-          NSMutableString* stringData = [source mutableString];
-          // PHP uses &nbsp; in the highlighted output, which should be converted
-          // back to normal spaces.
-          [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
+        if (source) {
           [[self->textView_ textStorage] setAttributedString:source];
         } else {
-          NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
           [self setPlainTextStringFromFile:filePath];
         }
 
