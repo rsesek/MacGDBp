@@ -18,17 +18,14 @@
 
 
 @interface PreferencesController : NSWindowController
-{
-  IBOutlet NSToolbar* toolbar;
-  
-  NSView* blankView;
-  
-  IBOutlet NSView* generalPreferencesView;
-  IBOutlet NSToolbarItem* generalPreferencesItem;
-  
-  IBOutlet NSView* pathsPreferencesView;
-  IBOutlet NSToolbarItem* pathsPreferencesItem;
-}
+
+@property (strong) IBOutlet NSToolbar* toolbar;
+
+@property (strong) IBOutlet NSView* generalPreferencesView;
+@property (strong) IBOutlet NSToolbarItem* generalPreferencesItem;
+
+@property (strong) IBOutlet NSView* pathsPreferencesView;
+@property (strong) IBOutlet NSToolbarItem* pathsPreferencesItem;
 
 - (void)showPreferencesWindow;
 

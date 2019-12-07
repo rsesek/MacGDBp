@@ -16,15 +16,9 @@
 
 #import "PreferencesController.h"
 
-NSSize generalSize;
-NSSize pathsSize;
-
-@interface PreferencesController (Private)
-- (void)resizeWindowToSize:(NSSize)size;
-@end
-
-
-@implementation PreferencesController
+@implementation PreferencesController {
+  NSView* _blankView;
+}
 
 /**
  * Loads the NIB and shows the preferences
@@ -33,18 +27,9 @@ NSSize pathsSize;
 {
   if (self = [super initWithWindowNibName:@"Preferences"])
   {
-    blankView = [[NSView alloc] init];
+    _blankView = [[NSView alloc] init];
   }
   return self;
-}
-
-/**
- * Awake from nib
- */
-- (void)awakeFromNib
-{
-  generalSize = [generalPreferencesView frame].size;
-  pathsSize = [pathsPreferencesView frame].size;
 }
 
 /**
@@ -52,9 +37,10 @@ NSSize pathsSize;
  */
 - (void)showPreferencesWindow
 {
+  NSWindow* window = self.window;  // Force the window to load.
   [self showGeneral:self];
-  [[self window] center];
-  [[self window] makeKeyAndOrderFront:self];
+  [window center];
+  [window makeKeyAndOrderFront:self];
 }
 
 #pragma mark Panel Switching
@@ -64,13 +50,7 @@ NSSize pathsSize;
  */
 - (IBAction)showGeneral:(id)sender
 {
-  if ([[self window] contentView] == generalPreferencesView)
-    return;
-  
-  [self resizeWindowToSize:generalSize];
-  
-  [[self window] setContentView:generalPreferencesView];
-  [toolbar setSelectedItemIdentifier:[generalPreferencesItem itemIdentifier]];
+  [self _switchToView:self.generalPreferencesView forToolbarItem:self.generalPreferencesItem];
 }
 
 /**
@@ -78,13 +58,7 @@ NSSize pathsSize;
  */
 - (IBAction)showPaths:(id)sender
 {
-  if ([[self window] contentView] == pathsPreferencesView)
-    return;
-  
-  [self resizeWindowToSize:pathsSize];
-  
-  [[self window] setContentView:pathsPreferencesView];
-  [toolbar setSelectedItemIdentifier:[pathsPreferencesItem itemIdentifier]];
+  [self _switchToView:self.pathsPreferencesView forToolbarItem:self.pathsPreferencesItem];
 }
 
 #pragma mark NSToolbar Delegate
@@ -94,35 +68,41 @@ NSSize pathsSize;
  */
 - (NSArray*)toolbarSelectableItemIdentifiers:(NSToolbar*)toolbar
 {
-  return [NSArray arrayWithObjects:
-    [generalPreferencesItem itemIdentifier],
-    [pathsPreferencesItem itemIdentifier],
-    nil
+  return @[
+    self.generalPreferencesItem.itemIdentifier,
+    self.pathsPreferencesItem.itemIdentifier,
   ];
 }
 
 #pragma mark Private
 
+- (void)_switchToView:(NSView*)contentView forToolbarItem:(NSToolbarItem*)item {
+  if (self.window.contentView == contentView)
+    return;
+  [self _resizeWindowToSize:contentView.frame.size];
+  self.window.contentView = contentView;
+  self.toolbar.selectedItemIdentifier = item.itemIdentifier;
+}
+
 /**
  * Resizes the preferences window to be the size of the given preferences panel
  */
-- (void)resizeWindowToSize:(NSSize)size
+- (void)_resizeWindowToSize:(NSSize)size
 {
-  [[self window] setContentView:blankView]; // don't want weird redraw artifacts
-  
-  NSRect newFrame;
-  
-  newFrame = [NSWindow contentRectForFrameRect:[[self window] frame] styleMask:[[self window] styleMask]];
-  
-  float height = size.height + 55;
-  
+  // Hide the current view when animating, to avoid weird artifacts.
+  self.window.contentView = _blankView;
+
+  NSWindowStyleMask styleMask = self.window.styleMask;
+  NSRect newFrame = [NSWindow contentRectForFrameRect:self.window.frame styleMask:styleMask];
+
+  CGFloat height = size.height + 55;
   newFrame.origin.y += newFrame.size.height;
   newFrame.origin.y -= height;
   newFrame.size.height = height;
   newFrame.size.width = size.width;
-  
-  newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:[[self window] styleMask]];
-  
+
+  newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:styleMask];
+
   [[self window] setFrame:newFrame display:YES animate:YES];
 }
 
