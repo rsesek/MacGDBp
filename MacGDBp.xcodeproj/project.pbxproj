@@ -82,7 +82,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
@@ -96,18 +95,15 @@
 		1E0AFBB80FC2518700C67031 /* HUDIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = HUDIcon.png; path = Icons/HUDIcon.png; sourceTree = "<group>"; };
 		1E108E3E136CC8B9002E34E0 /* EvalController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvalController.h; path = Source/EvalController.h; sourceTree = "<group>"; };
 		1E108E3F136CC8B9002E34E0 /* EvalController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EvalController.m; path = Source/EvalController.m; sourceTree = "<group>"; };
-		1E108E42136CC9A0002E34E0 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Eval.xib; sourceTree = "<group>"; };
 		1E109017136DD92D002E34E0 /* StripLineBreaksValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StripLineBreaksValueTransformer.h; path = Source/StripLineBreaksValueTransformer.h; sourceTree = "<group>"; };
 		1E109018136DD92D002E34E0 /* StripLineBreaksValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StripLineBreaksValueTransformer.m; path = Source/StripLineBreaksValueTransformer.m; sourceTree = "<group>"; };
 		1E1181481319805E003BFEF1 /* BSSourceViewTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSSourceViewTextView.h; path = Source/BSSourceViewTextView.h; sourceTree = "<group>"; };
 		1E1181491319805E003BFEF1 /* BSSourceViewTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BSSourceViewTextView.m; path = Source/BSSourceViewTextView.m; sourceTree = "<group>"; };
-		1E1E53020DF9B89800D334F9 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Breakpoints.xib; sourceTree = "<group>"; };
 		1E2F0A6812D5371B00EBF675 /* Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Stop.png; path = Icons/Stop.png; sourceTree = "<group>"; };
 		1E35FC750C6579CA0030F527 /* NSXMLElementAdditions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSXMLElementAdditions.m; path = Source/NSXMLElementAdditions.m; sourceTree = "<group>"; };
 		1E35FFB00C65A74C0030F527 /* NSXMLElementAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSXMLElementAdditions.h; path = Source/NSXMLElementAdditions.h; sourceTree = "<group>"; };
 		1E3F9D931CBAB57B005D896B /* PreferenceNames.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferenceNames.m; path = Source/PreferenceNames.m; sourceTree = "<group>"; };
 		1E3F9D951CBAB589005D896B /* PreferenceNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PreferenceNames.h; path = Source/PreferenceNames.h; sourceTree = "<group>"; };
-		1E416FF70D36F821009A53A2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1E42F1D60F53317B008412DB /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		1E4C7AF70DA401C7000A9DC7 /* BreakpointManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BreakpointManager.h; path = Source/BreakpointManager.h; sourceTree = "<group>"; };
 		1E4C7AF80DA401C7000A9DC7 /* BreakpointManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BreakpointManager.m; path = Source/BreakpointManager.m; sourceTree = "<group>"; };
@@ -117,7 +113,6 @@
 		1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesPathsArrayController.m; path = Source/PreferencesPathsArrayController.m; sourceTree = "<group>"; };
 		1E6B5945116106FE001189D2 /* LoggingController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoggingController.h; path = Source/LoggingController.h; sourceTree = "<group>"; };
 		1E6B5946116106FE001189D2 /* LoggingController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoggingController.m; path = Source/LoggingController.m; sourceTree = "<group>"; };
-		1E6B594B11610993001189D2 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Log.xib; sourceTree = "<group>"; };
 		1E7188640D839F6300969277 /* BSSourceView.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = BSSourceView.h; path = Source/BSSourceView.h; sourceTree = "<group>"; };
 		1E7188650D839F6300969277 /* BSSourceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = BSSourceView.mm; path = Source/BSSourceView.mm; sourceTree = "<group>"; };
 		1E822CDB0DA28AC30027A23F /* Breakpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Breakpoint.h; path = Source/Breakpoint.h; sourceTree = "<group>"; };
@@ -127,10 +122,16 @@
 		1E8C70971BDB167F00D333DC /* MacGDBp-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MacGDBp-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E8C709B1BDB167F00D333DC /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
 		1E8C70A11BDB16A900D333DC /* DebuggerModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerModelTest.m; path = Source/Tests/DebuggerModelTest.m; sourceTree = "<group>"; };
-		1E9582610E252474001A3D89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Preferences.xib; sourceTree = "<group>"; };
 		1E9582650E2524AD001A3D89 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesController.h; path = Source/PreferencesController.h; sourceTree = "<group>"; };
 		1E9582660E2524AD001A3D89 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesController.m; path = Source/PreferencesController.m; sourceTree = "<group>"; };
 		1E95831F0E2531BD001A3D89 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		1E9C3052239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1E9C3053239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Breakpoints.xib; sourceTree = "<group>"; };
+		1E9C3054239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Debugger.xib; sourceTree = "<group>"; };
+		1E9C3055239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Eval.xib; sourceTree = "<group>"; };
+		1E9C3056239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Log.xib; sourceTree = "<group>"; };
+		1E9C3057239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1E9C3058239C3BEE00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Preferences.xib; sourceTree = "<group>"; };
 		1EB7BED30ECF3CA90033283A /* StackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackFrame.h; path = Source/StackFrame.h; sourceTree = "<group>"; };
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
@@ -144,7 +145,6 @@
 		1EEBE841176FEA80003622C3 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageQueue.m; path = Source/MessageQueue.m; sourceTree = "<group>"; };
 		1EEBE843176FFE04003622C3 /* ProtocolClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolClient.h; path = Source/ProtocolClient.h; sourceTree = "<group>"; };
 		1EEBE844176FFE04003622C3 /* ProtocolClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProtocolClient.m; path = Source/ProtocolClient.m; sourceTree = "<group>"; };
-		1EEBFBE40D34C793008F835B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Debugger.xib; sourceTree = "<group>"; };
 		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
 		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
 		1EECC0B81BC9B1E700FB22D3 /* DebuggerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerModel.h; path = Source/DebuggerModel.h; sourceTree = "<group>"; };
@@ -446,13 +446,10 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MacGDBp" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* MacGDBp */;
 			projectDirPath = "";
@@ -555,7 +552,7 @@
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
+				1E9C3052239C3BED00EFE30E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -563,7 +560,7 @@
 		1E108E41136CC9A0002E34E0 /* Eval.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E108E42136CC9A0002E34E0 /* English */,
+				1E9C3055239C3BED00EFE30E /* en */,
 			);
 			name = Eval.xib;
 			sourceTree = "<group>";
@@ -571,7 +568,7 @@
 		1E1E53010DF9B89800D334F9 /* Breakpoints.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E1E53020DF9B89800D334F9 /* English */,
+				1E9C3053239C3BED00EFE30E /* en */,
 			);
 			name = Breakpoints.xib;
 			sourceTree = "<group>";
@@ -579,7 +576,7 @@
 		1E416FF60D36F821009A53A2 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E416FF70D36F821009A53A2 /* English */,
+				1E9C3057239C3BED00EFE30E /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -587,7 +584,7 @@
 		1E6B594A11610993001189D2 /* Log.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E6B594B11610993001189D2 /* English */,
+				1E9C3056239C3BED00EFE30E /* en */,
 			);
 			name = Log.xib;
 			sourceTree = "<group>";
@@ -595,7 +592,7 @@
 		1E9582600E252474001A3D89 /* Preferences.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1E9582610E252474001A3D89 /* English */,
+				1E9C3058239C3BEE00EFE30E /* en */,
 			);
 			name = Preferences.xib;
 			sourceTree = "<group>";
@@ -603,7 +600,7 @@
 		1EEBFBE30D34C793008F835B /* Debugger.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1EEBFBE40D34C793008F835B /* English */,
+				1E9C3054239C3BED00EFE30E /* en */,
 			);
 			name = Debugger.xib;
 			sourceTree = "<group>";
