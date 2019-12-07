@@ -29,6 +29,5 @@
 - (BOOL)hasBreakpoint:(Breakpoint*)bp;
 
 - (NSSet<NSNumber*>*)breakpointsForFile:(NSString*)file;
-- (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file;
 
 @end

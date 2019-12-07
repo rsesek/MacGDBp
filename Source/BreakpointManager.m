@@ -89,8 +89,13 @@
 
 - (Breakpoint*)removeBreakpoint:(Breakpoint*)bp
 {
-  if (![_breakpoints containsObject:bp])
+  // Use the -isEqual: test to find the object in |_breakpoints| that also has
+  // the debugger id and secure bookmark data.
+  NSUInteger idx = [_breakpoints indexOfObject:bp];
+  if (idx == NSNotFound)
     return nil;
+
+  bp = [_breakpoints objectAtIndex:idx];
 
   [self willChangeValueForKey:@"breakpoints"];
   [_breakpoints removeObject:bp];
@@ -126,14 +131,6 @@
 - (BOOL)hasBreakpoint:(Breakpoint*)breakpoint
 {
   return [_breakpoints containsObject:breakpoint];
-}
-
-/**
- * Checks to see if a given file has a breakpoint on a given line
- */
-- (BOOL)hasBreakpointAt:(NSUInteger)line inFile:(NSString*)file
-{
-  return [self hasBreakpoint:[Breakpoint breakpointAtLine:line inFile:file]];
 }
 
 #pragma mark Private
