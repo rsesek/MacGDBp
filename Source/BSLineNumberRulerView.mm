@@ -141,15 +141,11 @@ const CGFloat kRulerRightPadding = 2.5;
 {
   [self computeLineIndex];
 
-  if (lineIndex_.empty()) {
-    [self setRuleThickness:kDefaultWidth];
-  } else {
-    // Determine the width of the ruler based on the line count.
-    NSUInteger lastElement = lineIndex_.back() + 1;
-    NSAttributedString* lastElementString = [self attributedStringForLineNumber:lastElement];
-    NSSize boundingSize = [lastElementString size];
-    [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
-  }
+  // Determine the width of the ruler based on the line count.
+  NSUInteger lastElement = lineIndex_.back() + 1;
+  NSAttributedString* lastElementString = [self attributedStringForLineNumber:lastElement];
+  NSSize boundingSize = [lastElementString size];
+  [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
 
   [self setNeedsDisplay:YES];
 }
@@ -212,9 +208,6 @@ const CGFloat kRulerRightPadding = 2.5;
     lineIndex_.push_back(index);
     index = NSMaxRange([text lineRangeForRange:NSMakeRange(index, 0)]);
   }
-
-  if (lineIndex_.empty())
-    return;
 
   NSUInteger lineEnd, contentEnd;
   [text getLineStart:NULL
