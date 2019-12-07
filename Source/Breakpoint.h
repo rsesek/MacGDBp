@@ -35,6 +35,7 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 // kBreakpointTypeFile:
 @property (readonly) NSString* file;
 @property (readonly) unsigned long line;
+@property (copy) NSData* secureBookmark;
 
 // kBreakpointTypeFunctionEntry:
 @property (readonly) NSString* functionName;
@@ -49,5 +50,17 @@ extern NSString* const kBreakpointTypeFunctionEntry;
 
 // Creates a dictionary representation for use in NSUserDefaults.
 - (NSDictionary*)dictionary;
+
+// For kBreakpointTypeFile: ////////////////////////////////////////////////////
+
+// Creates a new secure bookmark for maintaining access to the file in the App
+// Sandbox across relaunches.
+- (BOOL)createSecureBookmark;
+
+// Call to enable read-only access to the file.
+- (BOOL)startSecureFileAccess;
+
+// Call when done accessing the file.
+- (BOOL)stopSecureFileAccess;
 
 @end

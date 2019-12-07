@@ -53,39 +53,58 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp;
 {
-  if (![_breakpoints containsObject:bp])
-  {
-    [self willChangeValueForKey:@"breakpoints"];
-    [_breakpoints addObject:bp];
-    [self didChangeValueForKey:@"breakpoints"];
+  if ([_breakpoints containsObject:bp])
+    return;
 
-    [_connection addBreakpoint:bp];
+  if (bp.type == kBreakpointTypeFile && !bp.secureBookmark) {
+    // There is no secure bookmark for this file, so first see if any other
+    // bookmarks exist for the same file. If not, try and create a bookmark.
+    if (!bp.secureBookmark) {
+      [bp createSecureBookmark];
+      /*
+      for (Breakpoint* other in _breakpoints) {
+        if ([other.file isEqualToString:bp.file] && other.secureBookmark) {
+          bp.secureBookmark = other.secureBookmark;
+          break;
+        }
+      }
 
-    [_savedBreakpoints addObject:[bp dictionary]];
-    [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
-
-    [self updateDisplaysForFile:[bp file]];
+      if (!bp.secureBookmark) {
+        [bp createSecureBookmark];
+      }
+       */
+    }
   }
+
+  [self willChangeValueForKey:@"breakpoints"];
+  [_breakpoints addObject:bp];
+  [self didChangeValueForKey:@"breakpoints"];
+
+  [_connection addBreakpoint:bp];
+
+  [_savedBreakpoints addObject:[bp dictionary]];
+  [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+  [self updateDisplaysForFile:[bp file]];
 }
 
 - (Breakpoint*)removeBreakpoint:(Breakpoint*)bp
 {
-  if ([_breakpoints containsObject:bp]) {
-    [self willChangeValueForKey:@"breakpoints"];
-    [_breakpoints removeObject:bp];
-    [self didChangeValueForKey:@"breakpoints"];
+  if (![_breakpoints containsObject:bp])
+    return nil;
 
-    [_connection removeBreakpoint:bp];
+  [self willChangeValueForKey:@"breakpoints"];
+  [_breakpoints removeObject:bp];
+  [self didChangeValueForKey:@"breakpoints"];
 
-    [_savedBreakpoints removeObject:[bp dictionary]];
-    [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+  [_connection removeBreakpoint:bp];
 
-    if (bp.file)
-      [self updateDisplaysForFile:bp.file];
+  [_savedBreakpoints removeObject:[bp dictionary]];
+  [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
 
-    return bp;
-  }
-  return nil;
+  if (bp.file)
+    [self updateDisplaysForFile:bp.file];
+
+  return bp;
 }
 
 /**

@@ -26,6 +26,8 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
   unsigned long _debuggerId;
 
   NSString* _file;
+  NSData* _secureBookmark;
+  NSURL* _secureFileAccess;
 
   NSString* _functionName;
 }
@@ -55,6 +57,7 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
       _type = kBreakpointTypeFile;
       _file = [[dict valueForKey:@"file"] copy];
       _line = [[dict valueForKey:@"line"] intValue];
+      _secureBookmark = [[dict valueForKey:@"secureBookmark"] copy];
     } else if ([type isEqualToString:kBreakpointTypeFunctionEntry]) {
       _type = kBreakpointTypeFunctionEntry;
       _functionName = [[dict valueForKey:@"function"] copy];
@@ -64,6 +67,11 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
     }
   }
   return self;
+}
+
+- (void)dealloc {
+  if (_secureFileAccess)
+    [self stopSecureFileAccess];
 }
 
 /**
@@ -124,11 +132,14 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
 - (NSDictionary*)dictionary
 {
   if (self.type == kBreakpointTypeFile) {
-    return @{
+    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:@{
       @"type" : self.type,
       @"file" : self.file,
-      @"line" : @(self.line)
-    };
+      @"line" : @(self.line),
+    }];
+    if (self.secureBookmark)
+      [dict setObject:self.secureBookmark forKey:@"secureBookmark"];
+    return dict;
   } else if (self.type == kBreakpointTypeFunctionEntry) {
     return @{
       @"type"     : self.type,
@@ -136,6 +147,66 @@ NSString* const kBreakpointTypeFunctionEntry = @"call";
     };
   }
   return nil;
+}
+
+- (BOOL)createSecureBookmark
+{
+  NSURL* fileURL = [NSURL fileURLWithPath:self.file];
+  return [self _createSecureBookmarkWithURL:fileURL];
+}
+
+- (BOOL)_createSecureBookmarkWithURL:(NSURL*)url
+{
+  NSError* error;
+  NSData* secureBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+                         includingResourceValuesForKeys:nil
+                                          relativeToURL:nil
+                                                  error:&error];
+  if (secureBookmark) {
+    self.secureBookmark = secureBookmark;
+    return YES;
+  } else {
+    NSLog(@"Failed to create secure bookmark: %@", error);
+    return NO;
+  }
+}
+
+- (BOOL)startSecureFileAccess
+{
+  assert(self.type == kBreakpointTypeFile);
+  if (_secureFileAccess)
+    return YES;
+  if (!_secureBookmark)
+    return NO;
+
+  BOOL isStale;
+  NSError* error;
+  _secureFileAccess = [NSURL URLByResolvingBookmarkData:_secureBookmark
+                                                options:NSURLBookmarkResolutionWithSecurityScope
+                                          relativeToURL:nil
+                                    bookmarkDataIsStale:&isStale
+                                                  error:&error];
+  if (error) {
+    NSLog(@"Failed to access file via secure bookmark: %@", error);
+    return NO;
+  }
+  if (isStale)
+    [self _createSecureBookmarkWithURL:_secureFileAccess];
+
+  return [_secureFileAccess startAccessingSecurityScopedResource];
+}
+
+- (BOOL)stopSecureFileAccess
+{
+  assert(self.type == kBreakpointTypeFile);
+  if (!_secureFileAccess)
+    return YES;
+  if (!_secureBookmark)
+    return NO;
+
+  [_secureFileAccess stopAccessingSecurityScopedResource];
+  _secureFileAccess = nil;
+  return YES;
 }
 
 - (NSString*)description

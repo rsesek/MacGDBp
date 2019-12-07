@@ -21,6 +21,7 @@
 
 @implementation BreakpointController {
   BreakpointManager* _manager;
+  Breakpoint* _selection;
 
   BSSourceView* _sourceView;
 
@@ -102,19 +103,28 @@
  */
 - (void)tableViewSelectionDidChange:(NSNotification*)notif
 {
+  if (_selection.type == kBreakpointTypeFile) {
+    [_selection stopSecureFileAccess];
+    _selection = nil;
+  }
+
   NSArray* selection = [_arrayController selectedObjects];
   if ([selection count] < 1) {
-    return;
-  }
-  
-  Breakpoint* bp = [selection objectAtIndex:0];
-  if (bp.type != kBreakpointTypeFile) {
+    [_sourceView setString:@"" asFile:nil];
+    [_sourceView setMarkers:[NSSet set]];
     return;
   }
 
-  [_sourceView setFile:[bp file]];
-  [_sourceView scrollToLine:[bp line]];
-  [_sourceView setMarkers:[_manager breakpointsForFile:bp.file]];
+  _selection = [selection objectAtIndex:0];
+  if (_selection.type != kBreakpointTypeFile) {
+    return;
+  }
+
+  [_selection startSecureFileAccess];
+
+  [_sourceView setFile:[_selection file]];
+  [_sourceView scrollToLine:[_selection line]];
+  [_sourceView setMarkers:[_manager breakpointsForFile:_selection.file]];
 }
 
 @end
