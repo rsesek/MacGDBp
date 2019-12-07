@@ -132,11 +132,9 @@
       continue;
     }
     if (isStale) {
-      NSData* newBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
-                          includingResourceValuesForKeys:nil
-                                           relativeToURL:nil
-                                                   error:&error];
-      bookmarks[path] = newBookmark;
+      NSData* newBookmark = [PreferencesController secureBookmarkDataForURL:url];
+      bookmarks[url.absoluteString] = newBookmark;
+      [bookmarks removeObjectForKey:path];
     }
 
     if (![url startAccessingSecurityScopedResource]) {

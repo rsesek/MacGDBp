@@ -57,20 +57,27 @@
 
   NSURL* url = panel.URL;
 
-  NSError* error;
-  NSData* secureBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
-                         includingResourceValuesForKeys:nil
-                                          relativeToURL:nil
-                                                  error:&error];
-  if (error) {
-    NSLog(@"Error creating secure bookmark: %@", error);
+  NSData* secureBookmark = [self.class secureBookmarkDataForURL:url];
+  if (!secureBookmark)
     return;
-  }
 
   NSDictionaryControllerKeyValuePair* pair = [self.fileAccessController newObject];
   pair.key = url.absoluteString;
   pair.value = secureBookmark;
   [self.fileAccessController addObject:pair];
+}
+
++ (NSData*)secureBookmarkDataForURL:(NSURL*)url
+{
+   NSError* error;
+   NSData* secureBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+                          includingResourceValuesForKeys:nil
+                                           relativeToURL:nil
+                                                   error:&error];
+   if (error) {
+     NSLog(@"Error creating secure bookmark: %@", error);
+   }
+  return secureBookmark;
 }
 
 #pragma mark Panel Switching

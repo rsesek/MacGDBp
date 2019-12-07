@@ -35,6 +35,8 @@
 
 - (IBAction)addFileAccess:(id)sender;
 
++ (NSData*)secureBookmarkDataForURL:(NSURL*)url;
+
 // panel switching
 - (IBAction)showGeneral:(id)sender;
 - (IBAction)showFileAccess:(id)sender;
