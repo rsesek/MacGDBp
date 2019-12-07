@@ -25,6 +25,9 @@ extern NSString* const kPrefInspectorWindowVisible;
 // NSMutableArray of path replacements.
 extern NSString* const kPrefPathReplacements;
 
+// NSMutableDictionary of NSString paths to NSData file access bookmarks.
+extern NSString* const kPrefFileAccessBookmarks;
+
 // NSNumber bool for whether to stop the debugger on the first line of the
 // program.
 extern NSString* const kPrefBreakOnFirstLine;

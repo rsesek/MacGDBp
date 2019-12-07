@@ -22,6 +22,8 @@ NSString* const kPrefInspectorWindowVisible = @"InspectorWindowVisible";
 
 NSString* const kPrefPathReplacements = @"PathReplacements";
 
+NSString* const kPrefFileAccessBookmarks = @"FileAccessBookmarks";
+
 NSString* const kPrefBreakOnFirstLine = @"BreakOnFirstLine";
 
 NSString* const kPrefDebuggerAttached = @"DebuggerAttached";

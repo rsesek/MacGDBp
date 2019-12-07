@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesController">
             <connections>
+                <outlet property="fileAccessController" destination="PYc-SP-Fvw" id="RWM-AF-Opd"/>
+                <outlet property="fileAccessPreferencesItem" destination="e1C-OK-KSi" id="JJn-JH-J7y"/>
+                <outlet property="fileAccessPreferencesView" destination="ujd-Hf-qLb" id="lJd-0v-ePz"/>
                 <outlet property="generalPreferencesItem" destination="43" id="44"/>
                 <outlet property="generalPreferencesView" destination="29" id="42"/>
                 <outlet property="pathsPreferencesItem" destination="50" id="52"/>
@@ -22,10 +25,10 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="388" width="420" height="120"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" id="2">
                 <rect key="frame" x="0.0" y="0.0" width="420" height="120"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
             <toolbar key="toolbar" implicitIdentifier="8C3684D1-F400-4CBB-897D-0889A0E1CBC8" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="20">
                 <allowedToolbarItems>
@@ -36,7 +39,12 @@
                             <action selector="showGeneral:" target="-2" id="49"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="7E7339A3-79C3-4087-B2F7-2479CFD10818" label="Paths" paletteLabel="Path Replacement" tag="-1" image="NSFolderSmart" autovalidates="NO" id="50">
+                    <toolbarItem implicitItemIdentifier="9B9A0426-715E-44F5-A7FC-FA2874232849" label="File Access" paletteLabel="File Access" tag="-1" image="NSFolder" id="e1C-OK-KSi">
+                        <connections>
+                            <action selector="showFileAccess:" target="-2" id="g2h-j3-gGu"/>
+                        </connections>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="7E7339A3-79C3-4087-B2F7-2479CFD10818" label="Remote Paths" paletteLabel="Remote Paths" tag="-1" image="NSNetwork" autovalidates="NO" id="50">
                         <connections>
                             <action selector="showPaths:" target="-2" id="51"/>
                         </connections>
@@ -44,6 +52,7 @@
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="43"/>
+                    <toolbarItem reference="e1C-OK-KSi"/>
                     <toolbarItem reference="50"/>
                     <toolbarItem reference="25"/>
                     <toolbarItem reference="26"/>
@@ -52,13 +61,14 @@
                     <outlet property="delegate" destination="-2" id="47"/>
                 </connections>
             </toolbar>
+            <point key="canvasLocation" x="139" y="119"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="13"/>
         <customView id="29" userLabel="GeneralPreferences">
             <rect key="frame" x="0.0" y="0.0" width="421" height="131"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <textField verticalHuggingPriority="750" id="93">
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="93">
                     <rect key="frame" x="15" y="94" width="146" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Debugger Behavior:" id="94">
@@ -67,7 +77,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button toolTip="If enabled, MacGDBp will automatically step into the first line of code when the debugger is attached." id="91">
+                <button toolTip="If enabled, MacGDBp will automatically step into the first line of code when the debugger is attached." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="91">
                     <rect key="frame" x="164" y="92" width="216" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Break on first line of execution" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="92">
@@ -78,7 +88,7 @@
                         <binding destination="13" name="value" keyPath="values.BreakOnFirstLine" id="95"/>
                     </connections>
                 </button>
-                <textField verticalHuggingPriority="750" id="36">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36">
                     <rect key="frame" x="17" y="45" width="387" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="You must close and reopen MacGDBp before these preference values take effect." id="37">
@@ -87,7 +97,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField verticalHuggingPriority="750" id="33">
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
                     <rect key="frame" x="168" y="18" width="60" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="40">
@@ -100,7 +110,7 @@
                         <binding destination="13" name="value" keyPath="values.Port" id="45"/>
                     </connections>
                 </textField>
-                <textField verticalHuggingPriority="750" id="32">
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
                     <rect key="frame" x="77" y="20" width="86" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Xdebug Port:" id="41">
@@ -110,12 +120,13 @@
                     </textFieldCell>
                 </textField>
             </subviews>
+            <point key="canvasLocation" x="-141" y="-432"/>
         </customView>
         <customView id="53" userLabel="PathsPreferences">
             <rect key="frame" x="0.0" y="0.0" width="427" height="213"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <button verticalHuggingPriority="750" id="66">
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="66" userLabel="RemovePath">
                     <rect key="frame" x="24" y="-1" width="26" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="67">
@@ -126,7 +137,7 @@
                         <action selector="remove:" target="78" id="86"/>
                     </connections>
                 </button>
-                <button verticalHuggingPriority="750" id="64">
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="64" userLabel="AddPath">
                     <rect key="frame" x="-1" y="-1" width="26" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="65">
@@ -137,12 +148,12 @@
                         <action selector="add:" target="78" id="89"/>
                     </connections>
                 </button>
-                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="55">
+                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="55">
                     <rect key="frame" x="-1" y="20" width="429" height="193"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <clipView key="contentView" id="egR-Mj-j4E">
+                    <clipView key="contentView" ambiguous="YES" id="egR-Mj-j4E">
                         <rect key="frame" x="1" y="0.0" width="427" height="192"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" autosaveColumns="NO" headerView="59" id="58">
                                 <rect key="frame" x="0.0" y="0.0" width="427" height="169"/>
@@ -201,7 +212,13 @@
                     </tableHeaderView>
                 </scrollView>
             </subviews>
+            <point key="canvasLocation" x="10" y="-194"/>
         </customView>
+        <dictionaryController objectClassName="_NSDictionaryControllerKeyValuePair" id="PYc-SP-Fvw" userLabel="File Access Controller">
+            <connections>
+                <binding destination="13" name="contentDictionary" keyPath="values.FileAccessBookmarks" id="DnO-2q-xFf"/>
+            </connections>
+        </dictionaryController>
         <arrayController automaticallyPreparesContent="YES" id="78" userLabel="Paths Controller" customClass="PreferencesPathsArrayController">
             <declaredKeys>
                 <string>local</string>
@@ -216,10 +233,87 @@
                 <outlet property="content" destination="58" id="90"/>
             </connections>
         </arrayController>
+        <customView id="ujd-Hf-qLb" userLabel="FileAccessPreferencess">
+            <rect key="frame" x="0.0" y="0.0" width="427" height="213"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i88-Gl-3so" userLabel="RemoveFileAccess">
+                    <rect key="frame" x="24" y="-1" width="26" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="vay-Yq-WXc">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="remove:" target="PYc-SP-Fvw" id="v7Z-DW-563"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iCg-AA-ZXb" userLabel="AddFileAccess">
+                    <rect key="frame" x="-1" y="-1" width="26" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CnH-DM-vMW">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="addFileAccess:" target="-2" id="MMb-Ga-GEe"/>
+                    </connections>
+                </button>
+                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v93-oV-uce">
+                    <rect key="frame" x="-1" y="20" width="429" height="193"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <clipView key="contentView" ambiguous="YES" id="L7V-Zd-iEr">
+                        <rect key="frame" x="1" y="0.0" width="427" height="192"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" autosaveColumns="NO" headerView="7XQ-Y6-gfo" id="s4m-Zv-l8Z">
+                                <rect key="frame" x="0.0" y="0.0" width="427" height="167"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <size key="intercellSpacing" width="3" height="2"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                <tableColumns>
+                                    <tableColumn editable="NO" width="423" minWidth="40" maxWidth="1000" id="tV5-Ih-Xw6">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Path">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="rTS-1a-vvY">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="PYc-SP-Fvw" name="value" keyPath="arrangedObjects.key" id="hQg-Xz-eTc"/>
+                                        </connections>
+                                    </tableColumn>
+                                </tableColumns>
+                            </tableView>
+                        </subviews>
+                    </clipView>
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="WmZ-OV-HXm">
+                        <rect key="frame" x="1" y="177" width="411" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="oUY-jC-Cmf">
+                        <rect key="frame" x="411" y="17" width="15" height="160"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <tableHeaderView key="headerView" id="7XQ-Y6-gfo">
+                        <rect key="frame" x="0.0" y="0.0" width="427" height="25"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </tableHeaderView>
+                </scrollView>
+            </subviews>
+            <point key="canvasLocation" x="-364" y="82"/>
+        </customView>
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSFolderSmart" width="32" height="32"/>
+        <image name="NSFolder" width="32" height="32"/>
+        <image name="NSNetwork" width="32" height="32"/>
         <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>

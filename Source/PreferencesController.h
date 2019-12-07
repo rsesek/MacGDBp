@@ -24,13 +24,20 @@
 @property (strong) IBOutlet NSView* generalPreferencesView;
 @property (strong) IBOutlet NSToolbarItem* generalPreferencesItem;
 
+@property (strong) IBOutlet NSDictionaryController* fileAccessController;
+@property (strong) IBOutlet NSView* fileAccessPreferencesView;
+@property (strong) IBOutlet NSToolbarItem* fileAccessPreferencesItem;
+
 @property (strong) IBOutlet NSView* pathsPreferencesView;
 @property (strong) IBOutlet NSToolbarItem* pathsPreferencesItem;
 
 - (void)showPreferencesWindow;
 
+- (IBAction)addFileAccess:(id)sender;
+
 // panel switching
 - (IBAction)showGeneral:(id)sender;
+- (IBAction)showFileAccess:(id)sender;
 - (IBAction)showPaths:(id)sender;
 
 @end

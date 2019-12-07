@@ -43,6 +43,36 @@
   [window makeKeyAndOrderFront:self];
 }
 
+/**
+ * Brings up a file picker to grant read-only file access to the selected path,
+ * which is then persisted across application restarts.
+ */
+- (IBAction)addFileAccess:(id)sender
+{
+  NSOpenPanel* panel = [NSOpenPanel openPanel];
+  panel.canChooseDirectories = YES;
+  panel.canChooseFiles = NO;
+  if ([panel runModal] != NSOKButton)
+    return;
+
+  NSURL* url = panel.URL;
+
+  NSError* error;
+  NSData* secureBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+                         includingResourceValuesForKeys:nil
+                                          relativeToURL:nil
+                                                  error:&error];
+  if (error) {
+    NSLog(@"Error creating secure bookmark: %@", error);
+    return;
+  }
+
+  NSDictionaryControllerKeyValuePair* pair = [self.fileAccessController newObject];
+  pair.key = url.absoluteString;
+  pair.value = secureBookmark;
+  [self.fileAccessController addObject:pair];
+}
+
 #pragma mark Panel Switching
 
 /**
@@ -51,6 +81,11 @@
 - (IBAction)showGeneral:(id)sender
 {
   [self _switchToView:self.generalPreferencesView forToolbarItem:self.generalPreferencesItem];
+}
+
+- (IBAction)showFileAccess:(id)sender
+{
+  [self _switchToView:self.fileAccessPreferencesView forToolbarItem:self.fileAccessPreferencesItem];
 }
 
 /**
@@ -70,6 +105,7 @@
 {
   return @[
     self.generalPreferencesItem.itemIdentifier,
+    self.fileAccessPreferencesItem.itemIdentifier,
     self.pathsPreferencesItem.itemIdentifier,
   ];
 }

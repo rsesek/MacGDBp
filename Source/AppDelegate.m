@@ -37,6 +37,7 @@
       kPrefPort                     : @9000,
       kPrefInspectorWindowVisible   : @YES,
       kPrefPathReplacements         : [NSMutableArray array],
+      kPrefFileAccessBookmarks      : [NSMutableDictionary dictionary],
       kPrefBreakOnFirstLine         : @YES,
       kPrefDebuggerAttached         : @YES,
       kPrefSelectedDebuggerSegment  : @1,
@@ -62,6 +63,8 @@
   usesUnstable = usesUnstable ||
       [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
   [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
+
+  [self _activateSecureFileAccess];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)notification
@@ -105,6 +108,44 @@
 - (IBAction)openHelpPage:(id)sender
 {
   [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.bluestatic.org/software/macgdbp/help/"]];
+}
+
+/**
+ * Activates any secure file access bookmarks stored in preferences.
+ */
+- (void)_activateSecureFileAccess
+{
+  NSDictionary* prefs = [NSUserDefaults.standardUserDefaults objectForKey:kPrefFileAccessBookmarks];
+  NSMutableDictionary<NSString*, NSData*>* bookmarks = [NSMutableDictionary dictionaryWithDictionary:prefs];
+  for (NSString* path in bookmarks) {
+    NSURL* url = [NSURL URLWithString:path];
+
+    BOOL isStale;
+    NSError* error;
+    url = [NSURL URLByResolvingBookmarkData:bookmarks[path]
+                                    options:NSURLBookmarkResolutionWithSecurityScope
+                              relativeToURL:nil
+                        bookmarkDataIsStale:&isStale
+                                      error:&error];
+    if (error) {
+      NSLog(@"Failed to resolve secure bookmark for path %@: %@", path, error);
+      continue;
+    }
+    if (isStale) {
+      NSData* newBookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+                          includingResourceValuesForKeys:nil
+                                           relativeToURL:nil
+                                                   error:&error];
+      bookmarks[path] = newBookmark;
+    }
+
+    if (![url startAccessingSecurityScopedResource]) {
+      NSLog(@"Failed to start accessing resource %@", path);
+      continue;
+    }
+  }
+
+  [NSUserDefaults.standardUserDefaults setObject:bookmarks forKey:kPrefFileAccessBookmarks];
 }
 
 @end
