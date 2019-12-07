@@ -18,6 +18,8 @@
 
 @implementation PreferencesController {
   NSView* _blankView;
+
+  NSSize _generalSize, _fileAccessSize, _pathsSize;
 }
 
 /**
@@ -30,6 +32,13 @@
     _blankView = [[NSView alloc] init];
   }
   return self;
+}
+
+- (void)awakeFromNib
+{
+  _generalSize = self.generalPreferencesView.frame.size;
+  _fileAccessSize = self.fileAccessPreferencesView.frame.size;
+  _pathsSize = self.pathsPreferencesView.frame.size;
 }
 
 /**
@@ -87,12 +96,12 @@
  */
 - (IBAction)showGeneral:(id)sender
 {
-  [self _switchToView:self.generalPreferencesView forToolbarItem:self.generalPreferencesItem];
+  [self _switchToView:self.generalPreferencesView resizeTo:_generalSize forToolbarItem:self.generalPreferencesItem];
 }
 
 - (IBAction)showFileAccess:(id)sender
 {
-  [self _switchToView:self.fileAccessPreferencesView forToolbarItem:self.fileAccessPreferencesItem];
+  [self _switchToView:self.fileAccessPreferencesView resizeTo:_fileAccessSize forToolbarItem:self.fileAccessPreferencesItem];
 }
 
 /**
@@ -100,7 +109,7 @@
  */
 - (IBAction)showPaths:(id)sender
 {
-  [self _switchToView:self.pathsPreferencesView forToolbarItem:self.pathsPreferencesItem];
+  [self _switchToView:self.pathsPreferencesView resizeTo:_pathsSize forToolbarItem:self.pathsPreferencesItem];
 }
 
 #pragma mark NSToolbar Delegate
@@ -119,10 +128,12 @@
 
 #pragma mark Private
 
-- (void)_switchToView:(NSView*)contentView forToolbarItem:(NSToolbarItem*)item {
+- (void)_switchToView:(NSView*)contentView
+             resizeTo:(NSSize)size
+       forToolbarItem:(NSToolbarItem*)item {
   if (self.window.contentView == contentView)
     return;
-  [self _resizeWindowToSize:contentView.frame.size];
+  [self _resizeWindowToSize:size];
   self.window.contentView = contentView;
   self.toolbar.selectedItemIdentifier = item.itemIdentifier;
 }
