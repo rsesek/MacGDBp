@@ -29,7 +29,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>https://www.bluestatic.org/versioncast.php/macgdbp</string>
+	<string>https://www.bluestatic.org/software/macgdbp/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUPublicEDKey</key>
