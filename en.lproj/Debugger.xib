@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,17 +29,17 @@
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="8">
                 <rect key="frame" x="0.0" y="0.0" width="769" height="501"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <splitView autosaveName="DebuggerSplitFrame" dividerStyle="thin" vertical="YES" id="502">
+                    <splitView fixedFrame="YES" autosaveName="DebuggerSplitFrame" dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="502">
                         <rect key="frame" x="0.0" y="0.0" width="772" height="502"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <customView id="eQ1-kt-gEm">
+                            <customView fixedFrame="YES" id="eQ1-kt-gEm">
                                 <rect key="frame" x="0.0" y="0.0" width="211" height="502"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <segmentedControl verticalHuggingPriority="750" id="mRx-aY-U5x">
+                                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mRx-aY-U5x">
                                         <rect key="frame" x="-49.5" y="478" width="304" height="25"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectOne" id="Qgr-HU-m0Y">
@@ -57,20 +57,20 @@
                                             </segments>
                                         </segmentedCell>
                                     </segmentedControl>
-                                    <tabView type="noTabsNoBorder" initialItem="jVS-VL-LBw" id="XU1-a6-Ws7">
+                                    <tabView fixedFrame="YES" type="noTabsNoBorder" initialItem="jVS-VL-LBw" translatesAutoresizingMaskIntoConstraints="NO" id="XU1-a6-Ws7">
                                         <rect key="frame" x="0.0" y="0.0" width="211" height="480"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
                                             <tabViewItem label="Variables" identifier="1" id="jVS-VL-LBw">
-                                                <view key="view" id="cqt-pj-ASk">
+                                                <view key="view" ambiguous="YES" id="cqt-pj-ASk">
                                                     <rect key="frame" x="0.0" y="0.0" width="211" height="480"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="11">
+                                                        <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="11">
                                                             <rect key="frame" x="-1" y="-1" width="301" height="482"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <clipView key="contentView" id="oXX-ZU-YDL">
+                                                            <clipView key="contentView" ambiguous="YES" id="oXX-ZU-YDL">
                                                                 <rect key="frame" x="1" y="0.0" width="299" height="481"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -181,11 +181,11 @@
                                     </tabView>
                                 </subviews>
                             </customView>
-                            <splitView dividerStyle="thin" id="46">
+                            <splitView fixedFrame="YES" dividerStyle="thin" id="46">
                                 <rect key="frame" x="212" y="0.0" width="560" height="502"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="15">
+                                    <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="15">
                                         <rect key="frame" x="0.0" y="0.0" width="560" height="234"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <clipView key="contentView" id="0J4-i7-RBa">
@@ -299,7 +299,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                     </scrollView>
-                                    <customView id="496" customClass="BSSourceView">
+                                    <customView fixedFrame="YES" id="496" customClass="BSSourceView">
                                         <rect key="frame" x="0.0" y="235" width="560" height="267"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     </customView>
@@ -496,22 +496,22 @@
             </connections>
         </treeController>
         <window title="Inspector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" frameAutosaveName="InspectorWindow" animationBehavior="default" id="569" userLabel="Inspector" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" nonactivatingPanel="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="984" y="432" width="400" height="400"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" id="570">
                 <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="575">
+                    <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="575">
                         <rect key="frame" x="-1" y="-1" width="402" height="402"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="aGW-Gu-aWn">
+                        <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="aGW-Gu-aWn">
                             <rect key="frame" x="0.0" y="0.0" width="402" height="402"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView editable="NO" drawsBackground="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="578">
+                                <textView ambiguous="YES" editable="NO" drawsBackground="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="578">
                                     <rect key="frame" x="0.0" y="0.0" width="402" height="402"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -629,7 +629,12 @@
                                     </attributedString>
                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <connections>
-                                        <binding destination="59" name="value" keyPath="selection.value" id="580"/>
+                                        <binding destination="59" name="value" keyPath="selection.value" id="xAR-jx-8L0">
+                                            <dictionary key="options">
+                                                <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                <bool key="NSConditionallySetsEditable" value="NO"/>
+                                            </dictionary>
+                                        </binding>
                                     </connections>
                                 </textView>
                             </subviews>
@@ -649,15 +654,16 @@
                 <binding destination="59" name="title" keyPath="selection.fullName" id="589"/>
                 <binding destination="582" name="visible" keyPath="values.InspectorWindowVisible" id="583"/>
             </connections>
+            <point key="canvasLocation" x="480" y="73"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="582"/>
     </objects>
     <resources>
         <image name="HUDIcon" width="32" height="32"/>
-        <image name="Run" width="256" height="256"/>
-        <image name="StepIn" width="256" height="256"/>
-        <image name="StepOut" width="256" height="256"/>
-        <image name="StepOver" width="256" height="256"/>
-        <image name="Stop" width="256" height="256"/>
+        <image name="Run" width="400" height="400"/>
+        <image name="StepIn" width="400" height="400"/>
+        <image name="StepOut" width="400" height="400"/>
+        <image name="StepOver" width="400" height="400"/>
+        <image name="Stop" width="400" height="400"/>
     </resources>
 </document>
