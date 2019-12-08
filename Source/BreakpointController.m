@@ -85,12 +85,16 @@
 {
   NSArray* selection = [_arrayController selectedObjects];
   if ([selection count] < 1)
-  {
     return;
-  }
-  
-  for (Breakpoint* bp in selection) {
-    [_manager removeBreakpoint:bp];
+
+  Breakpoint* bp = [selection firstObject];
+  [_manager removeBreakpoint:bp];
+
+  if (bp.type == kBreakpointTypeFile && [_sourceView.file isEqualToString:bp.file]) {
+    NSSet<NSNumber*>* markers = [_sourceView.markers objectsPassingTest:^BOOL(NSNumber* obj, BOOL* stop) {
+      return obj.unsignedLongValue != bp.line;
+    }];
+    [_sourceView setMarkers:markers];
   }
 }
 

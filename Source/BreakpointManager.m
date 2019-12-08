@@ -16,12 +16,7 @@
 
 #import "BreakpointManager.h"
 
-#import "AppDelegate.h"
 #import "PreferenceNames.h"
-
-@interface BreakpointManager (Private)
-- (void)updateDisplaysForFile:(NSString*)file;
-@end
 
 @implementation BreakpointManager {
   NSMutableArray* _breakpoints;
@@ -54,19 +49,17 @@
  */
 - (void)addBreakpoint:(Breakpoint*)bp;
 {
-  if (![_breakpoints containsObject:bp])
-  {
-    [self willChangeValueForKey:@"breakpoints"];
-    [_breakpoints addObject:bp];
-    [self didChangeValueForKey:@"breakpoints"];
+  if ([_breakpoints containsObject:bp])
+    return;
 
-    [_connection addBreakpoint:bp];
+  [self willChangeValueForKey:@"breakpoints"];
+  [_breakpoints addObject:bp];
+  [self didChangeValueForKey:@"breakpoints"];
 
-    [_savedBreakpoints addObject:[bp dictionary]];
-    [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
+  [_connection addBreakpoint:bp];
 
-    [self updateDisplaysForFile:[bp file]];
-  }
+  [_savedBreakpoints addObject:[bp dictionary]];
+  [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
 }
 
 - (Breakpoint*)removeBreakpoint:(Breakpoint*)bp
@@ -87,9 +80,6 @@
 
   [_savedBreakpoints removeObject:[bp dictionary]];
   [[NSUserDefaults standardUserDefaults] setObject:_savedBreakpoints forKey:kPrefBreakpoints];
-
-  if (bp.file)
-    [self updateDisplaysForFile:bp.file];
 
   return bp;
 }
@@ -113,20 +103,6 @@
 - (BOOL)hasBreakpoint:(Breakpoint*)breakpoint
 {
   return [_breakpoints containsObject:breakpoint];
-}
-
-#pragma mark Private
-
-/**
- * This marks BSSourceView needsDisplay, rearranges the objects in the breakpoints controller,
- * and sets the markers for the BSLineNumberView
- */
-- (void)updateDisplaysForFile:(NSString*)file
-{
-  AppDelegate* appDel = [NSApp delegate];
-  [[[appDel breakpoint] arrayController] rearrangeObjects];
-  [[[appDel debugger] sourceViewer] setNeedsDisplay:YES];
-  [[[appDel debugger] sourceViewer] setMarkers:[self breakpointsForFile:file]];
 }
 
 @end
