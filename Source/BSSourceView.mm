@@ -132,6 +132,20 @@
 }
 
 /**
+ * Returns the preferred font for source views.
+ */
++ (NSFont*)sourceFont
+{
+  static NSFont* font = nil;
+  if (!font) {
+    font = [NSFont fontWithName:@"Menlo" size:12];
+    if (!font)
+      font = [NSFont fontWithName:@"Monaco" size:12.0];
+  }
+  return font;
+}
+
+/**
  * Setup all the subviews for the source metaview
  */
 - (void)setupViews
@@ -153,7 +167,7 @@
   textView_ = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
   [textView_ setSourceView:self];
   [textView_ setEditable:NO];
-  [textView_ setFont:[NSFont fontWithName:@"Monaco" size:10.0]];
+  [textView_ setFont:[[self class] sourceFont]];
   [textView_ setHorizontallyResizable:YES];
   [textView_ setVerticallyResizable:YES];
   [textView_ setMinSize:textFrame.size];
@@ -207,11 +221,8 @@
         [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
 
         // Override the default font from Courier.
-        NSFont* menloFont = [NSFont fontWithName:@"Menlo" size:12];
-        if (menloFont) {
-          [source addAttributes:@{ NSFontAttributeName : menloFont }
-                          range:NSMakeRange(0, source.length)];
-        }
+        [source addAttributes:@{ NSFontAttributeName : [[self class] sourceFont] }
+                        range:NSMakeRange(0, source.length)];
       } else {
         NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
       }

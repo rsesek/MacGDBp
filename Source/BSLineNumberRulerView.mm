@@ -235,14 +235,11 @@ const CGFloat kRulerRightPadding = 2.5;
  */
 - (NSDictionary*)fontAttributes
 {
-  NSFont* font = [NSFont fontWithName:@"Menlo" size:10.0];
-  if (!font)
-    font = [NSFont fontWithName:@"Monaco" size:10.0];
-  return [NSDictionary dictionaryWithObjectsAndKeys:
-      font, NSFontAttributeName,
-      [NSColor grayColor], NSForegroundColorAttributeName,
-      nil
-  ];
+  NSFont* font = [NSFont fontWithDescriptor:[[BSSourceView sourceFont] fontDescriptor] size:11.0];
+  return @{
+    NSFontAttributeName            : font,
+    NSForegroundColorAttributeName : [NSColor grayColor],
+  };
 }
 
 /**

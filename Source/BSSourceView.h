@@ -52,6 +52,8 @@
 - (void)setString:(NSString*)source asFile:(NSString*)path;
 - (void)scrollToLine:(NSUInteger)line;
 
++ (NSFont*)sourceFont;
+
 @end
 
 // Delegate ////////////////////////////////////////////////////////////////////
