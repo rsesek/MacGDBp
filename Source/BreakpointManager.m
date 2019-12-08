@@ -39,9 +39,10 @@
 
     NSArray* savedBreakpoints = [[NSUserDefaults standardUserDefaults] arrayForKey:kPrefBreakpoints];
     if (savedBreakpoints) {
-      [_savedBreakpoints addObjectsFromArray:savedBreakpoints];
       for (NSDictionary* d in savedBreakpoints) {
-        [_breakpoints addObject:[[Breakpoint alloc] initWithDictionary:d]];
+        Breakpoint* bp = [[Breakpoint alloc] initWithDictionary:d];
+        [_breakpoints addObject:bp];
+        [_savedBreakpoints addObject:[bp dictionary]];
       }
     }
   }
