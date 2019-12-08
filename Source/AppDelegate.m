@@ -18,9 +18,12 @@
 
 #import <Sparkle/Sparkle.h>
 
+#import "FileAccessController.h"
 #import "PreferenceNames.h"
 
-@implementation AppDelegate
+@implementation AppDelegate {
+  PreferencesController* _prefsController;
+}
 
 @synthesize debugger;
 @synthesize breakpoint;
@@ -51,6 +54,13 @@
   return (AppDelegate*)[NSApp delegate];
 }
 
+- (PreferencesController*)prefsController
+{
+  if (!_prefsController)
+    _prefsController = [[PreferencesController alloc] init];
+  return _prefsController;
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
 {
   // Record whether this user ever used the beta VersionCast feed. In the
@@ -63,6 +73,8 @@
   usesUnstable = usesUnstable ||
       [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
   [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
+
+  [FileAccessController maybeShowFileAccessDialog];
 
   [self _activateSecureFileAccess];
 }
@@ -96,10 +108,7 @@
  */
 - (IBAction)showPreferences:(id)sender
 {
-  if (!prefs)
-    prefs = [[PreferencesController alloc] init];
-  
-  [prefs showPreferencesWindow];
+  [self.prefsController showPreferencesWindow];
 }
 
 /**

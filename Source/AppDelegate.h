@@ -25,12 +25,12 @@
 {
   IBOutlet DebuggerController* debugger;
   IBOutlet LoggingController* loggingController_;
-  PreferencesController* prefs;
 }
 
 @property (readonly) DebuggerController* debugger;
 @property (readonly) BreakpointController* breakpoint;
 @property (readonly) LoggingController* loggingController;
+@property (readonly) PreferencesController* prefsController;
 
 // Returns the instance of this class that is acting as the application's
 // delegate.

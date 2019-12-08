@@ -41,6 +41,8 @@
 		1E9582670E2524AD001A3D89 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9582660E2524AD001A3D89 /* PreferencesController.m */; };
 		1E9583200E2531BD001A3D89 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; };
 		1E95834C0E2531D5001A3D89 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1E95831F0E2531BD001A3D89 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		1E9C305B239D6DC600EFE30E /* FileAccess.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9C3059239D6DC600EFE30E /* FileAccess.xib */; };
+		1E9C305F239D6E4200EFE30E /* FileAccessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9C305E239D6E4200EFE30E /* FileAccessController.m */; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
@@ -132,6 +134,9 @@
 		1E9C3056239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Log.xib; sourceTree = "<group>"; };
 		1E9C3057239C3BED00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1E9C3058239C3BEE00EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Preferences.xib; sourceTree = "<group>"; };
+		1E9C305A239D6DC600EFE30E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FileAccess.xib; sourceTree = "<group>"; };
+		1E9C305D239D6E4200EFE30E /* FileAccessController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FileAccessController.h; path = Source/FileAccessController.h; sourceTree = "<group>"; };
+		1E9C305E239D6E4200EFE30E /* FileAccessController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FileAccessController.m; path = Source/FileAccessController.m; sourceTree = "<group>"; };
 		1EB7BED30ECF3CA90033283A /* StackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackFrame.h; path = Source/StackFrame.h; sourceTree = "<group>"; };
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
@@ -272,6 +277,7 @@
 				1E1E53010DF9B89800D334F9 /* Breakpoints.xib */,
 				1E9582600E252474001A3D89 /* Preferences.xib */,
 				1E6B594A11610993001189D2 /* Log.xib */,
+				1E9C3059239D6DC600EFE30E /* FileAccess.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -298,6 +304,8 @@
 				1E9582660E2524AD001A3D89 /* PreferencesController.m */,
 				1E67E6FB0F3C052000E68F1B /* PreferencesPathsArrayController.h */,
 				1E67E6FC0F3C052000E68F1B /* PreferencesPathsArrayController.m */,
+				1E9C305D239D6E4200EFE30E /* FileAccessController.h */,
+				1E9C305E239D6E4200EFE30E /* FileAccessController.m */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -474,6 +482,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E42F1D70F53317B008412DB /* dsa_pub.pem in Resources */,
+				1E9C305B239D6DC600EFE30E /* FileAccess.xib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */,
 				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
@@ -530,6 +539,7 @@
 				1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */,
 				1E11814A1319805E003BFEF1 /* BSSourceViewTextView.m in Sources */,
 				1EE97E55232B11CB000FA8E6 /* ValidatingNSToolbarItem.m in Sources */,
+				1E9C305F239D6E4200EFE30E /* FileAccessController.m in Sources */,
 				1E108E40136CC8B9002E34E0 /* EvalController.m in Sources */,
 				1E109019136DD92D002E34E0 /* StripLineBreaksValueTransformer.m in Sources */,
 				1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */,
@@ -595,6 +605,14 @@
 				1E9C3058239C3BEE00EFE30E /* en */,
 			);
 			name = Preferences.xib;
+			sourceTree = "<group>";
+		};
+		1E9C3059239D6DC600EFE30E /* FileAccess.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1E9C305A239D6DC600EFE30E /* en */,
+			);
+			name = FileAccess.xib;
 			sourceTree = "<group>";
 		};
 		1EEBFBE30D34C793008F835B /* Debugger.xib */ = {
