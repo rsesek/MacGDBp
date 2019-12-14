@@ -64,4 +64,7 @@
 // Notifies the delegate that the gutter was clicked at a certain line.
 - (void)gutterClickedAtLine:(NSUInteger)line forFile:(NSString*)file;
 
+// An error occurrerd while attempting to read or highlight the file.
+- (void)error:(NSError*)error whileHighlightingFile:(NSString*)file;
+
 @end

@@ -28,6 +28,9 @@ extern NSString* const kPrefPathReplacements;
 // NSMutableDictionary of NSString paths to NSData file access bookmarks.
 extern NSString* const kPrefFileAccessBookmarks;
 
+// NSDate of last showing the FileAccessController on startup.
+extern NSString* const kPrefFileAccessStartupShowDate;
+
 // NSNumber bool for whether to stop the debugger on the first line of the
 // program.
 extern NSString* const kPrefBreakOnFirstLine;

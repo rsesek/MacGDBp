@@ -18,6 +18,7 @@
 
 @interface FileAccessController : NSWindowController <NSWindowDelegate>
 + (void)maybeShowFileAccessDialog;
++ (void)showFileAccessDialog;
 
 - (IBAction)openFileAccess:(id)sender;
 @end

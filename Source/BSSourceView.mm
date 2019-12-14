@@ -259,6 +259,9 @@
                                                     error:&error];
   if (error) {
     NSLog(@"Error reading file at %@: %@", filePath, error);
+    if ([delegate_ respondsToSelector:@selector(error:whileHighlightingFile:)]) {
+      [delegate_ error:error whileHighlightingFile:filePath];
+    }
     return;
   }
   [textView_ setString:contents];

@@ -27,12 +27,21 @@
 
 + (void)maybeShowFileAccessDialog
 {
-  NSDictionary* fileAccesses = [[NSUserDefaults standardUserDefaults] objectForKey:kPrefFileAccessBookmarks];
-  if ([fileAccesses count] == 0) {
-    FileAccessController* controller = [[FileAccessController alloc] init];
-    [controller.window center];
-    [controller showWindow:self];
+  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+  NSDictionary* fileAccesses = [defaults objectForKey:kPrefFileAccessBookmarks];
+  // TODO: Re-prompt after some amount of time.
+  if ([fileAccesses count] == 0 &&
+      ![defaults objectForKey:kPrefFileAccessStartupShowDate]) {
+    [defaults setObject:[NSDate date] forKey:kPrefFileAccessStartupShowDate];
+    [self showFileAccessDialog];
   }
+}
+
++ (void)showFileAccessDialog
+{
+  FileAccessController* controller = [[FileAccessController alloc] init];
+  [controller.window center];
+  [controller showWindow:self];
 }
 
 - (instancetype)init

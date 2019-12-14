@@ -23,6 +23,7 @@
 #import "DebuggerBackEnd.h"
 #import "DebuggerModel.h"
 #import "EvalController.h"
+#import "FileAccessController.h"
 #import "PreferenceNames.h"
 #import "NSXMLElementAdditions.h"
 #import "StackFrame.h"
@@ -405,6 +406,13 @@
   }
   
   [_sourceViewer setMarkers:[manager breakpointsForFile:file]];
+}
+
+- (void)error:(NSError*)error whileHighlightingFile:(NSString*)file
+{
+  if (error.code == NSFileReadNoPermissionError) {
+    [FileAccessController showFileAccessDialog];
+  }
 }
 
 @end

@@ -24,6 +24,8 @@ NSString* const kPrefPathReplacements = @"PathReplacements";
 
 NSString* const kPrefFileAccessBookmarks = @"FileAccessBookmarks";
 
+NSString* const kPrefFileAccessStartupShowDate = @"FileAccessStartupShowDate";
+
 NSString* const kPrefBreakOnFirstLine = @"BreakOnFirstLine";
 
 NSString* const kPrefDebuggerAttached = @"DebuggerAttached";
