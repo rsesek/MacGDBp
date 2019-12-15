@@ -37,7 +37,13 @@
 - (void)awakeFromNib
 {
   _generalSize = self.generalPreferencesView.frame.size;
+#if USE_APP_SANDBOX
   _fileAccessSize = self.fileAccessPreferencesView.frame.size;
+#else
+  NSUInteger i = [self.toolbar.items indexOfObject:self.fileAccessPreferencesItem];
+  if (i != NSNotFound)
+    [self.toolbar removeItemAtIndex:i];
+#endif
   _pathsSize = self.pathsPreferencesView.frame.size;
 }
 
@@ -58,6 +64,7 @@
  */
 - (IBAction)addFileAccess:(id)sender
 {
+#if USE_APP_SANDBOX
   NSOpenPanel* panel = [NSOpenPanel openPanel];
   panel.canChooseDirectories = YES;
   panel.canChooseFiles = NO;
@@ -74,8 +81,12 @@
   pair.key = url.absoluteString;
   pair.value = secureBookmark;
   [self.fileAccessController addObject:pair];
+#else
+  NSAssert(NO, @"not reached");
+#endif
 }
 
+#if USE_APP_SANDBOX
 + (NSData*)secureBookmarkDataForURL:(NSURL*)url
 {
    NSError* error;
@@ -88,6 +99,7 @@
    }
   return secureBookmark;
 }
+#endif  // USE_APP_SANDBOX
 
 #pragma mark Panel Switching
 
@@ -101,7 +113,11 @@
 
 - (IBAction)showFileAccess:(id)sender
 {
+#if USE_APP_SANDBOX
   [self _switchToView:self.fileAccessPreferencesView resizeTo:_fileAccessSize forToolbarItem:self.fileAccessPreferencesItem];
+#else
+  NSAssert(NO, @"not reached");
+#endif
 }
 
 /**
@@ -121,7 +137,9 @@
 {
   return @[
     self.generalPreferencesItem.itemIdentifier,
+#if USE_APP_SANDBOX
     self.fileAccessPreferencesItem.itemIdentifier,
+#endif
     self.pathsPreferencesItem.itemIdentifier,
   ];
 }

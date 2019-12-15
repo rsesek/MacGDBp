@@ -410,9 +410,11 @@
 
 - (void)error:(NSError*)error whileHighlightingFile:(NSString*)file
 {
+#if USE_APP_SANDBOX
   if (error.code == NSFileReadNoPermissionError) {
     [FileAccessController showFileAccessDialog];
   }
+#endif  // USE_APP_SANDBOX
 }
 
 @end

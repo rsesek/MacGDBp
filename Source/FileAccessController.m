@@ -14,6 +14,8 @@
 * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 */
 
+#if USE_APP_SANDBOX
+
 #import "FileAccessController.h"
 
 #import "AppDelegate.h"
@@ -66,3 +68,5 @@
 }
 
 @end
+
+#endif  // USE_APP_SANDBOX

@@ -22,9 +22,11 @@ NSString* const kPrefInspectorWindowVisible = @"InspectorWindowVisible";
 
 NSString* const kPrefPathReplacements = @"PathReplacements";
 
+#if USE_APP_SANDBOX
 NSString* const kPrefFileAccessBookmarks = @"FileAccessBookmarks";
 
 NSString* const kPrefFileAccessStartupShowDate = @"FileAccessStartupShowDate";
+#endif  // USE_APP_SANDBOX
 
 NSString* const kPrefBreakOnFirstLine = @"BreakOnFirstLine";
 

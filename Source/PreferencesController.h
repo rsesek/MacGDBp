@@ -35,7 +35,9 @@
 
 - (IBAction)addFileAccess:(id)sender;
 
+#if USE_APP_SANDBOX
 + (NSData*)secureBookmarkDataForURL:(NSURL*)url;
+#endif
 
 // panel switching
 - (IBAction)showGeneral:(id)sender;

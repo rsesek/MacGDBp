@@ -14,6 +14,8 @@
 * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 */
 
+#if USE_APP_SANDBOX
+
 #import <Cocoa/Cocoa.h>
 
 @interface FileAccessController : NSWindowController <NSWindowDelegate>
@@ -22,3 +24,5 @@
 
 - (IBAction)openFileAccess:(id)sender;
 @end
+
+#endif

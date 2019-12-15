@@ -25,11 +25,13 @@ extern NSString* const kPrefInspectorWindowVisible;
 // NSMutableArray of path replacements.
 extern NSString* const kPrefPathReplacements;
 
+#if USE_APP_SANDBOX
 // NSMutableDictionary of NSString paths to NSData file access bookmarks.
 extern NSString* const kPrefFileAccessBookmarks;
 
 // NSDate of last showing the FileAccessController on startup.
 extern NSString* const kPrefFileAccessStartupShowDate;
+#endif  // USE_APP_SANDBOX
 
 // NSNumber bool for whether to stop the debugger on the first line of the
 // program.

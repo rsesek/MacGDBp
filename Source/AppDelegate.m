@@ -40,7 +40,9 @@
       kPrefPort                     : @9000,
       kPrefInspectorWindowVisible   : @YES,
       kPrefPathReplacements         : [NSMutableArray array],
+#if USE_APP_SANDBOX
       kPrefFileAccessBookmarks      : [NSMutableDictionary dictionary],
+#endif
       kPrefBreakOnFirstLine         : @YES,
       kPrefDebuggerAttached         : @YES,
       kPrefSelectedDebuggerSegment  : @1,
@@ -74,9 +76,11 @@
       [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
   [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
 
+#if USE_APP_SANDBOX
   [FileAccessController maybeShowFileAccessDialog];
 
   [self _activateSecureFileAccess];
+#endif  // USE_APP_SANDBOX
 }
 
 - (void)applicationWillTerminate:(NSNotification*)notification
@@ -119,6 +123,7 @@
   [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.bluestatic.org/software/macgdbp/help/"]];
 }
 
+#if USE_APP_SANDBOX
 /**
  * Activates any secure file access bookmarks stored in preferences.
  */
@@ -154,5 +159,6 @@
 
   [NSUserDefaults.standardUserDefaults setObject:bookmarks forKey:kPrefFileAccessBookmarks];
 }
+#endif  // USE_APP_SANDBOX
 
 @end
