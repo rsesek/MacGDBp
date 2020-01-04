@@ -23,13 +23,13 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>200.0</string>
+	<string>200.1</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>https://www.bluestatic.org/software/macgdbp/appcast.xml</string>
+	<string>https://www.bluestatic.org/software/macgdbp/appcast-unstable.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUPublicEDKey</key>
