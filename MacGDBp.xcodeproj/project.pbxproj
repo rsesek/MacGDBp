@@ -421,6 +421,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				1E9583550E2531E7001A3D89 /* CopyFiles */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				1EC64A5723C14C8600F21F46 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -501,6 +502,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1EC64A5723C14C8600F21F46 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Frameworks/Sparkle.framework/Headers",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -ex\n\nSPARKLE_PATH=\"${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Frameworks/Sparkle.framework\"\n\nfind \"${SPARKLE_PATH}\" \\( -type d -or -type l \\) -and \\( -name Headers -or -name PrivateHeaders \\) -exec rm -r {} +\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1E8C70931BDB167F00D333DC /* Sources */ = {
