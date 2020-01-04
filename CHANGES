@@ -6,7 +6,6 @@ MacGDBp                                                               CHANGE LOG
 - New: Unified UI with integrated debugger, breakpoints, and eval panels.
 - Change: More robust protocol layer communication, which allows loading more
   properties on long arrays and deep objects.
-- Change: The app is now sandboxed.
 - New: #203  Function call/symbolic breakpoints.
 - Fix: #255  "Could not open socket" failures due to socket reuse.
 - Fix: #187  Non-ASCII characters would not display correctly in the source
