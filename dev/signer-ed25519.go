@@ -53,9 +53,9 @@ import (
 )
 
 var (
-	keyPath  = flag.String("key", "Path to the key file.", "")
-	inPath   = flag.String("file", "Path to the file to sign/verify.", "")
-	sigPath  = flag.String("signature", "Path to the signature file.", "")
+	keyPath  = flag.String("key", "", "Path to the key file.")
+	inPath   = flag.String("file", "", "Path to the file to sign/verify.")
+	sigPath  = flag.String("signature", "", "Path to the signature file.")
 	doSign   = flag.Bool("sign", false, "Sign the given file.")
 	doVerify = flag.Bool("verify", false, "Verify the given file.")
 	doNewKey = flag.Bool("new-key", false, "Generate a new keypair.")
