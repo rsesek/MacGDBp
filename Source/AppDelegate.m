@@ -21,6 +21,8 @@
 #import "FileAccessController.h"
 #import "PreferenceNames.h"
 
+static NSString* const kAppcastUnstable = @"appcast-unstable.xml";
+
 @implementation AppDelegate {
   PreferencesController* _prefsController;
 }
@@ -65,16 +67,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
 {
-  // Record whether this user ever used the beta VersionCast feed. In the
-  // future, we will use this bit to query for unstable releases after the user
-  // has upgraded to a stable version.
-  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-
-  BOOL usesUnstable = [defaults boolForKey:kPrefUnstableVersionCast];
-  NSURL* feedURL = [[SUUpdater sharedUpdater] feedURL];
-  usesUnstable = usesUnstable ||
-      [[feedURL absoluteString] rangeOfString:@"?unstable"].location != NSNotFound;
-  [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
+  [[SUUpdater sharedUpdater] setDelegate:self];
 
 #if USE_APP_SANDBOX
   [FileAccessController maybeShowFileAccessDialog];
@@ -160,5 +153,25 @@
   [NSUserDefaults.standardUserDefaults setObject:bookmarks forKey:kPrefFileAccessBookmarks];
 }
 #endif  // USE_APP_SANDBOX
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark SUUpdater Delegate
+
+- (nullable NSString*)feedURLStringForUpdater:(SUUpdater*)updater
+{
+  // Record whether this user ever used the beta appcast feed.
+  NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+  NSURL* feedURL = [NSURL URLWithString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"SUFeedURL"]];
+
+  BOOL usesUnstable = [defaults boolForKey:kPrefUnstableVersionCast] ||
+                      [[feedURL absoluteString] hasSuffix:kAppcastUnstable];
+  [defaults setBool:usesUnstable forKey:kPrefUnstableVersionCast];
+
+  if (!usesUnstable)
+    return nil;
+
+  feedURL = [[feedURL URLByDeletingLastPathComponent] URLByAppendingPathComponent:kAppcastUnstable];
+  return [feedURL absoluteString];
+}
 
 @end

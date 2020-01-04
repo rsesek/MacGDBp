@@ -16,12 +16,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import <Sparkle/SUUpdaterDelegate.h>
+
 #import "BreakpointController.h"
 #import "DebuggerController.h"
 #import "LoggingController.h"
 #import "PreferencesController.h"
 
-@interface AppDelegate : NSObject
+@interface AppDelegate : NSObject <SUUpdaterDelegate>
 {
   IBOutlet DebuggerController* debugger;
   IBOutlet LoggingController* loggingController_;
