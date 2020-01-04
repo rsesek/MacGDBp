@@ -65,11 +65,11 @@
         </window>
         <userDefaultsController representsSharedInstance="YES" id="13"/>
         <customView id="29" userLabel="GeneralPreferences">
-            <rect key="frame" x="0.0" y="0.0" width="421" height="131"/>
+            <rect key="frame" x="0.0" y="0.0" width="421" height="152"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="93">
-                    <rect key="frame" x="15" y="94" width="146" height="17"/>
+                    <rect key="frame" x="15" y="115" width="146" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Debugger Behavior:" id="94">
                         <font key="font" metaFont="system"/>
@@ -78,7 +78,7 @@
                     </textFieldCell>
                 </textField>
                 <button toolTip="If enabled, MacGDBp will automatically step into the first line of code when the debugger is attached." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="91">
-                    <rect key="frame" x="164" y="92" width="216" height="18"/>
+                    <rect key="frame" x="164" y="113" width="216" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" title="Break on first line of execution" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="92">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -88,8 +88,31 @@
                         <binding destination="13" name="value" keyPath="values.BreakOnFirstLine" id="95"/>
                     </connections>
                 </button>
+                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5zF-CC-p0i">
+                    <rect key="frame" x="15" y="90" width="146" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Beta Updates:" id="kFb-9R-eo2">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cnO-5M-q8v">
+                    <rect key="frame" x="164" y="89" width="167" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="check" title="Update to beta versions" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="5c6-mr-EWk">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                        <connections>
+                            <binding destination="13" name="value" keyPath="values.UnstableVersionCast" id="DM4-M3-2Md"/>
+                        </connections>
+                    </buttonCell>
+                    <connections>
+                        <binding destination="13" name="value" keyPath="values.UnstableVersionCast" id="gma-cH-Ma7"/>
+                    </connections>
+                </button>
                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36">
-                    <rect key="frame" x="17" y="45" width="387" height="28"/>
+                    <rect key="frame" x="18" y="47" width="387" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="You must close and reopen MacGDBp before these preference values take effect." id="37">
                         <font key="font" metaFont="smallSystem"/>
@@ -98,7 +121,7 @@
                     </textFieldCell>
                 </textField>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
-                    <rect key="frame" x="168" y="18" width="60" height="22"/>
+                    <rect key="frame" x="169" y="20" width="60" height="22"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="40">
                         <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="fAx-s6-Oqh"/>
@@ -111,7 +134,7 @@
                     </connections>
                 </textField>
                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
-                    <rect key="frame" x="77" y="20" width="86" height="17"/>
+                    <rect key="frame" x="78" y="22" width="86" height="17"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Xdebug Port:" id="41">
                         <font key="font" metaFont="system"/>
@@ -120,7 +143,7 @@
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="-141" y="-432"/>
+            <point key="canvasLocation" x="-141.5" y="-422"/>
         </customView>
         <customView id="53" userLabel="PathsPreferences">
             <rect key="frame" x="0.0" y="0.0" width="427" height="213"/>
