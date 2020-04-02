@@ -65,7 +65,7 @@ const CGFloat kRulerRightPadding = 2.5;
 - (void)drawHashMarksAndLabelsInRect:(NSRect)rect
 {
   // Draw the background color.
-  [[NSColor colorWithDeviceRed:0.871 green:0.871 blue:0.871 alpha:1] set];
+  [[NSColor windowBackgroundColor] set];
   [NSBezierPath fillRect:rect];
 
   // Draw the right stroke.

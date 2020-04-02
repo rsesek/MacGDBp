@@ -1,6 +1,10 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.0.1
+#####################
+- Change: Draw the source view gutter in a way that is dark-mode compatible.
+
 2.0 Beta 1
 #####################
 - New: Unified UI with integrated debugger, breakpoints, and eval panels.
