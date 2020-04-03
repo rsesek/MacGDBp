@@ -4,6 +4,7 @@ MacGDBp                                                               CHANGE LOG
 2.0.1
 #####################
 - Change: Draw the source view gutter in a way that is dark-mode compatible.
+- Change: Make the Remote Paths preferences pane larger.
 
 2.0 Beta 1
 #####################

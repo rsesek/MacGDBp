@@ -146,7 +146,7 @@
             <point key="canvasLocation" x="-141.5" y="-422"/>
         </customView>
         <customView id="53" userLabel="PathsPreferences">
-            <rect key="frame" x="0.0" y="0.0" width="427" height="213"/>
+            <rect key="frame" x="0.0" y="0.0" width="711" height="213"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="66" userLabel="RemovePath">
@@ -172,20 +172,20 @@
                     </connections>
                 </button>
                 <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="55">
-                    <rect key="frame" x="-1" y="20" width="429" height="193"/>
+                    <rect key="frame" x="-1" y="20" width="712" height="193"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" ambiguous="YES" id="egR-Mj-j4E">
-                        <rect key="frame" x="1" y="0.0" width="427" height="192"/>
+                        <rect key="frame" x="1" y="0.0" width="710" height="192"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" autosaveColumns="NO" headerView="59" id="58">
-                                <rect key="frame" x="0.0" y="0.0" width="427" height="169"/>
+                                <rect key="frame" x="0.0" y="0.0" width="710" height="169"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn width="216" minWidth="40" maxWidth="1000" id="61">
+                                    <tableColumn width="349.5" minWidth="40" maxWidth="1000" id="61">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Local">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -201,7 +201,7 @@
                                             <binding destination="78" name="value" keyPath="arrangedObjects.local" id="82"/>
                                         </connections>
                                     </tableColumn>
-                                    <tableColumn width="205" minWidth="40" maxWidth="1000" id="60">
+                                    <tableColumn width="354.5" minWidth="40" maxWidth="1000" id="60">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Remote">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -221,8 +221,8 @@
                             </tableView>
                         </subviews>
                     </clipView>
-                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="57">
-                        <rect key="frame" x="1" y="177" width="411" height="15"/>
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="57">
+                        <rect key="frame" x="1" y="176" width="710" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="56">
@@ -230,12 +230,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <tableHeaderView key="headerView" id="59">
-                        <rect key="frame" x="0.0" y="0.0" width="427" height="23"/>
+                        <rect key="frame" x="0.0" y="0.0" width="710" height="23"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </tableHeaderView>
                 </scrollView>
             </subviews>
-            <point key="canvasLocation" x="10" y="-194"/>
+            <point key="canvasLocation" x="151.5" y="-194.5"/>
         </customView>
         <dictionaryController objectClassName="_NSDictionaryControllerKeyValuePair" id="PYc-SP-Fvw" userLabel="File Access Controller">
             <connections>
