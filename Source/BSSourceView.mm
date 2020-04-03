@@ -189,6 +189,13 @@
   [self registerForDraggedTypes:types];
 }
 
+NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
+  CGFloat red, green, blue, alpha;
+  color = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+  [color getRed:&red green:&green blue:&blue alpha:&alpha];
+  return [NSString stringWithFormat:@"%@=\"#%02x%02x%02x\"", directive, (UInt8)(red * 255), (UInt8)(green * 255), (UInt8)(blue * 255)];
+}
+
 /**
  * Reads the contents of |filePath| and sets it as the displayed text, after
  * attempting to highlight it using the PHP binary.
@@ -202,7 +209,14 @@
     NSTask* task = [[NSTask alloc] init];
 
     [task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
-    [task setArguments:@[ @"-s", filePath ]];
+    [task setArguments:@[
+      @"--syntax-highlight",
+      @"--define", ColorHEXStringINIDirective(@"highlight.string", [NSColor systemRedColor]),
+      @"--define", ColorHEXStringINIDirective(@"highlight.comment", [NSColor systemOrangeColor]),
+      @"--define", ColorHEXStringINIDirective(@"highlight.default", [NSColor systemBlueColor]),
+      @"--define", ColorHEXStringINIDirective(@"highlight.html", [NSColor systemGrayColor]),
+      filePath
+    ]];
     [task setStandardOutput:outPipe];
     [task setStandardError:errPipe];
     [task setTerminationHandler:^(NSTask*) {
@@ -243,6 +257,7 @@
     [task launch];
   } @catch (NSException* exception) {
     // If the PHP executable is not available then the NSTask will throw an exception
+    NSLog(@"Failed to highlight file: %@", exception);
     [self setPlainTextStringFromFile:filePath];
   }
 }
