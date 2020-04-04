@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1E027F0A0D36F23F00885DEE /* Run.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F080D36F23F00885DEE /* Run.png */; };
-		1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E027F090D36F23F00885DEE /* StepOver.png */; };
 		1E02C3D50C60EC2C006F1752 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C3D40C60EC2C006F1752 /* AppDelegate.m */; };
 		1E02C5710C610158006F1752 /* DebuggerBackEnd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5700C610158006F1752 /* DebuggerBackEnd.m */; };
 		1E02C5F60C610724006F1752 /* DebuggerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E02C5F50C610724006F1752 /* DebuggerController.m */; };
@@ -44,14 +43,15 @@
 		1E9C305B239D6DC600EFE30E /* FileAccess.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E9C3059239D6DC600EFE30E /* FileAccess.xib */; };
 		1E9C305F239D6E4200EFE30E /* FileAccessController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9C305E239D6E4200EFE30E /* FileAccessController.m */; };
 		1EB7BED50ECF3CA90033283A /* StackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7BED40ECF3CA90033283A /* StackFrame.m */; };
+		1EBE15B324381342006D0D07 /* StepInTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EBE15B224381342006D0D07 /* StepInTemplate.png */; };
+		1EBE15B62438143B006D0D07 /* StepOverTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EBE15B42438143B006D0D07 /* StepOverTemplate.png */; };
+		1EBE15B72438143B006D0D07 /* StepOutTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EBE15B52438143B006D0D07 /* StepOutTemplate.png */; };
 		1EC1337E127DBB00007946FC /* VariableNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC1337D127DBB00007946FC /* VariableNode.m */; };
 		1EDA9CF812DD13B300596211 /* BSLineNumberRulerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1EDA9CF712DD13B300596211 /* BSLineNumberRulerView.mm */; };
 		1EE97E55232B11CB000FA8E6 /* ValidatingNSToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE97E54232B11CB000FA8E6 /* ValidatingNSToolbarItem.m */; };
 		1EEBE842176FEA80003622C3 /* MessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE841176FEA80003622C3 /* MessageQueue.m */; };
 		1EEBE845176FFE04003622C3 /* ProtocolClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEBE844176FFE04003622C3 /* ProtocolClient.m */; };
 		1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFBE30D34C793008F835B /* Debugger.xib */; };
-		1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC2A0D358EBD008F835B /* StepIn.png */; };
-		1EEBFC370D358F1B008F835B /* StepOut.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEBFC360D358F1B008F835B /* StepOut.png */; };
 		1EECC0BA1BC9B1E800FB22D3 /* DebuggerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */; };
 		1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */; };
 		1EFF70C30DFDC018006B9D33 /* BreakpointController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EFF70C20DFDC018006B9D33 /* BreakpointController.m */; };
@@ -87,7 +87,6 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1E027F080D36F23F00885DEE /* Run.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Run.png; path = Icons/Run.png; sourceTree = "<group>"; };
-		1E027F090D36F23F00885DEE /* StepOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOver.png; path = Icons/StepOver.png; sourceTree = "<group>"; };
 		1E02C3D30C60EC2C006F1752 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Source/AppDelegate.h; sourceTree = "<group>"; };
 		1E02C3D40C60EC2C006F1752 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = "<group>"; };
 		1E02C56F0C610158006F1752 /* DebuggerBackEnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerBackEnd.h; path = Source/DebuggerBackEnd.h; sourceTree = "<group>"; };
@@ -139,6 +138,9 @@
 		1E9C305E239D6E4200EFE30E /* FileAccessController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FileAccessController.m; path = Source/FileAccessController.m; sourceTree = "<group>"; };
 		1EB7BED30ECF3CA90033283A /* StackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackFrame.h; path = Source/StackFrame.h; sourceTree = "<group>"; };
 		1EB7BED40ECF3CA90033283A /* StackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackFrame.m; path = Source/StackFrame.m; sourceTree = "<group>"; };
+		1EBE15B224381342006D0D07 /* StepInTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepInTemplate.png; path = Icons/StepInTemplate.png; sourceTree = "<group>"; };
+		1EBE15B42438143B006D0D07 /* StepOverTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOverTemplate.png; path = Icons/StepOverTemplate.png; sourceTree = "<group>"; };
+		1EBE15B52438143B006D0D07 /* StepOutTemplate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOutTemplate.png; path = Icons/StepOutTemplate.png; sourceTree = "<group>"; };
 		1EC1337C127DBB00007946FC /* VariableNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VariableNode.h; path = Source/VariableNode.h; sourceTree = "<group>"; };
 		1EC1337D127DBB00007946FC /* VariableNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VariableNode.m; path = Source/VariableNode.m; sourceTree = "<group>"; };
 		1ED58817231CC66000F0A713 /* MacGDBp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacGDBp.entitlements; sourceTree = "<group>"; };
@@ -150,8 +152,6 @@
 		1EEBE841176FEA80003622C3 /* MessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MessageQueue.m; path = Source/MessageQueue.m; sourceTree = "<group>"; };
 		1EEBE843176FFE04003622C3 /* ProtocolClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProtocolClient.h; path = Source/ProtocolClient.h; sourceTree = "<group>"; };
 		1EEBE844176FFE04003622C3 /* ProtocolClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProtocolClient.m; path = Source/ProtocolClient.m; sourceTree = "<group>"; };
-		1EEBFC2A0D358EBD008F835B /* StepIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepIn.png; path = Icons/StepIn.png; sourceTree = "<group>"; };
-		1EEBFC360D358F1B008F835B /* StepOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StepOut.png; path = Icons/StepOut.png; sourceTree = "<group>"; };
 		1EECC0B81BC9B1E700FB22D3 /* DebuggerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebuggerModel.h; path = Source/DebuggerModel.h; sourceTree = "<group>"; };
 		1EECC0B91BC9B1E700FB22D3 /* DebuggerModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DebuggerModel.m; path = Source/DebuggerModel.m; sourceTree = "<group>"; };
 		1EEE875C0D9DE4B4009CBA7C /* MacGDBp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = MacGDBp.icns; path = Icons/MacGDBp.icns; sourceTree = "<group>"; };
@@ -232,12 +232,12 @@
 		1E027F0D0D36F24200885DEE /* Toolbar Icons */ = {
 			isa = PBXGroup;
 			children = (
+				1EBE15B52438143B006D0D07 /* StepOutTemplate.png */,
+				1EBE15B42438143B006D0D07 /* StepOverTemplate.png */,
+				1EBE15B224381342006D0D07 /* StepInTemplate.png */,
 				1E2F0A6812D5371B00EBF675 /* Stop.png */,
 				1E0AFBB80FC2518700C67031 /* HUDIcon.png */,
 				1E027F080D36F23F00885DEE /* Run.png */,
-				1E027F090D36F23F00885DEE /* StepOver.png */,
-				1EEBFC360D358F1B008F835B /* StepOut.png */,
-				1EEBFC2A0D358EBD008F835B /* StepIn.png */,
 			);
 			name = "Toolbar Icons";
 			sourceTree = "<group>";
@@ -486,13 +486,13 @@
 				1E9C305B239D6DC600EFE30E /* FileAccess.xib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1EEBFBE50D34C793008F835B /* Debugger.xib in Resources */,
-				1EEBFC2B0D358EBD008F835B /* StepIn.png in Resources */,
-				1EEBFC370D358F1B008F835B /* StepOut.png in Resources */,
+				1EBE15B62438143B006D0D07 /* StepOverTemplate.png in Resources */,
+				1EBE15B324381342006D0D07 /* StepInTemplate.png in Resources */,
 				1E027F0A0D36F23F00885DEE /* Run.png in Resources */,
-				1E027F0B0D36F23F00885DEE /* StepOver.png in Resources */,
 				1E416FF90D36F821009A53A2 /* MainMenu.xib in Resources */,
 				1EEE875D0D9DE4B4009CBA7C /* MacGDBp.icns in Resources */,
 				1E1E53030DF9B89800D334F9 /* Breakpoints.xib in Resources */,
+				1EBE15B72438143B006D0D07 /* StepOutTemplate.png in Resources */,
 				1E9582620E252474001A3D89 /* Preferences.xib in Resources */,
 				1E0AFBB90FC2518700C67031 /* HUDIcon.png in Resources */,
 				1E6B594C11610993001189D2 /* Log.xib in Resources */,

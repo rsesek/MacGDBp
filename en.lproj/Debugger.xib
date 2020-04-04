@@ -319,13 +319,13 @@
             </view>
             <toolbar key="toolbar" implicitIdentifier="2E704228-00D1-43C3-B458-9839CEF5A7D0" displayMode="iconOnly" sizeMode="regular" id="471">
                 <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="69AE2ACB-C36A-4083-9D2B-3572B7A21CA0" label="Step In" paletteLabel="Step In" toolTip="Step In" image="StepIn" id="wHU-wT-jc4" customClass="ValidatingNSToolbarItem">
+                    <toolbarItem implicitItemIdentifier="69AE2ACB-C36A-4083-9D2B-3572B7A21CA0" label="Step In" paletteLabel="Step In" toolTip="Step In" image="StepInTemplate" id="wHU-wT-jc4" customClass="ValidatingNSToolbarItem">
                         <size key="minSize" width="45" height="25"/>
                         <size key="maxSize" width="45" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="YNB-SH-ciO">
                             <rect key="frame" x="0.0" y="14" width="45" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepIn" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9sF-Wx-nCI">
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepInTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9sF-Wx-nCI">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -334,13 +334,13 @@
                             <action selector="stepIn:" target="-2" id="wB8-VT-8r1"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="BCF9D13D-041F-4A9B-9D75-6AC074995436" label="Step Out" paletteLabel="Step Out" toolTip="Step Out" image="StepOut" id="ufJ-5Q-WL7" customClass="ValidatingNSToolbarItem">
+                    <toolbarItem implicitItemIdentifier="BCF9D13D-041F-4A9B-9D75-6AC074995436" label="Step Out" paletteLabel="Step Out" toolTip="Step Out" image="StepOutTemplate" id="ufJ-5Q-WL7" customClass="ValidatingNSToolbarItem">
                         <size key="minSize" width="45" height="25"/>
                         <size key="maxSize" width="45" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="Mjb-90-kNO">
                             <rect key="frame" x="5" y="14" width="45" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepOut" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3kU-ib-eyA">
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepOutTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3kU-ib-eyA">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -349,13 +349,13 @@
                             <action selector="stepOut:" target="-2" id="C6v-5h-qFh"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="EC9FAEF4-0C25-4E7D-9F3D-443E4672DE6E" label="Step Over" paletteLabel="Step Over" toolTip="Step Over" image="StepOver" id="5k5-MH-RDF" customClass="ValidatingNSToolbarItem">
+                    <toolbarItem implicitItemIdentifier="EC9FAEF4-0C25-4E7D-9F3D-443E4672DE6E" label="Step Over" paletteLabel="Step Over" toolTip="Step Over" image="StepOverTemplate" id="5k5-MH-RDF" customClass="ValidatingNSToolbarItem">
                         <size key="minSize" width="45" height="25"/>
                         <size key="maxSize" width="45" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="bvu-m4-jMC">
                             <rect key="frame" x="8" y="14" width="45" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepOver" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mga-QP-Tfn">
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="StepOverTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mga-QP-Tfn">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -659,11 +659,11 @@
         <userDefaultsController representsSharedInstance="YES" id="582"/>
     </objects>
     <resources>
-        <image name="HUDIcon" width="32" height="32"/>
+        <image name="HUDIcon" width="400" height="400"/>
         <image name="Run" width="400" height="400"/>
-        <image name="StepIn" width="400" height="400"/>
-        <image name="StepOut" width="400" height="400"/>
-        <image name="StepOver" width="400" height="400"/>
+        <image name="StepInTemplate" width="400" height="400"/>
+        <image name="StepOutTemplate" width="400" height="400"/>
+        <image name="StepOverTemplate" width="400" height="400"/>
         <image name="Stop" width="400" height="400"/>
     </resources>
 </document>
