@@ -8,6 +8,7 @@ MacGDBp                                                               CHANGE LOG
 - Fix: #260  Use macOS standard colors for syntax highlighting for better dark-
   mode compatibility.
 - Change: Improve toolbar buttons under dark mode.
+- Fix: #261  Large source files would fail to load.
 
 2.0 Beta 1
 #####################

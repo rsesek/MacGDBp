@@ -219,15 +219,24 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     ]];
     [task setStandardOutput:outPipe];
     [task setStandardError:errPipe];
-    [task setTerminationHandler:^(NSTask*) {
-      NSMutableAttributedString* source;
+    [task setTerminationHandler:^(NSTask* taskBlock) {
+      if (task.terminationStatus != 0) {
+        NSLog(@"Failed to highlight PHP file %@. Termination status=%d. stderr: %@",
+              filePath, taskBlock.terminationStatus, [[errPipe fileHandleForReading] readDataToEndOfFile]);
+      }
+    }];
+    [task launch];
 
-      if (task.terminationStatus == 0) {
-        NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
-        source =
-            [[NSMutableAttributedString alloc] initWithHTML:data
-                                                    options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
-                                         documentAttributes:nil];
+    // Start reading the stdout pipe on a background queue. This is separate
+    // from the terminiationHandler, since a large file could be greater than
+    // the pipe buffer.
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+      NSMutableAttributedString* source;
+      NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
+      if (data.length) {
+        source = [[NSMutableAttributedString alloc] initWithHTML:data
+                                                         options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                              documentAttributes:nil];
 
         // PHP uses &nbsp; in the highlighted output, which should be converted
         // back to normal spaces.
@@ -237,8 +246,6 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
         // Override the default font from Courier.
         [source addAttributes:@{ NSFontAttributeName : [[self class] sourceFont] }
                         range:NSMakeRange(0, source.length)];
-      } else {
-        NSLog(@"Failed to highlight PHP file %@: %@", filePath, [[errPipe fileHandleForReading] readDataToEndOfFile]);
       }
 
       dispatch_async(dispatch_get_main_queue(), ^{
@@ -253,8 +260,7 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
         if (handler)
           handler();
       });
-    }];
-    [task launch];
+    });
   } @catch (NSException* exception) {
     // If the PHP executable is not available then the NSTask will throw an exception
     NSLog(@"Failed to highlight file: %@", exception);
