@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: Crash when selecting stack frames after disconnecting.
 - Fix: Expanded variables would not reliably re-open after debugger steps.
+- Fix: Would not consistently scroll to the active line.
 
 2.0.1
 #####################

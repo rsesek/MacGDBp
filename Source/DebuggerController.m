@@ -323,20 +323,21 @@
   NSString* filename = [[NSURL URLWithString:frame.filename] path];
   if ([filename isEqualToString:@""])
     return;
-  
-  // Replace the source if necessary.
-  if (frame.source && ![_sourceViewer.file isEqualToString:filename])
-  {
-    [_sourceViewer setString:frame.source asFile:filename];
-    
+
+  if (![_sourceViewer.file isEqualToString:filename]) {
+    // Replace the source if necessary.
+    if (frame.source) {
+      [_sourceViewer setString:frame.source asFile:filename];
+    } else {
+      [_sourceViewer setFile:filename];
+    }
+
     NSSet<NSNumber*>* breakpoints = [_model.breakpointManager breakpointsForFile:filename];
     [_sourceViewer setMarkers:breakpoints];
   }
-  
+
   [_sourceViewer setMarkedLine:frame.lineNumber];
   [_sourceViewer scrollToLine:frame.lineNumber];
-  
-  [[_sourceViewer textView] setNeedsDisplay:YES];
 }
 
 /**

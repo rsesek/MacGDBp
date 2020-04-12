@@ -128,7 +128,6 @@
                           forRange:NSMakeRange(rangeIndex - 1, 0)];
   [textView_ scrollRangeToVisible:[[textView_ string]
                 lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
-  [scrollView_ setNeedsDisplay:YES];
 }
 
 /**
@@ -256,6 +255,8 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
         }
 
         [self->ruler_ performLayout];
+
+        [self scrollToLine:self->markedLine_];
 
         if (handler)
           handler();
