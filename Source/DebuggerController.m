@@ -290,6 +290,7 @@
 
   [_connection loadVariableNode:[node representedObject]
                  forStackFrame:[[_stackArrayController selectedObjects] lastObject]];
+  [self expandVariables];
 }
 
 /**
