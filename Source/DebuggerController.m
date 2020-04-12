@@ -100,6 +100,10 @@
                          forKeyPath:@"selection.source"
                             options:NSKeyValueObservingOptionNew
                             context:nil];
+  [_variablesTreeController addObserver:self
+                             forKeyPath:@"arrangedObjects"
+                                options:NSKeyValueObservingOptionNew
+                                context:nil];
   self.connection.autoAttach = [_attachedCheckbox state] == NSOnState;
 
   // Load view controllers into the tab views.
@@ -140,6 +144,8 @@
       [_connection loadStackFrame:frame];
   } else if (object == _stackArrayController && [keyPath isEqualToString:@"selection.source"]) {
     [self updateSourceViewer];
+  } else if (object == _variablesTreeController) {
+    [self expandVariables];
   } else if (object == _model) {
     if ([keyPath isEqualToString:@"connected"]) {
       if ([change[NSKeyValueChangeNewKey] boolValue]) {
@@ -207,6 +213,7 @@
     [self stepIn:self];
   // Do not cache the file between debugger executions.
   _sourceViewer.file = nil;
+  [_expandedVariables removeAllObjects];
 }
 
 /**
@@ -271,25 +278,6 @@
 - (IBAction)stop:(id)sender
 {
   [_connection stop];
-}
-
-/**
- * NSTableView delegate method that informs the controller that the stack selection did change and that
- * we should update the source viewer
- */
-- (void)tableViewSelectionDidChange:(NSNotification*)notif
-{
-  // TODO: This is very, very hacky because it's nondeterministic. The issue
-  // is that calling |-[NSOutlineView expandItem:]| while the table is still
-  // doing its redraw will translate to a no-op. Instead, we need to restructure
-  // this controller so that when everything has been laid out we call
-  // |-expandVariables|; but NSOutlineView doesn't have a |-didFinishDoingCrap:|
-  // method. The other issue is that we need to call this method from
-  // selectionDidChange but ONLY when it was the result of a user-initiated
-  // action and not the stack viewer updating causing a selection change.
-  // If it happens in the latter, then we run into the same issue that causes
-  // this to no-op.
-  [self performSelector:@selector(expandVariables) withObject:nil afterDelay:0.05];
 }
 
 /**
