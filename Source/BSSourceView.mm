@@ -226,42 +226,37 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     }];
     [task launch];
 
-    // Start reading the stdout pipe on a background queue. This is separate
-    // from the terminiationHandler, since a large file could be greater than
+    // Start reading the stdout pipe immediately. This is separate from the
+    // terminiationHandler, since a large file could be greater than
     // the pipe buffer.
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-      NSMutableAttributedString* source;
-      NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
-      if (data.length) {
-        source = [[NSMutableAttributedString alloc] initWithHTML:data
-                                                         options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
-                                              documentAttributes:nil];
+    NSMutableAttributedString* source;
+    NSData* data = [[outPipe fileHandleForReading] readDataToEndOfFile];
+    if (data.length) {
+      source = [[NSMutableAttributedString alloc] initWithHTML:data
+                                                       options:@{ NSCharacterEncodingDocumentAttribute : @(NSUTF8StringEncoding) }
+                                            documentAttributes:nil];
 
-        // PHP uses &nbsp; in the highlighted output, which should be converted
-        // back to normal spaces.
-        NSMutableString* stringData = [source mutableString];
-        [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
+      // PHP uses &nbsp; in the highlighted output, which should be converted
+      // back to normal spaces.
+      NSMutableString* stringData = [source mutableString];
+      [stringData replaceOccurrencesOfString:@"\u00A0" withString:@" " options:0 range:NSMakeRange(0, stringData.length)];
 
-        // Override the default font from Courier.
-        [source addAttributes:@{ NSFontAttributeName : [[self class] sourceFont] }
-                        range:NSMakeRange(0, source.length)];
-      }
+      // Override the default font from Courier.
+      [source addAttributes:@{ NSFontAttributeName : [[self class] sourceFont] }
+                      range:NSMakeRange(0, source.length)];
+    }
 
-      dispatch_async(dispatch_get_main_queue(), ^{
-        if (source) {
-          [[self->textView_ textStorage] setAttributedString:source];
-        } else {
-          [self setPlainTextStringFromFile:filePath];
-        }
+    if (source) {
+      [[textView_ textStorage] setAttributedString:source];
+    } else {
+      [self setPlainTextStringFromFile:filePath];
+    }
 
-        [self->ruler_ performLayout];
+    [ruler_ performLayout];
 
-        [self scrollToLine:self->markedLine_];
-
-        if (handler)
-          handler();
-      });
-    });
+    if (handler) {
+      handler();
+    }
   } @catch (NSException* exception) {
     // If the PHP executable is not available then the NSTask will throw an exception
     NSLog(@"Failed to highlight file: %@", exception);
