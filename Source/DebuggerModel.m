@@ -57,34 +57,10 @@
 }
 
 - (void)updateStack:(NSArray<StackFrame*>*)newStack {
-  // Iterate, in reverse order from the bottom to the top, both stacks to find
-  // the point of divergence.
-  NSEnumerator* itNewStack = [newStack reverseObjectEnumerator];
-  NSEnumerator* itOldStack = [self.stack reverseObjectEnumerator];
-
-  StackFrame* frameNew;
-  StackFrame* frameOld = [itOldStack nextObject];
-  NSUInteger oldStackOffset = self.stack.count;
-  while (frameNew = [itNewStack nextObject]) {
-    if ([frameNew isEqual:frameOld]) {
-      --oldStackOffset;
-      frameOld = [itOldStack nextObject];
-    } else {
-      break;
-    }
-  }
-
   [self willChangeValueForKey:@"stack"];
 
-  // Remove any frames from the top of the stack that are not shared with the
-  // new stack.
-  [_stack removeObjectsInRange:NSMakeRange(0, oldStackOffset)];
-
-  // Continue inserting objects to update the stack with the new frames.
-  while (frameNew) {
-    [_stack insertObject:frameNew atIndex:0];
-    frameNew = [itNewStack nextObject];
-  }
+  [_stack removeAllObjects];
+  [_stack addObjectsFromArray:newStack];
 
   // Renumber the stack.
   for (NSUInteger i = 0; i < self.stack.count; ++i)
