@@ -126,6 +126,8 @@
 - (void)loadStackFrame:(StackFrame*)frame {
   if (frame.loaded)
     return;
+  if (!self.model.connected)
+    return;
 
   // Get the source code of the file. Escape % in URL chars.
   if ([frame.filename length]) {

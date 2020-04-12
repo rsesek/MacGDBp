@@ -1,6 +1,10 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.0.2
+#####################
+- Fix: Crash when selecting stack frames after disconnecting.
+
 2.0.1
 #####################
 - Change: Draw the source view gutter in a way that is dark-mode compatible.

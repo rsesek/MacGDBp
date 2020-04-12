@@ -326,7 +326,7 @@
     NSLog(@"INVALID SELECTION");
   StackFrame* frame = [selection objectAtIndex:0];
 
-  if (!frame.loaded) {
+  if (!frame.loaded && self.model.connected) {
     [_connection loadStackFrame:frame];
     return;
   }
