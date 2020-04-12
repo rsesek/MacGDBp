@@ -20,6 +20,7 @@
 
 @implementation VariableNode {
   NSMutableArray* _children;
+  NSString* _nodeValue;
 }
 
 - (id)initWithXMLNode:(NSXMLElement*)node {
@@ -28,7 +29,7 @@
     _fullName   = [[[node attributeForName:@"fullname"] stringValue] copy];
     _className  = [[[node attributeForName:@"classname"] stringValue] copy];
     _type       = [[[node attributeForName:@"type"] stringValue] copy];
-    _value      = [[node base64DecodedValue] copy];
+    _nodeValue  = [[node base64DecodedValue] copy];
     _children   = [[NSMutableArray alloc] init];
     if ([node children]) {
       [self setChildrenFromXMLChildren:[node children]];
@@ -71,6 +72,52 @@
 
 - (NSString*)description {
   return [NSString stringWithFormat:@"<VariableNode %p : %@>", self, self.fullName];
+}
+
+- (NSString*)value {
+  if (!self.isLeaf) {
+    if (self.childCount != self.children.count) {
+      return @"…";
+    }
+    // For non-leaf nodes, display the object structure by recursively printing
+    // the base64-decoded values.
+    NSMutableString* mutableString = [[NSMutableString alloc] initWithString:@"(\n"];
+    for (VariableNode* child in self.children) {
+      [self recusivelyFormatNode:child appendTo:mutableString depth:1];
+    }
+    [mutableString appendString:@")"];
+
+    return mutableString;
+  }
+
+  return _nodeValue;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark Private
+
+/**
+ * Recursively builds a print_r()-style output by attaching the data to
+ * |stringBuilder| with indent level specified by |depth|.
+ */
+- (void)recusivelyFormatNode:(VariableNode*)node
+                    appendTo:(NSMutableString*)stringBuilder
+                       depth:(NSUInteger)depth
+{
+  // Create the indention string for this level.
+  NSString* indent = [@"" stringByPaddingToLength:depth withString:@"\t" startingAtIndex:0];
+
+  if (node.isLeaf) {
+    // If this is a leaf node, simply append the key=>value pair.
+    [stringBuilder appendFormat:@"%@%@\t=>\t%@\n", indent, node.name, node->_nodeValue];
+  } else {
+    // If this node has children, increase the depth and recurse.
+    [stringBuilder appendFormat:@"%@%@\t=>\t(\n", indent, node.name];
+    for (VariableNode* child in node.children) {
+      [self recusivelyFormatNode:child appendTo:stringBuilder depth:depth + 1];
+    }
+    [stringBuilder appendFormat:@"%@)\n", indent];
+  }
 }
 
 @end

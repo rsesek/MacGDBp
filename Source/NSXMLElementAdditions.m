@@ -18,13 +18,6 @@
 
 #import "AppDelegate.h"
 
-@interface NSXMLElement (GDBpAdditions_Private)
-- (NSString*)internalName;
-- (NSString*)internalBase64DecodedValue;
-- (void)recursiveBase64DecodedValue:(NSMutableString*)stringBuilder
-                              depth:(NSUInteger)depth;
-@end
-
 @implementation NSXMLElement (GDBpAdditions)
 
 /**
@@ -36,17 +29,9 @@
 }
 
 /**
- * Returns the "name" attribute.
+ * Returns the value of the property
  */
-- (NSString*)internalName
-{
-  return [[self attributeForName:@"name"] stringValue];
-}
-
-/**
- * Does the actual work of decoding base64.
- */
-- (NSString*)internalBase64DecodedValue
+- (NSString*)base64DecodedValue
 {
   // The value of the node is base64 encoded.
   if ([[[self attributeForName:@"encoding"] stringValue] isEqualToString:@"base64"]) {
@@ -60,47 +45,10 @@
   }
 
   // The value is just a normal string.
-  return [self stringValue];  
-}
+  if (![self isLeaf])
+    return [self stringValue];
 
-/**
- * Returns the value of the property
- */
-- (NSString*)base64DecodedValue
-{
-  if (![self isLeaf]) {
-    // For non-leaf nodes, display the object structure by recursively printing
-    // the base64-decoded values.
-    NSMutableString* mutableString = [[NSMutableString alloc] initWithString:@"(\n"];
-    [self recursiveBase64DecodedValue:mutableString depth:1];
-    [mutableString appendString:@")"];
-    return mutableString;
-  }
-
-  return [self internalBase64DecodedValue];  
-}
-
-/**
- * Recursively builds a print_r()-style output by attaching the data to
- * |stringBuilder| with indent level specified by |depth|.
- */
-- (void)recursiveBase64DecodedValue:(NSMutableString*)stringBuilder
-                              depth:(NSUInteger)depth
-{
-  // Create the indention string for this level.
-  NSString* indent = [@"" stringByPaddingToLength:depth withString:@"\t" startingAtIndex:0];
-
-  if ([self isLeaf]) {
-    // If this is a leaf node, simply append the key=>value pair.
-    [stringBuilder appendFormat:@"%@%@\t=>\t%@\n", indent, [self internalName], [self internalBase64DecodedValue]];
-  } else {
-    // If this node has children, increase the depth and recurse.
-    [stringBuilder appendFormat:@"%@%@\t=>\t(\n", indent, [self internalName]];
-    for (NSXMLElement* elm in [self children]) {
-      [elm recursiveBase64DecodedValue:stringBuilder depth:depth + 1];
-    }
-    [stringBuilder appendFormat:@"%@)\n", indent];
-  }
+  return nil;
 }
 
 @end

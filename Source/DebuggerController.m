@@ -25,7 +25,6 @@
 #import "EvalController.h"
 #import "FileAccessController.h"
 #import "PreferenceNames.h"
-#import "NSXMLElementAdditions.h"
 #import "StackFrame.h"
 
 @interface DebuggerController (Private)
