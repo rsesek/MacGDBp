@@ -59,6 +59,7 @@
 - (void)setMarkedLine:(NSUInteger)markedLine {
   markedLine_ = markedLine;
   [ruler_ setNeedsDisplay:YES];
+  [textView_ setNeedsDisplay:YES];
 }
 
 /**
@@ -119,7 +120,7 @@
   for (NSUInteger i = 0; i < line; i++) {
     rangeIndex = NSMaxRange([[textView_ string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
   }
-  
+
   // now get the true start/end markers for it
   NSUInteger lineStart, lineEnd;
   [[textView_ string] getLineStart:&lineStart
