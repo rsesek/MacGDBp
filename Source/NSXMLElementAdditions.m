@@ -45,7 +45,7 @@
   }
 
   // The value is just a normal string.
-  if (![self isLeaf])
+  if ([self isLeaf])
     return [self stringValue];
 
   return nil;

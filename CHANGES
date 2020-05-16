@@ -1,6 +1,10 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.0.3
+#####################
+- Fix: #265  Variables holding scalars would not display a value.
+
 2.0.2
 #####################
 - Fix: Crash when selecting stack frames after disconnecting.
