@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -241,11 +241,6 @@
                                     <action selector="stop:" target="287" id="312"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Evaluate" keyEquivalent="E" id="316">
-                                <connections>
-                                    <action selector="showEvalWindow:" target="287" id="317"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Attached" keyEquivalent="A" id="313">
                                 <connections>
                                     <binding destination="287" name="value" keyPath="connection.autoAttach" id="314"/>
@@ -273,14 +268,20 @@
                                     <action selector="showDebuggerWindow:" target="225" id="266"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Inspector" keyEquivalent="I" id="303">
-                                <connections>
-                                    <action selector="showInspectorWindow:" target="287" id="305"/>
-                                </connections>
-                            </menuItem>
                             <menuItem title="Breakpoints" keyEquivalent="B" id="268">
                                 <connections>
                                     <action selector="showBreakpointWindow:" target="225" id="269"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Evaluate" keyEquivalent="E" id="316">
+                                <connections>
+                                    <action selector="showEvalWindow:" target="287" id="317"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="y56-BA-NYU"/>
+                            <menuItem title="Inspector" keyEquivalent="I" id="303">
+                                <connections>
+                                    <action selector="showInspectorWindow:" target="287" id="305"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Connection Log" id="308">
@@ -312,6 +313,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="139" y="154"/>
         </menu>
         <customObject id="225" userLabel="AppDelegate" customClass="AppDelegate">
             <connections>
