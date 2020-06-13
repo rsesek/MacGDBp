@@ -5,6 +5,7 @@ MacGDBp                                                               CHANGE LOG
 #####################
 - Fix: #265  Variables holding scalars would not display a value.
 - Change: Reorganized the Window main menu.
+- Fix: Speculative fix for a crash when connecting.
 
 2.0.2
 #####################

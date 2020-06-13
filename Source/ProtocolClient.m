@@ -201,6 +201,10 @@
   } else {
     // Dispatch the handler for the message.
     ProtocolClientMessageHandler handler = [_dispatchTable objectForKey:@(transactionID)];
+    if (!handler) {
+      NSLog(@"Could not dispatch handler for transaction %ld: %@", transactionID, message);
+      return;
+    }
     handler(xml);
     [_dispatchTable removeObjectForKey:@(transactionID)];
   }
