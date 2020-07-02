@@ -25,41 +25,34 @@
 - (void)setPlainTextStringFromFile:(NSString*)filePath;
 @end
 
-@implementation BSSourceView
+@implementation BSSourceView {
+  BSSourceViewTextView* _textView;
+  BSLineNumberRulerView* _ruler;
+  NSScrollView* _scrollView;
 
-@synthesize textView = textView_;
-@synthesize scrollView = scrollView_;
-@synthesize markers = markers_;
-@synthesize markedLine = markedLine_;
-@synthesize delegate = delegate_;
-@synthesize file = file_;
+  // Line numbers to mark.
+  NSSet<NSNumber*>* _markers;
 
-/**
- * Initializes the source view with the path of a file
- */
+  NSString* _file;
+}
+
 - (id)initWithFrame:(NSRect)frame
 {
   if (self = [super initWithFrame:frame]) {
     [self setupViews];
-    [[NSNotificationCenter defaultCenter]
-      addObserver:self
-      selector:@selector(errorHighlightingFile:)
-      name:NSFileHandleReadToEndOfFileCompletionNotification
-      object:nil
-    ];
   }
   return self;
 }
 
 - (void)setMarkers:(NSSet*)markers {
-  markers_ = [markers copy];
-  [ruler_ setNeedsDisplay:YES];
+  _markers = [markers copy];
+  [_ruler setNeedsDisplay:YES];
 }
 
 - (void)setMarkedLine:(NSUInteger)markedLine {
-  markedLine_ = markedLine;
-  [ruler_ setNeedsDisplay:YES];
-  [textView_ setNeedsDisplay:YES];
+  _markedLine = markedLine;
+  [_ruler setNeedsDisplay:YES];
+  [_textView setNeedsDisplay:YES];
 }
 
 /**
@@ -68,10 +61,10 @@
  */
 - (void)setFile:(NSString*)f
 {
-  file_ = f;
+  _file = [f copy];
   
   if (![[NSFileManager defaultManager] fileExistsAtPath:f]) {
-    [textView_ setString:@""];
+    [_textView setString:@""];
     return;
   }
 
@@ -83,14 +76,14 @@
  */
 - (void)setString:(NSString*)source asFile:(NSString*)path
 {
-  file_ = path;
+  _file = [path copy];
 
   // Write the source out as a temporary file so it can be highlighted.
   NSError* error = nil;
   NSString* tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"MacGDBpHighlighter"];
   [source writeToFile:tmpPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
   if (error) {
-    [textView_ setString:source];
+    [_textView setString:source];
     return;
   }
 
@@ -112,22 +105,22 @@
  */
 - (void)scrollToLine:(NSUInteger)line
 {
-  if ([[textView_ textStorage] length] == 0)
+  if ([[_textView textStorage] length] == 0)
     return;
   
   // go through the document until we find the NSRange for the line we want
   NSUInteger rangeIndex = 0;
   for (NSUInteger i = 0; i < line; i++) {
-    rangeIndex = NSMaxRange([[textView_ string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
+    rangeIndex = NSMaxRange([[_textView string] lineRangeForRange:NSMakeRange(rangeIndex, 0)]);
   }
 
   // now get the true start/end markers for it
   NSUInteger lineStart, lineEnd;
-  [[textView_ string] getLineStart:&lineStart
+  [[_textView string] getLineStart:&lineStart
                                end:NULL
                        contentsEnd:&lineEnd
                           forRange:NSMakeRange(rangeIndex - 1, 0)];
-  [textView_ scrollRangeToVisible:[[textView_ string]
+  [_textView scrollRangeToVisible:[[_textView string]
                 lineRangeForRange:NSMakeRange(lineStart, lineEnd - lineStart)]];
 }
 
@@ -151,42 +144,41 @@
 - (void)setupViews
 {
   // Create the scroll view.
-  scrollView_ = [[NSScrollView alloc] initWithFrame:[self bounds]];
-  [scrollView_ setHasHorizontalScroller:YES];
-  [scrollView_ setHasVerticalScroller:YES];
-  [scrollView_ setAutohidesScrollers:YES];
-  [scrollView_ setBorderType:NSBezelBorder];
-  [scrollView_ setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
-  [[scrollView_ contentView] setAutoresizesSubviews:YES];
-  [self addSubview:scrollView_];
+  _scrollView = [[NSScrollView alloc] initWithFrame:[self bounds]];
+  [_scrollView setHasHorizontalScroller:YES];
+  [_scrollView setHasVerticalScroller:YES];
+  [_scrollView setAutohidesScrollers:YES];
+  [_scrollView setBorderType:NSBezelBorder];
+  [_scrollView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
+  [[_scrollView contentView] setAutoresizesSubviews:YES];
+  [self addSubview:_scrollView];
 
   // add the text view to the scroll view
   NSRect textFrame;
   textFrame.origin = NSMakePoint(0.0, 0.0);
-  textFrame.size = [scrollView_ contentSize];
-  textView_ = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
-  [textView_ setSourceView:self];
-  [textView_ setEditable:NO];
-  [textView_ setFont:[[self class] sourceFont]];
-  [textView_ setHorizontallyResizable:YES];
-  [textView_ setVerticallyResizable:YES];
-  [textView_ setMinSize:textFrame.size];
-  [textView_ setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-  [[textView_ textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
-  [[textView_ textContainer] setWidthTracksTextView:NO];
-  [[textView_ textContainer] setHeightTracksTextView:NO];
-  [textView_ setAutoresizingMask:NSViewNotSizable];
-  [scrollView_ setDocumentView:textView_];
+  textFrame.size = [_scrollView contentSize];
+  _textView = [[BSSourceViewTextView alloc] initWithFrame:textFrame];
+  [_textView setSourceView:self];
+  [_textView setEditable:NO];
+  [_textView setFont:[[self class] sourceFont]];
+  [_textView setHorizontallyResizable:YES];
+  [_textView setVerticallyResizable:YES];
+  [_textView setMinSize:textFrame.size];
+  [_textView setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[_textView textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+  [[_textView textContainer] setWidthTracksTextView:NO];
+  [[_textView textContainer] setHeightTracksTextView:NO];
+  [_textView setAutoresizingMask:NSViewNotSizable];
+  [_scrollView setDocumentView:_textView];
 
   // Set up the ruler.
-  ruler_ = [[BSLineNumberRulerView alloc] initWithSourceView:self];
-  [scrollView_ setVerticalRulerView:ruler_];
-  [scrollView_ setHasHorizontalRuler:NO];
-  [scrollView_ setHasVerticalRuler:YES];
-  [scrollView_ setRulersVisible:YES];
+  _ruler = [[BSLineNumberRulerView alloc] initWithSourceView:self];
+  [_scrollView setVerticalRulerView:_ruler];
+  [_scrollView setHasHorizontalRuler:NO];
+  [_scrollView setHasVerticalRuler:YES];
+  [_scrollView setRulersVisible:YES];
 
-  NSArray* types = [NSArray arrayWithObject:NSFilenamesPboardType];
-  [self registerForDraggedTypes:types];
+  [self registerForDraggedTypes:@[ NSFilenamesPboardType ]];
 }
 
 NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
@@ -248,12 +240,12 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     }
 
     if (source) {
-      [[textView_ textStorage] setAttributedString:source];
+      [[_textView textStorage] setAttributedString:source];
     } else {
       [self setPlainTextStringFromFile:filePath];
     }
 
-    [ruler_ performLayout];
+    [_ruler performLayout];
 
     if (handler) {
       handler();
@@ -277,12 +269,12 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
                                                     error:&error];
   if (error) {
     NSLog(@"Error reading file at %@: %@", filePath, error);
-    if ([delegate_ respondsToSelector:@selector(error:whileHighlightingFile:)]) {
-      [delegate_ error:error whileHighlightingFile:filePath];
+    if ([_delegate respondsToSelector:@selector(error:whileHighlightingFile:)]) {
+      [_delegate error:error whileHighlightingFile:filePath];
     }
     return;
   }
-  [textView_ setString:contents];
+  [_textView setString:contents];
 }
 
 // Drag Handlers ///////////////////////////////////////////////////////////////

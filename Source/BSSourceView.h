@@ -26,25 +26,12 @@
 //
 // Rather than setting the string of the text view directly, use the provided
 // methods to load from a file path or to load a string as a virtual file.
-@interface BSSourceView : NSView {
- @private
-  BSSourceViewTextView* textView_;
-  BSLineNumberRulerView* ruler_;
-  NSScrollView* scrollView_;
-
-  // Line numbers to mark.
-  NSSet<NSNumber*>* markers_;
-
-  NSString* file_;
-  NSUInteger markedLine_;
-
-  id<BSSourceViewDelegate> __weak delegate_;
-}
+@interface BSSourceView : NSView
 
 @property (nonatomic, readonly) NSTextView* textView;
 @property (nonatomic, readonly) NSScrollView* scrollView;
-@property (nonatomic, retain) NSSet<NSNumber*>* markers;
-@property (nonatomic, retain) NSString* file;
+@property (nonatomic, copy) NSSet<NSNumber*>* markers;
+@property (nonatomic, copy) NSString* file;
 @property (nonatomic, assign) NSUInteger markedLine;
 @property (nonatomic, weak) id delegate;
 

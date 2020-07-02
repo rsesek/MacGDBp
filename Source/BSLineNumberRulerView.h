@@ -15,7 +15,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#include <vector>
 
 @class BSSourceView;
 
@@ -24,17 +23,9 @@
 //   http://www.noodlesoft.com/blog/2008/10/05/displaying-line-numbers-with-nstextview/
 // However, all code is original.
 @interface BSLineNumberRulerView : NSRulerView
-{
- @private
-  BSSourceView* sourceView_;  // Weak, owns this.
-
-  // A vector (thus 0-based) map of line numbers (indices) to character indices
-  // in the text storage.
-  std::vector<NSUInteger> lineIndex_;
-}
 
 // Designated initializer.
-- (id)initWithSourceView:(BSSourceView*)sourceView;
+- (instancetype)initWithSourceView:(BSSourceView*)sourceView;
 
 // Performs layout and redraws the line number view.
 - (void)performLayout;

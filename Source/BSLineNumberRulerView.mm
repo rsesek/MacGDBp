@@ -17,6 +17,7 @@
 #import "BSLineNumberRulerView.h"
 
 #include <algorithm>
+#include <vector>
 
 #import "Breakpoint.h"
 #import "BSSourceView.h"
@@ -42,15 +43,20 @@ const CGFloat kRulerRightPadding = 2.5;
 
 // }}
 
+@implementation BSLineNumberRulerView {
+  BSSourceView* _sourceView;  // Weak, owns this.
 
-@implementation BSLineNumberRulerView
+  // A vector (thus 0-based) map of line numbers (indices) to character indices
+  // in the text storage.
+  std::vector<NSUInteger> _lineIndex;
+}
 
-- (id)initWithSourceView:(BSSourceView*)sourceView
+- (instancetype)initWithSourceView:(BSSourceView*)sourceView
 {
   if (self = [super initWithScrollView:[sourceView scrollView]
                            orientation:NSVerticalRuler]) {
-    sourceView_ = sourceView;
-    [self setClientView:[[sourceView_ scrollView] documentView]];
+    _sourceView = sourceView;
+    [self setClientView:[[_sourceView scrollView] documentView]];
     [self setRuleThickness:kDefaultWidth];
   }
   return self;
@@ -58,7 +64,7 @@ const CGFloat kRulerRightPadding = 2.5;
 
 - (void)awakeFromNib
 {
-  [self setClientView:[[sourceView_ scrollView] documentView]];
+  [self setClientView:[[_sourceView scrollView] documentView]];
   [self setRuleThickness:kDefaultWidth];
 }
 
@@ -74,7 +80,7 @@ const CGFloat kRulerRightPadding = 2.5;
                             toPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
 
   // Get some common elements of the source view.
-  NSTextView* textView = [sourceView_ textView];
+  NSTextView* textView = [_sourceView textView];
   NSLayoutManager* layoutManager = [textView layoutManager];
   NSTextContainer* textContainer = [textView textContainer];
   NSRect visibleRect = [[[self scrollView] contentView] bounds];
@@ -87,20 +93,20 @@ const CGFloat kRulerRightPadding = 2.5;
 
   // Load any markers. The superview takes care of filtering out for just the
   // curently displayed file.
-  NSSet<NSNumber*>* markers = [sourceView_ markers];
+  NSSet<NSNumber*>* markers = [_sourceView markers];
 
   // Go through the lines.
   const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
   const CGFloat yOffset = [textView textContainerInset].height;
 
-  const size_t lineCount = lineIndex_.size();
+  const size_t lineCount = _lineIndex.size();
   std::vector<NSUInteger>::iterator element =
-      std::lower_bound(lineIndex_.begin(),
-                       lineIndex_.end(),
+      std::lower_bound(_lineIndex.begin(),
+                       _lineIndex.end(),
                        characterRange.location);
-  for (NSUInteger line = std::distance(lineIndex_.begin(), element);
+  for (NSUInteger line = std::distance(_lineIndex.begin(), element);
        line < lineCount; ++line) {
-    NSUInteger firstCharacterIndex = lineIndex_[line];
+    NSUInteger firstCharacterIndex = _lineIndex[line];
     // Stop after iterating past the end of the visible range.
     if (firstCharacterIndex > NSMaxRange(characterRange))
       break;
@@ -130,7 +136,7 @@ const CGFloat kRulerRightPadding = 2.5;
       if ([markers containsObject:@(lineNumber)]) {
         [self drawBreakpointInRect:drawRect];
       }
-      if (sourceView_.markedLine == lineNumber) {
+      if (_sourceView.markedLine == lineNumber) {
         [self drawProgramCounterInRect:drawRect];
       }
     }
@@ -142,10 +148,10 @@ const CGFloat kRulerRightPadding = 2.5;
   [self computeLineIndex];
 
   // Determine the width of the ruler based on the line count.
-  if (lineIndex_.empty()) {
+  if (_lineIndex.empty()) {
     [self setRuleThickness:kDefaultWidth];
   } else {
-    NSUInteger lastElement = lineIndex_.back() + 1;
+    NSUInteger lastElement = _lineIndex.back() + 1;
     NSAttributedString* lastElementString = [self attributedStringForLineNumber:lastElement];
     NSSize boundingSize = [lastElementString size];
     [self setRuleThickness:std::max(kDefaultWidth, boundingSize.width)];
@@ -157,7 +163,7 @@ const CGFloat kRulerRightPadding = 2.5;
 - (NSUInteger)lineNumberAtPoint:(NSPoint)point
 {
   // Get some common elements of the source view.
-  NSTextView* textView = [sourceView_ textView];
+  NSTextView* textView = [_sourceView textView];
   NSLayoutManager* layoutManager = [textView layoutManager];
   NSTextContainer* textContainer = [textView textContainer];
   NSRect visibleRect = [[[self scrollView] contentView] bounds];
@@ -165,9 +171,9 @@ const CGFloat kRulerRightPadding = 2.5;
 
   const CGFloat kWidth = NSWidth([self bounds]);
   const NSRange kNullRange = NSMakeRange(NSNotFound, 0);
-  const size_t lineCount = lineIndex_.size();
+  const size_t lineCount = _lineIndex.size();
   for (NSUInteger line = 0; line < lineCount; ++line) {
-    NSUInteger firstCharacterIndex = lineIndex_[line];
+    NSUInteger firstCharacterIndex = _lineIndex[line];
 
     NSUInteger rectCount;
     NSRectArray frameRects =
@@ -191,7 +197,7 @@ const CGFloat kRulerRightPadding = 2.5;
   point = [self convertPoint:point fromView:nil];
   NSUInteger line = [self lineNumberAtPoint:point];
   if (line != NSNotFound)
-    [sourceView_.delegate gutterClickedAtLine:line forFile:sourceView_.file];
+    [_sourceView.delegate gutterClickedAtLine:line forFile:_sourceView.file];
 }
 
 // Private /////////////////////////////////////////////////////////////////////
@@ -202,27 +208,27 @@ const CGFloat kRulerRightPadding = 2.5;
  */
 - (void)computeLineIndex
 {
-  lineIndex_.clear();
+  _lineIndex.clear();
 
-  NSString* text = [[sourceView_ textView] string];
+  NSString* text = [[_sourceView textView] string];
   NSUInteger stringLength = [text length];
   NSUInteger index = 0;
 
   while (index < stringLength) {
-    lineIndex_.push_back(index);
+    _lineIndex.push_back(index);
     index = NSMaxRange([text lineRangeForRange:NSMakeRange(index, 0)]);
   }
 
-  if (lineIndex_.empty())
+  if (_lineIndex.empty())
     return;
 
   NSUInteger lineEnd, contentEnd;
   [text getLineStart:NULL
                  end:&lineEnd
          contentsEnd:&contentEnd
-            forRange:NSMakeRange(lineIndex_.back(), 0)];
+            forRange:NSMakeRange(_lineIndex.back(), 0)];
   if (contentEnd < lineEnd)
-    lineIndex_.push_back(index);
+    _lineIndex.push_back(index);
 }
 
 /**

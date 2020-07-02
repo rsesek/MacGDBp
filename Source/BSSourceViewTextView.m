@@ -20,8 +20,6 @@
 
 @implementation BSSourceViewTextView
 
-@synthesize sourceView = sourceView_;
-
 - (void)drawRect:(NSRect)rect
 {
   [super drawRect:rect];
@@ -32,7 +30,7 @@
     NSRange fragRange;
     NSRect fragRect = [layoutManager lineFragmentRectForGlyphAtIndex:i
                                                       effectiveRange:&fragRange];
-    if ([sourceView_ markedLine] == line) {
+    if ([_sourceView markedLine] == line) {
       fragRect = [self convertRect:fragRect fromView:self];
       fragRect.origin.x = rect.origin.x;  // Flush all the way to the edge.
       [[[NSColor redColor] colorWithAlphaComponent:0.25] set];
