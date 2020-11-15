@@ -45,6 +45,7 @@ package main
 import (
 	"crypto"
 	"crypto/ed25519"
+	"crypto/x509"
 	"encoding/pem"
 	"flag"
 	"fmt"
@@ -96,30 +97,54 @@ func main() {
 }
 
 func newKey() {
-	pub := &pem.Block{Type: "PUBLIC KEY"}
-	priv := &pem.Block{Type: "PRIVATE KEY"}
-	var err error
-	pub.Bytes, priv.Bytes, err = ed25519.GenerateKey(nil)
+	pub, priv, err := ed25519.GenerateKey(nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to generate new key pair: %v.\n", err)
 		os.Exit(1)
 	}
 
-	if err := pem.Encode(os.Stdout, pub); err != nil {
+	pemPub := &pem.Block{Type: "ED25519 PUBLIC KEY"}
+	pemPriv := &pem.Block{Type: "ED25519 PRIVATE KEY"}
+
+	pemPub.Bytes, err = x509.MarshalPKIXPublicKey(pub)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to marshal public key: %v.\n", err)
+		os.Exit(1)
+	}
+
+	pemPriv.Bytes, err = x509.MarshalPKCS8PrivateKey(priv)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to marshal private key: %v.\n", err)
+		os.Exit(1)
+	}
+
+	if err := pem.Encode(os.Stdout, pemPub); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to write public key: %v.\n", err)
 	}
-	if err := pem.Encode(os.Stdout, priv); err != nil {
+	if err := pem.Encode(os.Stdout, pemPriv); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to write private key: %v.\n", err)
 	}
 }
 
 func sign(keyPem *pem.Block) {
-	if keyPem.Type != "PRIVATE KEY" {
+	var key ed25519.PrivateKey
+
+	// The first version of this tool simply output the raw key bytes into the
+	// PEM. To be compatible with openssl, the tool now uses PKCS8 to encode
+	// the private key.
+	if keyPem.Type == "PRIVATE KEY" {
+		key = ed25519.PrivateKey(keyPem.Bytes)
+	} else if keyPem.Type == "ED25519 PRIVATE KEY" {
+		if derKey, err := x509.ParsePKCS8PrivateKey(keyPem.Bytes); err == nil {
+			key = derKey.(ed25519.PrivateKey)
+		} else {
+			fmt.Fprintf(os.Stderr, "Failed to parse private key: %v.\n", err)
+			os.Exit(1)
+		}
+	} else {
 		fmt.Fprintf(os.Stderr, "Signing expects a private key.\n")
 		os.Exit(1)
 	}
-
-	key := ed25519.PrivateKey(keyPem.Bytes)
 
 	signature, err := key.Sign(nil, readInput(), crypto.Hash(0))
 	if err != nil {
@@ -134,12 +159,24 @@ func sign(keyPem *pem.Block) {
 }
 
 func verify(keyPem *pem.Block) {
-	if keyPem.Type != "PUBLIC KEY" {
+	var key ed25519.PublicKey
+
+	// The first version of this tool simply output the raw key bytes into the
+	// PEM. To be compatible with openssl, the tool now DER-encodes the public
+	// key.
+	if keyPem.Type == "PUBLIC KEY" {
+		key = ed25519.PublicKey(keyPem.Bytes)
+	} else if keyPem.Type == "ED25519 PUBLIC KEY" {
+		if derKey, err := x509.ParsePKIXPublicKey(keyPem.Bytes); err == nil {
+			key = derKey.(ed25519.PublicKey)
+		} else {
+			fmt.Fprintf(os.Stderr, "Failed to parse public key: %v.\n", err)
+			os.Exit(1)
+		}
+	} else {
 		fmt.Fprintf(os.Stderr, "Verifying expects a public key.\n")
 		os.Exit(1)
 	}
-
-	key := ed25519.PublicKey(keyPem.Bytes)
 
 	signature, err := ioutil.ReadFile(*sigPath)
 	if err != nil {

@@ -14,7 +14,6 @@
  * write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-
 /*
 asn1-wrap-ed25519 takes a raw private key from signer-ed25519 and reencodes it as PEM PKCS8 (ASN.1).
 
@@ -60,7 +59,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	asn1Pem := &pem.Block{Type: "PRIVATE KEY", Bytes: asn1Bytes}
+	asn1Pem := &pem.Block{Type: "ED25519 PRIVATE KEY", Bytes: asn1Bytes}
 
 	err = pem.Encode(os.Stdout, asn1Pem)
 	if err != nil {
