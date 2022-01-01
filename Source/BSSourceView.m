@@ -275,6 +275,7 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     return;
   }
   [_textView setString:contents];
+  [_ruler performLayout];
 }
 
 // Drag Handlers ///////////////////////////////////////////////////////////////
