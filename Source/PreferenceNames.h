@@ -25,6 +25,9 @@ extern NSString* const kPrefInspectorWindowVisible;
 // NSMutableArray of path replacements.
 extern NSString* const kPrefPathReplacements;
 
+// NSString to the path to the PHP binary used for syntax highlighting.
+extern NSString* const kPrefPhpPath;
+
 #if USE_APP_SANDBOX
 // NSMutableDictionary of NSString paths to NSData file access bookmarks.
 extern NSString* const kPrefFileAccessBookmarks;

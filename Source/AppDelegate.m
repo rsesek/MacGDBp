@@ -42,6 +42,7 @@ static NSString* const kAppcastUnstable = @"appcast-unstable.xml";
       kPrefPort                     : @9000,
       kPrefInspectorWindowVisible   : @YES,
       kPrefPathReplacements         : [NSMutableArray array],
+      kPrefPhpPath                  : @"/usr/bin/php",
 #if USE_APP_SANDBOX
       kPrefFileAccessBookmarks      : [NSMutableDictionary dictionary],
 #endif

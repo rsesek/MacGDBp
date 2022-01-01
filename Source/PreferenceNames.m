@@ -22,6 +22,8 @@ NSString* const kPrefInspectorWindowVisible = @"InspectorWindowVisible";
 
 NSString* const kPrefPathReplacements = @"PathReplacements";
 
+NSString* const kPrefPhpPath = @"PhpPath";
+
 #if USE_APP_SANDBOX
 NSString* const kPrefFileAccessBookmarks = @"FileAccessBookmarks";
 

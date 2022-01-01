@@ -16,6 +16,7 @@
 
 #import "BSSourceView.h"
 
+#import "PreferenceNames.h"
 #import "BSLineNumberRulerView.h"
 #import "BSSourceViewTextView.h"
 
@@ -200,7 +201,14 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     NSPipe* errPipe = [NSPipe pipe];
     NSTask* task = [[NSTask alloc] init];
 
-    [task setLaunchPath:@"/usr/bin/php"]; // This is the path to the default Leopard PHP executable
+    NSString* phpPath = [[NSUserDefaults standardUserDefaults] stringForKey:kPrefPhpPath];
+    if (!phpPath) {
+      // This is the path to the default Leopard PHP executable, but it will not
+      // exist on future macOS versions.
+      phpPath = @"/usr/bin/php";
+    }
+
+    [task setLaunchPath:phpPath];
     [task setArguments:@[
       @"--syntax-highlight",
       @"--define", ColorHEXStringINIDirective(@"highlight.string", [NSColor systemRedColor]),
@@ -214,7 +222,8 @@ NSString* ColorHEXStringINIDirective(NSString* directive, NSColor* color) {
     [task setTerminationHandler:^(NSTask* taskBlock) {
       if (task.terminationStatus != 0) {
         NSLog(@"Failed to highlight PHP file %@. Termination status=%d. stderr: %@",
-              filePath, taskBlock.terminationStatus, [[errPipe fileHandleForReading] readDataToEndOfFile]);
+              filePath, taskBlock.terminationStatus,
+              [[NSString alloc] initWithData:[[errPipe fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding]);
       }
     }];
     [task launch];

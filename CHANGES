@@ -4,6 +4,7 @@ MacGDBp                                                               CHANGE LOG
 2.0.4
 #####################
 - Fix: #266  Plain text fallback source display does not paint the ruler.
+- New: #266  Add preference for PHP binary path for syntax highlighting.
 
 
 2.0.3
