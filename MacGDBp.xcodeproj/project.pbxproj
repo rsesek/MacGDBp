@@ -747,7 +747,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 1;
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -792,7 +792,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 0;
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -818,7 +818,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 0;
-				MARKETING_VERSION = 2.0.4;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
