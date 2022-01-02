@@ -163,18 +163,8 @@
 {
   // Hide the current view when animating, to avoid weird artifacts.
   self.window.contentView = _blankView;
-
-  NSWindowStyleMask styleMask = self.window.styleMask;
-  NSRect newFrame = [NSWindow contentRectForFrameRect:self.window.frame styleMask:styleMask];
-
-  CGFloat height = size.height + 55;
-  newFrame.origin.y += newFrame.size.height;
-  newFrame.origin.y -= height;
-  newFrame.size.height = height;
-  newFrame.size.width = size.width;
-
-  newFrame = [NSWindow frameRectForContentRect:newFrame styleMask:styleMask];
-
+  NSPoint origin = self.window.frame.origin;
+  NSRect newFrame = [self.window frameRectForContentRect:NSMakeRect(origin.x, origin.y, size.width, size.height)];
   [[self window] setFrame:newFrame display:YES animate:YES];
 }
 
