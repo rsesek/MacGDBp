@@ -34,23 +34,17 @@
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="25"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="26"/>
-                    <toolbarItem implicitItemIdentifier="6AEED900-187C-4FE3-B185-35C4C2105744" label="General" paletteLabel="General" tag="-1" image="NSPreferencesGeneral" autovalidates="NO" id="43">
-                        <size key="minSize" width="22" height="22"/>
-                        <size key="maxSize" width="22" height="22"/>
+                    <toolbarItem implicitItemIdentifier="6AEED900-187C-4FE3-B185-35C4C2105744" label="General" paletteLabel="General" tag="-1" image="NSPreferencesGeneral" sizingBehavior="auto" autovalidates="NO" id="43">
                         <connections>
                             <action selector="showGeneral:" target="-2" id="49"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="9B9A0426-715E-44F5-A7FC-FA2874232849" label="File Access" paletteLabel="File Access" tag="-1" image="NSFolder" id="e1C-OK-KSi">
-                        <size key="minSize" width="22" height="22"/>
-                        <size key="maxSize" width="22" height="22"/>
+                    <toolbarItem implicitItemIdentifier="9B9A0426-715E-44F5-A7FC-FA2874232849" label="File Access" paletteLabel="File Access" tag="-1" image="NSFolder" sizingBehavior="auto" id="e1C-OK-KSi">
                         <connections>
                             <action selector="showFileAccess:" target="-2" id="g2h-j3-gGu"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="7E7339A3-79C3-4087-B2F7-2479CFD10818" label="Remote Paths" paletteLabel="Remote Paths" tag="-1" image="NSNetwork" autovalidates="NO" id="50">
-                        <size key="minSize" width="22" height="22"/>
-                        <size key="maxSize" width="22" height="22"/>
+                    <toolbarItem implicitItemIdentifier="7E7339A3-79C3-4087-B2F7-2479CFD10818" label="Remote Paths" paletteLabel="Remote Paths" tag="-1" image="NSNetwork" sizingBehavior="auto" autovalidates="NO" id="50">
                         <connections>
                             <action selector="showPaths:" target="-2" id="51"/>
                         </connections>
@@ -161,9 +155,9 @@
                     </connections>
                 </textField>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="shR-tP-IGm">
-                    <rect key="frame" x="54" y="95" width="107" height="16"/>
+                    <rect key="frame" x="26" y="95" width="135" height="16"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="PHP Binary Path:" id="Inm-aY-Aua">
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="PHP Executable Path:" id="Inm-aY-Aua">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
