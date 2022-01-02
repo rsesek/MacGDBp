@@ -307,12 +307,9 @@
  */
 - (void)updateSourceViewer
 {
-  NSArray* selection = [_stackArrayController selectedObjects];
-  if (!selection || [selection count] < 1)
+  StackFrame* frame = _stackArrayController.selectedObjects.firstObject;
+  if (!frame)
     return;
-  if ([selection count] > 1)
-    NSLog(@"INVALID SELECTION");
-  StackFrame* frame = [selection objectAtIndex:0];
 
   if (!frame.loaded && self.model.connected) {
     [_connection loadStackFrame:frame];

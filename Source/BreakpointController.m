@@ -119,6 +119,7 @@
   [_sourceView setFile:[bp file]];
   [_sourceView scrollToLine:[bp line]];
   [_sourceView setMarkers:[_manager breakpointsForFile:bp.file]];
+  [_sourceView setMarkedLine:0];
 }
 
 @end
