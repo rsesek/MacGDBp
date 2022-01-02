@@ -6,6 +6,9 @@ MacGDBp                                                               CHANGE LOG
 - New: Native support for Apple Silicon.
 - Fix: #266  Plain text fallback source display does not paint the ruler.
 - New: #266  Add preference for PHP binary path for syntax highlighting.
+- Fix: When debugging and selecting a breakpoint in a different file, the
+  current line would be incorrectly highlighted.
+- Fix: Small visual tweaks for macOS 12.
 
 2.0.3
 #####################
