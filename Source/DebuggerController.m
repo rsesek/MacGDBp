@@ -403,4 +403,21 @@
 #endif  // USE_APP_SANDBOX
 }
 
+#pragma mark NSSplitView Delegate
+
+- (CGFloat)splitView:(NSSplitView*)splitView
+constrainSplitPosition:(CGFloat)proposedPosition
+         ofSubviewAt:(NSInteger)dividerIndex
+{
+  const NSSize splitViewSize = splitView.bounds.size;
+  const CGFloat minimumSplit = 150;
+  const CGFloat maximumSplit = (splitView.isVertical ? splitViewSize.width : splitViewSize.height) - minimumSplit;
+
+  if (proposedPosition < minimumSplit)
+    return minimumSplit;
+  if (proposedPosition > maximumSplit)
+    return maximumSplit;
+  return proposedPosition;
+}
+
 @end

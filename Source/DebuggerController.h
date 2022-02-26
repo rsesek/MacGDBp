@@ -22,7 +22,7 @@
 @class DebuggerBackEnd;
 @class DebuggerModel;
 
-@interface DebuggerController : NSWindowController <NSWindowDelegate>
+@interface DebuggerController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
 
 @property(readonly) DebuggerBackEnd* connection;
 @property(readonly) DebuggerModel* model;

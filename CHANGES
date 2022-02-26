@@ -1,6 +1,11 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.1.1
+#####################
+- Fix: Constrain the minimum size of the debugger split views, so that panes
+  cannot be permanently hidden.
+
 2.1
 #####################
 - New: Native support for Apple Silicon.
