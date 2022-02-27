@@ -740,7 +740,7 @@
 				CODE_SIGN_ENTITLEMENTS = MacGDBp.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 211.0;
+				CURRENT_PROJECT_VERSION = 211.1;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -751,7 +751,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 1;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -786,7 +786,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 211.0;
+				CURRENT_PROJECT_VERSION = 211.1;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -797,7 +797,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -812,7 +812,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 211.0;
+				CURRENT_PROJECT_VERSION = 211.1;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -822,7 +822,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACGDBP_APP_SANDBOX = 0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bluestatic.macgdbp;
 				PRODUCT_NAME = MacGDBp;
 				VERSIONING_SYSTEM = "apple-generic";
