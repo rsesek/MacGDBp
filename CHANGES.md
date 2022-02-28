@@ -2,12 +2,12 @@ MacGDBp                                                               CHANGE LOG
 ================================================================================
 
 2.1.1
-#####################
+---------------------
 - Fix: Constrain the minimum size of the debugger split views, so that panes
   cannot be permanently hidden.
 
 2.1
-#####################
+---------------------
 - New: Native support for Apple Silicon.
 - Fix: #266  Plain text fallback source display does not paint the ruler.
 - New: #266  Add preference for PHP binary path for syntax highlighting.
@@ -16,20 +16,20 @@ MacGDBp                                                               CHANGE LOG
 - Fix: Small visual tweaks for macOS 12.
 
 2.0.3
-#####################
+---------------------
 - Fix: #265  Variables holding scalars would not display a value.
 - Change: Reorganized the Window main menu.
 - Fix: Speculative fix for a crash when connecting.
 
 2.0.2
-#####################
+---------------------
 - Fix: Crash when selecting stack frames after disconnecting.
 - Fix: Expanded variables would not reliably re-open after debugger steps.
 - Fix: Would not consistently scroll to the active line.
 - Fix: #262  Autoupdate would fail to run.
 
 2.0.1
-#####################
+---------------------
 - Change: Draw the source view gutter in a way that is dark-mode compatible.
 - Change: Make the Remote Paths preferences pane larger.
 - Fix: #260  Use macOS standard colors for syntax highlighting for better dark-
@@ -38,7 +38,7 @@ MacGDBp                                                               CHANGE LOG
 - Fix: #261  Large source files would fail to load.
 
 2.0 Beta 1
-#####################
+---------------------
 - New: Unified UI with integrated debugger, breakpoints, and eval panels.
 - Change: More robust protocol layer communication, which allows loading more
   properties on long arrays and deep objects.
@@ -57,7 +57,7 @@ MacGDBp                                                               CHANGE LOG
 
 
 1.5
-#####################
+---------------------
 - New: Now a 64-bit binary (along with x86 and PPC)
 - Fix: #128  Clicking on the line number will now always set the correct
   breakpoint
@@ -69,14 +69,14 @@ MacGDBp                                                               CHANGE LOG
 
 
 1.4.1
-#####################
+---------------------
 - Fix: Objects with nested objects wouldn't always load their child keys
 - Fix: #213  Crash when unchecking "Attached" when the debugger is inactive
 - Fix: #219  Crash when highlighting source fails
 
 
 1.4 Beta 2
-#####################
+---------------------
 - Fix: After clicking on a stack frame with a virtual file, the debugger front
   end would hang
 - Fix: Crash on clicking "Install & Relaunch" from Sparkle
@@ -90,7 +90,7 @@ MacGDBp                                                               CHANGE LOG
 
 
 1.4 Beta 1
-#####################
+---------------------
 - Change: #164  Upon disconnecting, the program counter line will no longer be
   highlighted
 - Fixed: Preferences jumps around when opening
@@ -102,7 +102,7 @@ MacGDBp                                                               CHANGE LOG
 
 
 1.3
-#####################
+---------------------
 - New: #155  Add a variable inspector to display the full, untruncated value
 - Change: The Window->Breakpoints (Cmd+Shift+B) will now toggle the visibility
 - Fix: All breakpoint markers will now be displayed in the active code debugger
@@ -119,7 +119,7 @@ first line of execution
 
 
 1.2.1
-#####################
+---------------------
 - Fix: The temporary file used for highlighting source code is now saved as UTF8
 so files with non-ASCII characters will now be highlighted
 - Fix: #152  MacGDBp would crash/segfault if you stepped at the end of a script
@@ -127,7 +127,7 @@ so files with non-ASCII characters will now be highlighted
 
 
 1.2
-#####################
+---------------------
 - Change: The "File" column now shows the tail rather than the head of the
 value, allowing you to see the last part of the path URI
 - Fix: #129  Debugging files on a remote server will now work if the remote path
@@ -145,20 +145,20 @@ breakpoints possible on remote servers
 
 
 1.1.2
-#####################
+---------------------
 - Fix: #140  Saved breakpoints for non-existent files would cause an immediate 
 crash on launch
 - New: #139  Windows now remember their size and location
 
 
 1.1.1
-#####################
+---------------------
 - Fix: Breakpoints that were removed would come back, multiplied upon relaunch
 - New: Allow multiple selection of breakpoints
 
 
 1.1
-#####################
+---------------------
 - New: Add preferences that allow changing of the Xdebug IDE key and port number
 - Change: Improved software updater via Sparkle
 - Fix: Packets from the Xdebug extension would be incorrectly handled in some
@@ -173,7 +173,7 @@ launch time
 
 
 1.0.1
-#####################
+---------------------
 - New: Source code is now highlighted via the PHP binary (thanks Ciarán Walsh)
 - New: The breakpoints window is now visible on launch
 - Fixed: #125  Some installations would receive a "Stopping" status that MacGDBp 
