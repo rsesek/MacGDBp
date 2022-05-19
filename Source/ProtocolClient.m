@@ -119,22 +119,10 @@
 }
 
 + (NSString*)escapedFilePathURI:(NSString*)path {
-  // Custon GDBp paths are fine.
-  if ([[path substringToIndex:4] isEqualToString:@"gdbp"])
+  // The backend will interpret this custom scheme.
+  if ([path hasPrefix:@"gdbp://"])
     return path;
-
-  // Create a temporary URL that will escape all the nasty characters.
-  NSURL* url = [NSURL fileURLWithPath:path];
-  NSString* urlString = [url absoluteString];
-
-  // Remove the host because this is a file:// URL;
-  NSString* host = [url host];
-  if (host)
-    urlString = [urlString stringByReplacingOccurrencesOfString:[url host] withString:@""];
-
-  // Escape % for use in printf-style NSString formatters.
-  urlString = [urlString stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
-  return urlString;
+  return [[NSURL fileURLWithPath:path] absoluteString];
 }
 
 // MessageQueueDelegate ////////////////////////////////////////////////////////

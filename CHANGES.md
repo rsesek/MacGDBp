@@ -1,6 +1,12 @@
 MacGDBp                                                               CHANGE LOG
 ================================================================================
 
+2.1.2
+---------------------
+- Fix: #267  Do not improperly double-escape file paths that contain %-encoded
+  characters (e.g. spaces).
+
+
 2.1.1
 ---------------------
 - Fix: Constrain the minimum size of the debugger split views, so that panes
